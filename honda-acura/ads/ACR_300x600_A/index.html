@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Acura 300x600 Summer Seasonal — Creative A</title>
+
+<meta name="ad.size" content="width=300,height=600">
+<meta name="generator" content="Custom HTML5 Banner (GWD-compatible)">
+<meta name="environment" content="gwd-doubleclick">
+<meta name="template" content="Banner 1.0">
+
+<!--
+  Acura Creative A intro (Frame 1, build-up phase only — Frame 2 and the
+  headline overlays come in a later pass).
+
+  Storyboard (client revision 2026-05-28):
+    "The repeated images should not come in one by one, but be on screen
+     at the same time and slowly rotate at different speeds so it looks
+     offset and not uniform." (Matching the social-ad video treatment —
+     we use a still, so the fan is built from transform animation.)
+
+  Build:
+    • At t=0 the screen is ALREADY full and the effect is already moving —
+      no fade-up intro. All 10 car layers (car_base.png) are present at full
+      opacity as a rotationally ALIGNED concentric stack: every layer is a
+      larger copy of the one in front (back layer scaled to cover the whole
+      frame so NO black shows), but they all share the SAME 0° rotation, so
+      there is no fan yet.
+    • The counter-clockwise rotation IS the effect and it starts on frame 1:
+      over the full Frame 1 window every layer rotates CCW to its END angle
+      (deeper layers rotate farther) while the stack pushes in (×1.5 scale).
+      The fan OPENS out of the rotation rather than being a starting pose.
+    • Because each layer rotates a different amount over the SAME duration,
+      the deeper layers spin FASTER. That difference in speed is what makes
+      the fan look offset and non-uniform, not a rigid pinwheel.
+
+  Per-dealer tokens (substituted by build.js):
+    {{DEALER_NAME}}, {{DEALER_ID}}, {{CLICK_URL}}
+
+  Embedded fonts (see @font-face block):
+    • AvenirNextRoundedStd-Medium.ttf — Frame 2 dealer copy
+  Frame 1 headline NO LONGER uses a webfont — it is the client's
+  headline-0N.svg outlined-text files (one line each). The Futura
+  @font-face blocks were removed per client (no font, no fallback). The
+  .otf files remain in fonts/ but are unused.
+-->
+
+<style>
+  /* === Embedded fonts ====================================================
+     Each per-dealer build folder ships these .otf/.ttf files in fonts/
+     alongside index.html, so the typography is identical on every
+     impression regardless of the viewer's installed fonts. */
+  @font-face {
+    font-family: "Avenir Next Rounded Std";
+    src: url("fonts/AvenirNextRoundedStd-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 300px;
+    height: 600px;
+    overflow: hidden;
+    background: #000;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .gwd-page-container {
+    position: relative;
+    width: 300px;
+    height: 600px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #000; /* fade-up from black */
+    font-family: "Avenir Next Rounded Std", Helvetica, Arial, sans-serif; /* base; headline is SVG, Frame 2 sets Avenir */
+  }
+
+  .gwd-page-container img {
+    position: absolute;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+    display: block;
+  }
+
+  /* === Frames ============================================================
+     Frame 1 holds the car cascade + yellow headline. Frame 2 holds the
+     Acura technician shot + the white "Visit the experts at" copy and
+     the dynamic dealer name. They cross-fade between t=4.0 s and 4.4 s.
+     Logo + CTA live OUTSIDE both frames so they persist through the
+     transition without flickering. */
+  .frame {
+    position: absolute;
+    inset: 0;
+  }
+  .frame-1 {
+    z-index: 2;
+    animation: f1-fade-out 9s linear forwards;
+  }
+  .frame-2 {
+    z-index: 1;
+    opacity: 0;
+    animation: f2-fade-in 9s linear forwards;
+  }
+  /* Total runtime: 9 s. Frame 1 holds until 5.5 s (long pause after the
+     headline lands at ~2.0 s + CTA at 2.5 s), then cross-fades 5.5 → 5.94 s
+     (the 61–66% keyframes within the 9 s timeline). */
+  @keyframes f1-fade-out {
+    0%   { opacity: 1; }
+    61%  { opacity: 1; }   /* still fully visible at 5.5 s */
+    66%  { opacity: 0; }   /* gone by 5.94 s */
+    100% { opacity: 0; }
+  }
+  @keyframes f2-fade-in {
+    0%   { opacity: 0; }
+    61%  { opacity: 0; }   /* hidden until 5.5 s */
+    66%  { opacity: 1; }   /* visible from 5.94 s onward */
+    100% { opacity: 1; }
+  }
+
+  /* === Car stack =========================================================
+     All car layers share the same screen rectangle — car_base.png at its
+     natural 487×325 size, centered both horizontally (left:-94, since
+     487-300=187 split evenly) and vertically (top:138, since 600-325=275
+     split evenly) inside the 300×600 viewport.
+
+     Transform-origin is CENTER (50% 50%). With the foreground centered
+     vertically, the deeper layers — which scale outward from this same
+     center — extend ABOVE the foreground car (cityscape revealed at the
+     top) AND BELOW it (road / lower-image revealed at the bottom). The
+     rotated duplicates fan out in both directions, matching the comp's
+     full-frame cascading layout. */
+  .car {
+    left: -94px;
+    top:  168px;  /* dropped 30 px from prior 138 — base + cascade move together */
+    width: 487px;
+    height: 325px;
+    transform-origin: 50% 50%;
+    opacity: 1;   /* full from frame 1 — no fade-up intro */
+    /* Resting state = the per-layer START transform: a full, rotationally
+       ALIGNED concentric stack (every layer at 0°, scale only is stepped). */
+    transform: rotate(0deg) scale(var(--start-scale));
+    /* All layers run the SAME animation over the full Frame 1 window; the
+       per-layer START scale + END transform come from the custom properties
+       set below, so a single @keyframes drives all ten layers. */
+    animation: car-cascade 6s linear forwards;
+  }
+
+  /* === Per-layer START → END transforms =================================
+     10 layers, front (car-0, z-index 10) → back (car-9, z-index 1).
+
+     START is full but has NO fan: every layer shares rotation 0° and only
+     the SCALE is stepped, so the layers sit as a concentric zoom-stack. The
+     backmost layer (car-9) is scaled 2.8× — enough to cover the whole
+     300×600 frame at 0° (geometry: the image center sits ~30 px below
+     frame-center, so the top corners need ~2.0× upright; 2.8× gives margin)
+     so NO black shows through on the very first frame.
+
+     The CCW rotation IS the effect: over the window every layer rotates
+     from 0° to its END angle (-4N-6°, so deeper layers spin farther) while
+     the whole stack pushes in (END scale = START × 1.5). The fan opens out
+     of the rotation rather than being pre-baked. START: scale = 1.10×1.11^N. */
+  .car-0 { z-index: 10; --start-scale: 1.100; --end-rot:  -6deg; --end-scale: 1.650; }
+  .car-1 { z-index:  9; --start-scale: 1.221; --end-rot: -10deg; --end-scale: 1.832; }
+  .car-2 { z-index:  8; --start-scale: 1.355; --end-rot: -14deg; --end-scale: 2.033; }
+  .car-3 { z-index:  7; --start-scale: 1.504; --end-rot: -18deg; --end-scale: 2.256; }
+  .car-4 { z-index:  6; --start-scale: 1.670; --end-rot: -22deg; --end-scale: 2.504; }
+  .car-5 { z-index:  5; --start-scale: 1.854; --end-rot: -26deg; --end-scale: 2.780; }
+  .car-6 { z-index:  4; --start-scale: 2.058; --end-rot: -30deg; --end-scale: 3.086; }
+  .car-7 { z-index:  3; --start-scale: 2.284; --end-rot: -34deg; --end-scale: 3.426; }
+  .car-8 { z-index:  2; --start-scale: 2.536; --end-rot: -38deg; --end-scale: 3.803; }
+  .car-9 { z-index:  1; --start-scale: 2.815; --end-rot: -42deg; --end-scale: 4.222; }
+
+  /* Whole fan wrapped so the cascade scales as ONE unit — front car-0's
+     START size matches the comp's blue car. Scales from the fan's visual
+     centre (≈150,330); sits below the scrim (z11). The per-car cascade
+     animation still plays, just at this overall scale. */
+  .fan {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 600px;
+    transform-origin: 50% 55%;
+    /* 2026-06-02 client rev: fan reduced 3% (0.82 → 0.7954) and shifted left
+       so the front grille is no longer clipped at the right edge at rest. */
+    transform: translateX(-15px) scale(0.7954); /* resting/outpoint — grille revealed */
+    animation: fan-shift 6s linear forwards;     /* start centered (tx 0) → settle to outpoint (tx -15) */
+  }
+
+  /* Subtle horizontal settle: at t=0 the whole fan sits at tx:0 so the blue
+     car is centered in frame; over the cascade it drifts left to the resting
+     OUTPOINT (tx:-15, grille revealed), reaching it by 90% (~5.4 s) and
+     HOLDING so the cross-fade outpoint is unchanged. Moves as one unit. */
+  @keyframes fan-shift {
+    0%   { transform: translateX(0px)   scale(0.7954); }
+    90%  { transform: translateX(-15px) scale(0.7954); }
+    100% { transform: translateX(-15px) scale(0.7954); }
+  }
+
+  /* Multiply scrim over the fan — client darkgradientoverlay.png (300×600,
+     black top+bottom, white middle). mix-blend-mode:multiply darkens the
+     fan's TOP and BOTTOM edges (white middle leaves the car untouched) so
+     the logo (z30), headline (z20) and CTA read clearly. Sits ONE step
+     above the fan (z11; cars are z1–10) and INSIDE Frame 1, so it fades out
+     with the cross-fade. Fills the full canvas. */
+  .fan-scrim {
+    position: absolute;
+    z-index: 11;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 600px;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  /* Both ends use the same `rotate() scale()` function list, so the browser
+     interpolates the transform smoothly; the var()s resolve to a static
+     per-layer value. No opacity ramp — the (already full) stack is visible
+     on frame 1 and the CCW rotation begins immediately. */
+  @keyframes car-cascade {
+    0%   { transform: rotate(0deg) scale(var(--start-scale)); }
+    100% { transform: rotate(var(--end-rot)) scale(var(--end-scale)); }
+  }
+
+  /* === Frame 2: technician zoom-in ======================================
+     Source PNG fills the viewport (300×600). Slowly zooms in from
+     scale 1.0 to 1.10 while Frame 2 is on screen, matching the comp's
+     "Transition to Acura-Trained Technician, slowly zooming in." */
+  .frame-2 .bg {
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 600px;
+    transform-origin: 50% 38%;
+    animation: tech-zoom 3.5s linear forwards;
+    animation-delay: 5.5s;
+  }
+  /* Slower zoom than the earlier rev (1.0 → 1.10 over 4 s):
+     1.0 → 1.06 over 3.5 s = ~0.017 scale / s, gentler push-in. */
+  @keyframes tech-zoom {
+    0%   { transform: scale(1.00); }
+    100% { transform: scale(1.06); }
+  }
+
+  /* === Frame 2 copy: visit-prefix + dealer-name ==========================
+     Both lines render with identical typography: system Arial Bold
+     (fallback Helvetica) per client — no webfont. Same size, leading and
+     letter-spacing so the block reads as one unit. */
+  .visit-prefix {
+    position: absolute;
+    z-index: 3;
+    left: 18px;
+    right: 18px;
+    top: 430px;
+    text-align: center;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.18;
+    letter-spacing: 0.1px;
+    opacity: 0;
+    pointer-events: none;
+    animation: fade-up-text 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    animation-delay: 6.2s;
+  }
+
+  /* === Acura logo (persistent, top center) =============================== */
+  .logo {
+    /* Vector AcuraLogo.svg (native 188.089 × 60.108, aspect 3.129:1).
+       Scaled DOWN 5% from the previous 120×38.35 → 114×36.43 per client;
+       TOP edge kept at 26.3 (shrinks toward the top) and re-centered
+       (left 93 → 93+57=150 centre). Height keeps the SVG's own aspect. */
+    z-index: 30;
+    left: 93px;
+    top: 26.3px;
+    width: 114px;
+    height: 36.43px;
+    opacity: 1; /* 2026-06-02 client rev: Acura logo ON from t=0 (was fade-in @0.6s) */
+  }
+
+  /* === Headline (Frame 1) ==============================================
+     "PRECISION SERVICE FOR / SUMMER / THRILLS / ON REPEAT." in yellow
+     #f3c516 Futura Now Text Cn XBlk — matches the comp's typography
+     exactly. Sits on top of the car cascade (z-index 20) so it reads
+     clearly against the cityscape. Each line fades up in sequence
+     after the cascade is mostly built. */
+  /* Headline = the client's outlined-text SVGs (headline-0N.svg), one line
+     each, ALL sharing the same 953.333×569.333 canvas with each line
+     pre-positioned — so the four <img> are OVERLAID (same box) and
+     self-stack into the full headline. No webfont. width:312 sizes the
+     block to ~169 px tall (text at y 92→261, same as the previous Futura
+     block); centred (text union centres on x:150). Each line keeps the
+     original line-by-line fade-up (fade-up-text + the hl-* delays).
+     STARK HARD drop-shadow added per the comp (sharp, no blur). */
+  /* .headline-scale wraps the whole block so it can be scaled + nudged as a
+     unit to match the comp, without touching the per-line layout/animation.
+     scale(0.9) = ~10% smaller; translateY(20px) = ~20px lower. Scaled from
+     top-center so it stays horizontally centred. */
+  .headline-scale {
+    position: absolute;
+    z-index: 20;
+    left: -9px;
+    top: 83px;
+    width: 312px;
+    pointer-events: none;
+    transform-origin: top center;
+    transform: translateY(5px) scale(0.9);
+  }
+  .headline {
+    position: relative;
+    width: 312px;
+    height: 186.3px;
+    pointer-events: none;
+    -webkit-filter: drop-shadow(3px 4px 0 rgba(0, 0, 0, 0.9));
+            filter: drop-shadow(3px 4px 0 rgba(0, 0, 0, 0.9));
+  }
+  .headline > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    display: block;
+    opacity: 0;
+    animation: fade-up-text 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+  .hl-pre { animation-delay: 1.50s; }
+  .hl-1   { animation-delay: 1.65s; }
+  .hl-2   { animation-delay: 1.80s; }
+  .hl-3   { animation-delay: 1.95s; }
+
+  @keyframes fade-up-text {
+    0%   { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === CTA button (persistent, lower-bottom) ============================= */
+  .cta {
+    z-index: 30;
+    left: 36px;
+    top: 532px;
+    width: 228px;
+    height: 42px;
+    opacity: 0;
+    animation: fade-in 0.5s ease-out forwards;
+    animation-delay: 2.5s;
+  }
+
+  /* === Dealer name (Frame 2 dynamic, build.js substitutes {{DEALER_NAME}})
+     Identical typography to .visit-prefix above — both lines read as one
+     block. HARD-SET size (17 px) for every dealer — no auto-shrink; long
+     names wrap to more lines rather than changing size. */
+  .dealer-name {
+    position: absolute;
+    z-index: 3;
+    left: 18px;
+    right: 18px;
+    /* One natural line-height below the prefix: 430 + (17 * 1.18) ≈ 450. */
+    top: 450px;
+    text-align: center;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.18;
+    letter-spacing: 0.1px;
+    opacity: 0;
+    pointer-events: none;
+    word-break: break-word;
+    hyphens: auto;
+    animation: fade-up-text 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    animation-delay: 6.45s;
+  }
+
+  @keyframes fade-in {
+    0%   { opacity: 0; transform: scale(0.96); }
+    100% { opacity: 1; transform: scale(1.00); }
+  }
+
+  /* === Click region ====================================================== */
+  .clickregion {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  /* === Reduced motion ===================================================== */
+  @media (prefers-reduced-motion: reduce) {
+    .car, .logo, .cta, .headline > *,
+    .frame-2 .bg, .visit-prefix, .dealer-name {
+      animation: none;
+      transform: none;
+      opacity: 1;
+    }
+    .frame-1 { opacity: 0; }
+    .frame-2 { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="gwd-page-container" id="ad-stage" role="link" aria-label="Visit Acura dealer">
+
+  <!-- ===== Frame 1: black fade-up + car cascade + yellow headline ======= -->
+  <div class="frame frame-1">
+    <!-- Car cascade: 10 layers (1 front + 9 deeper duplicates). Listed
+         back to front in DOM order so the natural stacking matches z-index.
+         The backmost layer (car-9) is scaled to cover the full frame so the
+         fan opens already full — no black background showing through.
+         Wrapped in .fan so the whole cascade scales as ONE unit. -->
+    <div class="fan">
+    <img class="car car-9" src="images/car_base.png" alt="">
+    <img class="car car-8" src="images/car_base.png" alt="">
+    <img class="car car-7" src="images/car_base.png" alt="">
+    <img class="car car-6" src="images/car_base.png" alt="">
+    <img class="car car-5" src="images/car_base.png" alt="">
+    <img class="car car-4" src="images/car_base.png" alt="">
+    <img class="car car-3" src="images/car_base.png" alt="">
+    <img class="car car-2" src="images/car_base.png" alt="">
+    <img class="car car-1" src="images/car_base.png" alt="">
+    <img class="car car-0" src="images/car_base.png" alt="">
+    </div><!-- /.fan -->
+
+    <!-- Multiply scrim: darkens the fan's top/bottom for logo/headline legibility -->
+    <img class="fan-scrim" src="images/darkgradientoverlay.png" alt="">
+
+    <div class="headline-scale">
+      <div class="headline" role="img" aria-label="Precision service for summer thrills on repeat">
+        <img class="hl-pre" src="images/headline-01.svg" alt="">
+        <img class="hl-1"   src="images/headline-02.svg" alt="">
+        <img class="hl-2"   src="images/headline-03.svg" alt="">
+        <img class="hl-3"   src="images/headline-04.svg" alt="">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Frame 2: Acura-trained technician + dealer copy ==============
+       Both copy lines render with identical typography (Arial Bold, same
+       size, weight, letter-spacing, leading — no text effects). FIXED size
+       for every dealer (no auto-shrink). The trailing period sits inside
+       the dealer-name span so it travels with the name. -->
+  <div class="frame frame-2">
+    <img class="bg" src="images/technician.png" alt="">
+    <span class="visit-prefix">Visit the experts at</span>
+    <span class="dealer-name"  id="dealer-name">{{DEALER_NAME}}.</span>
+  </div>
+
+  <!-- Persistent across both frames (Acura logo + GET SERVICE OFFERS CTA) -->
+  <img class="logo" src="images/AcuraLogo.svg" alt="">
+  <img class="cta"  src="images/cta.png"        alt="">
+
+  <button class="clickregion" id="ad-click" aria-label="Click to visit dealer"></button>
+
+</div>
+
+<script>
+  // === Per-dealer data (build.js substitutes these) =======================
+  window.DEALER_DATA = {
+    dealerId:   "{{DEALER_ID}}",
+    dealerName: "{{DEALER_NAME}}",
+    clickUrl:   "{{CLICK_URL}}"
+  };
+
+  // Preview-mode fallback so designers can open the template directly.
+  // The trailing period mirrors what built outputs render (template has
+  // "{{DEALER_NAME}}." inside the span).
+  (function () {
+    var n = document.getElementById("dealer-name");
+    if (n && n.textContent.indexOf("{{") === 0) {
+      n.textContent = "Herb Connolly Acura of Framingham.";
+    }
+  })();
+
+  // Dealer copy is HARD-SET to Arial Bold 17 px — the same size for EVERY
+  // dealer regardless of name length (NO auto-shrink). Long names wrap to
+  // more lines instead of changing size.
+
+  document.getElementById("ad-click").addEventListener("click", function (e) {
+    e.preventDefault();
+    var url = window.DEALER_DATA.clickUrl;
+    if (!url || url.indexOf("{{") === 0) {
+      url = "https://www.acura.com/service";
+    }
+    if (typeof Enabler !== "undefined" && Enabler.exit) {
+      try { Enabler.exit("clickTag", url); return; } catch (err) {}
+    }
+    if (typeof window.clickTag !== "undefined") {
+      try { window.open(window.clickTag); return; } catch (err) {}
+    }
+    window.open(url, "_blank", "noopener");
+  });
+</script>
+</body>
+</html>

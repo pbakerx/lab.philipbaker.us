@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Honda 300x600 Summer Seasonal — Creative A</title>
+
+<meta name="ad.size" content="width=300,height=600">
+<meta name="generator" content="Custom HTML5 Banner (GWD-compatible)">
+<meta name="environment" content="gwd-doubleclick">
+<meta name="template" content="Banner 1.0">
+
+<!--
+  Per-dealer tokens (substituted by build.js): {{DEALER_NAME}}, {{DEALER_ID}}, {{CLICK_URL}}
+
+  Layout: every visual element is its own PNG, exported from the source
+  PSD by Scripts/ExportIndividualAssets.jsx. Positions are in artboard
+  coordinates (300x600). Only the .bg layer animates by default; the
+  .odometer also runs a one-shot BEACH roll on Frame 1. The dealer-name
+  span is the one DOM element so build.js can swap it.
+
+  Odometer architecture (Frame 1 only):
+    .odometer (div, isolated stacking context)
+      .chassis  (z:1)  chrome bezel + wrench + empty slot fills
+      .slot-N   (z:2)  one per letter — overflow:hidden clips a 25x108 strip
+        > img          strip translates from translateY(36) (empty) to
+                       translateY(-72) (target letter in window)
+      .shadow   (z:3)  mix-blend-mode: multiply — gradient darkens letters
+                       toward slot top/bottom edges (the "roll into shadow"
+                       effect baked into the AI source)
+  Strips are staggered 140ms apart so letters land left-to-right: B, E, A, C, H.
+-->
+
+<style>
+  /* No webfonts: the Frame 1 headline is the client's headline.svg
+     (outlined text) and the Frame 2 dealer copy uses system Arial Bold
+     (fallback Helvetica). The old Avenir @font-face was removed; the .ttf
+     remains in fonts/ but is unused. */
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 300px;
+    height: 600px;
+    overflow: hidden;
+    background: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .gwd-page-container {
+    position: relative;
+    width: 300px;
+    height: 600px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #000000; /* sits behind bg overdraw — never visible at runtime */
+    font-family: Arial, Helvetica, sans-serif; /* base only; headline is SVG, Frame 2 sets Arial */
+  }
+
+  /* Each frame is a stacking context. Foreground assets sit at fixed
+     positions read from the PSD layer bounds. */
+  .frame {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+  .frame img {
+    position: absolute;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+
+  /* === Background images (the only layer that animates) ================== */
+  /* Frame 1 uses car_large.png at its natural intrinsic size — the
+     current asset is 600x908 (portrait), centered inside the 300x600
+     viewport so the vehicle sits in the middle of the frame. With the
+     image 2x viewport width and ~1.5x viewport height, there's plenty
+     of buffer around the visible window for a subtle pan + scale
+     dolly without ever exposing an edge. */
+  .frame-1 .bg {
+    width: 600px;
+    height: 908px;
+    /* Center: viewport (300x600) minus image (600x908), split. */
+    top:  -154px; /* (600 - 908) / 2 */
+    left: -150px; /* (300 - 600) / 2 */
+    transform-origin: 50% 50%;  /* scale dollies from the vehicle's center */
+  }
+  /* Frame 2 uses the natural 300x600 technician composite. The CSS scale
+     animation overdraws beyond the viewport edges naturally. */
+  .frame-2 .bg {
+    width: 300px;
+    height: 600px;
+    top: 0;
+    left: 0;
+  }
+
+  /* === Frame 1 ============================================================
+     Order back-to-front: bg, logo, odometer, headline, cta */
+  .frame-1         { z-index: 2; animation: f1-show 8s linear forwards; }
+  /* Outer wrapper applies a constant scale-down on the vehicle scene
+     per client review — without changing the inner animation values.
+     0.6885 = three compounded passes: 0.85 (15% off), then 0.90
+     (another 10%), then 0.90 again (another 10%). The inner .bg img
+     keeps its own translate + scale animation untouched; the two
+     scales multiply (e.g. inner 1.03 × outer 0.6885 ≈ 0.709 at the
+     start, inner 0.98 × outer 0.6885 ≈ 0.675 at the end).
+     transform-origin centers the scale on the viewport.
+     translateY(-8px) is listed BEFORE scale so it applies in unscaled
+     screen space — lifts the whole car up 8px without disturbing the
+     inner keyframe animation. (20px was tried but exposed the bottom edge
+     during the cross-fade; the vehicle PNG has only ~12.6px of bottom
+     coverage at scale 1.0, most of which the rotation already uses.) */
+  .frame-1 .bg-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    transform: translateY(-8px) scale(0.6885);
+    transform-origin: 50% 50%;
+  }
+  .frame-1 .bg     { animation: bg1-pan 7s linear forwards; }
+
+  /* === Odometer (rolling BEACH letters) =================================
+     Three-layer composite at the original PSD `odometer` position:
+       1. .chassis  — chrome bezel + wrench + empty slot fills
+       2. .slot     — 5 clipping windows, each holding a letter strip
+                      (translateY rolls the strip up to land on the target)
+       3. .shadow   — gradient inside each slot, mix-blend-mode: multiply
+                      so letters dim toward the slot edges (the "letters
+                      roll into shadow" effect the AI source was built for)
+     `isolation: isolate` keeps the multiply blend confined to the
+     odometer subtree so it doesn't darken the vehicle bg behind it. */
+  .frame-1 .odometer {
+    position: absolute;
+    z-index: 3;
+    left: 46px;
+    top: 102px;
+    width: 209px;
+    height: 67px;
+    isolation: isolate;
+  }
+  .frame-1 .odometer .chassis,
+  .frame-1 .odometer .shadow {
+    top: 0;
+    left: 0;
+    width: 209px;
+    height: 67px;
+  }
+  .frame-1 .odometer .chassis { z-index: 1; }
+  .frame-1 .odometer .shadow  { z-index: 3; mix-blend-mode: multiply; }
+
+  .frame-1 .odometer .slot {
+    position: absolute;
+    z-index: 2;
+    top: 15px;
+    width: 25px;
+    height: 37px;
+    overflow: hidden;
+  }
+  .frame-1 .odometer .slot img {
+    /* strip is 25x108 — three letter cells of 36px each, target at bottom */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 25px;
+    height: 108px;
+    transform: translateY(36px); /* start state: slot empty (strip pushed below the window) */
+    animation: odometer-roll 0.85s cubic-bezier(0.16, 0.86, 0.34, 1.0) forwards;
+  }
+  /* Slot x-positions read off the chassis shadow overlay's alpha channel. */
+  .frame-1 .odometer .slot-1 { left:  46px; } /* B */
+  .frame-1 .odometer .slot-2 { left:  76px; } /* E */
+  .frame-1 .odometer .slot-3 { left: 107px; } /* A */
+  .frame-1 .odometer .slot-4 { left: 137px; } /* C */
+  .frame-1 .odometer .slot-5 { left: 168px; } /* H */
+
+  /* Stagger so the letters land in BEACH order, like a slot machine.
+     Each strip rolls translateY(36) -> translateY(-72): the slot starts
+     empty, then 2 throwaway letters scroll up past the window, then the
+     target letter settles into position. */
+  .frame-1 .odometer .slot-1 img { animation-delay: 0.30s; }
+  .frame-1 .odometer .slot-2 img { animation-delay: 0.44s; }
+  .frame-1 .odometer .slot-3 img { animation-delay: 0.58s; }
+  .frame-1 .odometer .slot-4 img { animation-delay: 0.72s; }
+  .frame-1 .odometer .slot-5 img { animation-delay: 0.86s; }
+
+  @keyframes odometer-roll {
+    0%   { transform: translateY(36px);  }  /* empty, strip below the window */
+    100% { transform: translateY(-72px); }  /* target letter (cell 3) in window */
+  }
+
+  /* Headline = client outlined-text SVG (headline.svg, 313.334×108.001 —
+     "Wherever summer takes you, expert service gets you there."). Replaced
+     frame1_headline.png. width:314 makes the SVG's text (273.1 canvas-units)
+     render ~274 px = the old PNG's text size; left:-5 top:389 lands the text
+     11px below the old PNG spot, text-block TRUE-centered on x:150
+     (2026-06-03: left -11→-5 — the new SVG's ink sat ~6px left of centre;
+     measured ink 18→292 in the 314-canvas, so left:-5 lands centre on 150).
+     y≈403–485. The wider-than-frame box
+     is transparent SVG padding. Same fade-up. Plain <img> → file://-safe. */
+  .frame-1 .headline {
+    z-index: 4;
+    left: -5px; top: 389px; width: 314px; height: auto;
+    opacity: 0;
+    animation: fade-up 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    animation-delay: 1.0s;
+  }
+
+  /* === Frame 2 ============================================================
+     Order: bg, visit-prefix + dealer-name (DOM). Logo and CTA live at the
+     page level (below) so they persist through the cross-fade. */
+  .frame-2     { z-index: 1; animation: f2-show 8s linear forwards; }
+  .frame-2 .bg {
+    z-index: 1;
+    animation: bg2-zoom 4s ease-out forwards;
+    animation-delay: 4s;
+  }
+
+  /* === Frame 2 dealer copy =============================================
+     Both lines (the "Visit the experts at" prefix and the dealer name)
+     render with identical typography per client review: Arial 18 px bold,
+     single Helvetica fallback. No text effects. The font size is FIXED
+     for every dealer — there is no auto-shrink. If a dealer name is too
+     long to fit cleanly, the line break is the responsibility of the
+     upstream dealer-formatting step (e.g. a manually placed line-break
+     character in the CSV) rather than something the ad template handles. */
+  .frame-2 .visit-prefix {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    top: 407px; /* 2026-06-02 client rev: block moved up 15px (was 422) */
+    z-index: 4;
+    text-align: center;
+    color: #ffffff;
+    font-family: Arial, Helvetica;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 1.18;
+    letter-spacing: 0.1px;
+    opacity: 0;
+    pointer-events: none;
+    animation: fade-up 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    animation-delay: 4.7s;
+  }
+
+  /* === BlueDarkBG (Frame 1 legibility overlay) ===========================
+     Blue gradient PNG that darkens the bright sky on Frame 1 so the
+     white Honda logo reads cleanly without drop shadows. Lives INSIDE
+     .frame-1 so it inherits the f1-show keyframe — visible at full
+     opacity across Frame 1 and gracefully fades out alongside the
+     car / odometer / headline during the Frame 1 -> Frame 2 cross-fade
+     (4.0 - 4.4 s). The technician shot on Frame 2 already provides its
+     own contrast, so the gradient stays out of Frame 2 entirely.
+
+     Positioned center-top at its natural intrinsic size — no width or
+     height locked, so if the asset is ever swapped for one with
+     different dimensions, the gradient stays correctly anchored to the
+     top of the ad and won't be stretched. */
+  .frame-1 .bluedark-bg {
+    /* z:2 sits between the car bg (z:1) and the foreground motion
+       elements (odometer z:3, headline z:4) so the gradient tints
+       only the sky behind the logo and leaves the odometer + headline
+       rendering cleanly on top. */
+    z-index: 2;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* === Persistent foreground (rides above both frames, never fades) ======
+     Logo + CTA are identical between A1 and A2 in the PSD. Hosting them
+     at the page level keeps them rock-steady through the Frame 1 -> 2
+     cross-fade so neither disappears mid-transition. */
+  .gwd-page-container > .logo,
+  .gwd-page-container > .cta {
+    position: absolute;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .gwd-page-container > .logo {
+    /* Vector SVG at its native 128.309 x 32 dimensions for crisp
+       rendering at any DPR. Left/top shifted by ~1 px so the SVG's
+       visual center sits at the same point as the previous 131 x 34
+       PNG (center stayed at x:150.5, y:47). */
+    left: 86.35px;
+    top: 31px;
+    width: 128.309px;
+    height: 32px;
+    /* Drop shadows removed per client review — legibility is now
+       provided by the .bluedark-bg gradient layer behind the logo. */
+  }
+  .gwd-page-container > .cta {
+    left: 50px; top: 528.58px; width: 200px; height: auto;
+    opacity: 0;
+    animation: fade-in 0.5s ease-out forwards;
+    animation-delay: 1.6s;
+  }
+
+  /* === Frame visibility =================================================== */
+  @keyframes f1-show {
+    0%   { opacity: 0; }
+    3%   { opacity: 1; }
+    50%  { opacity: 1; }
+    55%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  @keyframes f2-show {
+    0%   { opacity: 0; }
+    50%  { opacity: 0; }
+    55%  { opacity: 1; }
+    100% { opacity: 1; }
+  }
+
+  /* === Background animations (the only motion) ===========================
+     Per client review: rear-3/4 vehicle gently driving AWAY from camera.
+     Vehicle starts on the RIGHT side of the frame and drifts LEFT as it
+     recedes (camera at rest, car continuing forward into the distance).
+
+     2026-06-02 client revision — "slow it down, less of the car cut off":
+     the visible pan was made SUBTLER by shifting the END position further
+     RIGHT rather than touching the timeline. Duration is unchanged (7 s);
+     the car simply covers less ground in the same time, so the motion
+     reads slower. End framing now keeps the WHOLE vehicle in frame — the
+     front bumper stays clear of the left edge (previously the nose was
+     chopped off) and the rear bumper rides the right edge. (The end was
+     dialed +10 then nudged to +3 px so it's "not quite as slow.")
+
+     Visible window is 0 → 63% (the Frame 1 -> Frame 2 cross-fade hides the
+     bg by ~4.4 s); the 63 -> 100% leg only continues the drift off-screen.
+       0%  -> 63% : linear,   tx +84 -> +3 px  ; scale 1.08 -> 1.03 ; rot 0 -> 1deg
+       63% -> 100%: ease-out, tx +3  -> -21 px ; scale 1.03 -> 0.97 ; rot 1 -> 1.6deg
+     The pan stays LINEAR through the visible window so there's no
+     perceptible deceleration before the cross-fade. */
+  @keyframes bg1-pan {
+    0%   { transform: translateX( 84px) scale(1.08) rotate(0deg); }
+    63%  { transform: translateX(  3px) scale(1.03) rotate(1deg); animation-timing-function: ease-out; }
+    100% { transform: translateX(-21px) scale(0.97) rotate(1.6deg); }
+  }
+  /* Frame 2: slow zoom-in on the technician. */
+  @keyframes bg2-zoom {
+    0%   { transform: scale(1.00); transform-origin: 50% 38%; }
+    100% { transform: scale(1.12); transform-origin: 50% 38%; }
+  }
+
+  /* === Foreground reveal animations ====================================== */
+  @keyframes fade-up {
+    0%   { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    0%   { opacity: 0; transform: scale(0.96); }
+    100% { opacity: 1; transform: scale(1.00); }
+  }
+
+  /* === Dealer name (DOM text — the only dynamic element) ================
+     Renders directly under .visit-prefix with identical typography.
+     Build.js substitutes {{DEALER_NAME}} into this span. The font size
+     is fixed at 18 px and does NOT shrink per dealer — any line breaks
+     a long name needs must be inserted upstream in the dealer CSV. */
+  .dealer-name {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    /* One line-height below the prefix: 407 + (18 * 1.18) ≈ 428.
+       (2026-06-02: block up 15px from 443. Leading was opened 1.18 → 1.4,
+       then REVERTED to 1.18 on 2026-06-03 per client — back to RV2 leading.) */
+    top: 428px;
+    z-index: 4;
+    text-align: center;
+    color: #ffffff;
+    font-family: Arial, Helvetica;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 1.18;
+    letter-spacing: 0.1px;
+    opacity: 0;
+    pointer-events: none;
+    word-break: break-word;
+    hyphens: auto;
+    animation: fade-up 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    animation-delay: 4.95s;
+  }
+
+  /* === Click region ====================================================== */
+  .clickregion {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  /* === Reduced motion ===================================================== */
+  @media (prefers-reduced-motion: reduce) {
+    .frame, .frame *, .dealer-name {
+      animation: none;
+      transform: none;
+      opacity: 1;
+    }
+    .frame-1 { opacity: 0; }
+    .frame-2 { opacity: 1; }
+    /* Each strip needs to stay landed on its target letter, not snap
+       back to translateY(0) which would show the top throwaway. */
+    .frame-1 .odometer .slot img { transform: translateY(-72px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="gwd-page-container" id="ad-stage" role="link" aria-label="Visit Honda dealer">
+
+  <!-- ===== Frame 1 ====================================================== -->
+  <div class="frame frame-1">
+    <!-- Outer wrapper applies the 15% overall scale-down on the vehicle
+         scene per client review. The inner img keeps its own animation. -->
+    <div class="bg-wrap">
+      <img class="bg" src="images/car_large.png" alt="">
+    </div>
+
+    <!-- Sky-darkening gradient — lives inside Frame 1 so it inherits the
+         f1-show fade and naturally lifts off during the cross-fade to
+         Frame 2. Sits above the car bg, below the odometer and headline. -->
+    <img class="bluedark-bg" src="images/BlueDarkBG.png" alt="">
+
+    <!-- Rolling odometer: chassis + 5 slot strips + shadow overlay -->
+    <div class="odometer">
+      <img class="chassis" src="images/odometer_chassis.png" alt="">
+      <div class="slot slot-1"><img src="images/odometer_strip_1.png" alt=""></div>
+      <div class="slot slot-2"><img src="images/odometer_strip_2.png" alt=""></div>
+      <div class="slot slot-3"><img src="images/odometer_strip_3.png" alt=""></div>
+      <div class="slot slot-4"><img src="images/odometer_strip_4.png" alt=""></div>
+      <div class="slot slot-5"><img src="images/odometer_strip_5.png" alt=""></div>
+      <img class="shadow" src="images/odometer_chassis_shadowoverlay.png" alt="">
+    </div>
+
+    <img class="headline" src="images/headline.svg" alt="">
+  </div>
+
+  <!-- ===== Frame 2 (dealer name is dynamic) =============================
+       Both copy lines are DOM text now (was: prefix as PNG + name as DOM).
+       Identical font, size, weight, letter-spacing, line-height — no
+       text effects — so the two lines read as one block. The trailing
+       period sits inside the dealer-name span so fitDealerName() measures
+       it as part of the text it has to fit. -->
+  <div class="frame frame-2">
+    <img  class="bg"           src="images/frame2_bg.png" alt="">
+    <span class="visit-prefix">Visit the experts at</span>
+    <span class="dealer-name"  id="dealer-name">{{DEALER_NAME}}.</span>
+  </div>
+
+  <!-- Persistent across both frames (above the cross-fade).
+       Logo is the new vector SVG — sharper than the raster PNG it
+       replaced, identical visual placement. -->
+  <img class="logo" src="images/HondaLogo.svg" alt="">
+  <img class="cta"  src="images/cta.svg" alt="">
+
+  <button class="clickregion" id="ad-click" aria-label="Click to visit dealer"></button>
+
+</div>
+
+<script>
+  window.DEALER_DATA = {
+    dealerId:   "{{DEALER_ID}}",
+    dealerName: "{{DEALER_NAME}}",
+    clickUrl:   "{{CLICK_URL}}"
+  };
+
+  // Preview-mode fallback for opening the file directly without a build.
+  // The trailing period mirrors what built outputs render (template has
+  // "{{DEALER_NAME}}." inside the span).
+  (function () {
+    var n = document.getElementById("dealer-name");
+    if (n && n.textContent.indexOf("{{") === 0) {
+      n.textContent = "Norm Reeves Honda Superstore Huntington Beach.";
+    }
+  })();
+
+  // (Auto-shrink removed per client review.) The dealer-copy font size
+  // is fixed at 18 px for every dealer so the prefix and the dealer name
+  // always render at exactly the same size. If a dealer name is long
+  // enough to need a line break, that break must be inserted in the
+  // CSV upstream rather than fixed up in the ad template.
+
+  // Click-through. Tries DoubleClick Studio, then GAM clickTag, then standalone.
+  document.getElementById("ad-click").addEventListener("click", function (e) {
+    e.preventDefault();
+    var url = window.DEALER_DATA.clickUrl;
+    if (!url || url.indexOf("{{") === 0) {
+      url = "https://automobiles.honda.com/tools/dealership-locator";
+    }
+    if (typeof Enabler !== "undefined" && Enabler.exit) {
+      try { Enabler.exit("clickTag", url); return; } catch (err) {}
+    }
+    if (typeof window.clickTag !== "undefined") {
+      try { window.open(window.clickTag); return; } catch (err) {}
+    }
+    window.open(url, "_blank", "noopener");
+  });
+</script>
+</body>
+</html>

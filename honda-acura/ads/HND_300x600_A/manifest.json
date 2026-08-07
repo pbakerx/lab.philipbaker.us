@@ -1,0 +1,34 @@
+{
+  "name": "HND_300x600_A",
+  "title": "Honda Summer Seasonal — 300x600 Creative A",
+  "size": { "width": 300, "height": 600 },
+  "duration_seconds": 8,
+  "loop": false,
+  "tokens": [
+    { "key": "{{DEALER_NAME}}", "description": "Dealer display name (e.g. \"Norm Reeves Honda Superstore Huntington Beach\")" },
+    { "key": "{{DEALER_ID}}",   "description": "Numeric dealer ID from the source spreadsheet" },
+    { "key": "{{CLICK_URL}}",   "description": "Landing page URL for the CTA button" }
+  ],
+  "frames": [
+    {
+      "id": "frame_1",
+      "label": "Frame 1 — vehicle / BEACH odometer",
+      "image": "images/frame1_bg.png",
+      "headline": "Wherever summer takes you, expert service gets you there.",
+      "visible_from_seconds": 0,
+      "visible_to_seconds": 4.4
+    },
+    {
+      "id": "frame_2",
+      "label": "Frame 2 — Honda-trained technician + dealer",
+      "image": "images/frame2_bg.png",
+      "copy_template": "Visit the experts at\n{{DEALER_NAME}}.",
+      "visible_from_seconds": 4.0,
+      "visible_to_seconds": 8.0
+    }
+  ],
+  "cta": {
+    "label": "GET SERVICE OFFERS",
+    "url_token": "{{CLICK_URL}}"
+  }
+}

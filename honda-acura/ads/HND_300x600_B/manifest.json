@@ -1,0 +1,40 @@
+{
+  "name": "HND_300x600_B",
+  "title": "Honda Summer Seasonal — 300x600 Creative B",
+  "size": { "width": 300, "height": 600 },
+  "duration_seconds": 8,
+  "loop": false,
+  "tokens": [
+    { "key": "{{DEALER_NAME}}", "description": "Dealer display name (e.g. \"Norm Reeves Honda Superstore Huntington Beach\")" },
+    { "key": "{{DEALER_ID}}",   "description": "Numeric dealer ID from the source spreadsheet" },
+    { "key": "{{CLICK_URL}}",   "description": "Landing page URL for the CTA button" }
+  ],
+  "phases": [
+    {
+      "id": "phase_1",
+      "label": "Frame 1 — sandy boardwalk + postcards revealed",
+      "visible_from_seconds": 0,
+      "visible_to_seconds": 4.4,
+      "copy": "When summer calls, expert care delivers.",
+      "assets": ["bgnd_wide.png", "postcard1.png", "postcard2.png"]
+    },
+    {
+      "id": "phase_2",
+      "label": "Frame 2 — postcard shuffle reveals Honda technician",
+      "visible_from_seconds": 4.0,
+      "visible_to_seconds": 8.0,
+      "copy_template": "Visit the experts at\n{{DEALER_NAME}}.",
+      "assets": ["bgnd_wide.png", "postcard2.png", "postcard3.png"]
+    }
+  ],
+  "shared_with_creative_a": [
+    "frame1_logo.png",
+    "frame1_cta.png",
+    "frame2_visit_prefix.png",
+    "fonts/AvenirNextRoundedStd-Medium.ttf"
+  ],
+  "cta": {
+    "label": "GET SERVICE OFFERS",
+    "url_token": "{{CLICK_URL}}"
+  }
+}

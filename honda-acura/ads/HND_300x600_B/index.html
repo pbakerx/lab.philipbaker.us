@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Honda 300x600 Summer Seasonal — Creative B</title>
+
+<meta name="ad.size" content="width=300,height=600">
+<meta name="generator" content="Custom HTML5 Banner (GWD-compatible)">
+<meta name="environment" content="gwd-doubleclick">
+<meta name="template" content="Banner 1.0">
+
+<!--
+  Honda Creative B (postcard reveal + shuffle)
+  Per-dealer tokens (substituted by build.js): {{DEALER_NAME}}, {{DEALER_ID}}, {{CLICK_URL}}
+
+  Layer order back-to-front:
+    1. .wood-bg          static wood-deck PNG (WoodSandBg.png, 300x600, fills the frame)
+    2. .postcard-back    lined postcard back w/ flag stamp (Frame 1 peek behind top card)
+    3. .postcard-top     Service Center scene (top card in Frame 1; shuffles to peek in Frame 2)
+    4. .postcard-tech    Honda technician scene (hidden in Frame 1; new top in Frame 2)
+    5. .headline         "When summer calls, expert care delivers." (client headline.svg, Frame 1)
+    6. .dealer-copy      "Visit the experts at [Dealer]"  (image prefix + DOM dealer name, Frame 2)
+    7. .logo             persistent across both frames (z:10)
+    8. .cta              persistent across both frames (z:10)
+
+  Two "frames" are conceptual here — the wood deck is shared throughout, so
+  there's no cross-fade like Creative A. The frame change is the postcard
+  shuffle + the text swap.
+-->
+
+<style>
+  @font-face {
+    font-family: "Avenir Next Rounded Std";
+    src: url("fonts/AvenirNextRoundedStd-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 300px;
+    height: 600px;
+    overflow: hidden;
+    background: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .gwd-page-container {
+    position: relative;
+    width: 300px;
+    height: 600px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #2b1f17; /* warm-brown fallback in case the wood-deck edge ever exposes */
+    font-family: "Avenir Next Rounded Std", "Avenir Next Rounded",
+                 "Avenir Next", "Helvetica Rounded", Arial, sans-serif;
+  }
+
+  .gwd-page-container img {
+    position: absolute;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+    display: block;
+  }
+
+  /* === Wood deck background ============================================
+     WoodSandBg.png is 300×600 — exactly the canvas, so it fills the frame
+     1:1 at left:0. STATIC (no pan). Replaced the old 690×600 bgnd_wide.png
+     (which was centered at left:-195 to show its middle band). */
+  .wood-bg {
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 600px;
+  }
+
+  /* === Postcard stack =================================================
+     Postcards are sized at their native PNG widths (382 / 375). They extend
+     past the viewport on the sides — that matches the original PSD
+     composition where the cards visually fill more than the 300px artboard.
+
+     Common base position is "centered, upper third of the ad" with slight
+     rotation. Each card has its own keyframes for the appear/shuffle. */
+  .postcards {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+  .postcards img {
+    position: absolute;
+    /* Cards sized natively (~382 wide) and positioned center-ish so they
+       extend past the 300 viewport on each side, matching the PSD comp. */
+    width: 382px;
+    height: 315px;
+    transform-origin: 50% 50%;
+  }
+  /* All three cards START off-frame to the right (translateX +380) so
+     the wood deck reads as empty at t=0. Positions tuned to match the
+     comp: Card 1 peeks from the UPPER-LEFT (with its flag stamp visible),
+     Card 2 is the top card during Frame 1, Card 3 lands slightly LOWER
+     than Card 2 so Card 2's top edge peeks above it in Frame 2.
+
+     Peek card (Frame 1 only): lined back with US flag stamp. Rendered
+     un-mirrored. Anchored at left:-60 so the card's right side — where
+     the flag stamp lives — sits prominently in view with most of the
+     card visible in the viewport. Uses the standard 380 px slide-in. */
+  .postcard-back {
+    z-index: 1;
+    left: -28px;  /* 12 px right of the prior -40 */
+    top:  80px;
+    transform: translateX(380px) rotate(0deg);
+    animation:
+      postcard-back-in  0.7s cubic-bezier(0.4, 0.0, 0.2, 1) forwards,
+      postcard-back-out 0.6s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+    animation-delay: 0.3s, 4.0s;
+  }
+  /* Top card: slides in at 0.5 s to top:100 (kept horizontal — no
+     rotation through entry). At the shuffle (4.0 s) it slides UP by
+     85 px AND rotates -7° CCW so the right side of the postcard lifts
+     up, exposing more of the red Honda in the upper-right peek area. */
+  .postcard-top {
+    z-index: 3;
+    left: -41px;
+    top:  100px;
+    transform: translateX(380px);
+    animation:
+      postcard-top-in      0.7s cubic-bezier(0.4, 0.0, 0.2, 1) forwards,
+      postcard-top-shuffle 1.0s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+    animation-delay: 0.5s, 4.0s;
+  }
+  /* Tech card: lands slightly LOWER than Card 2 (top:100 vs Card 2's
+     top:80) so Card 2's top edge peeks above the tech card in Frame 2.
+     z-index 4 keeps it on top of Card 2's z:3 where they overlap. */
+  .postcard-tech {
+    z-index: 4;
+    left: -38px;
+    top:  90px; /* 2026-06-02 client rev: final postcard moved up 10px (was 100) */
+    width: 375px;
+    height: 325px;
+    transform: rotate(-8deg) translateX(380px);
+    animation: postcard-tech-in 0.7s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+    animation-delay: 4.3s;
+  }
+
+  @keyframes postcard-back-in {
+    0%   { transform: translateX(380px) rotate(-3deg); }
+    100% { transform: translateX(0)     rotate(0deg); }
+  }
+  /* Card 1 exit: mirror of its entry — slides back out off-frame
+     right while rotation eases from 0° back to -3°. */
+  @keyframes postcard-back-out {
+    0%   { transform: translateX(0)     rotate(0deg); }
+    100% { transform: translateX(380px) rotate(-3deg); }
+  }
+  @keyframes postcard-top-in {
+    0%   { transform: translateX(380px); }
+    100% { transform: translateX(0); }
+  }
+  /* Shuffle: Card 2 lifts UP by 85 px AND rotates +7° CW so the
+     LEFT side of the postcard rises — exposes more of the red Honda
+     on the upper-left side of the Frame 2 peek. */
+  @keyframes postcard-top-shuffle {
+    0%   { transform: translate(0, 0)      rotate(0deg); }
+    100% { transform: translate(0, -85px)  rotate(7deg); }
+  }
+  @keyframes postcard-tech-in {
+    0%   { transform: rotate(-8deg) translateX(380px); }
+    100% { transform: rotate(-3deg) translateX(0); }
+  }
+
+  /* === Headline (Frame 1 copy) =========================================
+     Now the client's outlined-text SVG (images/headline.svg, 272.001×102.667
+     — the full two-line "When summer calls, / expert care delivers."). It
+     REPLACED the DOM text. Displayed at the SVG's natural width (272) so the
+     text renders at the same size as the old 24 px block (the SVG's text
+     bbox h≈54.6 ≈ the old 55.7). left:9 top:387 lands the SVG's text bbox at
+     x-centred 150, y≈412 — matching the comp / the old block. Same fade-up-
+     then-fade-out timing as before. Plain <img> → file://-safe (no embed).
+     Sized to 260 wide (from the SVG's natural 272) to match the comp;
+     left re-derived to keep the text centred at x:150; top set so the
+     block sits ~6 px lower than the prior 250-wide placement. */
+  .headline {
+    position: absolute;
+    z-index: 4;
+    /* left 15 → 20.5 (2026-06-03): the new SVG's ink sat ~5.5px left of
+       centre (ink 21→238 in the 260-wide render) — 20.5 lands text centre on x:150. */
+    left: 20.5px;
+    top: 395px;
+    width: 260px;
+    opacity: 0;
+    pointer-events: none;
+    animation:
+      fade-up-text  0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards,
+      fade-out-text 0.4s ease-out forwards;
+    animation-delay: 1.2s, 3.9s;
+  }
+  .headline img { top: 0; left: 0; width: 100%; height: auto; }
+
+  /* === Dealer copy (Frame 2) ===========================================
+     Both lines (the "Visit the experts at" prefix and the dealer name)
+     are DOM text — font styles + fallback MATCH Honda A exactly:
+     `font-family: Arial, Helvetica; font-weight: bold; font-size: 18px;
+     line-height: 1.18; letter-spacing: 0.1px`. Identical typography so
+     they read as one unit. The prefix is static; the dealer name is
+     dynamic. Size is HARD-SET (18 px) for every dealer — no auto-shrink;
+     long names wrap to more lines rather than changing size. */
+  .visit-prefix {
+    position: absolute;
+    z-index: 4;
+    left: 18px;
+    right: 18px;
+    top: 418px; /* 2026-06-02 client rev: group moved up 10px (was 428) */
+    text-align: center;
+    color: #ffffff;
+    font-family: Arial, Helvetica;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 1.18;
+    letter-spacing: 0.1px;
+    opacity: 0;
+    pointer-events: none;
+    animation: fade-up 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    animation-delay: 4.6s;
+  }
+  .dealer-name {
+    position: absolute;
+    z-index: 4;
+    left: 18px;
+    right: 18px;
+    /* One natural line-height below the prefix: 418 + (18 * 1.18) ≈ 439.
+       (2026-06-02 client rev: group moved up 10px — was 449.) */
+    top: 439px;
+    text-align: center;
+    color: #ffffff;
+    font-family: Arial, Helvetica;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 1.18;
+    letter-spacing: 0.1px;
+    opacity: 0;
+    pointer-events: none;
+    word-break: break-word;
+    hyphens: auto;
+    animation: fade-up 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    animation-delay: 4.85s;
+  }
+
+  /* === Persistent foreground (logo + CTA, same recipe as Creative A) === */
+  .logo, .cta {
+    z-index: 10;
+  }
+  /* Vector HondaLogo.svg (native 128.309×32, aspect 4.009:1 — copied from
+     Honda A). Flat, NO drop-shadow (was a shadowed PNG). Kept the previous
+     131 px width so the footprint matches; height from the SVG's own aspect
+     (131 × 32/128.309 = 32.66) so it isn't distorted; top nudged to keep the
+     same visual center (x:150.5, y:47) as the old 131×34 PNG. */
+  .logo {
+    left: 85px; top: 30.7px; width: 131px; height: 32.66px;
+  }
+  .cta {
+    left: 50px; top: 528.58px; width: 200px; height: auto;
+    opacity: 0;
+    animation: fade-in 0.5s ease-out forwards;
+    animation-delay: 1.8s;
+  }
+
+  /* === Reusable keyframes ============================================= */
+  @keyframes fade-up {
+    0%   { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    0%   { opacity: 0; transform: scale(0.96); }
+    100% { opacity: 1; transform: scale(1.00); }
+  }
+  /* DOM headline gets its own fade-up so it doesn't collide with the
+     postcard transforms. */
+  @keyframes fade-up-text {
+    0%   { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-out-text {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* === Click region =================================================== */
+  .clickregion {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  /* === Reduced motion ================================================= */
+  @media (prefers-reduced-motion: reduce) {
+    .wood-bg, .postcard-back, .postcard-top, .postcard-tech,
+    .headline, .visit-prefix, .dealer-name, .cta {
+      animation: none;
+      transform: none;
+      opacity: 1;
+    }
+    /* End state: tech on top with Service Center top edge peeking from
+       the slot Card 1 vacated; lined-back gone; no headline. */
+    .postcard-back { opacity: 0; transform: translateX(380px) rotate(-3deg); }
+    .postcard-top  { transform: translate(0, -85px) rotate(7deg); }
+    .postcard-tech { transform: rotate(-3deg); }
+    .headline      { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="gwd-page-container" id="ad-stage" role="link" aria-label="Visit Honda dealer">
+
+  <img class="wood-bg" src="images/WoodSandBg.png" alt="">
+
+  <div class="postcards">
+    <img class="postcard-back" src="images/postcard1.png" alt="">
+    <img class="postcard-top"  src="images/postcard2.png" alt="">
+    <img class="postcard-tech" src="images/postcard3.png" alt="">
+  </div>
+
+  <div class="headline" role="img" aria-label="When summer calls, expert care delivers.">
+    <img src="images/headline.svg" alt="">
+  </div>
+
+  <!-- Frame 2 dealer copy: both lines DOM text now (was: prefix as PNG +
+       name as DOM). Identical font, size, weight, letter-spacing,
+       line-height — no text effects — so the two lines read as one
+       block. FIXED size for every dealer (no auto-shrink). The trailing
+       period sits inside the dealer-name span so it travels with the name. -->
+  <span class="visit-prefix">Visit the experts at</span>
+  <span class="dealer-name"  id="dealer-name">{{DEALER_NAME}}.</span>
+
+  <!-- Persistent foreground (above both visual phases) -->
+  <img class="logo" src="images/HondaLogo.svg" alt="">
+  <img class="cta"  src="images/cta.svg"  alt="">
+
+  <button class="clickregion" id="ad-click" aria-label="Click to visit dealer"></button>
+
+</div>
+
+<script>
+  window.DEALER_DATA = {
+    dealerId:   "{{DEALER_ID}}",
+    dealerName: "{{DEALER_NAME}}",
+    clickUrl:   "{{CLICK_URL}}"
+  };
+
+  // Preview-mode fallback so designers can open the template directly.
+  // The trailing period mirrors what built outputs render (template has
+  // "{{DEALER_NAME}}." inside the span).
+  (function () {
+    var n = document.getElementById("dealer-name");
+    if (n && n.textContent.indexOf("{{") === 0) {
+      n.textContent = "Norm Reeves Honda Superstore Huntington Beach.";
+    }
+  })();
+
+  // Dealer copy is HARD-SET (no auto-shrink) — the SAME size for every
+  // dealer regardless of name length. Long names wrap to more lines rather
+  // than changing size, so the type stays consistent across all dealers.
+
+  document.getElementById("ad-click").addEventListener("click", function (e) {
+    e.preventDefault();
+    var url = window.DEALER_DATA.clickUrl;
+    if (!url || url.indexOf("{{") === 0) {
+      url = "https://automobiles.honda.com/tools/dealership-locator";
+    }
+    if (typeof Enabler !== "undefined" && Enabler.exit) {
+      try { Enabler.exit("clickTag", url); return; } catch (err) {}
+    }
+    if (typeof window.clickTag !== "undefined") {
+      try { window.open(window.clickTag); return; } catch (err) {}
+    }
+    window.open(url, "_blank", "noopener");
+  });
+</script>
+</body>
+</html>

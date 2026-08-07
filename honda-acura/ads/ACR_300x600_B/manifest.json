@@ -1,0 +1,43 @@
+{
+  "name": "ACR_300x600_B",
+  "title": "Acura Summer Seasonal — 300x600 Creative B",
+  "size": { "width": 300, "height": 600 },
+  "duration_seconds": 9,
+  "loop": false,
+  "tokens": [
+    { "key": "{{DEALER_NAME}}", "description": "Dealer display name (e.g. \"Herb Connolly Acura of Framingham\")" },
+    { "key": "{{DEALER_ID}}",   "description": "Numeric dealer ID from the source spreadsheet" },
+    { "key": "{{CLICK_URL}}",   "description": "Landing page URL for the CTA button" }
+  ],
+  "fonts": [
+    { "file": "fonts/FuturaNowText-CnXBlk.otf",            "family": "Futura Now Text",          "weight": 900, "used_for": "Frame 1 white headline" },
+    { "file": "fonts/FuturaStd-CondensedExtraBd.otf",      "family": "Futura Std Condensed",     "weight": 800, "used_for": "fallback / reserved" },
+    { "file": "fonts/AvenirNextRoundedStd-Medium.ttf",     "family": "Avenir Next Rounded Std",  "weight": 500, "used_for": "Dealer name (Frame 2)" }
+  ],
+  "frames": [
+    {
+      "id": "frame_1",
+      "label": "Frame 1 — heat-haze sunset drive-by, white headline",
+      "headline": "SUMMER / ROAD TRIPS / HANDLED WITH / PRECISION.",
+      "headline_color": "#ffffff",
+      "background": "images/car_wide.png",
+      "overlay": "images/heatwaves.png",
+      "overlay_blend": "screen",
+      "overlay_opacity": 0.55,
+      "visible_from_seconds": 0,
+      "visible_to_seconds": 5.5
+    },
+    {
+      "id": "frame_2",
+      "label": "Frame 2 — Acura-trained technician slow zoom + dealer copy",
+      "copy_template": "Visit the experts at\n{{DEALER_NAME}}.",
+      "background": "images/technician.png",
+      "visible_from_seconds": 5.5,
+      "visible_to_seconds": 9.0
+    }
+  ],
+  "cta": {
+    "label": "GET SERVICE OFFERS",
+    "url_token": "{{CLICK_URL}}"
+  }
+}
