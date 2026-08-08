@@ -1,0 +1,10 @@
+{
+  "headers": [
+    {
+      "source": "/arcade/media/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}
