@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Player · The Arcade</title>
+<style>
+:root{--bg:#1a0e05;--ink:#fdf3ea;--dim:#c9b39d;--gold:#ffd24a;--line:#3c2612}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--gold)}
+header{padding:20px 24px;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+header .crumb{font-size:13px;color:var(--dim)}
+header .crumb a{text-decoration:none}
+h1{font-size:18px;margin:0;font-weight:600}
+main{flex:1;display:grid;place-items:center;padding:12px 24px 40px}
+#stage{background:#000;border:1px solid var(--line);border-radius:8px;padding:10px;box-shadow:0 0 80px rgba(255,210,74,.06);max-width:100%}
+#stage embed,#stage object,#stage canvas,#stage video,#stage ruffle-player{display:block;max-width:100%}
+#stage ruffle-player{width:640px;height:480px}
+#msg{color:var(--dim);font-size:14px;max-width:480px;text-align:center;padding:40px 20px}
+footer{padding:0 24px 28px;font-size:12px;color:var(--dim);text-align:center}
+footer a{color:var(--dim)}
+</style>
+</head>
+<body>
+<header>
+  <span class="crumb"><a href="index.html">← the arcade</a></span>
+  <h1 id="title"></h1>
+  <span class="crumb" id="orig"></span>
+</header>
+<main><div id="stage"></div></main>
+<footer id="engine-note"></footer>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var f = q.get("f") || "";
+  var t = q.get("t") || f.split("/").pop() || "Player";
+  var stage = document.getElementById("stage");
+  var note = document.getElementById("engine-note");
+  document.getElementById("title").textContent = t;
+  document.title = t + " · The Arcade";
+
+  // only serve files that live under media/, no traversal
+  if (!/^[\w][\w\/. '%-]*\.(dcr|swf|mp4|mov)$/i.test(f) || f.indexOf("..") !== -1) {
+    stage.innerHTML = '<div id="msg">Nothing to play — pick a game from <a href="index.html">the arcade</a>.</div>';
+    return;
+  }
+  var src = "media/" + f.split("/").map(encodeURIComponent).join("/");
+  document.getElementById("orig").innerHTML = '<a href="' + src + '">original file</a>';
+  var ext = f.split(".").pop().toLowerCase();
+
+  if (ext === "dcr") {
+    // some movies hit unimplemented corners of the emulator and panic the WASM VM
+    addEventListener("error", function(e){
+      var m = (e.message || "") + (e.error && e.error.message || "");
+      if (/panicked|unreachable|RuntimeError/i.test(m) && !document.getElementById("crashed")) {
+        var d = document.createElement("div");
+        d.id = "crashed";
+        d.innerHTML = '<div id="msg">This movie hits a corner of Director that the emulator can’t reproduce yet — it crashed the VM. The <a href="' + src + '">original file</a> is intact; emulation will catch up.</div>';
+        stage.appendChild(d);
+      }
+    });
+    var em = document.createElement("embed");
+    em.setAttribute("src", src);
+    em.setAttribute("type", "application/x-director");
+    em.setAttribute("width", "640");
+    em.setAttribute("height", "480");
+    stage.appendChild(em);
+    var s = document.createElement("script");
+    s.src = "vendor/dirplayer-polyfill.js";
+    s.onerror = function(){ stage.innerHTML = '<div id="msg">The Shockwave emulator failed to load.</div>'; };
+    document.body.appendChild(s);
+    note.innerHTML = 'Director/Shockwave emulation by <a href="https://github.com/igorlira/dirplayer-rs" rel="noopener">dirplayer</a> — imperfect by nature; the original binary plays untouched.';
+  } else if (ext === "swf") {
+    var s2 = document.createElement("script");
+    s2.src = "https://unpkg.com/@ruffle-rs/ruffle";
+    s2.onload = function(){
+      var ruffle = window.RufflePlayer.newest();
+      var player = ruffle.createPlayer();
+      stage.appendChild(player);
+      // era shells navigate via getURL on load — keep them inside the stage
+      player.load({url: src, openUrlMode: "deny", allowScriptAccess: false});
+    };
+    s2.onerror = function(){ stage.innerHTML = '<div id="msg">The Flash emulator failed to load.</div>'; };
+    document.body.appendChild(s2);
+    note.innerHTML = 'Flash emulation by <a href="https://ruffle.rs" rel="noopener">Ruffle</a>.';
+  } else {
+    var v = document.createElement("video");
+    v.controls = true; v.src = src; v.style.width = "640px";
+    stage.appendChild(v);
+  }
+})();
+</script>
+</body>
+</html>

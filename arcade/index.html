@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Arcade · lab.philipbaker.us</title>
+<meta name="description" content="Shockwave and Flash games produced in the late '90s at Ackerman McQueen's New Media Lab — recovered from the Wayback Machine and playable again in a modern browser.">
+<style>
+:root{--bg:#1a0e05;--ink:#fdf3ea;--dim:#c9b39d;--gold:#ffd24a;--card:#241408;--line:#3c2612}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+a{color:var(--gold)}
+.wrap{max-width:960px;margin:0 auto;padding:48px 24px 96px}
+header p.crumb{margin:0 0 40px;font-size:13px;color:var(--dim)}
+header p.crumb a{text-decoration:none}
+h1{font-size:clamp(36px,7vw,64px);line-height:1.02;margin:0 0 16px;letter-spacing:-.02em}
+h1 .gold{color:var(--gold)}
+.lede{max-width:620px;color:var(--dim);font-size:17px;margin:0 0 8px}
+.lede strong{color:var(--ink)}
+h2{font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:64px 0 6px}
+.sub{color:var(--dim);font-size:14px;margin:0 0 20px;max-width:640px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px}
+.card h3{margin:0;font-size:16px}
+.card .meta{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--dim)}
+.card p{margin:2px 0 8px;font-size:13px;color:var(--dim);flex:1}
+.row{display:flex;gap:12px;align-items:center}
+.play{display:inline-block;background:var(--gold);color:#1a0e05;font-weight:600;font-size:13px;text-decoration:none;padding:7px 16px;border-radius:999px}
+.play:hover{filter:brightness(1.08)}
+.dl{font-size:12px;color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--dim)}
+.dl:hover{color:var(--gold)}
+.tag{display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.08em;color:var(--bg);background:var(--dim);border-radius:3px;padding:2px 6px;vertical-align:2px}
+video{width:100%;border-radius:8px;background:#000;display:block}
+.vidgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.vidgrid figure{margin:0}
+.vidgrid figcaption{font-size:12px;color:var(--dim);margin-top:6px}
+ul.plain{list-style:none;margin:0;padding:0;columns:2;column-gap:32px}
+ul.plain li{margin:0 0 8px;font-size:13px;break-inside:avoid}
+ul.plain .meta{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--dim)}
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-size:12px;color:var(--dim);max-width:640px}
+@media(max-width:560px){ul.plain{columns:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<p class="crumb"><a href="/">lab.philipbaker.us</a> / arcade</p>
+<h1>The <span class="gold">Arcade</span></h1>
+<p class="lede">In the late '90s I was part of the New Media <strong>"Lab"</strong> at Ackerman&nbsp;McQueen, building Shockwave and Flash games when a game in a browser was a small miracle. The plugins died; the work didn't. These are the original binaries, recovered from the <a href="https://web.archive.org" rel="noopener">Wayback Machine</a> — running again through WebAssembly emulation.</p>
+</header>
+
+<h2>The games</h2>
+<p class="sub">Played in place through <a href="https://github.com/igorlira/dirplayer-rs" rel="noopener">dirplayer</a> (Shockwave/Director) and <a href="https://ruffle.rs" rel="noopener">Ruffle</a> (Flash). Emulation of 25-year-old plugins is imperfect — every card also serves the untouched original file.</p>
+<div class="grid">
+<div class="card"><h3>Virtual Boomerang</h3><div class="meta">Darien Lake · 1998 · .dcr · 167&nbsp;KB</div><p>Ride the coaster with real mouse physics — pull down-left, push up-right; speed is power, stroke is lift, release angle is curve.</p><div class="row"><a class="play" href="player.html?f=03-darien-lake/darienlake_GAME_virtual-boomerang.dcr&t=Virtual+Boomerang">Play</a><a class="dl" href="media/03-darien-lake/darienlake_GAME_virtual-boomerang.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Darien Lake '97</h3><div class="meta">Darien Lake · 1997 · .dcr · 136&nbsp;KB</div><p>The park's 1997 Shockwave attraction, from the site root — one of the earliest pieces in the archive.</p><div class="row"><a class="play" href="player.html?f=03-darien-lake/darienlake_GAME_1997-root.dcr&t=Darien+Lake+%2797">Play</a><a class="dl" href="media/03-darien-lake/darienlake_GAME_1997-root.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Virtual Bowling</h3><div class="meta">Brunswick · 2001 · .dcr · 146&nbsp;KB</div><p>The online bowling game that ran a $500 monthly prize with live hi-score posting — the 2003 boards still showed real perfect 300s.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_GAME_virtual-bowling.dcr&t=Virtual+Bowling">Play</a><a class="dl" href="media/04-brunswick/brunswick_GAME_virtual-bowling.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Attitude Alley</h3><div class="meta">Brunswick · 1998 · .swf&nbsp;v1 · 19&nbsp;KB</div><p>Billed on the 1998 Brunswick homepage as "the hottest arcade game on the net." Flash version 1.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_GAME_attitude-alley.swf&t=Attitude+Alley">Play</a><a class="dl" href="media/04-brunswick/brunswick_GAME_attitude-alley.swf">original .swf</a></div></div>
+<div class="card"><h3>Brunswick Arcade</h3><div class="meta">Brunswick · 2000 · .swf&nbsp;v4 · 30&nbsp;KB</div><p>The consumer site's arcade shell — the one piece that never fully stopped playing.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_arcade.swf&t=Brunswick+Arcade">Play</a><a class="dl" href="media/04-brunswick/brunswick_arcade.swf">original .swf</a></div></div>
+<div class="card"><h3>Brunswick Consumer Site</h3><div class="meta">Brunswick · 2000 · .swf&nbsp;v4 · 148&nbsp;KB</div><p>The full Flash shell of brunswickbowling.com's consumer side.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_consumer-shell.swf&t=Brunswick+Consumer+Site">Play</a><a class="dl" href="media/04-brunswick/brunswick_consumer-shell.swf">original .swf</a></div></div>
+<div class="card"><h3>Interactive Timeline</h3><div class="meta">Brunswick · 2002 · .dcr · 644&nbsp;KB</div><p>A Shockwave walk through Brunswick company history — the largest surviving movie in the archive.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_interactive-timeline.dcr&t=Interactive+Timeline">Play</a><a class="dl" href="media/04-brunswick/brunswick_interactive-timeline.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Zone Pilot <span class="tag">loader only</span></h3><div class="meta">Brunswickids · 2002 · .dcr · 5&nbsp;KB</div><p>Pilot a bowling ball; dodge the Cola Spill. Only the loader movie was ever crawled — the game itself is lost.</p><div class="row"><a class="play" href="player.html?f=05-brunswickids/brunswickids_GAME_zone-pilot-loader.dcr&t=Zone+Pilot+(loader)">Play</a><a class="dl" href="media/05-brunswickids/brunswickids_GAME_zone-pilot-loader.dcr">original .dcr</a></div></div>
+</div>
+
+<h2>am.com — the Shockwave site</h2>
+<p class="sub">From 2000 to 2003 the entire agency site was Director movies behind a gateway page demanding Shockwave&nbsp;8 and RealPlayer. Twenty-two movies survive — the broadcast reel and interactive portfolio are the ones to try first.</p>
+<div class="grid">
+<div class="card"><h3>Broadcast Reel</h3><div class="meta">2002 · .dcr · 408&nbsp;KB</div><p>The agency TV reel as a Shockwave movie.</p><div class="row"><a class="play" href="player.html?f=02-am-com-shockwave/am_BROADCAST-REEL.dcr&t=am.com+Broadcast+Reel">Play</a><a class="dl" href="media/02-am-com-shockwave/am_BROADCAST-REEL.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Interactive Portfolio</h3><div class="meta">2003 · .dcr · 340&nbsp;KB</div><p>The new-media case work, as shown to clients.</p><div class="row"><a class="play" href="player.html?f=02-am-com-shockwave/am_interactive.dcr&t=am.com+Interactive">Play</a><a class="dl" href="media/02-am-com-shockwave/am_interactive.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Homepage</h3><div class="meta">2002 · .dcr · 150&nbsp;KB</div><p>The front door, post-gateway.</p><div class="row"><a class="play" href="player.html?f=02-am-com-shockwave/am_homepage.dcr&t=am.com+Homepage">Play</a><a class="dl" href="media/02-am-com-shockwave/am_homepage.dcr">original .dcr</a></div></div>
+</div>
+<p class="sub" style="margin-top:18px">The other nineteen:
+<a href="player.html?f=02-am-com-shockwave/am_menu.dcr&t=Menu">menu</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_creative-menu.dcr&t=Creative+Menu">creative&nbsp;menu</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_print.dcr&t=Print">print</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_photography.dcr&t=Photography">photography</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_client-list.dcr&t=Client+List">client&nbsp;list</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_client-creative-menu.dcr&t=Client+Creative">client&nbsp;creative</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_case_six-flags.dcr&t=Case%3A+Six+Flags">case:&nbsp;Six&nbsp;Flags</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_case_williams.dcr&t=Case%3A+Williams">case:&nbsp;Williams</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_people.dcr&t=People">people</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_executives.dcr&t=Executives">executives</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_offices.dcr&t=Offices">offices</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_office_oklahoma-city.dcr&t=Office%3A+OKC">OKC</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_office_colorado.dcr&t=Office%3A+Colorado">Colorado</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_services.dcr&t=Services">services</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_services_marketing.dcr&t=Services%3A+Marketing">marketing</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_services_media.dcr&t=Services%3A+Media">media</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_subsidiaries.dcr&t=Subsidiaries">subsidiaries</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_OK-Events.dcr&t=OK+Events">OK&nbsp;Events</a> ·
+<a href="player.html?f=02-am-com-shockwave/am_contact.dcr&t=Contact">contact</a></p>
+
+<h2>The TV spots</h2>
+<p class="sub">Oklahoma Tourism's "All-Terrain Vacation" campaign — recovered as Windows Media, converted to play here. Plus Brunswick's US Play centers video.</p>
+<div class="vidgrid">
+<figure><video controls preload="none" src="media/01-oklahoma-tourism-tv-spots/mp4/OK-Tourism_Spot-1_60sec.mp4"></video><figcaption>All-Terrain Vacation — Spot 1 (:60)</figcaption></figure>
+<figure><video controls preload="none" src="media/01-oklahoma-tourism-tv-spots/mp4/OK-Tourism_Spot-3_30sec.mp4"></video><figcaption>All-Terrain Vacation — Spot 3 (:30)</figcaption></figure>
+<figure><video controls preload="none" src="media/01-oklahoma-tourism-tv-spots/mp4/OK-Tourism_Spot-4_Oklahoma-City_30sec.mp4"></video><figcaption>Feature: Oklahoma City (:30)</figcaption></figure>
+<figure><video controls preload="none" src="media/01-oklahoma-tourism-tv-spots/mp4/OK-Tourism_Spot-5_Tulsa_30sec.mp4"></video><figcaption>Feature: Tulsa (:30)</figcaption></figure>
+<figure><video controls preload="none" src="media/04-brunswick/mp4/brunswick_video_US-Play.mp4"></video><figcaption>Brunswick — US Play centers</figcaption></figure>
+</div>
+
+<h2>Fragments &amp; downloads</h2>
+<p class="sub">Pieces that survive but can't run in a browser: streaming-Shockwave ride stubs whose external casts were never archived, QuickTime&nbsp;VR tours, and the era's screensavers and installers — served as-is.</p>
+<ul class="plain">
+<li>Darien Lake ride stubs <span class="meta">(~830&nbsp;bytes each)</span> — <a class="dl" href="media/03-darien-lake/darienlake_ride_boomerang.dcr">Boomerang</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_mind-eraser.dcr">Mind&nbsp;Eraser</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_nightmare-phantom-cave.dcr">Nightmare</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_grizzly-run.dcr">Grizzly&nbsp;Run</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_crocodile-isle.dcr">Crocodile&nbsp;Isle</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_hooks-lagoon.dcr">Hook's&nbsp;Lagoon</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_popeyes-seaport.dcr">Popeye's&nbsp;Seaport</a>, <a class="dl" href="media/03-darien-lake/darienlake_lodge-on-the-lake.dcr">Lodge&nbsp;on&nbsp;the&nbsp;Lake</a></li>
+<li>Brunswick preloaders — <a class="dl" href="media/04-brunswick/brunswick_GAME_attitude-preloader.dcr">Attitude</a> <span class="meta">.dcr 9&nbsp;KB</span>, <a class="dl" href="media/04-brunswick/brunswick_GAME_bowling-preloader-1998.dcr">Bowling&nbsp;'98</a> <span class="meta">.dcr 14&nbsp;KB</span>, <a class="dl" href="media/04-brunswick/brunswick_GAME_bowling-preloader-2003.dcr">Bowling&nbsp;'03</a> <span class="meta">.dcr 25&nbsp;KB</span></li>
+<li>QuickTime&nbsp;VR — <a class="dl" href="media/04-brunswick/brunswick_QTVR_bowling-center.mov">Streamwood bowling center</a> <span class="meta">.mov 252&nbsp;KB</span>, <a class="dl" href="media/04-brunswick/brunswick_QTVR_frameworx-tour.mov">Frameworx tour</a> <span class="meta">.mov 252&nbsp;KB</span></li>
+<li>Original Windows Media spots — <a class="dl" href="media/01-oklahoma-tourism-tv-spots/OK-Tourism_Spot-1_60sec.wmv">1</a> · <a class="dl" href="media/01-oklahoma-tourism-tv-spots/OK-Tourism_Spot-3_30sec.wmv">3</a> · <a class="dl" href="media/01-oklahoma-tourism-tv-spots/OK-Tourism_Spot-4_Oklahoma-City_30sec.wmv">4</a> · <a class="dl" href="media/01-oklahoma-tourism-tv-spots/OK-Tourism_Spot-5_Tulsa_30sec.wmv">5</a> <span class="meta">.wmv</span></li>
+<li>Brunswickids screensaver <span class="meta">.exe 2.4&nbsp;MB</span> — <a class="dl" href="media/05-brunswickids/brunswickids_screensaver.exe">download</a></li>
+<li>WillTales — <a class="dl" href="media/06-willtales/WillTales%20Installer.exe">installer</a> <span class="meta">.exe 2.4&nbsp;MB</span>, <a class="dl" href="media/06-willtales/willtales_screensaver_windows.zip">Windows screensaver</a> <span class="meta">.zip 2.4&nbsp;MB</span>, <a class="dl" href="media/06-willtales/willtales_screensaver_mac.sit.hqx">Mac screensaver</a> <span class="meta">.sit.hqx 3&nbsp;MB</span></li>
+<li>DataTimes EyeQ upgrade <span class="meta">.exe 2&nbsp;MB</span> — <a class="dl" href="media/07-datatimes/datatimes_EyeQ_upgrade.exe">download</a></li>
+</ul>
+
+<footer>
+<p>Every binary here was recovered from the Internet Archive's Wayback Machine in August 2026 and is served unmodified. In-browser playback is emulation — <a href="https://github.com/igorlira/dirplayer-rs" rel="noopener">dirplayer</a> for Director/Shockwave, <a href="https://ruffle.rs" rel="noopener">Ruffle</a> for Flash — and some movies streamed assets that no longer exist, so not everything will run. The vintage executables are offered as historical artifacts; run them in an emulator, not on your actual machine.</p>
+<p><em>"Each member of the 'Lab' matured from a successful history in traditional concepts — and a mouse in one hand."</em> — am.com, 1998</p>
+</footer>
+</div>
+</body>
+</html>
