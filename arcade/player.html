@@ -34,6 +34,7 @@ footer a{color:var(--dim)}
 (function(){
   var q = new URLSearchParams(location.search);
   var f = q.get("f") || "";
+  var next = q.get("then") || "";
   var t = q.get("t") || f.split("/").pop() || "Player";
   var stage = document.getElementById("stage");
   var note = document.getElementById("engine-note");
@@ -48,6 +49,19 @@ footer a{color:var(--dim)}
   var src = "media/" + f.split("/").map(encodeURIComponent).join("/");
   document.getElementById("orig").innerHTML = '<a href="' + src + '">original file</a>';
   var ext = f.split(".").pop().toLowerCase();
+
+  // preloader chaining: play f (the original preloader movie) for a beat,
+  // then hand off to the real game — the way the pages worked originally
+  if (next && (!/^[\w][\w\/. '%-]*\.(dcr|swf|mp4|mov)$/i.test(next) || next.indexOf("..") !== -1)) next = "";
+  if (next) {
+    var np = document.createElement("div");
+    np.textContent = "Original preloader playing — the game follows.";
+    np.style.cssText = "font-size:12px;color:#c9b39d;text-align:center;padding-bottom:10px";
+    document.querySelector("main").insertBefore(np, stage);
+    setTimeout(function(){
+      location.replace("player.html?f=" + encodeURIComponent(next) + "&t=" + encodeURIComponent(t));
+    }, 7000);
+  }
 
   if (ext === "dcr") {
     // some movies hit unimplemented corners of the emulator and panic the WASM VM
