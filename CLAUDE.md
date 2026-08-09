@@ -148,11 +148,14 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     the card dresses itself — no markup change. Slugs: `virtual-boomerang`,
     `darien-lake-97`, `virtual-bowling`, `attitude-arena`, `zone-pilot`,
     `shockwave-bowling`, `alien-maze`, `brunswick-consumer-site`.
-  - **Capturing those shots needs a real browser.** In a headless/hidden pane `rAF` never
-    ticks, so dirplayer (all the `.dcr` games) never paints — the canvas reads 0 non-black
-    pixels. Ruffle (`.swf`) *does* render on screen but its WebGL buffer is not readable
-    (`preserveDrawingBuffer:false`), so `toDataURL` returns blank. Screenshot the games in
-    a normal browser window instead.
+  - Seven of the eight are filled (Philip captured them in a real browser, Aug 2026);
+    `shockwave-bowling` is the only bare card.
+  - **Capturing these needs a real browser — don't retry it from here.** In a
+    headless/hidden pane `rAF` never ticks, so dirplayer (all the `.dcr` games) never
+    paints; the canvas reads 0 non-black pixels even after load, click and a 20s wait.
+    Ruffle (`.swf`) *does* render on screen but its WebGL context is
+    `preserveDrawingBuffer:false`, so `drawImage`/`toDataURL` read back blank. The
+    decompile harvest has no game frames either. Screenshot in a normal browser window.
 - **/hello** — the original example.
 
 ## The master archive (not in this repo)
