@@ -102,6 +102,12 @@ h2.sec{font-size:clamp(30px,4.6vw,48px);font-weight:800;letter-spacing:-.028em;l
 .tower-cap{font-size:11.5px;font-weight:700;letter-spacing:.1em;color:var(--faint);margin-top:12px;text-transform:uppercase}
 
 /* ---------- client wall ---------- */
+.feat-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px;margin-top:8px}
+.feat-wall .cell{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:14px;
+  padding:34px 26px;display:flex;align-items:center;justify-content:center;min-height:158px;
+  transition:background .25s,transform .25s}
+.feat-wall .cell:hover{background:rgba(255,255,255,.15);transform:translateY(-2px)}
+.feat-wall img{max-height:84px;width:auto;max-width:100%;filter:grayscale(1) brightness(0) invert(1);opacity:.92}
 .logo-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:8px}
 .logo-wall .cell{background:rgba(255,255,255,.05);border-radius:12px;padding:24px 20px;display:flex;
   align-items:center;justify-content:center;min-height:104px;transition:background .25s,transform .25s}
@@ -434,7 +440,7 @@ footer a:hover{color:#fff}
   <div class="wrap-wide">
     <div class="eyebrow">Account after account</div>
     <h2 class="sec">The wall of brands.</h2>
-    <div class="logo-wall" id="logo-wall"></div>
+    <div class="feat-wall" id="feat-wall"></div>
     <p class="wall-note">At The Beach came aboard in 2003 and grew from 8 stores to 70+ across four states.
     The Oklahoma Department of Commerce arrived in 2004 and stayed for the duration — agency of record for the
     state&rsquo;s own brand. The mid-2000s roster already ran fifty deep: General Motors, IBC Bank, KWTV News&nbsp;9,
@@ -572,10 +578,13 @@ footer a:hover{color:#fff}
       <aside class="method-card">
         <div class="mc-tag">In the interview chair &raquo;</div>
         <ul>
+          <li>Governor Brad Henry</li>
+          <li>Governor Mary Fallin</li>
           <li>Barry Switzer</li>
           <li>Bob Stoops</li>
           <li>Larry Nichols <span>Devon Energy</span></li>
           <li>Aubrey McClendon <span>Chesapeake</span></li>
+          <li>A host of OKC executives <span>boardrooms across the metro</span></li>
           <li>&hellip;and hundreds of real Oklahomans <span>patients, teachers, veterans, pitmasters</span></li>
         </ul>
         <div class="mc-foot">Real people. Not actors.</div>
@@ -646,7 +655,6 @@ footer a:hover{color:#fff}
     <figure class="museum-hero rv">
       <img src="site/02_home-2014-red-splash.jpg" alt="staplegun.us homepage, 2014 — flat red field with the white TV-head mascot" loading="lazy">
     </figure>
-    <div class="strip" id="museum-strip"></div>
   </div>
 </section>
 
@@ -660,10 +668,9 @@ footer a:hover{color:#fff}
     That&rsquo;s the legacy.</span></p>
     <p class="lede">Twenty years of paychecks, careers launched, skills learned on the 20th floor and carried all
     over this industry — designers who became creative directors, interns who became strategists, producers who
-    went on to run their own shops. This is what it looked like while it happened.</p>
-    <div class="office-grid" id="office-grid"></div>
+    went on to run their own shops.</p>
 
-    <div style="margin-top:70px">
+    <div style="margin-top:40px">
       <div class="eyebrow">Snapshots</div>
       <h2 class="sec" style="font-size:clamp(24px,3.2vw,34px)">The camera roll.</h2>
       <p class="lede">Twenty years of parties, shoots, launches and Friday afternoons. I&rsquo;m still digging
@@ -671,6 +678,14 @@ footer a:hover{color:#fff}
       <div class="snap-grid" id="snap-grid"></div>
       <p class="snap-note">Drop files named <code>snap-01.jpg</code> through <code>snap-40.jpg</code> into
       <code>staplegun/img/snapshots/</code> and they&rsquo;ll appear here automatically.</p>
+    </div>
+
+    <div style="margin-top:70px">
+      <div class="eyebrow">The Robinson years</div>
+      <h2 class="sec" style="font-size:clamp(24px,3.2vw,34px)">City Place Tower, 204 N. Robinson.</h2>
+      <p class="lede">The last home — the 20th floor, the 19th, and the studio in the basement. This is what
+      it looked like while it happened.</p>
+      <div class="office-grid" id="office-grid"></div>
     </div>
   </div>
 </section>
@@ -766,7 +781,13 @@ const twIO = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: .5 });
 twIO.observe(document.getElementById('tower'));
 
-/* ---------- client logo wall ---------- */
+/* ---------- client logo walls: the big accounts featured, the rest below ---------- */
+const FEATURED = [
+  ['02-ou-med','OU Medicine'],['24-stephenson','Stephenson Cancer Center'],['25-cochlear','Cochlear Americas'],
+  ['01-devon','Devon Energy'],['05-outreach-clean','OU Outreach'],['04-thunder','Oklahoma City Thunder'],
+  ['22-chk','Chesapeake Energy'],['03-dell','Dell'],['18-odoc','Oklahoma Department of Commerce'],
+  ['21-rib','RibCrib'],['10-enlink','EnLink Midstream'],
+];
 const LOGOS = [
   ['01-devon','Devon Energy'],['02-ou-med','OU Medicine'],['03-dell','Dell'],['04-thunder','Oklahoma City Thunder'],
   ['05-outreach','OU Outreach'],['06-ou','The University of Oklahoma'],['07-atb','At The Beach'],['08-agri','Oklahoma Agritourism'],
@@ -775,8 +796,11 @@ const LOGOS = [
   ['17-mio','Made in Oklahoma'],['18-odoc','Oklahoma Department of Commerce'],['19-guernsey','Guernsey'],['20-oea','Oklahoma Education Association'],
   ['21-rib','RibCrib'],['22-chk','Chesapeake Energy'],['23-OKCchamber','OKC Chamber of Commerce'],
 ];
-document.getElementById('logo-wall').innerHTML = LOGOS.map(([f, name]) =>
-  `<div class="cell" title="${name}"><img src="img/clients/client-logo-${f}.png" alt="${name}" loading="lazy"></div>`).join('');
+const cellHTML = ([f, name]) =>
+  `<div class="cell" title="${name}"><img src="img/clients/client-logo-${f}.png" alt="${name}" loading="lazy"></div>`;
+const featuredFiles = new Set(FEATURED.map(([f]) => f.replace('-clean', '')));
+const ALL_LOGOS = [...FEATURED, ...LOGOS.filter(([f]) => !featuredFiles.has(f))];
+document.getElementById('feat-wall').innerHTML = ALL_LOGOS.map(cellHTML).join('');
 
 /* ---------- the reel: keynote pieces + full archive behind a button ---------- */
 if (window.SG_MOVIES) {
@@ -916,24 +940,6 @@ if (window.SG_MARKS) {
   document.getElementById('mark-wall').innerHTML = SG_MARKS.map(m =>
     `<div class="cell" title="${m.n}"><img src="work/work-assets/legacy-logos/${m.f}" alt="${m.n}" loading="lazy"></div>`).join('');
 }
-
-/* ---------- site museum strip ---------- */
-const SHOTS = [
-  ['01_home-2012-flash-era','2012 — the Flash era (the archive can only half-play it)'],
-  ['03_home-2015','2015 — recent work surfacing under the red'],
-  ['04_home-2016-three-offices','2016 — "offices in Chicago, Dallas and Oklahoma City"'],
-  ['12_case-ribcrib-branding','RibCrib — "Keep it Saucy"'],
-  ['13_case-ou-medicine-branding','OU Medicine — the case study'],
-  ['14_case-enlink-branding','EnLink Midstream — "connecting energy to life"'],
-  ['15_case-odoc-brand-standards','ODOC — brand standards'],
-  ['16_case-thunder-STYLED-template','OKC Thunder — the case template'],
-];
-document.getElementById('museum-strip').innerHTML = SHOTS.map(([f, cap]) =>
-  `<figure data-src="site/${f}.jpg" data-cap="${cap}"><img src="site/${f}.jpg" alt="${cap}" loading="lazy"><figcaption>${cap}</figcaption></figure>`).join('');
-document.getElementById('museum-strip').addEventListener('click', e => {
-  const f = e.target.closest('figure'); if (!f) return;
-  openLB(f.dataset.src, f.dataset.cap);
-});
 
 /* ---------- office photos ---------- */
 const OFFICE = [
