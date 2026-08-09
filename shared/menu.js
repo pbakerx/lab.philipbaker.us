@@ -58,10 +58,17 @@
         `font-weight:400;text-transform:none;text-align:left;font-variant:normal}`,
       `#${WRAP_ID},#${WRAP_ID} *{box-sizing:border-box}`,
       data.css || "",
-      // The wrapper must not become a containing block for the fixed-position
-      // hamburger and drawer, and must not swallow clicks on the page beneath.
-      `#${WRAP_ID}{position:static;pointer-events:none}`,
-      `#${WRAP_ID} .hamburger,#${WRAP_ID} .drawer,#${WRAP_ID} .drawer-scrim{pointer-events:auto}`,
+      // Keep the wrapper from becoming a containing block for the fixed-position
+      // hamburger and drawer. It's a zero-height static div, so it can't capture
+      // clicks and needs no pointer-events handling.
+      //
+      // Do NOT set pointer-events here. An earlier version put
+      // `pointer-events:none` on the wrapper and `auto` back on each child —
+      // and `#pb-menu .drawer-scrim` (id + class) outranks the source's
+      // `.drawer-scrim{pointer-events:none}`, so the scrim stayed clickable
+      // while closed. Being fixed at inset:0 it then ate every click on the
+      // page while remaining invisible. Let the source CSS govern the scrim.
+      `#${WRAP_ID}{position:static}`,
     ].join("\n");
     document.head.appendChild(style);
 
