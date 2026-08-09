@@ -29,15 +29,24 @@ propagation before verifying new paths (fresh 404s right after READY are usually
   and it runs live in a sandboxed iframe. Iterate by saying what to change; every build
   lands in a version rail you can jump back to. Nothing is persisted server-side.
   - `api/generate.js` — Vercel Node function. Streams SSE (`delta`/`done`/`error`) from
-    `claude-opus-5` via `@anthropic-ai/sdk`. The system prompt is the product here: it
-    dictates one complete HTML document, no fences, no external resources, no storage
-    APIs (opaque origin — they throw), fill-the-viewport + DPI-aware canvas, and
-    "return the whole document again" on iteration.
+    `claude-fable-5` at `effort: high` via `@anthropic-ai/sdk`. Fable 5 always thinks (an
+    explicit `thinking` config is rejected, so we never send one) and its classifiers can
+    decline a request, so `fallbacks: "default"` is on. Measured 27s / 38s / 54s for a
+    matrix screen / rain / asteroids — the 60s function ceiling still governs, and the
+    "Size" section of the system prompt is what keeps builds inside it. That system
+    prompt is the product here: it dictates one complete HTML document, no fences, no
+    external resources, no storage APIs (opaque origin — they throw), fill-the-viewport
+    + DPI-aware canvas, and "return the whole document again" on iteration.
   - Iteration context is collapsed to `[original wish, current HTML, new instruction]`
     rather than the full transcript — the document already embodies every earlier change.
+    Note the assistant turn there is mid-conversation, not a trailing prefill, which is
+    what keeps it legal on models that reject prefills.
+  - The rail holds *widgets*, each with its own version lineage. "+ New" parks on
+    `wi === -1` so the next build starts a fresh lineage without discarding the old ones.
+    A group is labelled with its newest version's title (rain that became snow reads
+    "Snow"); each row is labelled with the prompt that produced it.
   - Needs `ANTHROPIC_API_KEY` in the Vercel project env. Optional: `WIDGET_MAKER_PASSCODE`
-    (gates the endpoint) and `WIDGET_MAKER_EFFORT` (defaults to `medium` to stay inside
-    the 60s function limit).
+    (gates the endpoint), `WIDGET_MAKER_MODEL`, `WIDGET_MAKER_EFFORT`, `WIDGET_MAKER_SPEED`.
   - Guardrails: origin allowlist, 8 req/min per IP (in-memory, per warm instance),
     prompt/HTML size caps. The endpoint spends real money — watch it if the URL spreads.
   - `frame.html` is the full-screen viewer; it re-sandboxes the widget so generated code

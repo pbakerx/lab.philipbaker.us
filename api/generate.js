@@ -20,11 +20,19 @@ import Anthropic from "@anthropic-ai/sdk";
 //                                    Requires fast-mode access on the org — as of
 //                                    writing this org's fast-mode limit is 0/min,
 //                                    so the request 429s and falls back below.
-//   WIDGET_MAKER_MODEL=claude-sonnet-5   faster writer, if builds keep timing out
-const MODEL = process.env.WIDGET_MAKER_MODEL || "claude-opus-5";
+//   WIDGET_MAKER_MODEL=claude-opus-5     faster writer, if builds keep timing out
+const MODEL = process.env.WIDGET_MAKER_MODEL || "claude-fable-5";
 const MAX_TOKENS = 24000;
-const EFFORT = process.env.WIDGET_MAKER_EFFORT || "low";
+const EFFORT = process.env.WIDGET_MAKER_EFFORT || "high";
 const FAST = process.env.WIDGET_MAKER_SPEED === "fast";
+
+// Fable 5 thinks on every request and can't be told not to — an explicit
+// `thinking` config is rejected outright, so we simply never send one. Its
+// safety classifiers can also decline a request (HTTP 200, stop_reason
+// "refusal"), so we opt into server-side fallbacks: a declined build is re-run
+// on Anthropic's recommended fallback model inside the same call instead of
+// coming back empty.
+const BETAS = ["server-side-fallback-2026-07-01"];
 
 // ── Guardrails ───────────────────────────────────────────────────────────────
 // This endpoint spends real money on every call, so keep the obvious doors shut.
@@ -289,17 +297,24 @@ export default async function handler(req, res) {
     }
   }
 
+  // Preferred shape: refusal fallbacks, plus fast mode if it's been enabled.
+  const preferred = {
+    betas: FAST ? [...BETAS, "fast-mode-2026-02-01"] : BETAS,
+    fallbacks: "default",
+    ...(FAST ? { speed: "fast" } : {}),
+  };
+
   try {
     let final;
     try {
-      final = await run(
-        FAST ? { speed: "fast", betas: ["fast-mode-2026-02-01"] } : {},
-      );
+      final = await run(preferred);
     } catch (err) {
-      // Fast mode is a research preview with its own rate limits. If it fails
-      // before writing anything, quietly redo the request at standard speed.
-      if (!FAST || produced > 0 || clientGone) throw err;
-      send("notice", { message: "Fast mode busy — running at standard speed." });
+      // These are all opt-in extras the org may not have: fast mode has its own
+      // rate limits, and the fallbacks beta may not be enabled. If any of them
+      // fails us before a single byte is written, redo the request plainly —
+      // the widget matters more than the extras.
+      if (produced > 0 || clientGone) throw err;
+      send("notice", { message: "Retrying without optional features…" });
       final = await run({});
     }
 
@@ -319,12 +334,17 @@ export default async function handler(req, res) {
     });
     res.end();
   } catch (err) {
+    const raw = err?.message || "";
     const message =
       err?.status === 429
         ? "Anthropic is rate limiting right now — give it a moment."
         : err?.status === 401
           ? "The API key on this project was rejected."
-          : err?.message || "Generation failed.";
+          : /retention/i.test(raw)
+            ? // Fable 5 requires 30-day data retention and is unavailable under
+              // zero data retention, which reads as a plain 400 on every call.
+              `${MODEL} needs 30-day data retention on the Anthropic org. Either change that, or set WIDGET_MAKER_MODEL=claude-opus-5.`
+            : raw || "Generation failed.";
     // Headers are already out, so the error has to travel down the stream.
     send("error", { message });
     res.end();
