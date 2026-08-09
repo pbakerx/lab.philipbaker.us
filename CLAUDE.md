@@ -22,6 +22,33 @@ propagation before verifying new paths (fresh 404s right after READY are usually
 `vercel.json` sets `Access-Control-Allow-Origin: *` on `/arcade/media/*` so external tools
 (e.g. the Infinite Mac emulator) can fetch recovered binaries cross-origin.
 
+## Shared chrome
+
+Every lab page except the full-screen players (`widget-maker/frame.html`,
+`arcade/player.html`, `vault/play.html`) loads `<script src="/shared/menu.js" defer>`,
+which mounts the philipbaker.us hamburger menu.
+
+**It is not a copy.** `api/menu.js` fetches philipbaker.us server-side, parses the links
+out of the server-rendered `.drawer-nav`, and extracts the `.hamburger`/`.drawer` rules
+plus the Space Grotesk `@font-face` blocks from the stylesheet that page links to. Change
+the nav on philipbaker.us and it changes here within the 10-minute CDN cache — no edit in
+this repo. It has to run server-side: philipbaker.us sends no CORS headers on its HTML.
+
+- Relative hrefs (`/about`) are rewritten absolute, or they'd 404 on this origin.
+- The three custom properties the menu reads (`--ink`, `--drawer-bg`, `--hair`) are set on
+  the `#pb-menu` wrapper, not `:root`, so the lab's identically-named vars are untouched.
+- The wrapper also restates browser-default typography. The lab root's
+  `body{line-height:1.55}` was otherwise inheriting in and spacing the drawer 55px per item
+  instead of 53px.
+- `menu.js` builds the DOM with `createElement`/`textContent` — the content arrives over
+  the network and must never be parsed as markup.
+- If the live read fails, a **styled** fallback ships (links + the CSS as it stood when
+  written); an unstyled drawer dumped into the page would be worse than no menu. The font
+  is deliberately not baked in — those URLs carry a deployment hash that goes stale.
+
+If philipbaker.us ever stops server-rendering that nav, or renames `.drawer-nav`, the sync
+degrades to that fallback rather than breaking — check `stale` / `error` in the response.
+
 ## Projects
 
 - **/widget-maker** — creative sandbox: type a wish ("a bunch of red balls bouncing
