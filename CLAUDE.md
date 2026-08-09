@@ -31,9 +31,10 @@ propagation before verifying new paths (fresh 404s right after READY are usually
   - `api/generate.js` — Vercel Node function. Streams SSE (`delta`/`done`/`error`) from
     `claude-fable-5` at `effort: high` via `@anthropic-ai/sdk`. Fable 5 always thinks (an
     explicit `thinking` config is rejected, so we never send one) and its classifiers can
-    decline a request, so `fallbacks: "default"` is on. Measured 27s / 38s / 54s for a
-    matrix screen / rain / asteroids — the 60s function ceiling still governs, and the
-    "Size" section of the system prompt is what keeps builds inside it. That system
+    decline a request, so `fallbacks: "default"` is on. `maxDuration` is 300s, so wall
+    clock isn't the binding constraint — cost is: ~$0.12-0.28 per build at effort `high`
+    (2.5k-5.6k output tokens on Fable 5's $10/$50 per MTok), i.e. 4-6 builds per dollar.
+    `xhigh`/`max` would cut that to 1-3, so `high` is deliberate. That system
     prompt is the product here: it dictates one complete HTML document, no fences, no
     external resources, no storage APIs (opaque origin — they throw), fill-the-viewport
     + DPI-aware canvas, and "return the whole document again" on iteration.

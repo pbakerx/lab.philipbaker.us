@@ -6,16 +6,14 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 
-// Everything here is tuned around one hard number: a Vercel function on this
-// plan is killed at 60s of wall clock (vercel.json → functions.maxDuration, which
-// Hobby caps at 60). A good widget is 10-15KB of HTML, and Opus 5 writes it at
-// roughly 200 bytes/sec, so the budget is genuinely tight — hence low effort and
-// the length discipline in the system prompt.
+// maxDuration is 300s (vercel.json), so wall clock is no longer the binding
+// constraint — cost is. At effort "high" a build runs ~2.5k-5.6k output tokens,
+// i.e. roughly $0.12-0.28 on Fable 5's $10/$50 per MTok. That is about 4-6 builds
+// per dollar, which is the intended budget. Raising effort to xhigh or max
+// multiplies thinking tokens and would cut that to 1-3 builds per dollar, so
+// "high" is a deliberate choice rather than a leftover.
 //
-// If the Vercel project moves to Pro, raise maxDuration to 300 and set
-// WIDGET_MAKER_EFFORT=high; that removes the constraint entirely.
-//
-//   WIDGET_MAKER_EFFORT=high|xhigh   more thinking (needs a higher maxDuration)
+//   WIDGET_MAKER_EFFORT=xhigh|max    deeper thinking, materially higher cost
 //   WIDGET_MAKER_SPEED=fast          use fast mode (~2.5x output, premium rate).
 //                                    Requires fast-mode access on the org — as of
 //                                    writing this org's fast-mode limit is 0/min,
@@ -152,14 +150,15 @@ This is the difference between a demo and something worth showing someone.
 
 # Size
 
-Aim for roughly 150-300 lines. That is enough for a genuinely good widget and it
-keeps the wait short — the person is watching the code stream in.
+Aim for roughly 200-450 lines — enough room to do the idea justice. A full game or
+a rich simulation can take the upper end; a small tool should take less. Let the
+idea decide, and remember the person is watching the code stream in.
 
 Spend those lines on the thing itself: the simulation, the feel, the interaction.
 Don't spend them on elaborate settings panels, long option lists, verbose comments,
 defensive branches for cases that can't happen, or restating the same CSS three
-ways. Terse, well-named code beats a wall of it. If the idea genuinely needs more
-room — a full game — take it, but don't pad.
+ways. Terse, well-named code beats a wall of it. Length should come from substance,
+never from padding.
 
 # Robustness
 
