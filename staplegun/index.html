@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STAPLEGUN — 2001–2020 — my first startup</title>
+<meta name="description" content="STAPLEGUN, the Oklahoma City agency that started in a kid's bedroom and grew to three floors of the most beautiful building downtown. Twenty years, 48 people, 111 films, all the work.">
+<meta property="og:title" content="STAPLEGUN &raquo; 2001–2020">
+<meta property="og:description" content="My first startup lasted twenty years. From a kid's bedroom to the 20th, 19th and basement floors of City Place Tower — the whole story, the whole reel, all the work.">
+<meta property="og:image" content="https://lab.philipbaker.us/staplegun/img/office/sg-office-01.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#d93a49;
+  --red-dark:#b52c3a;
+  --ink:#141417;
+  --body:#3c3c43;
+  --grey:#73737c;
+  --faint:#a4a4ad;
+  --bg:#fafaf8;
+  --card:#ffffff;
+  --hair:#e8e6e2;
+  --dark:#141417;
+  --q1:#4a7fb5;
+  --radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+img,video{max-width:100%;display:block}
+a{color:var(--red)}
+
+/* ---------- sticky nav ---------- */
+.nav{position:sticky;top:0;z-index:40;background:rgba(250,250,248,.82);backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
+.nav-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:26px;padding:14px 24px}
+.nav .wm{font-weight:800;letter-spacing:.12em;font-size:14px;color:var(--ink);text-decoration:none;white-space:nowrap}
+.nav .wm b{color:var(--red);font-weight:800}
+.nav-links{display:flex;gap:20px;margin-left:auto;flex-wrap:wrap}
+.nav-links a{font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--grey);text-decoration:none}
+.nav-links a:hover{color:var(--red)}
+@media(max-width:720px){.nav-links{display:none}}
+
+/* ---------- section shells ---------- */
+section{padding:104px 24px}
+.wrap{max-width:1020px;margin:0 auto}
+.wrap-wide{max-width:1240px;margin:0 auto}
+.eyebrow{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+.eyebrow::after{content:"";height:2px;flex:0 0 34px;background:var(--red)}
+h2.sec{font-size:clamp(30px,4.6vw,48px);font-weight:800;letter-spacing:-.028em;line-height:1.06;margin:14px 0 18px}
+.lede{color:var(--grey);font-size:16.5px;max-width:70ch;margin:0 0 40px}
+.lede strong{color:var(--ink)}
+
+/* ---------- hero ---------- */
+.hero{padding:90px 24px 60px}
+.hero-meta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;color:var(--grey);
+  font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:26px}
+.hero-meta .dot{width:4px;height:4px;border-radius:50%;background:var(--faint)}
+.hero h1{font-size:clamp(42px,8vw,96px);font-weight:800;letter-spacing:-.035em;line-height:1.0;margin:0 0 30px;max-width:14ch}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero .sub{font-size:clamp(17px,2.2vw,21px);color:var(--body);max-width:58ch;line-height:1.7;margin:0 0 46px}
+.hero .sub strong{color:var(--ink)}
+.hero-img{border-radius:var(--radius);overflow:hidden;box-shadow:0 30px 80px rgba(20,20,23,.16)}
+.hero-img img{width:100%;aspect-ratio:2/1;object-fit:cover}
+.hero-cap{font-size:13px;color:var(--faint);margin-top:12px}
+
+/* ---------- stats band ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:34px 44px}
+.stat .num{font-weight:150;font-size:clamp(48px,6.4vw,84px);line-height:1;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat .cap{color:var(--red);font-size:12px;font-weight:800;margin-top:10px;letter-spacing:.06em;text-transform:uppercase}
+.stat .cap span{color:var(--grey);font-weight:500;text-transform:none;letter-spacing:0}
+.dark{background:var(--dark);color:#fff}
+.dark .eyebrow{color:#ff6b7a}.dark .eyebrow::after{background:#ff6b7a}
+.dark .lede{color:#9a9aa3}.dark .lede strong{color:#fff}
+
+/* ---------- prose ---------- */
+.prose p{font-size:clamp(16.5px,2vw,19px);line-height:1.8;margin:0 0 1.25em;max-width:62ch;color:var(--body)}
+.prose p strong{color:var(--ink)}
+
+/* ---------- timeline ---------- */
+.offices{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:64px;align-items:start}
+@media(max-width:880px){.offices{grid-template-columns:1fr}.tower-wrap{margin:40px auto 0}}
+.tl{position:relative;padding-left:26px}
+.tl::before{content:"";position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:var(--hair)}
+.stop{position:relative;padding:0 0 40px}
+.stop::before{content:"";position:absolute;left:-26px;top:7px;width:12px;height:12px;border-radius:50%;
+  background:var(--bg);border:3px solid var(--red)}
+.stop .yr{font-size:12.5px;font-weight:800;letter-spacing:.1em;color:var(--red)}
+.stop h3{margin:4px 0 8px;font-size:19px;font-weight:800;letter-spacing:-.01em}
+.stop h3 span{color:var(--red)}
+.stop p{margin:0;color:var(--grey);font-size:15px;line-height:1.7;max-width:56ch}
+.stop p strong{color:var(--ink)}
+.tower-wrap{position:sticky;top:90px;text-align:center}
+.tower-wrap svg{border-radius:var(--radius)}
+.tower-cap{font-size:11.5px;font-weight:700;letter-spacing:.1em;color:var(--faint);margin-top:12px;text-transform:uppercase}
+
+/* ---------- client wall ---------- */
+.logo-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:8px}
+.logo-wall .cell{background:rgba(255,255,255,.05);border-radius:12px;padding:24px 20px;display:flex;
+  align-items:center;justify-content:center;min-height:104px;transition:background .25s,transform .25s}
+.logo-wall .cell:hover{background:rgba(255,255,255,.12);transform:translateY(-2px)}
+.logo-wall img{max-height:52px;width:auto;max-width:100%;filter:grayscale(1) brightness(0) invert(1);opacity:.85}
+.wall-note{color:#9a9aa3;font-size:14.5px;margin-top:26px;max-width:78ch;line-height:1.7}
+.wall-note strong{color:#fff}
+
+/* ---------- charts ---------- */
+.case-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:48px;align-items:start}
+@media(max-width:820px){.case-grid{grid-template-columns:1fr}}
+h2.case-client{font-size:clamp(34px,5.4vw,58px);font-weight:800;letter-spacing:-.03em;line-height:1.02;margin:14px 0 0}
+.case-sub{color:var(--red);font-size:clamp(18px,2.6vw,23px);font-weight:700;margin:10px 0 0;letter-spacing:-.01em}
+.case-copy{color:var(--grey);font-size:15.5px;line-height:1.75}
+.case-copy p{margin:0 0 1em}
+.case-copy strong{color:var(--ink)}
+.chart-card{background:var(--card);border:1px solid var(--hair);border-radius:var(--radius);
+  padding:34px 34px 30px;margin:26px 0 0;box-shadow:0 8px 30px rgba(20,20,23,.04)}
+.chart-title{font-size:18px;font-weight:800;margin:0 0 4px;letter-spacing:-.01em}
+.chart-note{color:var(--grey);font-size:13.5px;margin:0 0 22px;max-width:70ch;line-height:1.65}
+.legend{display:flex;gap:22px;font-size:12.5px;font-weight:600;color:var(--grey);margin-bottom:18px}
+.legend .sw{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:7px;vertical-align:-1px}
+.bchart{display:grid;grid-template-columns:105px 1fr;row-gap:18px;column-gap:16px;align-items:center}
+.bchart .rowlab{font-size:13px;font-weight:600;text-align:right;color:var(--ink)}
+.bchart .rowlab.hero{font-weight:800;color:var(--red)}
+.bchart .pair{display:grid;gap:5px}
+.bar{position:relative;height:18px;border-radius:0 5px 5px 0;width:0;transition:width 1.1s cubic-bezier(.25,.7,.25,1)}
+.bar.q1{background:var(--q1)}
+.bar.q4{background:var(--red)}
+.bar .v{position:absolute;left:calc(100% + 9px);top:50%;transform:translateY(-50%);
+  font-size:12px;font-weight:700;color:var(--ink);opacity:0;transition:opacity .5s .8s;white-space:nowrap}
+.bchart.on .bar .v{opacity:1}
+.bar:hover{filter:brightness(1.08)}
+.axis-note{grid-column:2;color:#bdbab6;font-size:11px;margin-top:2px}
+.leap{display:flex;align-items:baseline;gap:26px;flex-wrap:wrap}
+.leap .from{font-weight:150;font-size:clamp(40px,6vw,64px);color:var(--faint)}
+.leap .arr{color:var(--red);font-weight:200;font-size:clamp(30px,4vw,46px)}
+.leap .to{font-weight:150;font-size:clamp(60px,9vw,110px);color:var(--ink);line-height:1}
+.leap .cap{width:100%;color:var(--red);font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.hc-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hc-strip span{background:var(--card);border:1px solid var(--hair);padding:8px 16px;font-size:13px;
+  font-weight:600;border-radius:99px;color:var(--body)}
+
+/* ---------- the reel ---------- */
+.reel-jump{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 20px}
+.reel-jump a{background:rgba(255,255,255,.07);color:#d8d8de;font-size:12.5px;font-weight:600;
+  letter-spacing:.03em;padding:9px 15px;border-radius:99px;text-decoration:none;transition:background .2s}
+.reel-jump a:hover{background:var(--red);color:#fff}
+.reel-group{margin-top:54px;scroll-margin-top:80px}
+.reel-group h3{font-size:21px;font-weight:800;letter-spacing:-.01em;margin:0 0 4px;color:#fff}
+.reel-group .n{color:#7e7e88;font-weight:500;font-size:14px;margin-left:8px}
+.reel-group .rule{height:2px;width:34px;background:var(--red);margin:10px 0 22px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:24px 18px}
+.vcard{cursor:pointer}
+.vthumb{position:relative;aspect-ratio:16/9;background:#0a0a0c;overflow:hidden;border-radius:12px}
+.vthumb img{width:100%;height:100%;object-fit:cover;opacity:.92;transition:transform .4s,opacity .3s}
+.vcard:hover .vthumb img{transform:scale(1.05);opacity:1}
+.vthumb .play{position:absolute;inset:0;display:grid;place-items:center}
+.vthumb .play i{width:50px;height:50px;border-radius:50%;background:rgba(217,58,73,.94);display:grid;place-items:center;transition:transform .25s}
+.vcard:hover .play i{transform:scale(1.14)}
+.vthumb .play svg{margin-left:4px}
+.vthumb video{width:100%;height:100%;object-fit:contain;background:#000}
+.vmeta{padding:10px 2px 0}
+.vmeta .t{font-size:13.5px;font-weight:700;line-height:1.35;color:#f2f2f4}
+.reel-note{color:#7e7e88;font-size:14px;margin-top:44px}
+
+/* ---------- work gallery ---------- */
+.wgrid{columns:4 240px;column-gap:14px}
+.wgrid figure{margin:0 0 14px;break-inside:avoid;cursor:zoom-in}
+.wgrid img{width:100%;border-radius:10px;background:#efedea}
+.wgrid figcaption{font-size:11px;color:var(--grey);font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:6px 4px 2px}
+.work-more{margin-top:34px;text-align:center}
+.work-more button{border:none;background:var(--ink);color:#fff;font:800 13px/1 Inter,sans-serif;
+  letter-spacing:.08em;text-transform:uppercase;padding:16px 36px;cursor:pointer;border-radius:99px;transition:background .2s}
+.work-more button:hover{background:var(--red)}
+
+/* ---------- marks wall ---------- */
+.mark-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;margin-top:8px}
+.mark-wall .cell{background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:20px 16px;
+  display:flex;align-items:center;justify-content:center;min-height:92px;transition:transform .2s,box-shadow .2s}
+.mark-wall .cell:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(20,20,23,.08)}
+.mark-wall img{max-height:48px;width:auto;max-width:100%}
+
+/* ---------- museum ---------- */
+.museum-hero{border-radius:var(--radius);overflow:hidden;border:1px solid var(--hair);
+  box-shadow:0 18px 50px rgba(0,0,0,.10);margin:0}
+.museum-hero img{width:100%}
+.museum-cap{font-size:14px;color:var(--grey);padding:14px 4px 0;max-width:74ch;line-height:1.65}
+.museum-cap b{color:var(--ink)}
+.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:44px}
+.strip figure{margin:0;cursor:zoom-in}
+.strip img{border:1px solid var(--hair);border-radius:10px}
+.strip figcaption{font-size:11px;color:var(--grey);font-weight:600;padding:7px 2px 0;letter-spacing:.03em;text-transform:uppercase}
+
+/* ---------- people & snapshots ---------- */
+.bigquote{font-size:clamp(24px,3.6vw,40px);font-weight:250;line-height:1.35;max-width:32ch;margin:0 0 26px;letter-spacing:-.01em}
+.bigquote b{font-weight:800}
+.bigquote .r{color:var(--red)}
+.office-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.office-grid figure,.snap-grid figure{margin:0;cursor:zoom-in;overflow:hidden;border-radius:12px}
+.office-grid img{aspect-ratio:3/2;object-fit:cover;width:100%;transition:transform .4s}
+.office-grid figure:hover img{transform:scale(1.04)}
+.snap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:8px}
+.snap-grid img{aspect-ratio:1;object-fit:cover;width:100%}
+.snap-ph{aspect-ratio:1;border-radius:12px;border:2px dashed var(--hair);display:grid;place-items:center;
+  color:var(--faint);background:var(--card)}
+.snap-ph svg{opacity:.5}
+.snap-note{color:var(--faint);font-size:13px;margin-top:18px}
+
+/* ---------- epilogue ---------- */
+.epilogue .prose p{color:#b9b9c1}
+.epilogue .prose p strong{color:#fff}
+.epilogue .prose p em{color:#ff6b7a;font-style:normal}
+.cr{margin-top:56px;font-weight:300;letter-spacing:.34em;font-size:14px;text-transform:uppercase;color:#ff6b7a}
+
+/* ---------- footer ---------- */
+footer{background:#0d0d0f;color:#8e8e96;padding:44px 24px;font-size:13.5px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{color:#d7d7dd;text-decoration:none}
+footer a:hover{color:#fff}
+
+/* ---------- lightbox ---------- */
+.lb{position:fixed;inset:0;background:rgba(12,12,14,.94);display:none;z-index:60;
+  align-items:center;justify-content:center;padding:30px;flex-direction:column;gap:14px}
+.lb.on{display:flex}
+.lb img{max-width:min(1200px,94vw);max-height:84vh;width:auto;border-radius:8px}
+.lb .cap{color:#c9c9cf;font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.lb .x{position:absolute;top:18px;right:24px;color:#fff;font-size:34px;font-weight:200;cursor:pointer;background:none;border:none;line-height:1}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+.rv.on{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="wm" href="#top">STAPLEGUN<b>&raquo;</b> <span style="color:var(--faint);font-weight:600">2001–2020</span></a>
+    <div class="nav-links">
+      <a href="#story">Story</a><a href="#healthcare">Healthcare</a><a href="#reel">The Reel</a>
+      <a href="#work">The Work</a><a href="#people">The People</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ======================= HERO ======================= -->
+<header class="hero" id="top">
+  <div class="wrap-wide">
+    <div class="hero-meta rv on">
+      <span style="color:var(--red);font-weight:800">STAPLEGUN &raquo;</span><span class="dot"></span>
+      <span>Oklahoma City</span><span class="dot"></span><span>2001–2020</span><span class="dot"></span>
+      <span>Branding // Broadcast // Identity // Interactive // Print // Social</span>
+    </div>
+    <h1 class="rv on">My first startup <em>lasted twenty years.</em></h1>
+    <p class="sub rv on">STAPLEGUN was a full-service advertising agency I co-founded in <strong>my son&rsquo;s
+    bedroom in 2001</strong> and led as CEO and creative director until 2020. It grew from two people to 48.
+    It climbed from a bedroom to <strong>three floors of the most beautiful building in downtown Oklahoma
+    City</strong>. It was my life for twenty years — the people I met, the careers we made, and the work on
+    this page are what I have to show for it. All of it is real, and all of it is here.</p>
+    <figure class="hero-img rv on" style="margin:0">
+      <img src="img/office/sg-office-01.jpg" alt="The STAPLEGUN office on the 20th floor of City Place Tower — concrete columns, red chairs, designers at work" fetchpriority="high">
+    </figure>
+    <p class="hero-cap">The 20th floor of City Place Tower, downtown Oklahoma City. Concrete, red chairs, a skateboard.</p>
+  </div>
+</header>
+
+<!-- ======================= NUMBERS ======================= -->
+<section style="padding-top:60px">
+  <div class="wrap-wide">
+    <div class="stats" id="agency-stats">
+      <div class="stat"><div class="num" data-count="48" data-prefix="2 &rarr; ">2 &rarr; 48</div><div class="cap">People <span>— from two desks in a bedroom</span></div></div>
+      <div class="stat"><div class="num" data-count="20">20</div><div class="cap">Years <span>— my first startup, 2001–2020</span></div></div>
+      <div class="stat"><div class="num" data-count="2">2</div><div class="cap">Inc. 5000 lists <span>— No. 1952 in 2015, No. 1529 in 2016</span></div></div>
+      <div class="stat"><div class="num" data-count="3">3</div><div class="cap">Metro 50 awards <span>— OKC&rsquo;s fastest-growing, three years running</span></div></div>
+      <div class="stat"><div class="num" data-count="111">111</div><div class="cap">Films on this page <span>— recovered from the masters</span></div></div>
+      <div class="stat"><div class="num" data-count="172">172</div><div class="cap">Case studies <span>— across seven disciplines</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= STORY ======================= -->
+<section id="story" style="padding-top:40px">
+  <div class="wrap">
+    <div class="eyebrow">Where it started</div>
+    <h2 class="sec">A bedroom, two Macs,<br>and a code word.</h2>
+    <div class="prose">
+      <p class="rv">In March of 2001 I walked away from a Senior VP title and set up shop in the smallest
+      office I would ever occupy: my son&rsquo;s bedroom, temporarily annexed for the cause. Two of us — me in
+      Edmond, my co-founder Brent McCutchen down in Norman — a couple of Macs, and a name that promised we
+      would fasten things together fast and permanently. &ldquo;Staplegun&rdquo; had been our code word back at
+      Ackerman McQueen for the freelance projects we dreamed up. Now it was on the letterhead.</p>
+      <p class="rv">I had spent a decade at Ackerman — art director, then broadcast producer, then the guy who
+      talked the agency into building websites before most clients knew what a website was. I&rsquo;d built some
+      of the first sites national brands ever had. Now I wanted to build the whole agency that thought that way:
+      creative first, technology fluent, allergic to doing things the way they&rsquo;d always been done. Our
+      motto from the earliest days: <strong>&ldquo;It&rsquo;s not talking, it&rsquo;s doing.&rdquo;</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= THE CLIMB ======================= -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow">The climb</div>
+    <h2 class="sec">Bedroom to skyline.</h2>
+    <div class="offices">
+      <div class="tl">
+        <div class="stop rv"><div class="yr">2001</div>
+          <h3>The bedroom <span>&raquo;</span> Edmond &amp; Norman</h3>
+          <p>Two people, two bedrooms, sixty miles apart. The commute was a hallway. The conference room had a
+          twin bed in it. Every agency says they&rsquo;ll hustle for you — ours literally could not afford not to.</p></div>
+        <div class="stop rv"><div class="yr">2005</div>
+          <h3>The Colcord Building <span>&raquo;</span> 15 N. Robinson, Suite 901</h3>
+          <p>First real office: Oklahoma City&rsquo;s <em>first</em> skyscraper, 1909 — built in reinforced
+          concrete because Charles Colcord had watched San Francisco burn. A two-desk operation with a downtown
+          address and outsized nerve. We stayed until they turned the whole thing into a boutique hotel.</p></div>
+        <div class="stop rv"><div class="yr">2007</div>
+          <h3>Classen Boulevard <span>&raquo;</span> 6525 N. Classen</h3>
+          <p>The growth office. More desks, more accounts, the first real production room. This is where the
+          agency learned to be an agency — where &ldquo;the two of us&rdquo; became &ldquo;the team.&rdquo;</p></div>
+        <div class="stop rv"><div class="yr">2011</div>
+          <h3>City Place Tower <span>&raquo;</span> the 20th floor</h3>
+          <p>204 N. Robinson. Built in 1931 as the Ramsey Tower — 33 stories of art deco, thrown up in nine
+          months by the same builders as the Empire State Building. We didn&rsquo;t rent the 20th floor.
+          <strong>We bought it.</strong> Suite 2000, 4,600 square feet, the skyline in every window.</p></div>
+        <div class="stop rv"><div class="yr">&nbsp;</div>
+          <h3>Then the 19th floor</h3>
+          <p>We outgrew 20, so we leased 19 too. Two floors connected by a staircase and a skateboard-friendly
+          stretch of polished concrete.</p></div>
+        <div class="stop rv"><div class="yr">&nbsp;</div>
+          <h3>Then the basement</h3>
+          <p>The broadcast studio went underground — a full production floor in the bones of the building.
+          Camera bays, edit suites, red hallways. By 2016 the site read &ldquo;offices in Chicago, Dallas and
+          Oklahoma City&rdquo; — 332 S. Michigan Avenue and 3720 Canton Street, if you&rsquo;re keeping score —
+          but the heart of it was always this tower: top of it, middle of it, bottom of it.</p></div>
+        <div class="stop rv"><div class="yr">A CONFESSION</div>
+          <h3>About that tower</h3>
+          <p>City Place&rsquo;s original fire escape was a spiral slide running the full height of the building.
+          At 18, I talked a security guard into letting me ride it down on a Friday night — decades before the
+          agency bought the 20th floor. Asked in 2016 why I didn&rsquo;t still use it: &ldquo;Today&rsquo;s
+          security guard is more of a stickler for rules. Plus, it&rsquo;s too dusty.&rdquo;</p></div>
+      </div>
+      <div class="tower-wrap">
+        <svg id="tower" viewBox="0 0 200 460" width="210" aria-label="City Place Tower — the 20th floor, the 19th floor and the basement light up">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f2f0ed"/><stop offset="1" stop-color="#e9e6e1"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="200" height="460" fill="url(#sky)"/>
+          <rect x="8" y="240" width="34" height="180" fill="#dcd8d2"/>
+          <rect x="158" y="270" width="34" height="150" fill="#dcd8d2"/>
+          <rect x="86" y="30" width="28" height="40" fill="#c8c3bb"/>
+          <rect x="76" y="66" width="48" height="60" fill="#c8c3bb"/>
+          <rect x="64" y="122" width="72" height="90" fill="#c8c3bb"/>
+          <rect x="52" y="208" width="96" height="212" fill="#c8c3bb"/>
+          <g fill="#b3ada3">
+            <rect x="90" y="34" width="4" height="386"/><rect x="106" y="34" width="4" height="386"/>
+            <rect x="80" y="70" width="4" height="350"/><rect x="116" y="70" width="4" height="350"/>
+            <rect x="68" y="126" width="4" height="294"/><rect x="128" y="126" width="4" height="294"/>
+            <rect x="56" y="212" width="4" height="208"/><rect x="140" y="212" width="4" height="208"/>
+          </g>
+          <rect id="fl20" x="64" y="150" width="72" height="13" fill="#7a756c"/>
+          <rect id="fl19" x="64" y="167" width="72" height="13" fill="#7a756c"/>
+          <rect id="flB"  x="52" y="424" width="96" height="14" fill="#7a756c"/>
+          <text x="100" y="160.5" font-size="9" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">20</text>
+          <text x="100" y="177.5" font-size="9" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">19</text>
+          <text x="100" y="435" font-size="9" font-weight="800" text-anchor="middle" fill="#fff" font-family="Inter,sans-serif">B</text>
+          <rect x="0" y="420" width="200" height="4" fill="#a49e94"/>
+        </svg>
+        <div class="tower-cap">City Place Tower &middot; 204 N. Robinson</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CLIENT WALL ======================= -->
+<section class="dark">
+  <div class="wrap-wide">
+    <div class="eyebrow">Account after account</div>
+    <h2 class="sec">The wall of brands.</h2>
+    <div class="logo-wall" id="logo-wall"></div>
+    <p class="wall-note">At The Beach came aboard in 2003 and grew from 8 stores to 70+ across four states.
+    The Oklahoma Department of Commerce arrived in 2004 and stayed for the duration — agency of record for the
+    state&rsquo;s own brand. The mid-2000s roster already ran fifty deep: General Motors, IBC Bank, KWTV News&nbsp;9,
+    Crowe&nbsp;&amp;&nbsp;Dunlevy, Oklahoma Tourism, the State Fair, United Way, Duncan Regional Hospital. Then
+    Catholic Charities (2009), OU Outreach (2010), RibCrib and Guernsey (2011), OU Medicine (2013), the Oklahoma
+    City Thunder (2014), EMBARK (2015), Devon, Dell, EnLink, Chesapeake, the OEA&hellip; and in 2018, when
+    Oklahoma City needed a mark for its new crown-jewel park, STAPLEGUN drew the scissortail —
+    <strong>the Scissortail Park logo is agency work</strong>. Account after account, year after year.</p>
+  </div>
+</section>
+
+<!-- ======================= HEALTHCARE ======================= -->
+<section id="healthcare">
+  <div class="wrap">
+    <div class="eyebrow">The healthcare practice</div>
+    <div class="case-grid" style="margin-top:14px">
+      <div>
+        <h2 class="case-client">OU&nbsp;Medicine</h2>
+        <p class="case-sub">&ldquo;Oklahoma City is Alive and Well&rdquo;</p>
+      </div>
+      <div class="case-copy">
+        <p><strong>2013. The biggest undertaking in the agency&rsquo;s history.</strong> OU Medicine had
+        state-of-the-art facilities, world-class physicians and Oklahoma City&rsquo;s only Level&nbsp;1 trauma
+        center — and a reputation as, in the research&rsquo;s own words, <strong>&ldquo;the run-down hospital on
+        the bad side of town.&rdquo;</strong> Its biggest competitor was outspending it four-to-one.</p>
+        <p>Our answer tied the hospital&rsquo;s story to the city&rsquo;s: <strong>Oklahoma City is Alive and
+        Well.</strong> Time-lapse film of a skyline in mid-boom. A 60-second anthem. Testimonials from real
+        patients and the physicians who saved them. The message flexed anywhere it needed to go — &ldquo;Edmond is
+        Alive and Well,&rdquo; &ldquo;Millwood High School is Alive and Well.&rdquo; Then we pushed it further:
+        <strong>The Amazing Human Body</strong> in 2014, <strong>Defining Medicine</strong> after that —
+        documentary-style films with OU&rsquo;s researchers, positioning OU Medicine as the place where medicine
+        is <em>invented</em>, not just practiced.</p>
+      </div>
+    </div>
+
+    <div class="chart-card rv">
+      <p class="chart-title">Year one: the momentum question</p>
+      <p class="chart-note">NRC focus groups, 2013 — &ldquo;top box&rdquo; share of respondents who said the
+      hospital&rsquo;s momentum is <em>really on the way up</em>, first quarter vs. fourth quarter of the
+      campaign year. OU&nbsp;Medicine ended the year outpacing every competitor by 16.5 points.</p>
+      <div class="legend"><span><i class="sw" style="background:var(--q1)"></i>Q1</span><span><i class="sw" style="background:var(--red)"></i>Q4</span></div>
+      <div class="bchart" data-max="50" id="chart-momentum">
+        <div class="rowlab">Mercy</div>
+        <div class="pair"><div class="bar q1" data-v="31.4"><span class="v">31.4%</span></div><div class="bar q4" data-v="41.3"><span class="v">41.3%</span></div></div>
+        <div class="rowlab">SSM Health</div>
+        <div class="pair"><div class="bar q1" data-v="39.3"><span class="v">39.3%</span></div><div class="bar q4" data-v="41.3"><span class="v">41.3%</span></div></div>
+        <div class="rowlab">Integris</div>
+        <div class="pair"><div class="bar q1" data-v="26.4"><span class="v">26.4%</span></div><div class="bar q4" data-v="24.4"><span class="v">24.4%</span></div></div>
+        <div class="rowlab hero">OU Medicine</div>
+        <div class="pair"><div class="bar q1" data-v="31.0"><span class="v">31.0%</span></div><div class="bar q4" data-v="47.5"><span class="v">47.5%</span></div></div>
+        <div class="axis-note">&ldquo;Momentum is really on the way up&rdquo; — % of NRC focus-group respondents, Q1 vs Q4 2013</div>
+      </div>
+    </div>
+
+    <div class="chart-card rv">
+      <p class="chart-title">Year two: the uniqueness question</p>
+      <p class="chart-note">NRC focus groups, 2014 — share of respondents who rated the hospital
+      &ldquo;very unique&rdquo; compared to other area hospitals. Everyone else moved a few points.
+      OU&nbsp;Medicine nearly doubled.</p>
+      <div class="legend"><span><i class="sw" style="background:var(--q1)"></i>Q1</span><span><i class="sw" style="background:var(--red)"></i>Q4</span></div>
+      <div class="bchart" data-max="45" id="chart-unique">
+        <div class="rowlab">Mercy</div>
+        <div class="pair"><div class="bar q1" data-v="19.4"><span class="v">19.4%</span></div><div class="bar q4" data-v="20.2"><span class="v">20.2%</span></div></div>
+        <div class="rowlab">SSM Health</div>
+        <div class="pair"><div class="bar q1" data-v="17.6"><span class="v">17.6%</span></div><div class="bar q4" data-v="23.4"><span class="v">23.4%</span></div></div>
+        <div class="rowlab">Integris</div>
+        <div class="pair"><div class="bar q1" data-v="14.0"><span class="v">14.0%</span></div><div class="bar q4" data-v="17.6"><span class="v">17.6%</span></div></div>
+        <div class="rowlab hero">OU Medicine</div>
+        <div class="pair"><div class="bar q1" data-v="24.2"><span class="v">24.2%</span></div><div class="bar q4" data-v="40.6"><span class="v">40.6%</span></div></div>
+        <div class="axis-note">&ldquo;The hospital is very unique&rdquo; — % of NRC focus-group respondents, Q1 vs Q4 2014</div>
+      </div>
+    </div>
+
+    <div class="chart-card rv">
+      <p class="chart-title">2016: research-based medicine</p>
+      <p class="chart-note">The goal was to position OU Medicine as a <em>pioneer</em> of research, not just a
+      user of it. Perception of uniqueness responded immediately — within a single quarter:</p>
+      <div class="leap" id="leap">
+        <span class="from" data-count="19.9" data-dec="1" data-suffix="%">19.9%</span>
+        <span class="arr">&rarr;</span>
+        <span class="to" data-count="46.5" data-dec="1" data-suffix="%">46.5%</span>
+        <span class="cap">Perceived uniqueness, in one quarter &middot; NRC ticker data, 2016</span>
+      </div>
+      <p class="chart-note" style="margin-top:26px">The &ldquo;excellent quality&rdquo; top-box score started 2016
+      at 37.5% and reached 59% during the year. Brand score: 85.5 against a competitor average of 74.6.</p>
+    </div>
+
+    <div class="chart-card rv">
+      <p class="chart-title">And the social file</p>
+      <p class="chart-note">The whole program was measured — the fan base we built for OU Medicine in nine
+      months, and the six-month engagement numbers behind it.</p>
+      <div class="stats" id="social-stats">
+        <div class="stat"><div class="num" data-count="24000" data-comma="1">24,000</div><div class="cap">Facebook fans <span>— up from 2,250, in nine months</span></div></div>
+        <div class="stat"><div class="num" data-count="10" data-suffix="M">10M</div><div class="cap">Impressions <span>— in six months</span></div></div>
+        <div class="stat"><div class="num" data-count="42000" data-comma="1">42,000</div><div class="cap">Clicks <span>— six months</span></div></div>
+        <div class="stat"><div class="num" data-count="31000" data-comma="1" data-suffix="+">31,000+</div><div class="cap">Engagements <span>— six months</span></div></div>
+      </div>
+    </div>
+
+    <p class="case-copy rv" style="margin-top:56px"><strong>OU Medicine was the flagship, not the whole
+    fleet.</strong> The healthcare practice ran from Duncan Regional Hospital — one of the agency&rsquo;s
+    earliest healthcare clients, the roots of our rural-hospital work — through the Stephenson Cancer Center
+    (&ldquo;Hope is at the Center&rdquo;), The Children&rsquo;s Hospital, OU Medical Center Edmond
+    (&ldquo;There&rsquo;s Life in Edmond. Live it Well.&rdquo;), the OU Health Sciences Center, the full rebrand
+    of Pinnacle Healthcare into Valir Health, DLO, Delta Dental of Oklahoma and Cochlear Americas.</p>
+    <div class="hc-strip rv">
+      <span>OU Medicine</span><span>Stephenson Cancer Center</span><span>The Children&rsquo;s Hospital</span>
+      <span>OU Medical Center Edmond</span><span>OU Health Sciences Center</span><span>Valir Health</span>
+      <span>Duncan Regional Hospital</span><span>DLO</span><span>Delta Dental of Oklahoma</span><span>Cochlear Americas</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= THE REEL ======================= -->
+<section class="dark" id="reel">
+  <div class="wrap-wide">
+    <div class="eyebrow">The reel</div>
+    <h2 class="sec">Every film we could recover.<br>All of it, right here.</h2>
+    <p class="lede">An award-winning in-house broadcast team, and the receipts to prove it. <strong>111 films</strong> —
+    television spots, web films, testimonials, timelapses — pulled from the agency masters and the recovered
+    archive, grouped by client. Scroll through all of them; click any card to play.</p>
+    <div class="reel-jump" id="reel-jump"></div>
+    <div id="reel-groups"></div>
+    <p class="reel-note">Recovered August 2026 from the agency master drives and archived Vimeo rips. Two masters
+    (AD Academy, Cox) were corrupted beyond repair; everything else survived.</p>
+  </div>
+</section>
+
+<!-- ======================= THE WORK ======================= -->
+<section id="work">
+  <div class="wrap-wide">
+    <div class="eyebrow">The work</div>
+    <h2 class="sec">172 case studies, recovered.</h2>
+    <p class="lede">Pulled from the Wayback Machine: the artwork of the whole portfolio — identity, print,
+    branding, interactive, social. Websites in their browser chrome, brochures photographed like objects,
+    logos on location. Click anything to see it big.</p>
+    <div class="wgrid" id="wgrid"></div>
+    <div class="work-more"><button id="work-more">Show everything &raquo;</button></div>
+  </div>
+</section>
+
+<!-- ======================= THE MARKS ======================= -->
+<section id="marks" style="padding-top:0">
+  <div class="wrap-wide">
+    <div class="eyebrow">STAPLEGUN does identity</div>
+    <h2 class="sec">Seventy marks and counting.</h2>
+    <p class="lede">Beyond the case studies, the site kept a running wall of every mark the studio drew — banks,
+    casinos, coffee, cancer centers, a chapel, a governor&rsquo;s inauguration, and City Place Tower itself.
+    Recovered in one piece.</p>
+    <div class="mark-wall" id="mark-wall"></div>
+  </div>
+</section>
+
+<!-- ======================= SITE MUSEUM ======================= -->
+<section style="background:#f1efec">
+  <div class="wrap">
+    <div class="eyebrow">The site itself</div>
+    <h2 class="sec">One color and one drawing.</h2>
+    <p class="lede">staplegun.us, 2014–2016: a flat crimson field, a line-art figure with a television for a
+    head, one sentence, six disciplines separated by double slashes. The whole agency in a single screen — no
+    photography, no carousel, no apologies. The domain is gone; these captures are the museum.</p>
+    <figure class="museum-hero rv">
+      <img src="site/02_home-2014-red-splash.jpg" alt="staplegun.us homepage, 2014 — flat red field with the white TV-head mascot" loading="lazy">
+    </figure>
+    <div class="strip" id="museum-strip"></div>
+  </div>
+</section>
+
+<!-- ======================= THE PEOPLE ======================= -->
+<section id="people">
+  <div class="wrap-wide">
+    <div class="eyebrow">The people</div>
+    <h2 class="sec">It was my life for twenty years.</h2>
+    <p class="bigquote rv">We grew from a meek two to <b>48 of the most creative, intelligent and kind
+    people</b> you&rsquo;ll ever know. I met people who became family. We made careers.<span class="r">
+    That&rsquo;s the legacy.</span></p>
+    <p class="lede">Twenty years of paychecks, careers launched, skills learned on the 20th floor and carried all
+    over this industry — designers who became creative directors, interns who became strategists, producers who
+    went on to run their own shops. This is what it looked like while it happened.</p>
+    <div class="office-grid" id="office-grid"></div>
+
+    <div style="margin-top:70px">
+      <div class="eyebrow">Snapshots</div>
+      <h2 class="sec" style="font-size:clamp(24px,3.2vw,34px)">The camera roll.</h2>
+      <p class="lede">Twenty years of parties, shoots, launches and Friday afternoons. I&rsquo;m still digging
+      photos out of old drives — the empty frames below are waiting for them.</p>
+      <div class="snap-grid" id="snap-grid"></div>
+      <p class="snap-note">Drop files named <code>snap-01.jpg</code> through <code>snap-40.jpg</code> into
+      <code>staplegun/img/snapshots/</code> and they&rsquo;ll appear here automatically.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= EPILOGUE ======================= -->
+<section class="dark epilogue">
+  <div class="wrap">
+    <div class="eyebrow">What the place was</div>
+    <h2 class="sec">First to move.</h2>
+    <div class="prose">
+      <p>STAPLEGUN was never the biggest agency in Oklahoma City. It was the one that moved first — first to
+      treat the web as a craft instead of a chore, first to put a real broadcast studio under an art-deco tower,
+      first to tell a hospital to market itself like a city on the rise. We tore down the walls so every thought —
+      the brilliant and the bad — could be scribbled on virtually every wall, and our philosophy was simple:
+      <strong>work until it&rsquo;s perfect.</strong> The homepage once carried a one-line joke that summed up
+      the whole attitude: <em>&ldquo;{ Our logo is too big. }&rdquo;</em></p>
+      <p>I resigned as CEO in the summer of 2020, nineteen years and five months after the bedroom, and the
+      agency closed its doors for good the following year. The domain is gone now — it redirects somewhere you
+      shouldn&rsquo;t click — but the work survives in the archive, on the reels, and in the careers of everyone
+      who passed through those three floors.</p>
+      <p>This page is the agency&rsquo;s marker on the open web. Everything on it is real: the numbers are from
+      the research decks, the films are from the masters, the screenshots are from the Wayback Machine.</p>
+    </div>
+    <div class="cr">Create responsibly</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>STAPLEGUN &raquo; 2001&ndash;2020 &middot; a <a href="/">lab.philipbaker.us</a> recovery</span>
+    <span><a href="/am-1998/">&laquo; am.com 1998</a> &middot; <a href="/vault/">the Vault &raquo;</a></span>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+  <button class="x" id="lb-x" aria-label="Close">&times;</button>
+  <img id="lb-img" alt="">
+  <div class="cap" id="lb-cap"></div>
+</div>
+
+<script src="movies.js" defer></script>
+<script src="work.js" defer></script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+
+/* ---------- reveal on scroll ---------- */
+const rvIO = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('on'); rvIO.unobserve(e.target); }
+}), { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.rv').forEach(el => rvIO.observe(el));
+
+/* ---------- count-up numerals ---------- */
+function countUp(el) {
+  const target = parseFloat(el.dataset.count);
+  const dec = +(el.dataset.dec || 0);
+  const prefix = (el.dataset.prefix || '').replace(/&rarr;/, '→');
+  const suffix = el.dataset.suffix || '';
+  const comma = el.dataset.comma === '1';
+  const t0 = performance.now(), dur = 1400;
+  function frame(t) {
+    const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    let v = (target * e).toFixed(dec);
+    if (comma) v = (+v).toLocaleString('en-US');
+    el.textContent = prefix + v + suffix;
+    if (p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+const cuIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.querySelectorAll('[data-count]').forEach(countUp);
+  cuIO.unobserve(e.target);
+}), { threshold: .35 });
+document.querySelectorAll('#agency-stats,#social-stats,#leap').forEach(el => cuIO.observe(el));
+
+/* ---------- animated bar charts ---------- */
+const bcIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const c = e.target, max = +c.dataset.max;
+  c.classList.add('on');
+  c.querySelectorAll('.bar').forEach(b => { b.style.width = (parseFloat(b.dataset.v) / max * 100) + '%'; });
+  bcIO.unobserve(c);
+}), { threshold: .4 });
+document.querySelectorAll('.bchart').forEach(el => bcIO.observe(el));
+
+/* ---------- tower floors ---------- */
+const twIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  ['fl20', 'fl19', 'flB'].forEach((id, i) => setTimeout(() => {
+    document.getElementById(id).setAttribute('fill', '#d93a49');
+  }, 600 + i * 700));
+  twIO.unobserve(e.target);
+}), { threshold: .5 });
+twIO.observe(document.getElementById('tower'));
+
+/* ---------- client logo wall ---------- */
+const LOGOS = [
+  ['01-devon','Devon Energy'],['02-ou-med','OU Medicine'],['03-dell','Dell'],['04-thunder','Oklahoma City Thunder'],
+  ['05-outreach','OU Outreach'],['06-ou','The University of Oklahoma'],['07-atb','At The Beach'],['08-agri','Oklahoma Agritourism'],
+  ['09-cc','Catholic Charities'],['10-enlink','EnLink Midstream'],['11-caza','Caza Petroleum'],['12-clo','Commissioners of the Land Office'],
+  ['13-DDOK','Delta Dental of Oklahoma'],['14-HH','HoganTaylor'],['15-77energy','77 Energy'],['16-KC','Kirkpatrick Bank'],
+  ['17-mio','Made in Oklahoma'],['18-odoc','Oklahoma Department of Commerce'],['19-guernsey','Guernsey'],['20-oea','Oklahoma Education Association'],
+  ['21-rib','RibCrib'],['22-chk','Chesapeake Energy'],['23-OKCchamber','OKC Chamber of Commerce'],
+];
+document.getElementById('logo-wall').innerHTML = LOGOS.map(([f, name]) =>
+  `<div class="cell" title="${name}"><img src="img/clients/client-logo-${f}.png" alt="${name}" loading="lazy"></div>`).join('');
+
+/* ---------- the reel: every film on the page, grouped ---------- */
+if (window.SG_MOVIES) {
+  const groups = [];
+  SG_MOVIES.forEach(m => {
+    let g = groups[groups.length - 1];
+    if (!g || g.client !== m.client) { g = { client: m.client, items: [] }; groups.push(g); }
+    g.items.push(m);
+  });
+  const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  document.getElementById('reel-jump').innerHTML = groups.map(g =>
+    `<a href="#reel-${slug(g.client)}">${g.client} (${g.items.length})</a>`).join('');
+  document.getElementById('reel-groups').innerHTML = groups.map(g => `
+    <div class="reel-group" id="reel-${slug(g.client)}">
+      <h3>${g.client}<span class="n">${g.items.length} film${g.items.length > 1 ? 's' : ''}</span></h3>
+      <div class="rule"></div>
+      <div class="vgrid">${g.items.map(m => `
+        <div class="vcard" data-f="${m.f}">
+          <div class="vthumb"><img src="movies/posters/${m.f.replace(/\.mp4$/, '.jpg')}" alt="" loading="lazy"
+            onerror="this.style.display='none'">
+            <div class="play"><i><svg width="17" height="19" viewBox="0 0 18 20"><path d="M0 0l18 10L0 20z" fill="#fff"/></svg></i></div>
+          </div>
+          <div class="vmeta"><div class="t">${m.t}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+  document.getElementById('reel-groups').addEventListener('click', e => {
+    const c = e.target.closest('.vcard'); if (!c || c.querySelector('video')) return;
+    document.querySelectorAll('#reel-groups video').forEach(v => {
+      const parent = v.closest('.vcard');
+      v.pause(); parent.querySelector('.vthumb').innerHTML = parent.dataset.saved;
+    });
+    const th = c.querySelector('.vthumb');
+    c.dataset.saved = th.innerHTML;
+    th.innerHTML = `<video controls autoplay playsinline src="movies/${c.dataset.f}"></video>`;
+  });
+}
+
+/* ---------- the work gallery ---------- */
+const wgrid = document.getElementById('wgrid');
+const moreBtn = document.getElementById('work-more');
+if (window.SG_WORK) {
+  const INITIAL = 60;
+  let shown = 0;
+  function addBatch(n) {
+    const slice = SG_WORK.slice(shown, shown + n);
+    wgrid.insertAdjacentHTML('beforeend', slice.map(w =>
+      `<figure data-src="work/${w.p}" data-cap="${w.client} — ${w.d}">
+         <img src="work/${w.p}" alt="${w.client} — ${w.d}" loading="lazy">
+         <figcaption>${w.client} <span style="color:#c8c4c0">//</span> ${w.d}</figcaption></figure>`).join(''));
+    shown += slice.length;
+    if (shown >= SG_WORK.length) moreBtn.style.display = 'none';
+  }
+  addBatch(INITIAL);
+  moreBtn.addEventListener('click', () => addBatch(SG_WORK.length));
+  wgrid.addEventListener('click', e => {
+    const f = e.target.closest('figure'); if (!f) return;
+    openLB(f.dataset.src, f.dataset.cap);
+  });
+}
+
+/* ---------- marks wall ---------- */
+if (window.SG_MARKS) {
+  document.getElementById('mark-wall').innerHTML = SG_MARKS.map(m =>
+    `<div class="cell" title="${m.n}"><img src="work/work-assets/legacy-logos/${m.f}" alt="${m.n}" loading="lazy"></div>`).join('');
+}
+
+/* ---------- site museum strip ---------- */
+const SHOTS = [
+  ['01_home-2012-flash-era','2012 — the Flash era (the archive can only half-play it)'],
+  ['03_home-2015','2015 — recent work surfacing under the red'],
+  ['04_home-2016-three-offices','2016 — "offices in Chicago, Dallas and Oklahoma City"'],
+  ['06_index-branding','The branding index'],
+  ['07_index-broadcast','The broadcast index'],
+  ['08_index-interactive','The interactive index'],
+  ['09_index-print','The print index'],
+  ['10_index-identity','The identity index'],
+  ['11_index-social','The social index'],
+  ['12_case-ribcrib-branding','RibCrib — "Keep it Saucy"'],
+  ['13_case-ou-medicine-branding','OU Medicine — the case study'],
+  ['14_case-enlink-branding','EnLink Midstream — "connecting energy to life"'],
+  ['15_case-odoc-brand-standards','ODOC — brand standards'],
+  ['16_case-thunder-STYLED-template','OKC Thunder — the case template'],
+  ['17_case-at-the-beach','At The Beach — 8 stores to 70+'],
+  ['18_case-guernsey-identity','Guernsey — the best-explained logo on the site'],
+  ['19_case-onie-social-STATS','ONIE — the stats module: 74M / 31,944 / 35%'],
+  ['20_case-ou-medicine-social','OU Medicine — the social case'],
+  ['21_case-ribcrib-social','RibCrib — 18,000 to 37,000 fans in three months'],
+  ['22_case-griffins-social-STATS','Griffin’s — 5.8M reach in five months'],
+  ['23_case-embark-social-STATS','EMBARK — the transit account'],
+  ['24_case-devon-website','devonenergy.com — two years, 30+ widgets'],
+  ['25_case-operation-oklahoma-print','Operation Oklahoma — Best of Print, 2010 ADDYs'],
+  ['26_case-rickys-tacos-ADDY','Ricky’s Tacos — "El Champ," Gold Regional ADDY'],
+  ['27_case-staplegun-agency-reel','The agency reel page'],
+  ['30_contact-offices-okc-dallas','The contact page — Suite 2000, City Place'],
+];
+document.getElementById('museum-strip').innerHTML = SHOTS.map(([f, cap]) =>
+  `<figure data-src="site/${f}.jpg" data-cap="${cap}"><img src="site/${f}.jpg" alt="${cap}" loading="lazy"><figcaption>${cap}</figcaption></figure>`).join('');
+document.getElementById('museum-strip').addEventListener('click', e => {
+  const f = e.target.closest('figure'); if (!f) return;
+  openLB(f.dataset.src, f.dataset.cap);
+});
+
+/* ---------- office photos ---------- */
+const OFFICE = [
+  ['sg-office-01','The 20th floor — concrete, red chairs, a skateboard'],
+  ['sg-office-03','The office'],['sg-office-04','The office'],['sg-office-05','The office'],
+  ['sg-office-06','The office'],['sg-office-07','The office'],['sg-office-08','The office'],
+  ['sg-office-10','The office'],
+];
+document.getElementById('office-grid').innerHTML = OFFICE.map(([f, cap]) =>
+  `<figure data-src="img/office/${f}.jpg" data-cap="${cap}"><img src="img/office/${f}.jpg" alt="${cap}" loading="lazy"></figure>`).join('');
+document.getElementById('office-grid').addEventListener('click', e => {
+  const f = e.target.closest('figure'); if (!f) return;
+  openLB(f.dataset.src, f.dataset.cap);
+});
+
+/* ---------- snapshots: real photos if present, dashed placeholders if not ---------- */
+const snapGrid = document.getElementById('snap-grid');
+const SNAP_MAX = 40, SNAP_PLACEHOLDERS = 12;
+let snapReal = 0, snapChecked = 0;
+const cells = [];
+for (let i = 1; i <= SNAP_MAX; i++) {
+  const n = String(i).padStart(2, '0');
+  const img = new Image();
+  img.onload = () => {
+    snapReal++;
+    const fig = document.createElement('figure');
+    fig.dataset.src = `img/snapshots/snap-${n}.jpg`; fig.dataset.cap = 'From the camera roll';
+    img.loading = 'lazy'; fig.appendChild(img); snapGrid.appendChild(fig);
+    fig.addEventListener('click', () => openLB(fig.dataset.src, fig.dataset.cap));
+    done();
+  };
+  img.onerror = done;
+  img.src = `img/snapshots/snap-${n}.jpg`;
+}
+function done() {
+  if (++snapChecked < SNAP_MAX) return;
+  const empty = Math.max(0, SNAP_PLACEHOLDERS - snapReal);
+  for (let i = 0; i < empty; i++) {
+    snapGrid.insertAdjacentHTML('beforeend',
+      `<div class="snap-ph"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="4"/><path d="M9 6l1.2-2h3.6L15 6"/></svg></div>`);
+  }
+}
+
+/* ---------- lightbox ---------- */
+const lb = document.getElementById('lb'), lbImg = document.getElementById('lb-img'), lbCap = document.getElementById('lb-cap');
+function openLB(src, cap) { lbImg.src = src; lbCap.textContent = cap || ''; lb.classList.add('on'); }
+document.getElementById('lb-x').addEventListener('click', () => lb.classList.remove('on'));
+lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('on'); });
+addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('on'); });
+
+});
+</script>
+<script src="/shared/menu.js" defer></script>
+</body>
+</html>
