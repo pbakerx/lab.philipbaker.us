@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How I Stopped Ignoring the Most Important Part of My Business | Philip Baker Lab</title>
+<meta name="description" content="A case study on turning freelance billing from a dreaded chore into a conversational AI workflow — spoken timesheets in, invoices out.">
+<meta property="og:title" content="How I Stopped Ignoring the Most Important Part of My Business">
+<meta property="og:description" content="A PB Productions case study — billing turned into a conversation. Spoken timesheets, AI-created invoices, 29 months of backlog cleared.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lab.philipbaker.us/billing/">
+<meta name="twitter:card" content="summary">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0b;
+    --surface: #141416;
+    --surface-2: #1c1c20;
+    --surface-3: #24242a;
+    --border: #2a2a32;
+    --border-subtle: #1e1e24;
+    --text: #e8e8ed;
+    --text-secondary: #9898a4;
+    --text-muted: #6b6b78;
+    --accent: #6366f1;
+    --accent-soft: rgba(99, 102, 241, 0.12);
+    --green: #22c55e;
+    --green-soft: rgba(34, 197, 94, 0.12);
+    --red: #ef4444;
+    --red-soft: rgba(239, 68, 68, 0.12);
+    --amber: #f59e0b;
+    --amber-soft: rgba(245, 158, 11, 0.12);
+    --cyan: #06b6d4;
+    --cyan-soft: rgba(6, 182, 212, 0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+  .wide-container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10, 10, 11, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 16px 0;
+  }
+  nav .container {
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 1080px;
+  }
+  .nav-brand {
+    font-weight: 600; font-size: 14px; letter-spacing: -0.01em;
+    color: var(--text-secondary);
+  }
+  .nav-brand span { color: var(--accent); }
+  .nav-tag {
+    font-size: 11px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted);
+    background: var(--surface-2); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 4px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 160px 0 100px;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .hero-label::before {
+    content: ''; width: 8px; height: 8px;
+    background: var(--accent); border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .hero h1 {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800; letter-spacing: -0.035em;
+    line-height: 1.1; margin-bottom: 28px;
+    background: linear-gradient(135deg, var(--text) 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    font-size: 18px; color: var(--text-secondary);
+    line-height: 1.7; max-width: 620px;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px; background: var(--border);
+    border-radius: 12px; overflow: hidden;
+    margin: 60px 0 80px;
+  }
+  .stat-card {
+    background: var(--surface);
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .stat-number {
+    font-size: 32px; font-weight: 800;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-number.green { color: var(--green); }
+  .stat-number.accent { color: var(--accent); }
+  .stat-number.amber { color: var(--amber); }
+  .stat-number.cyan { color: var(--cyan); }
+  .stat-label {
+    font-size: 12px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-muted); margin-top: 8px;
+  }
+
+  /* ── SECTIONS ── */
+  section { margin-bottom: 100px; }
+  .section-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--accent); margin-bottom: 16px;
+  }
+  section h2 {
+    font-size: 28px; font-weight: 700; letter-spacing: -0.025em;
+    margin-bottom: 20px; line-height: 1.2;
+  }
+  section p {
+    color: var(--text-secondary); margin-bottom: 20px;
+    font-size: 16px;
+  }
+
+  /* ── BEFORE/AFTER ── */
+  .comparison {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    margin: 40px 0;
+  }
+  .comparison-card {
+    border-radius: 12px; padding: 32px;
+    border: 1px solid var(--border);
+  }
+  .comparison-card.before {
+    background: linear-gradient(135deg, var(--red-soft) 0%, var(--surface) 60%);
+    border-color: rgba(239, 68, 68, 0.15);
+  }
+  .comparison-card.after {
+    background: linear-gradient(135deg, var(--green-soft) 0%, var(--surface) 60%);
+    border-color: rgba(34, 197, 94, 0.15);
+  }
+  .comparison-card h3 {
+    font-size: 14px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; margin-bottom: 20px;
+  }
+  .comparison-card.before h3 { color: var(--red); }
+  .comparison-card.after h3 { color: var(--green); }
+  .comparison-card li {
+    color: var(--text-secondary); font-size: 15px;
+    margin-bottom: 12px; list-style: none;
+    padding-left: 20px; position: relative;
+  }
+  .comparison-card.before li::before {
+    content: '×'; position: absolute; left: 0;
+    color: var(--red); font-weight: 700;
+  }
+  .comparison-card.after li::before {
+    content: '✓'; position: absolute; left: 0;
+    color: var(--green); font-weight: 700;
+  }
+
+  /* ── DATA VIZ: AR AGING ── */
+  .data-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 40px 0;
+  }
+  .data-panel-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .data-panel-header h4 {
+    font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .data-panel-header .badge {
+    font-size: 11px; font-weight: 500;
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .badge-live { background: var(--green-soft); color: var(--green); }
+  .badge-ai { background: var(--accent-soft); color: var(--accent); }
+  .data-panel-header .source {
+    font-size: 11px; color: var(--text-muted);
+  }
+
+  /* ── TABLE ── */
+  .data-table {
+    width: 100%; border-collapse: collapse;
+  }
+  .data-table th {
+    text-align: left; padding: 12px 24px;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table th:last-child { text-align: right; }
+  .data-table td {
+    padding: 14px 24px;
+    font-size: 14px; color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .data-table td:last-child {
+    text-align: right; font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table .total-row td {
+    font-weight: 700; color: var(--text);
+    border-top: 2px solid var(--border);
+    background: var(--surface-2);
+  }
+  .bucket-bar {
+    display: inline-block; height: 6px; border-radius: 3px;
+    margin-right: 8px; vertical-align: middle;
+    min-width: 4px;
+  }
+
+  /* ── INVOICE MOCKUP ── */
+  .invoice-mock {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .invoice-mock::before {
+    content: 'AI-GENERATED INVOICE';
+    position: absolute; top: 16px; right: 16px;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 10px; border-radius: 4px;
+  }
+  .invoice-header {
+    display: flex; justify-content: space-between;
+    margin-bottom: 28px; padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .invoice-company { font-size: 20px; font-weight: 700; }
+  .invoice-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; color: var(--text-muted);
+  }
+  .invoice-meta {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    margin-bottom: 24px;
+  }
+  .invoice-meta-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .invoice-meta-value { font-size: 14px; color: var(--text-secondary); }
+
+  .invoice-lines { margin-bottom: 24px; }
+  .invoice-line {
+    display: grid; grid-template-columns: 1fr 60px 80px 90px;
+    gap: 12px; padding: 10px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .invoice-line.header {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted);
+  }
+  .invoice-line .amount {
+    text-align: right; font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .invoice-total {
+    text-align: right; font-size: 20px; font-weight: 700;
+    color: var(--text); padding-top: 16px;
+  }
+  .invoice-total span {
+    font-size: 13px; color: var(--text-muted);
+    font-weight: 500; margin-right: 12px;
+  }
+
+  /* ── WORKFLOW STEPS ── */
+  .workflow {
+    display: grid; gap: 0;
+    margin: 40px 0;
+    position: relative;
+  }
+  .workflow-step {
+    display: grid; grid-template-columns: 60px 1fr;
+    gap: 20px; padding: 24px 0;
+    position: relative;
+  }
+  .workflow-step:not(:last-child)::after {
+    content: '';
+    position: absolute; left: 29px; top: 60px; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .step-icon {
+    width: 60px; height: 60px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    position: relative; z-index: 2;
+  }
+  .step-icon.phone { background: var(--accent-soft); }
+  .step-icon.ai { background: var(--green-soft); }
+  .step-icon.qbo { background: var(--cyan-soft); }
+  .step-icon.send { background: var(--amber-soft); }
+  .step-content h4 {
+    font-size: 16px; font-weight: 600; margin-bottom: 6px;
+    margin-top: 4px;
+  }
+  .step-content p {
+    font-size: 14px; color: var(--text-muted);
+    margin-bottom: 0;
+  }
+  .step-tag {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 3px 8px; border-radius: 4px; margin-top: 8px;
+  }
+  .tag-voice { background: var(--accent-soft); color: var(--accent); }
+  .tag-auto { background: var(--green-soft); color: var(--green); }
+  .tag-api { background: var(--cyan-soft); color: var(--cyan); }
+  .tag-smart { background: var(--amber-soft); color: var(--amber); }
+
+  /* ── CONVERSATION MOCKUP ── */
+  .conversation {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 40px 0;
+    max-width: 520px;
+  }
+  .conv-header {
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .conv-header::before {
+    content: ''; width: 8px; height: 8px;
+    background: var(--green); border-radius: 50%;
+  }
+  .msg {
+    margin-bottom: 16px; max-width: 85%;
+  }
+  .msg.user {
+    margin-left: auto;
+    background: var(--accent);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 16px 16px 4px 16px;
+    font-size: 14px;
+  }
+  .msg.ai {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: 16px 16px 16px 4px;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .msg-label {
+    font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-muted); margin-bottom: 4px;
+  }
+  .msg.user .msg-label { color: rgba(255,255,255,0.6); }
+
+  /* ── CHART ── */
+  .chart-container {
+    padding: 24px;
+  }
+  .bar-chart {
+    display: flex; align-items: flex-end; gap: 8px;
+    height: 180px; padding-top: 20px;
+  }
+  .bar-group {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; height: 100%;
+    justify-content: flex-end;
+  }
+  .bar {
+    width: 100%; border-radius: 4px 4px 0 0;
+    min-height: 4px; position: relative;
+    transition: height 0.3s ease;
+  }
+  .bar.accent { background: var(--accent); }
+  .bar.green { background: var(--green); }
+  .bar.amber { background: var(--amber); }
+  .bar.cyan { background: var(--cyan); }
+  .bar.red { background: var(--red); }
+  .bar.muted { background: var(--surface-3); }
+  .bar-label {
+    font-size: 10px; color: var(--text-muted);
+    margin-top: 8px; text-align: center;
+    font-weight: 500;
+  }
+  .bar-value {
+    font-size: 10px; color: var(--text-muted);
+    margin-bottom: 4px; text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+  }
+
+  /* ── BLOCKQUOTE ── */
+  .pullquote {
+    border-left: 3px solid var(--accent);
+    padding: 24px 0 24px 28px;
+    margin: 48px 0;
+  }
+  .pullquote p {
+    font-size: 20px; font-weight: 500;
+    color: var(--text); line-height: 1.5;
+    font-style: italic;
+  }
+  .pullquote cite {
+    display: block; margin-top: 12px;
+    font-size: 13px; color: var(--text-muted);
+    font-style: normal;
+  }
+
+  /* ── TECH STACK ── */
+  .tech-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin: 40px 0;
+  }
+  .tech-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .tech-card h5 {
+    font-size: 13px; font-weight: 600; margin-bottom: 6px;
+  }
+  .tech-card p {
+    font-size: 12px; color: var(--text-muted);
+    margin-bottom: 0; line-height: 1.5;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 0;
+    text-align: center;
+  }
+  footer p {
+    font-size: 13px; color: var(--text-muted);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .comparison { grid-template-columns: 1fr; }
+    .tech-grid { grid-template-columns: 1fr; }
+    .invoice-line { grid-template-columns: 1fr 80px; }
+    .invoice-line .qty, .invoice-line .rate { display: none; }
+    .invoice-meta { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container" style="max-width:1080px;">
+    <div class="nav-brand">philip baker <span>/lab</span></div>
+    <div class="nav-tag">Case Study</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-label">AI + Billing Automation</div>
+    <h1>How I Stopped Ignoring the Most Important Part of My Business</h1>
+    <p class="hero-sub">
+      I'm a creative director, not an accountant. Billing was always the thing that got pushed to "later" — except later never came. Here's how I built an AI system that handles my entire billing cycle from a phone conversation.
+    </p>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="wide-container">
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-number green">0</div>
+      <div class="stat-label">Forms Filled Out</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number accent">1</div>
+      <div class="stat-label">Conversation Per Invoice</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number amber">900+</div>
+      <div class="stat-label">Transactions Categorized</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number cyan">29 mo</div>
+      <div class="stat-label">Bank Statements Reconciled</div>
+    </div>
+  </div>
+</div>
+
+<!-- THE PROBLEM -->
+<section>
+  <div class="container">
+    <div class="section-label">The Problem</div>
+    <h2>Billing Was Always the Thing That Got Ignored</h2>
+    <p>
+      Here's the thing nobody tells you about freelancing: the actual work — the creative direction, the design, the animation — that part is great. You stay up until 2am because you're in the zone. But billing? Billing is the thing you do when you're already tired, after you've spent all your creative energy, and the last thing you want to do is open QuickBooks.
+    </p>
+    <p>
+      And the irony isn't lost on me. Billing is literally the whole point. It's how you get paid. But if it's not exciting, it doesn't get done. Invoices would pile up. Timesheets would go untracked — I'd finish a 3-hour session and think "I'll log that later" and later would be never. Money was left on the table. Not because the work wasn't done, but because I couldn't bring myself to document it.
+    </p>
+
+    <div class="comparison">
+      <div class="comparison-card before">
+        <h3>Before</h3>
+        <ul>
+          <li>Timesheets logged days (or weeks) late, if at all</li>
+          <li>Invoices created in batches when guilt finally hit</li>
+          <li>No idea who owed what or how overdue it was</li>
+          <li>Bank transactions piling up uncategorized</li>
+          <li>29 months of unreconciled bank statements</li>
+          <li>Billing rates tracked in my head, not a system</li>
+          <li>Hours lost to the QuickBooks UI every month</li>
+        </ul>
+      </div>
+      <div class="comparison-card after">
+        <h3>After</h3>
+        <ul>
+          <li>Timesheets spoken into existence from my phone</li>
+          <li>AI creates invoices the moment work is logged</li>
+          <li>AR aging tracked and surfaced automatically</li>
+          <li>900+ transactions categorized by AI in one session</li>
+          <li>29 months reconciled and caught up</li>
+          <li>Per-client rates encoded in custom AI skills</li>
+          <li>Full billing cycle runs from a conversation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE CONVERSATION -->
+<section>
+  <div class="container">
+    <div class="section-label">The Moment It Clicked</div>
+    <h2>What If Billing Was Just a Conversation?</h2>
+    <p>
+      The whole thing started with a simple idea: what if I could just tell someone what I worked on, and everything else happened automatically? Not an app with forms and dropdowns and save buttons. Just&hellip; talking.
+    </p>
+    <p>
+      Now I speak my timesheets into Dispatch while I'm walking to my car after a session. The AI knows the billing rate for every client, which service item each one bills under, and the quirks that live nowhere but in my head — which clients carry a different internal and invoiced rate, and which ones pay in a form that needs special handling on the accounting side. I don't look any of it up anymore.
+    </p>
+
+    <div class="conversation">
+      <div class="conv-header">Dispatch &mdash; Mobile <span class="badge badge-ai">Illustrative</span></div>
+      <div class="msg user">
+        <div class="msg-label">Philip</div>
+        Did 8 hours on the automation project for the agency today, plus half an hour on the fall campaign timeline
+      </div>
+      <div class="msg ai">
+        <div class="msg-label">AI</div>
+        Got it. I've logged two time entries:<br><br>
+        <strong>Agency client &mdash; AI Automation</strong><br>
+        8 hrs at the production rate<br><br>
+        <strong>Agency client &mdash; Fall Digital</strong><br>
+        0.5 hrs at the production rate<br><br>
+        Ready to create invoices, or should I hold these for the weekly batch?
+      </div>
+      <div class="msg user">
+        <div class="msg-label">Philip</div>
+        Send them
+      </div>
+      <div class="msg ai">
+        <div class="msg-label">AI</div>
+        Done. Both invoices created and sent, with a net-30 due date.
+      </div>
+    </div>
+
+    <p>
+      That's it. That's the whole workflow. I said what I worked on, from my phone, and two invoices were created in QuickBooks, populated with the right line items, rates, and descriptions, and sent to the right people. No logging into anything. No clicking through forms. No "I'll do it later."
+    </p>
+  </div>
+</section>
+
+<!-- WHAT IT TRACKS -->
+<section>
+  <div class="container">
+    <div class="section-label">The Ledger</div>
+    <h2>What the System Actually Sees</h2>
+    <p>
+      The same API connection that creates invoices also reads back. That means the AI isn't
+      just a data-entry shortcut at the front of the process &mdash; it can answer questions about
+      the state of the business at any point, without me opening a single report.
+    </p>
+    <p>
+      I can ask who's overdue and by how long, what a given client has been billed this year,
+      which invoices are still unpaid, or what a month looked like compared to the one before it.
+      Those used to be questions I avoided asking, because finding the answer meant an evening
+      in QuickBooks. Now they're just questions.
+    </p>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <h5>A/R aging</h5>
+        <p>Who owes what, bucketed by how overdue it is &mdash; surfaced on request or flagged when something slips past due.</p>
+      </div>
+      <div class="tech-card">
+        <h5>Revenue by month</h5>
+        <p>Billed and collected, month over month, pulled live rather than assembled by hand at tax time.</p>
+      </div>
+      <div class="tech-card">
+        <h5>Per-client history</h5>
+        <p>Every invoice, rate, and payment for a given client, without hunting through a customer record.</p>
+      </div>
+    </div>
+    <p style="margin-top:32px; font-size:14px; color:var(--text-muted);">
+      Actual figures are omitted here &mdash; this is a public write-up of how the workflow runs,
+      not a look at the books.
+    </p>
+  </div>
+</section>
+
+<!-- SAMPLE INVOICE -->
+<section>
+  <div class="container">
+    <div class="section-label">What Gets Created</div>
+    <h2>The Invoice, Built From a Sentence</h2>
+    <p>
+      This is a representative example of what the AI produces and sends through the QuickBooks
+      API &mdash; the shape is exactly right, the client and figures are stand-ins. Every line item
+      originates in a spoken timesheet entry: the descriptions, hours, and totals are assembled
+      from the conversation, not typed into a form.
+    </p>
+
+    <div class="invoice-mock">
+      <div class="invoice-header">
+        <div>
+          <div class="invoice-company">PB Productions, LLC</div>
+          <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Creative Direction &amp; Design</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="invoice-number">INV-0000</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Example</div>
+        </div>
+      </div>
+
+      <div class="invoice-meta">
+        <div>
+          <div class="invoice-meta-label">Bill To</div>
+          <div class="invoice-meta-value">Example Client</div>
+        </div>
+        <div>
+          <div class="invoice-meta-label">Terms</div>
+          <div class="invoice-meta-value">Net 30</div>
+        </div>
+      </div>
+
+      <div class="invoice-lines">
+        <div class="invoice-line header">
+          <div>Description</div>
+          <div class="qty">Hrs</div>
+          <div class="rate">Rate</div>
+          <div class="amount">Amount</div>
+        </div>
+        <div class="invoice-line">
+          <div>Revise existing scripts for the full dealer set</div>
+          <div class="qty">2.0</div>
+          <div class="rate">&mdash;</div>
+          <div class="amount">&mdash;</div>
+        </div>
+        <div class="invoice-line">
+          <div>Sanitize dealer lists across both brands</div>
+          <div class="qty">3.0</div>
+          <div class="rate">&mdash;</div>
+          <div class="amount">&mdash;</div>
+        </div>
+        <div class="invoice-line">
+          <div>Render all assets &mdash; every dealer, every creative set</div>
+          <div class="qty">12.0</div>
+          <div class="rate">&mdash;</div>
+          <div class="amount">&mdash;</div>
+        </div>
+        <div class="invoice-line">
+          <div>Compare dealer names against dealer IDs</div>
+          <div class="qty">2.0</div>
+          <div class="rate">&mdash;</div>
+          <div class="amount">&mdash;</div>
+        </div>
+        <div class="invoice-line">
+          <div>Sit with the renders &mdash; sample across the set</div>
+          <div class="qty">2.0</div>
+          <div class="rate">&mdash;</div>
+          <div class="amount">&mdash;</div>
+        </div>
+        <div class="invoice-line">
+          <div>Place on server &mdash; organize and upload all dealer packages</div>
+          <div class="qty">2.0</div>
+          <div class="rate">&mdash;</div>
+          <div class="amount">&mdash;</div>
+        </div>
+        <div class="invoice-line">
+          <div>Present poster frames &mdash; finished work across all sets</div>
+          <div class="qty">3.0</div>
+          <div class="rate">&mdash;</div>
+          <div class="amount">&mdash;</div>
+        </div>
+        <div class="invoice-line">
+          <div>Documentation</div>
+          <div class="qty">1.0</div>
+          <div class="rate">&mdash;</div>
+          <div class="amount">&mdash;</div>
+        </div>
+      </div>
+
+      <div class="invoice-total">
+        <span>Total Due</span> &mdash;
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE WORKFLOW -->
+<section>
+  <div class="container">
+    <div class="section-label">The Workflow</div>
+    <h2>From Voice to Paid &mdash; No Forms, No Logins</h2>
+
+    <div class="workflow">
+      <div class="workflow-step">
+        <div class="step-icon phone">&#128241;</div>
+        <div class="step-content">
+          <h4>Speak the timesheet</h4>
+          <p>From my phone via Dispatch, while walking to my car or between meetings. I describe what I worked on in plain English — the AI parses the client, project, hours, and description.</p>
+          <span class="step-tag tag-voice">Voice Input</span>
+        </div>
+      </div>
+
+      <div class="workflow-step">
+        <div class="step-icon ai">&#9889;</div>
+        <div class="step-content">
+          <h4>AI applies business logic</h4>
+          <p>Custom skills encode per-client billing rates, service categories, and quirks &mdash; which service item a client bills under, which ones carry a different internal and invoiced rate, and how each one's payments have to be recorded. The AI just knows.</p>
+          <span class="step-tag tag-auto">Automated</span>
+        </div>
+      </div>
+
+      <div class="workflow-step">
+        <div class="step-icon qbo">&#128203;</div>
+        <div class="step-content">
+          <h4>Invoice created via QBO API</h4>
+          <p>The AI connects directly to QuickBooks Online through the API. No browser automation, no UI clicking — a real API integration that creates properly formatted invoices with line items, rates, and totals.</p>
+          <span class="step-tag tag-api">API Connected</span>
+        </div>
+      </div>
+
+      <div class="workflow-step">
+        <div class="step-icon send">&#128232;</div>
+        <div class="step-content">
+          <h4>Sent, tracked, and followed up</h4>
+          <p>The AI knows who to send invoices to (and some clients have multiple contacts). It tracks AR aging, flags overdue invoices, and can generate past-due statements. The full cycle, handled.</p>
+          <span class="step-tag tag-smart">Smart Delivery</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULLQUOTE -->
+<section>
+  <div class="container">
+    <div class="pullquote">
+      <p>The whole point was that billing is the most important part of the business — it's literally how you get paid — but it was always the thing that got ignored because it wasn't creative work. Now it's just a conversation.</p>
+      <cite>Philip Baker, Creative Director &amp; Owner, PB Productions</cite>
+    </div>
+  </div>
+</section>
+
+<!-- THE BIG CATCH-UP -->
+<section>
+  <div class="container">
+    <div class="section-label">The Catch-Up</div>
+    <h2>29 Months of "I'll Do It Later"</h2>
+    <p>
+      The timesheet-to-invoice pipeline was just the beginning. When I finally connected the AI to my QuickBooks, the real scale of the backlog became clear: 29 months of unreconciled bank statements and 900+ uncategorized transactions sitting in the feed.
+    </p>
+    <p>
+      Manually, that's weeks of work — opening each transaction, figuring out the category, checking against bank records, matching deposits to invoices. The AI did it conversationally. We worked through it together: it would surface batches of transactions, I'd confirm the categorization patterns, and it would apply them across hundreds of entries. It even caught duplicate Apple Cash deposits that would have thrown off the books.
+    </p>
+    <p>
+      What would have taken me weeks of dreading, procrastinating, and eventually grinding through — the AI handled in working sessions that felt more like a conversation than data entry.
+    </p>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section>
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2>The Stack Behind the Scenes</h2>
+    <p>
+      This isn't a custom app or a startup product. It's a personal AI workflow built with tools that exist today, connected to the accounting software I was already paying for.
+    </p>
+
+    <div class="tech-grid">
+      <div class="tech-card">
+        <h5>Claude + Custom Skills</h5>
+        <p>AI that understands my billing rules, client rates, tax compliance requirements, and QBO-specific quirks like owner's draw handling.</p>
+      </div>
+      <div class="tech-card">
+        <h5>Dispatch (Mobile)</h5>
+        <p>Voice-to-text on my phone. I speak my timesheets on the go — the AI parses client, project, hours, and description.</p>
+      </div>
+      <div class="tech-card">
+        <h5>QuickBooks Online API</h5>
+        <p>Direct API connection for creating invoices, tracking AR, managing customers, and pulling real-time financial data.</p>
+      </div>
+      <div class="tech-card">
+        <h5>Custom Billing Skills</h5>
+        <p>Encoded business logic: per-client rates, service categories, tax rules, invoice routing, and the marked-up-rate workflow.</p>
+      </div>
+      <div class="tech-card">
+        <h5>Bank Reconciliation</h5>
+        <p>AI-assisted transaction categorization and bank statement matching. Caught duplicates and resolved 29 months of backlog.</p>
+      </div>
+      <div class="tech-card">
+        <h5>AR Monitoring</h5>
+        <p>Automated aging reports, overdue alerts, and past-due statement generation. Always knows who owes what.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT CHANGED -->
+<section>
+  <div class="container">
+    <div class="section-label">The Takeaway</div>
+    <h2>The Real Change Isn't Efficiency &mdash; It's That It Actually Gets Done</h2>
+    <p>
+      I could talk about time saved or automation or efficiency gains. But that misses the point. The real change is simpler than that: billing actually happens now.
+    </p>
+    <p>
+      Before, I had a perfectly functional QuickBooks account. I had invoice templates. I knew how to create a timesheet. The tools were fine. The problem was me — I'm a creative person, and administrative work will always lose the priority battle against a project that's actually interesting.
+    </p>
+    <p>
+      The AI didn't replace QuickBooks. It replaced the friction. The logging in, the clicking through, the context-switching from creative work to spreadsheet work. It turned billing from a chore I dreaded into a sentence I say on my way to the car.
+    </p>
+    <p>
+      And the backlog — the 29 months of unreconciled statements, the hundreds of uncategorized transactions — that wasn't a technology problem either. It was an "I really don't want to do this" problem. The AI made it possible to chip away at it conversationally, without it feeling like punishment.
+    </p>
+    <p>
+      If you're a freelancer or a small business owner and your billing looks like mine used to, you don't need a better app. You need to remove yourself from the process as much as possible. That's what this does.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>
+      <a href="https://philipbaker.us">philipbaker.us</a> &bull; PB Productions, LLC &bull; Built with AI
+    </p>
+    <p style="margin-top:8px; font-size:11px;">
+      Client names and figures throughout are illustrative. The workflow is real; the books stay private.
+    </p>
+  </div>
+</footer>
+
+<script src="/shared/menu.js" defer></script>
+</body>
+</html>
