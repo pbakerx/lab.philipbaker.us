@@ -5,8 +5,8 @@
 //          for that exact document, so the gallery can only ever contain widgets
 //          this server wrote.
 // DELETE → remove one. Gated on WIDGET_MAKER_ADMIN_KEY; when that isn't set,
-//          deletion is off entirely and `npx vercel blob del <pathname>` is the
-//          way to take something down.
+//          deletion is off entirely and the CLI is the way to take something
+//          down (see CLAUDE.md — the token has to be passed explicitly).
 
 import { list, put, del } from "@vercel/blob";
 import { PREFIX, verify, idFor, encodePath, decodePath } from "../lib/favorites.js";
@@ -173,7 +173,8 @@ export default async function handler(req, res) {
     const adminKey = process.env.WIDGET_MAKER_ADMIN_KEY;
     if (!adminKey) {
       return res.status(404).json({
-        error: "Deletion isn't enabled. Set WIDGET_MAKER_ADMIN_KEY, or use `vercel blob del`.",
+        error:
+          "Deletion isn't enabled. Set WIDGET_MAKER_ADMIN_KEY, or delete via the Vercel Blob CLI.",
       });
     }
     if (req.headers["x-admin-key"] !== adminKey) {

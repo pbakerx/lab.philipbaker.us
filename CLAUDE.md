@@ -65,8 +65,15 @@ propagation before verifying new paths (fresh 404s right after READY are usually
     - Card previews mount/unmount on scroll (IntersectionObserver); running every
       favorite at once would be brutal.
   - Moderation: `DELETE /api/favorites?pathname=…` with `x-admin-key`, enabled only if
-    `WIDGET_MAKER_ADMIN_KEY` is set. Otherwise `npx vercel blob del <pathname>` always
-    works. Cap is 200 favorites.
+    `WIDGET_MAKER_ADMIN_KEY` is set. The always-available fallback is the CLI — but pass
+    the token explicitly, because a bare `vercel blob …` picks up `VERCEL_OIDC_TOKEN`
+    from `.env.local` and dies on "must both be set":
+    ```bash
+    TOKEN=$(grep '^BLOB_READ_WRITE_TOKEN=' .env.local | cut -d= -f2-)
+    npx vercel blob list --rw-token "$TOKEN"
+    npx vercel blob del "favorites/<b64>.<id>.json" --rw-token "$TOKEN"
+    ```
+    Cap is 200 favorites.
   - Needs `ANTHROPIC_API_KEY`, `WIDGET_MAKER_SECRET` and `BLOB_READ_WRITE_TOKEN` in the
     Vercel project env. Optional: `WIDGET_MAKER_PASSCODE` (gates generation),
     `WIDGET_MAKER_ADMIN_KEY`, `WIDGET_MAKER_MODEL`, `WIDGET_MAKER_EFFORT`,
