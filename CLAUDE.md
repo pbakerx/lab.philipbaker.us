@@ -137,19 +137,21 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     have always been there.
   - `.swf` → Ruffle from unpkg CDN, loaded with `openUrlMode:"deny"` because era shells
     call getURL on load and would navigate the page away.
-  - After the Aug 2026 cull: 8 games, 4 Six Flags shells, Speed Zone at full quality.
+  - After the Aug 2026 cull: 7 games, 4 Six Flags shells, Speed Zone at full quality.
     Gone: all 25 contact sheets, the site-design screenshots, the NRALive/WilTel shells,
-    the DNA Pinball and Winner-with-Vyvx cards, and the Six Flags park template 2002.
+    the DNA Pinball, Winner-with-Vyvx and Shockwave Bowling cards, and the Six Flags
+    park template 2002.
     The screening room and the offices both moved to **/am-1998**. Everything removed is
     still in git history and in the master archive.
   - **Card artwork is opt-in by file.** Each game card carries `data-shot="<slug>"`; an
     inline script probes `vault/shots/<slug>.jpg` with `new Image()` and only inserts an
     `<img>` if it loads, so a missing shot leaves no broken-image box. Drop a file in and
     the card dresses itself — no markup change. Slugs: `virtual-boomerang`,
-    `darien-lake-97`, `virtual-bowling`, `attitude-arena`, `zone-pilot`,
-    `shockwave-bowling`, `alien-maze`, `brunswick-consumer-site`.
-  - Seven of the eight are filled (Philip captured them in a real browser, Aug 2026);
-    `shockwave-bowling` is the only bare card.
+    `darien-lake-97`, `virtual-bowling`, `attitude-arena`, `zone-pilot`, `alien-maze`,
+    `brunswick-consumer-site`.
+  - All seven are filled (Philip captured them in a real browser, Aug 2026). The
+    Shockwave Bowling card was dropped; `media/08-adveractive/bowling_bowl7.dcr` stays in
+    the archive, and that folder is still needed by Attitude Arena.
   - **Capturing these needs a real browser — don't retry it from here.** In a
     headless/hidden pane `rAF` never ticks, so dirplayer (all the `.dcr` games) never
     paints; the canvas reads 0 non-black pixels even after load, click and a 20s wait.
