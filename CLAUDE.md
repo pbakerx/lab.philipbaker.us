@@ -114,6 +114,13 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
 - **/am-1998** — the black-and-white am.com (1997–99) Philip designed; Wayback screenshots.
   The homepage hero was reconstructed: original HTML + the separately-recovered
   `graphics/main/on.gif` (Wayback replay never rendered it).
+  - The page opens on the homepage screenshot, then **the collage** (`hero/*.gif`) — the
+    eleven navigation widgets from the original site, the actual interface rather than
+    pictures of it. Square cells with percentage padding: the faces run both landscape
+    (316x199) and portrait (200x249), and a fixed pixel inset starved the tall ones.
+  - Aug 2026: the section screenshots were culled down to Thrifty. The Front Door,
+    Capabilities and The Agency emptied out entirely and their headings went with them.
+    Everything removed is still in git history and in the master archive.
   - **The Offices** (before the closing note) holds 17 photographs decompiled out of the
     am.com Shockwave movies. The source had 40 frames repeated across three identically-
     named directories (byte-identical — the "three offices" were one set shown thrice);

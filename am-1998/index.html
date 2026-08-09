@@ -26,11 +26,27 @@ figure img{width:100%;height:auto;display:block;border:1px solid #222}
 figcaption{font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding-top:10px}
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:640px){.duo{grid-template-columns:1fr}}
-.heroes{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;margin:0 0 52px}
-.heroes img{width:100%;height:auto;display:block;background:#000;border:1px solid #1e1e1e;
+.heroes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+         gap:38px;margin:18px 0 96px}
+/* The widget faces are all different shapes (155x166 up to 316x199). A fixed
+   card ratio with the art contained inside keeps the grid even instead of
+   ragged, and lets the whole thing reflow on narrow screens. */
+/* Square, not 4/3: the faces run both landscape (316x199) and portrait
+   (200x249), and a square vitrine gives every one of them the same air on all
+   four sides instead of cropping the tall ones tight. Padding is a percentage
+   so the margin around the art scales with the cell. */
+.heroes .card{aspect-ratio:1/1;padding:13%;overflow:hidden;
+              background:#000;border:1px solid #161616}
+/* object-fit does the centring and the letterboxing; without a definite height
+   the portrait faces (the lockup, the monitor, Capabilities at 200x249) grow
+   past the ratio and the grid goes ragged again. */
+.heroes img{width:100%;height:100%;object-fit:contain;display:block;
             image-rendering:pixelated}
-.heroes .wide{grid-column:span 2}
-@media(max-width:760px){.heroes{grid-template-columns:1fr}.heroes .wide{grid-column:auto}}
+@media(max-width:640px){.heroes{gap:26px}}
+@media(max-width:520px){.heroes{grid-template-columns:1fr;gap:22px;margin-bottom:72px}
+                        .heroes .card{padding:16%}}
+.masthead{margin:0 0 44px}
+.masthead img{width:100%;height:auto;display:block;border:1px solid #222}
 .offices{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:44px}
 .offices a{display:block;line-height:0}
 .offices img{width:100%;height:150px;object-fit:cover;display:block;border:1px solid #222}
@@ -47,6 +63,8 @@ footer hr.hairline{margin-bottom:16px}
 <div class="wrap">
 <p class="crumb"><a href="/">lab.philipbaker.us</a> &nbsp;/&nbsp; am-1998</p>
 
+<figure class="masthead"><img src="img/02_1998-am-homepage.jpg" alt="am.com homepage, 1998"><figcaption>am.com — the homepage, 1998. The center graphic never rendered in Wayback replays; it was recovered separately from the May 1998 crawl and the page rebuilt around it</figcaption></figure>
+
 <hr class="hairline">
 <h1>Ackerman McQueen</h1>
 <p class="era">Philip Baker &nbsp;·&nbsp; 1991 – 2000 &nbsp;·&nbsp; SR VP, Director of New Media</p>
@@ -54,61 +72,22 @@ footer hr.hairline{margin-bottom:16px}
 <p class="lede">Before the Shockwave gateway and the Flash rebuild, am.com was this: <em>black to the edges, hairline teal rules, small-caps navigation, photography doing the talking.</em> I designed it in the late '90s, when an agency website was still a thing you invented from scratch. The server is long gone — these are the surviving pages, recovered from the Wayback Machine, shown as they actually rendered.</p>
 
 <div class="heroes">
-<img src="hero/home.gif" alt="The homepage — Ackerman McQueen" loading="lazy">
-<img src="hero/monitor.gif" alt="The AM monitor" loading="lazy">
-<img src="hero/whoweare.gif" alt="Who We Are — the navigation widget" loading="lazy">
-<img src="hero/whatwedo.gif" alt="What We Do — the navigation widget" loading="lazy">
-<img src="hero/people.gif" alt="Our People" loading="lazy">
-<img src="hero/offices.gif" alt="Our Offices — One Network, Four Time Zones" loading="lazy">
-<img src="hero/clients.gif" alt="Our Clients" loading="lazy">
-<img src="hero/historical.gif" alt="Historical Work — choose a client" loading="lazy">
-<img src="hero/philosophy.gif" alt="Our Philosophy" loading="lazy">
-<img src="hero/capabilities.gif" alt="Creative Capabilities" loading="lazy">
-<img src="hero/newmedia.gif" alt="New Media" loading="lazy">
+<div class="card"><img src="hero/home.gif" alt="The homepage — Ackerman McQueen" loading="lazy"></div>
+<div class="card"><img src="hero/monitor.gif" alt="The AM monitor" loading="lazy"></div>
+<div class="card"><img src="hero/whoweare.gif" alt="Who We Are — the navigation widget" loading="lazy"></div>
+<div class="card"><img src="hero/whatwedo.gif" alt="What We Do — the navigation widget" loading="lazy"></div>
+<div class="card"><img src="hero/people.gif" alt="Our People" loading="lazy"></div>
+<div class="card"><img src="hero/offices.gif" alt="Our Offices — One Network, Four Time Zones" loading="lazy"></div>
+<div class="card"><img src="hero/clients.gif" alt="Our Clients" loading="lazy"></div>
+<div class="card"><img src="hero/historical.gif" alt="Historical Work — choose a client" loading="lazy"></div>
+<div class="card"><img src="hero/philosophy.gif" alt="Our Philosophy" loading="lazy"></div>
+<div class="card"><img src="hero/capabilities.gif" alt="Creative Capabilities" loading="lazy"></div>
+<div class="card"><img src="hero/newmedia.gif" alt="New Media" loading="lazy"></div>
 </div>
-
-<h2>The Front Door</h2>
-<hr class="hairline">
-<figure><img src="img/02_1998-am-homepage.jpg" alt="am.com 1998 homepage" loading="lazy"><figcaption>am.com — the homepage, 1998. The center graphic never rendered in Wayback replays; it was recovered separately from the May 1998 crawl and the page rebuilt around it</figcaption></figure>
-<div class="duo">
-<figure><img src="img/05_1998-am-who-we-are.jpg" alt="Who We Are" loading="lazy"><figcaption>Who We Are</figcaption></figure>
-<figure><img src="img/06_1998-am-what-we-do.jpg" alt="What We Do" loading="lazy"><figcaption>What We Do</figcaption></figure>
-</div>
-
-<h2>Capabilities</h2>
-<hr class="hairline">
-<figure><img src="img/03_1998-am-BROADCAST-reel-thumbnails.jpg" alt="Broadcast reel thumbnails" loading="lazy"><figcaption>Broadcast — the reel, ten spots deep. AM was early to bring Avid editing in-house</figcaption></figure>
-<div class="duo">
-<figure><img src="img/07_1998-am-capability-audio-golden-voice-studio.jpg" alt="Audio capability" loading="lazy"><figcaption>Audio — the Golden Voice studio</figcaption></figure>
-<figure><img src="img/08_1998-am-capability-print.jpg" alt="Print capability" loading="lazy"><figcaption>Print</figcaption></figure>
-<figure><img src="img/09_1998-am-capability-new-media.jpg" alt="New Media capability" loading="lazy"><figcaption>New Media — home of "the Lab"</figcaption></figure>
-<figure><img src="img/10_1998-am-capability-photography.jpg" alt="Photography capability" loading="lazy"><figcaption>Photography</figcaption></figure>
-</div>
-<figure><img src="img/11_1998-am-capability-pro-bono.jpg" alt="Pro bono work" loading="lazy"><figcaption>Pro Bono</figcaption></figure>
 
 <h2>The Clients</h2>
 <hr class="hairline">
-<figure><img src="img/12_1998-am-our-clients.jpg" alt="Our Clients" loading="lazy"><figcaption>Our Clients — Premier Parks, Brunswick, Thrifty, Southwestern Bell, Williams, Pizza Hut</figcaption></figure>
-<div class="duo">
-<figure><img src="img/13_1998-am-client-pizza-hut.jpg" alt="Pizza Hut client page" loading="lazy"><figcaption>Pizza Hut</figcaption></figure>
-<figure><img src="img/14_1998-am-client-williams.jpg" alt="Williams client page" loading="lazy"><figcaption>Williams</figcaption></figure>
-<figure><img src="img/15_1998-am-client-brunswick.jpg" alt="Brunswick client page" loading="lazy"><figcaption>Brunswick Bowling</figcaption></figure>
 <figure><img src="img/16_1998-am-client-thrifty.jpg" alt="Thrifty client page" loading="lazy"><figcaption>Thrifty</figcaption></figure>
-</div>
-<div class="duo">
-<figure><img src="img/17_1998-am-client-southwestern-bell.jpg" alt="Southwestern Bell client page" loading="lazy"><figcaption>Southwestern Bell</figcaption></figure>
-</div>
-<figure><img src="img/22_1998-am-pr-brunswick-cosmic-bowling.jpg" alt="Cosmic Bowling PR" loading="lazy"><figcaption>Public Relations — the Brunswick Cosmic Bowling launch</figcaption></figure>
-
-<h2>The Agency</h2>
-<hr class="hairline">
-<div class="duo">
-<figure><img src="img/20_1998-am-office-oklahoma-city.jpg" alt="Oklahoma City office" loading="lazy"><figcaption>The Oklahoma City office</figcaption></figure>
-<figure><img src="img/21_1998-am-media-department.jpg" alt="Media department" loading="lazy"><figcaption>The Media department</figcaption></figure>
-</div>
-<div class="duo">
-<figure><img src="img/23_1998-am-research.jpg" alt="Research" loading="lazy"><figcaption>Research</figcaption></figure>
-</div>
 
 <h2>The Offices</h2>
 <hr class="hairline">
