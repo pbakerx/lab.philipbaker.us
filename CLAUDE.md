@@ -118,9 +118,11 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     eleven navigation widgets from the original site, the actual interface rather than
     pictures of it. Square cells with percentage padding: the faces run both landscape
     (316x199) and portrait (200x249), and a fixed pixel inset starved the tall ones.
-  - Aug 2026: the section screenshots were culled down to Thrifty. The Front Door,
-    Capabilities and The Agency emptied out entirely and their headings went with them.
-    Everything removed is still in git history and in the master archive.
+  - Aug 2026: the section screenshots are **all** gone — The Front Door, Capabilities,
+    The Agency and The Clients emptied out and their headings went with them, so `img/`
+    holds only the masthead now. What's left is the collage, the offices, the closing
+    note and the reel. Everything removed is still in git history and in the master
+    archive.
   - **The Offices** (before the closing note) holds 17 photographs decompiled out of the
     am.com Shockwave movies. The source had 40 frames repeated across three identically-
     named directories (byte-identical — the "three offices" were one set shown thrice);
