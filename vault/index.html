@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Vault · lab.philipbaker.us</title>
-<meta name="description" content="Shockwave and Flash games built in the late '90s at Ackerman McQueen's New Media Lab — recovered from the Wayback Machine and playable again, alongside the Six Flags shells, the offices, and the Speed Zone film.">
+<meta name="description" content="Shockwave and Flash games built in the late '90s at Ackerman McQueen's New Media Lab — recovered from the Wayback Machine and playable again, alongside the Six Flags shells and the Speed Zone film.">
 <style>
 :root{--bg:#1a0e05;--ink:#fdf3ea;--dim:#c9b39d;--gold:#ffd24a;--card:#241408;--line:#3c2612}
 *{box-sizing:border-box}
@@ -18,11 +18,12 @@ h1 .gold{color:var(--gold)}
 .lede{max-width:640px;color:var(--dim);font-size:17px;margin:0 0 8px}
 .lede strong{color:var(--ink)}
 h2{font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:64px 0 6px}
-h3.sheet{font-size:15px;margin:28px 0 10px}
-h3.sheet .meta{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--dim);font-weight:400}
 .sub{color:var(--dim);font-size:14px;margin:0 0 20px;max-width:660px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.card-body{padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card .shot{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center top;
+            background:#000;border-bottom:1px solid var(--line)}
 .card h3{margin:0;font-size:16px}
 .card .meta{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--dim)}
 .card p{margin:2px 0 8px;font-size:13px;color:var(--dim);flex:1}
@@ -35,14 +36,6 @@ h3.sheet .meta{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var
 video{width:100%;border-radius:8px;background:#000;display:block}
 .film{max-width:720px}
 .film figcaption{font-size:12px;color:var(--dim);margin-top:8px}
-.sheet-grid{display:flex;flex-wrap:wrap;gap:6px}
-.sheet-grid a{display:block;line-height:0}
-/* Several office stills are sprite strips 2500px+ wide. At a fixed height they
-   dragged the whole page into horizontal scroll, so cap them to the column and
-   crop from the left — the full frame is one click away. */
-.sheet-grid img{height:72px;width:auto;max-width:100%;object-fit:cover;object-position:left;
-                border-radius:3px;border:1px solid var(--line);background:#000}
-.sheet-grid a{max-width:100%}
 .shellgrid{display:flex;flex-wrap:wrap;gap:14px}
 .shellgrid a{display:block;line-height:0;text-decoration:none}
 .shellgrid figure{margin:0}
@@ -66,16 +59,14 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-si
 <h2>The games</h2>
 <p class="sub">Played in place through <a href="https://github.com/igorlira/dirplayer-rs" rel="noopener">dirplayer</a> (Shockwave/Director) and <a href="https://ruffle.rs" rel="noopener">Ruffle</a> (Flash). Emulation of 25-year-old plugins is imperfect — every card also serves the untouched original file.</p>
 <div class="grid">
-<div class="card"><h3>Virtual Boomerang</h3><div class="meta">Darien Lake · 1998 · .dcr · 167&nbsp;KB</div><p>Ride the coaster with real mouse physics — pull down-left, push up-right; speed is power, stroke is lift, release angle is curve.</p><div class="row"><a class="play" href="player.html?f=03-darien-lake/darienlake_GAME_virtual-boomerang.dcr&t=Virtual+Boomerang">Play</a><a class="dl" href="media/03-darien-lake/darienlake_GAME_virtual-boomerang.dcr">original .dcr</a></div></div>
-<div class="card"><h3>Darien Lake '97</h3><div class="meta">Darien Lake · 1997 · .dcr · 136&nbsp;KB</div><p>The park's 1997 Shockwave attraction, from the site root — one of the earliest pieces in the archive.</p><div class="row"><a class="play" href="player.html?f=03-darien-lake/darienlake_GAME_1997-root.dcr&t=Darien+Lake+%2797">Play</a><a class="dl" href="media/03-darien-lake/darienlake_GAME_1997-root.dcr">original .dcr</a></div></div>
-<div class="card"><h3>Virtual Bowling</h3><div class="meta">Brunswick · 2001 · .dcr · 146&nbsp;KB</div><p>The online bowling game that ran a $500 monthly prize with live hi-score posting — the 2003 boards still showed real perfect 300s.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_GAME_bowling-preloader-1998.dcr&then=04-brunswick/brunswick_GAME_virtual-bowling.dcr&t=Virtual+Bowling">Play</a><a class="dl" href="media/04-brunswick/brunswick_GAME_virtual-bowling.dcr">original .dcr</a></div></div>
-<div class="card"><h3>Attitude Arena</h3><div class="meta">Brunswick · 1998–2001 · .dcr · 238&nbsp;KB</div><p>"The hottest arcade game on the net," per the 1998 Brunswick homepage. This is the full Shockwave game, recovered whole from adveract.com — behind its original preloader. The 1998 Flash&nbsp;v1 teaser survives too.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_GAME_attitude-preloader.dcr&then=08-adveractive/attitude_attitud1.dcr&t=Attitude+Arena">Play</a><a class="dl" href="player.html?f=04-brunswick/brunswick_GAME_attitude-alley.swf&t=Attitude+Alley+%2798">'98 teaser</a><a class="dl" href="media/08-adveractive/attitude_attitud1.dcr">original .dcr</a></div></div>
-<div class="card"><h3>Zone Pilot <span class="tag">found</span></h3><div class="meta">Brunswickids · 2001 · .dcr · 1&nbsp;MB</div><p>Presumed lost — only the 5&nbsp;KB loader was thought to survive. The whole game was archived at brunswickids.com: pilot a bowling ball, dodge the Cola Spill, e-Club splash intact. Plays start to finish.</p><div class="row"><a class="play" href="player.html?f=05-brunswickids/brunswickids_GAME_zone-pilot-loader.dcr&then=05-brunswickids/zonepilot.dcr&t=Zone+Pilot">Play</a><a class="dl" href="media/05-brunswickids/zonepilot.dcr">original .dcr</a></div></div>
-<div class="card"><h3>Shockwave Bowling</h3><div class="meta">Adveractive · 2001 · .dcr · 71&nbsp;KB</div><p>The bowling engine in its own right, from the studio that built the games behind the Lab's client work — the lineage that ran from Cosmic Bowling through every branded lane.</p><div class="row"><a class="play" href="player.html?f=08-adveractive/bowling_bowl7.dcr&t=Shockwave+Bowling">Play</a><a class="dl" href="media/08-adveractive/bowling_bowl7.dcr">original .dcr</a></div></div>
-<div class="card"><h3>Alien Maze</h3><div class="meta">Six Flags · 2001 · .dcr · 76&nbsp;KB</div><p>The sixflags.com arcade's maze game, complete in one file — high-score email gate, easy-to-hard slider, neon walls and all. Enter as "anonymous" and go.</p><div class="row"><a class="play" href="player.html?f=09-sixflags/sixflags_arcade_maze_2001.dcr&t=Alien+Maze">Play</a><a class="dl" href="player.html?f=09-sixflags/sixflags_arcade_2000.swf&t=Six+Flags+Arcade+Menu">'00 arcade menu</a><a class="dl" href="media/09-sixflags/sixflags_arcade_maze_2001.dcr">original .dcr</a></div></div>
-<div class="card"><h3>DNA Pinball Challenge</h3><div class="meta">WilTel · 2004 · .swf · 64&nbsp;KB</div><p>Full pinball table from a WilTel email campaign — football theme, arrow-key flippers, click to play.</p><div class="row"><a class="play" href="player.html?f=10-wiltel/wiltel_dna-pinball_2004.swf&t=DNA+Pinball+Challenge">Play</a><a class="dl" href="media/10-wiltel/wiltel_dna-pinball_2004.swf">original .swf</a></div></div>
-<div class="card"><h3>Winner with Vyvx</h3><div class="meta">WilTel · 2004 · .swf · 308&nbsp;KB</div><p>The Vyvx campaign contest game — the biggest Flash game in the collection.</p><div class="row"><a class="play" href="player.html?f=10-wiltel/wiltel_vyvx-game_2004.swf&t=Winner+with+Vyvx">Play</a><a class="dl" href="media/10-wiltel/wiltel_vyvx-game_2004.swf">original .swf</a></div></div>
-<div class="card"><h3>Brunswick Consumer Site</h3><div class="meta">Brunswick · 2000 · .swf&nbsp;v4 · 148&nbsp;KB</div><p>The full Flash shell of brunswickbowling.com's consumer side.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_consumer-shell.swf&t=Brunswick+Consumer+Site">Play</a><a class="dl" href="media/04-brunswick/brunswick_consumer-shell.swf">original .swf</a></div></div>
+<div class="card" data-shot="virtual-boomerang"><div class="card-body"><h3>Virtual Boomerang</h3><div class="meta">Darien Lake · 1998 · .dcr · 167&nbsp;KB</div><p>Ride the coaster with real mouse physics — pull down-left, push up-right; speed is power, stroke is lift, release angle is curve.</p><div class="row"><a class="play" href="player.html?f=03-darien-lake/darienlake_GAME_virtual-boomerang.dcr&t=Virtual+Boomerang">Play</a><a class="dl" href="media/03-darien-lake/darienlake_GAME_virtual-boomerang.dcr">original .dcr</a></div></div></div>
+<div class="card" data-shot="darien-lake-97"><div class="card-body"><h3>Darien Lake '97</h3><div class="meta">Darien Lake · 1997 · .dcr · 136&nbsp;KB</div><p>The park's 1997 Shockwave attraction, from the site root — one of the earliest pieces in the archive.</p><div class="row"><a class="play" href="player.html?f=03-darien-lake/darienlake_GAME_1997-root.dcr&t=Darien+Lake+%2797">Play</a><a class="dl" href="media/03-darien-lake/darienlake_GAME_1997-root.dcr">original .dcr</a></div></div></div>
+<div class="card" data-shot="virtual-bowling"><div class="card-body"><h3>Virtual Bowling</h3><div class="meta">Brunswick · 2001 · .dcr · 146&nbsp;KB</div><p>The online bowling game that ran a $500 monthly prize with live hi-score posting — the 2003 boards still showed real perfect 300s.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_GAME_bowling-preloader-1998.dcr&then=04-brunswick/brunswick_GAME_virtual-bowling.dcr&t=Virtual+Bowling">Play</a><a class="dl" href="media/04-brunswick/brunswick_GAME_virtual-bowling.dcr">original .dcr</a></div></div></div>
+<div class="card" data-shot="attitude-arena"><div class="card-body"><h3>Attitude Arena</h3><div class="meta">Brunswick · 1998–2001 · .dcr · 238&nbsp;KB</div><p>"The hottest arcade game on the net," per the 1998 Brunswick homepage. This is the full Shockwave game, recovered whole from adveract.com — behind its original preloader. The 1998 Flash&nbsp;v1 teaser survives too.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_GAME_attitude-preloader.dcr&then=08-adveractive/attitude_attitud1.dcr&t=Attitude+Arena">Play</a><a class="dl" href="player.html?f=04-brunswick/brunswick_GAME_attitude-alley.swf&t=Attitude+Alley+%2798">'98 teaser</a><a class="dl" href="media/08-adveractive/attitude_attitud1.dcr">original .dcr</a></div></div></div>
+<div class="card" data-shot="zone-pilot"><div class="card-body"><h3>Zone Pilot <span class="tag">found</span></h3><div class="meta">Brunswickids · 2001 · .dcr · 1&nbsp;MB</div><p>Presumed lost — only the 5&nbsp;KB loader was thought to survive. The whole game was archived at brunswickids.com: pilot a bowling ball, dodge the Cola Spill, e-Club splash intact. Plays start to finish.</p><div class="row"><a class="play" href="player.html?f=05-brunswickids/brunswickids_GAME_zone-pilot-loader.dcr&then=05-brunswickids/zonepilot.dcr&t=Zone+Pilot">Play</a><a class="dl" href="media/05-brunswickids/zonepilot.dcr">original .dcr</a></div></div></div>
+<div class="card" data-shot="shockwave-bowling"><div class="card-body"><h3>Shockwave Bowling</h3><div class="meta">Adveractive · 2001 · .dcr · 71&nbsp;KB</div><p>The bowling engine in its own right, from the studio that built the games behind the Lab's client work — the lineage that ran from Cosmic Bowling through every branded lane.</p><div class="row"><a class="play" href="player.html?f=08-adveractive/bowling_bowl7.dcr&t=Shockwave+Bowling">Play</a><a class="dl" href="media/08-adveractive/bowling_bowl7.dcr">original .dcr</a></div></div></div>
+<div class="card" data-shot="alien-maze"><div class="card-body"><h3>Alien Maze</h3><div class="meta">Six Flags · 2001 · .dcr · 76&nbsp;KB</div><p>The sixflags.com arcade's maze game, complete in one file — high-score email gate, easy-to-hard slider, neon walls and all. Enter as "anonymous" and go.</p><div class="row"><a class="play" href="player.html?f=09-sixflags/sixflags_arcade_maze_2001.dcr&t=Alien+Maze">Play</a><a class="dl" href="player.html?f=09-sixflags/sixflags_arcade_2000.swf&t=Six+Flags+Arcade+Menu">'00 arcade menu</a><a class="dl" href="media/09-sixflags/sixflags_arcade_maze_2001.dcr">original .dcr</a></div></div></div>
+<div class="card" data-shot="brunswick-consumer-site"><div class="card-body"><h3>Brunswick Consumer Site</h3><div class="meta">Brunswick · 2000 · .swf&nbsp;v4 · 148&nbsp;KB</div><p>The full Flash shell of brunswickbowling.com's consumer side.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_consumer-shell.swf&t=Brunswick+Consumer+Site">Play</a><a class="dl" href="media/04-brunswick/brunswick_consumer-shell.swf">original .swf</a></div></div></div>
 </div>
 
 <h2>Six Flags, as it shipped</h2>
@@ -85,7 +76,6 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-si
 <a href="play.html?f=sixflags_greatadventure_home_2000.swf&t=Six Flags Great Adventure"><figure><img src="shellshots/sixflags_greatadventure_home_2000.jpg" loading="lazy" alt="Six Flags Great Adventure — homepage shell, 2000"><figcaption>Six Flags Great Adventure — homepage shell, 2000 &#8599;</figcaption></figure></a>
 <a href="play.html?f=sixflags_georgia_home_2000.swf&t=Six Flags Over Georgia"><figure><img src="shellshots/sixflags_georgia_home_2000.jpg" loading="lazy" alt="Six Flags Over Georgia — homepage shell, 2000"><figcaption>Six Flags Over Georgia — homepage shell, 2000 &#8599;</figcaption></figure></a>
 <a href="play.html?f=sixflags_arcade_2000.swf&t=sixflags.com arcade menu, 2000"><figure><img src="shellshots/sixflags_arcade_2000.jpg" loading="lazy" alt="sixflags.com arcade menu, 2000"><figcaption>sixflags.com arcade menu, 2000 &#8599;</figcaption></figure></a>
-<a href="play.html?f=sixflags_parkhome_2002.swf&t=Six Flags park template, 2002"><figure><img src="shellshots/sixflags_parkhome_2002.jpg" loading="lazy" alt="Six Flags park template, 2002"><figcaption>Six Flags park template, 2002 &#8599;</figcaption></figure></a>
 </div>
 
 <h2>Brunswick Speed Zone</h2>
@@ -94,135 +84,6 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-si
 <video controls preload="metadata" src="movies/brunswick_video_SpeedZone_HIGH.mp4"></video>
 <figcaption>Brunswick Speed Zone — NASCAR film, 1998</figcaption>
 </figure>
-
-<h2>The offices</h2>
-<p class="sub">Pulled out of the am.com Shockwave movies with a decompiler — the Tulsa, Oklahoma City and Colorado Springs offices as they were photographed for the site. Click any frame for full size.</p>
-<h3 class="sheet">Offices <span class="meta">(40)</span></h3><div class="sheet-grid">
-<a href="stills/am_offices/ediM-373.jpg"><img src="stills/am_offices/ediM-373.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-377.jpg"><img src="stills/am_offices/ediM-377.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-384.jpg"><img src="stills/am_offices/ediM-384.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-386.jpg"><img src="stills/am_offices/ediM-386.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-413.jpg"><img src="stills/am_offices/ediM-413.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-438.jpg"><img src="stills/am_offices/ediM-438.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-449.jpg"><img src="stills/am_offices/ediM-449.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-524.jpg"><img src="stills/am_offices/ediM-524.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-532.jpg"><img src="stills/am_offices/ediM-532.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-540.jpg"><img src="stills/am_offices/ediM-540.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-544.jpg"><img src="stills/am_offices/ediM-544.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-548.jpg"><img src="stills/am_offices/ediM-548.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-552.jpg"><img src="stills/am_offices/ediM-552.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-556.jpg"><img src="stills/am_offices/ediM-556.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-580.jpg"><img src="stills/am_offices/ediM-580.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-584.jpg"><img src="stills/am_offices/ediM-584.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-590.jpg"><img src="stills/am_offices/ediM-590.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-594.jpg"><img src="stills/am_offices/ediM-594.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-602.jpg"><img src="stills/am_offices/ediM-602.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-607.jpg"><img src="stills/am_offices/ediM-607.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-611.jpg"><img src="stills/am_offices/ediM-611.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-615.jpg"><img src="stills/am_offices/ediM-615.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-619.jpg"><img src="stills/am_offices/ediM-619.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-623.jpg"><img src="stills/am_offices/ediM-623.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-627.jpg"><img src="stills/am_offices/ediM-627.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-640.jpg"><img src="stills/am_offices/ediM-640.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-644.jpg"><img src="stills/am_offices/ediM-644.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-648.jpg"><img src="stills/am_offices/ediM-648.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-652.jpg"><img src="stills/am_offices/ediM-652.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-656.jpg"><img src="stills/am_offices/ediM-656.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-660.jpg"><img src="stills/am_offices/ediM-660.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-664.jpg"><img src="stills/am_offices/ediM-664.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-682.jpg"><img src="stills/am_offices/ediM-682.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-686.jpg"><img src="stills/am_offices/ediM-686.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-690.jpg"><img src="stills/am_offices/ediM-690.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-694.jpg"><img src="stills/am_offices/ediM-694.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-698.jpg"><img src="stills/am_offices/ediM-698.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-702.jpg"><img src="stills/am_offices/ediM-702.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-706.jpg"><img src="stills/am_offices/ediM-706.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_offices/ediM-710.jpg"><img src="stills/am_offices/ediM-710.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Office: Oklahoma City <span class="meta">(40)</span></h3><div class="sheet-grid">
-<a href="stills/am_office_oklahoma-city/ediM-1004.jpg"><img src="stills/am_office_oklahoma-city/ediM-1004.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-1017.jpg"><img src="stills/am_office_oklahoma-city/ediM-1017.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-1021.jpg"><img src="stills/am_office_oklahoma-city/ediM-1021.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-1025.jpg"><img src="stills/am_office_oklahoma-city/ediM-1025.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-1029.jpg"><img src="stills/am_office_oklahoma-city/ediM-1029.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-782.jpg"><img src="stills/am_office_oklahoma-city/ediM-782.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-786.jpg"><img src="stills/am_office_oklahoma-city/ediM-786.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-790.jpg"><img src="stills/am_office_oklahoma-city/ediM-790.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-798.jpg"><img src="stills/am_office_oklahoma-city/ediM-798.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-802.jpg"><img src="stills/am_office_oklahoma-city/ediM-802.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-806.jpg"><img src="stills/am_office_oklahoma-city/ediM-806.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-810.jpg"><img src="stills/am_office_oklahoma-city/ediM-810.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-814.jpg"><img src="stills/am_office_oklahoma-city/ediM-814.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-838.jpg"><img src="stills/am_office_oklahoma-city/ediM-838.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-842.jpg"><img src="stills/am_office_oklahoma-city/ediM-842.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-848.jpg"><img src="stills/am_office_oklahoma-city/ediM-848.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-852.jpg"><img src="stills/am_office_oklahoma-city/ediM-852.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-860.jpg"><img src="stills/am_office_oklahoma-city/ediM-860.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-865.jpg"><img src="stills/am_office_oklahoma-city/ediM-865.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-869.jpg"><img src="stills/am_office_oklahoma-city/ediM-869.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-873.jpg"><img src="stills/am_office_oklahoma-city/ediM-873.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-877.jpg"><img src="stills/am_office_oklahoma-city/ediM-877.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-881.jpg"><img src="stills/am_office_oklahoma-city/ediM-881.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-885.jpg"><img src="stills/am_office_oklahoma-city/ediM-885.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-898.jpg"><img src="stills/am_office_oklahoma-city/ediM-898.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-902.jpg"><img src="stills/am_office_oklahoma-city/ediM-902.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-906.jpg"><img src="stills/am_office_oklahoma-city/ediM-906.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-910.jpg"><img src="stills/am_office_oklahoma-city/ediM-910.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-914.jpg"><img src="stills/am_office_oklahoma-city/ediM-914.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-918.jpg"><img src="stills/am_office_oklahoma-city/ediM-918.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-922.jpg"><img src="stills/am_office_oklahoma-city/ediM-922.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-940.jpg"><img src="stills/am_office_oklahoma-city/ediM-940.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-944.jpg"><img src="stills/am_office_oklahoma-city/ediM-944.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-948.jpg"><img src="stills/am_office_oklahoma-city/ediM-948.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-952.jpg"><img src="stills/am_office_oklahoma-city/ediM-952.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-956.jpg"><img src="stills/am_office_oklahoma-city/ediM-956.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-960.jpg"><img src="stills/am_office_oklahoma-city/ediM-960.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-964.jpg"><img src="stills/am_office_oklahoma-city/ediM-964.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-968.jpg"><img src="stills/am_office_oklahoma-city/ediM-968.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_oklahoma-city/ediM-976.jpg"><img src="stills/am_office_oklahoma-city/ediM-976.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Office: Colorado Springs <span class="meta">(40)</span></h3><div class="sheet-grid">
-<a href="stills/am_office_colorado/ediM-1004.jpg"><img src="stills/am_office_colorado/ediM-1004.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-1017.jpg"><img src="stills/am_office_colorado/ediM-1017.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-1021.jpg"><img src="stills/am_office_colorado/ediM-1021.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-1025.jpg"><img src="stills/am_office_colorado/ediM-1025.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-1029.jpg"><img src="stills/am_office_colorado/ediM-1029.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-782.jpg"><img src="stills/am_office_colorado/ediM-782.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-786.jpg"><img src="stills/am_office_colorado/ediM-786.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-790.jpg"><img src="stills/am_office_colorado/ediM-790.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-798.jpg"><img src="stills/am_office_colorado/ediM-798.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-802.jpg"><img src="stills/am_office_colorado/ediM-802.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-806.jpg"><img src="stills/am_office_colorado/ediM-806.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-810.jpg"><img src="stills/am_office_colorado/ediM-810.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-814.jpg"><img src="stills/am_office_colorado/ediM-814.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-838.jpg"><img src="stills/am_office_colorado/ediM-838.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-842.jpg"><img src="stills/am_office_colorado/ediM-842.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-848.jpg"><img src="stills/am_office_colorado/ediM-848.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-852.jpg"><img src="stills/am_office_colorado/ediM-852.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-860.jpg"><img src="stills/am_office_colorado/ediM-860.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-865.jpg"><img src="stills/am_office_colorado/ediM-865.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-869.jpg"><img src="stills/am_office_colorado/ediM-869.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-873.jpg"><img src="stills/am_office_colorado/ediM-873.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-877.jpg"><img src="stills/am_office_colorado/ediM-877.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-881.jpg"><img src="stills/am_office_colorado/ediM-881.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-885.jpg"><img src="stills/am_office_colorado/ediM-885.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-898.jpg"><img src="stills/am_office_colorado/ediM-898.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-902.jpg"><img src="stills/am_office_colorado/ediM-902.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-906.jpg"><img src="stills/am_office_colorado/ediM-906.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-910.jpg"><img src="stills/am_office_colorado/ediM-910.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-914.jpg"><img src="stills/am_office_colorado/ediM-914.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-918.jpg"><img src="stills/am_office_colorado/ediM-918.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-922.jpg"><img src="stills/am_office_colorado/ediM-922.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-940.jpg"><img src="stills/am_office_colorado/ediM-940.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-944.jpg"><img src="stills/am_office_colorado/ediM-944.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-948.jpg"><img src="stills/am_office_colorado/ediM-948.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-952.jpg"><img src="stills/am_office_colorado/ediM-952.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-956.jpg"><img src="stills/am_office_colorado/ediM-956.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-960.jpg"><img src="stills/am_office_colorado/ediM-960.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-964.jpg"><img src="stills/am_office_colorado/ediM-964.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-968.jpg"><img src="stills/am_office_colorado/ediM-968.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_office_colorado/ediM-976.jpg"><img src="stills/am_office_colorado/ediM-976.jpg" loading="lazy" alt=""></a>
-</div>
 
 <h2>Fragments &amp; downloads</h2>
 <p class="sub">Pieces that survive but can't run in a browser: streaming-Shockwave ride stubs whose external casts were never archived, QuickTime&nbsp;VR tours, and the era's screensavers and installers — served as-is.</p>
@@ -241,6 +102,26 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-si
 <p><em>"Each member of the 'Lab' matured from a successful history in traditional concepts — and a mouse in one hand."</em> — am.com, 1998</p>
 </footer>
 </div>
+<script>
+// Card artwork is opt-in by file: drop vault/shots/<slug>.jpg and the card picks
+// it up on next load. Probing with Image() rather than emitting <img> up front
+// means a missing shot leaves no broken-image box behind.
+(() => {
+  for (const card of document.querySelectorAll('.card[data-shot]')) {
+    const src = 'shots/' + card.dataset.shot + '.jpg';
+    const probe = new Image();
+    probe.onload = () => {
+      const img = document.createElement('img');
+      img.className = 'shot';
+      img.src = src;
+      img.loading = 'lazy';
+      img.alt = '';
+      card.prepend(img);
+    };
+    probe.src = src;
+  }
+})();
+</script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>

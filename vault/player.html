@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Player · The Arcade</title>
+<title>Player · The Vault</title>
 <style>
 :root{--bg:#1a0e05;--ink:#fdf3ea;--dim:#c9b39d;--gold:#ffd24a;--line:#3c2612}
 *{box-sizing:border-box}
@@ -24,7 +24,7 @@ footer a{color:var(--dim)}
 </head>
 <body>
 <header>
-  <span class="crumb"><a href="index.html">← the arcade</a></span>
+  <span class="crumb"><a href="index.html">← the vault</a></span>
   <h1 id="title"></h1>
   <span class="crumb" id="orig"></span>
 </header>
@@ -39,11 +39,11 @@ footer a{color:var(--dim)}
   var stage = document.getElementById("stage");
   var note = document.getElementById("engine-note");
   document.getElementById("title").textContent = t;
-  document.title = t + " · The Arcade";
+  document.title = t + " · The Vault";
 
   // only serve files that live under media/, no traversal
   if (!/^[\w][\w\/. '%-]*\.(dcr|swf|mp4|mov)$/i.test(f) || f.indexOf("..") !== -1) {
-    stage.innerHTML = '<div id="msg">Nothing to play — pick a game from <a href="index.html">the arcade</a>.</div>';
+    stage.innerHTML = '<div id="msg">Nothing to play — pick a game from <a href="index.html">the vault</a>.</div>';
     return;
   }
   var src = "media/" + f.split("/").map(encodeURIComponent).join("/");

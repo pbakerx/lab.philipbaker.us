@@ -114,6 +114,11 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
 - **/am-1998** — the black-and-white am.com (1997–99) Philip designed; Wayback screenshots.
   The homepage hero was reconstructed: original HTML + the separately-recovered
   `graphics/main/on.gif` (Wayback replay never rendered it).
+  - **The Offices** (before the closing note) holds 17 photographs decompiled out of the
+    am.com Shockwave movies. The source had 40 frames repeated across three identically-
+    named directories (byte-identical — the "three offices" were one set shown thrice);
+    23 of those were text banners, rules and gradients, so only the actual building
+    exteriors and interiors were kept.
   - **The Screening Room** at the bottom (under the closing note) holds the 14 recovered
     TV spots and venue films. Philip did **not** produce these — they're agency work from
     the same years, and the page says so. The files still live in `vault/movies/`, so the
@@ -132,13 +137,22 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     have always been there.
   - `.swf` → Ruffle from unpkg CDN, loaded with `openUrlMode:"deny"` because era shells
     call getURL on load and would navigate the page away.
-  - What survived the Aug 2026 cull: the 10 games, the 5 Six Flags shells, the three
-    office contact sheets (120 stills), and Speed Zone at full quality. Gone: the other
-    22 contact sheets, the site-design screenshots, the NRALive/WilTel shells (the WilTel
-    games survive as game cards). The screening room moved to **/am-1998**. Everything
-    removed is still in git history and in the master archive.
-  - Office stills are sprite strips up to 2500px wide; `.sheet-grid img` caps them with
-    `max-width:100%` + `object-fit:cover` or they drag the page into horizontal scroll.
+  - After the Aug 2026 cull: 8 games, 4 Six Flags shells, Speed Zone at full quality.
+    Gone: all 25 contact sheets, the site-design screenshots, the NRALive/WilTel shells,
+    the DNA Pinball and Winner-with-Vyvx cards, and the Six Flags park template 2002.
+    The screening room and the offices both moved to **/am-1998**. Everything removed is
+    still in git history and in the master archive.
+  - **Card artwork is opt-in by file.** Each game card carries `data-shot="<slug>"`; an
+    inline script probes `vault/shots/<slug>.jpg` with `new Image()` and only inserts an
+    `<img>` if it loads, so a missing shot leaves no broken-image box. Drop a file in and
+    the card dresses itself — no markup change. Slugs: `virtual-boomerang`,
+    `darien-lake-97`, `virtual-bowling`, `attitude-arena`, `zone-pilot`,
+    `shockwave-bowling`, `alien-maze`, `brunswick-consumer-site`.
+  - **Capturing those shots needs a real browser.** In a headless/hidden pane `rAF` never
+    ticks, so dirplayer (all the `.dcr` games) never paints — the canvas reads 0 non-black
+    pixels. Ruffle (`.swf`) *does* render on screen but its WebGL buffer is not readable
+    (`preserveDrawingBuffer:false`), so `toDataURL` returns blank. Screenshot the games in
+    a normal browser window instead.
 - **/hello** — the original example.
 
 ## The master archive (not in this repo)
