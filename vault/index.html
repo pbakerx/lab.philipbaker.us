@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Vault · lab.philipbaker.us</title>
-<meta name="description" content="Everything recovered from the Ackerman McQueen era — TV spots, venue films, and hundreds of stills pulled from inside dead Shockwave movies.">
+<meta name="description" content="Shockwave and Flash games built in the late '90s at Ackerman McQueen's New Media Lab — recovered from the Wayback Machine and playable again, alongside the Six Flags shells, the offices, and the Speed Zone film.">
 <style>
 :root{--bg:#1a0e05;--ink:#fdf3ea;--dim:#c9b39d;--gold:#ffd24a;--card:#241408;--line:#3c2612}
 *{box-sizing:border-box}
@@ -16,180 +16,87 @@ a{color:var(--gold)}
 h1{font-size:clamp(36px,7vw,64px);line-height:1.02;margin:0 0 16px;letter-spacing:-.02em}
 h1 .gold{color:var(--gold)}
 .lede{max-width:640px;color:var(--dim);font-size:17px;margin:0 0 8px}
+.lede strong{color:var(--ink)}
 h2{font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:64px 0 6px}
 h3.sheet{font-size:15px;margin:28px 0 10px}
 h3.sheet .meta{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--dim);font-weight:400}
 .sub{color:var(--dim);font-size:14px;margin:0 0 20px;max-width:660px}
-.vidgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.vidgrid figure{margin:0}
-.vidgrid figcaption{font-size:12px;color:var(--dim);margin-top:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px}
+.card h3{margin:0;font-size:16px}
+.card .meta{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--dim)}
+.card p{margin:2px 0 8px;font-size:13px;color:var(--dim);flex:1}
+.row{display:flex;gap:12px;align-items:center}
+.play{display:inline-block;background:var(--gold);color:#1a0e05;font-weight:600;font-size:13px;text-decoration:none;padding:7px 16px;border-radius:999px}
+.play:hover{filter:brightness(1.08)}
+.dl{font-size:12px;color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--dim)}
+.dl:hover{color:var(--gold)}
+.tag{display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.08em;color:var(--bg);background:var(--dim);border-radius:3px;padding:2px 6px;vertical-align:2px}
 video{width:100%;border-radius:8px;background:#000;display:block}
+.film{max-width:720px}
+.film figcaption{font-size:12px;color:var(--dim);margin-top:8px}
 .sheet-grid{display:flex;flex-wrap:wrap;gap:6px}
 .sheet-grid a{display:block;line-height:0}
-.sheet-grid img{height:72px;width:auto;border-radius:3px;border:1px solid var(--line);background:#000}
-.sheet-grid.sites{gap:14px}
-.sheet-grid.sites img{height:auto;width:236px}
-.sheet-grid.sites figure{margin:0}
-.sheet-grid.sites figcaption{font-size:11px;color:var(--dim);line-height:1.4;padding-top:4px;font-family:ui-monospace,Menlo,monospace}
+/* Several office stills are sprite strips 2500px+ wide. At a fixed height they
+   dragged the whole page into horizontal scroll, so cap them to the column and
+   crop from the left — the full frame is one click away. */
+.sheet-grid img{height:72px;width:auto;max-width:100%;object-fit:cover;object-position:left;
+                border-radius:3px;border:1px solid var(--line);background:#000}
+.sheet-grid a{max-width:100%}
+.shellgrid{display:flex;flex-wrap:wrap;gap:14px}
+.shellgrid a{display:block;line-height:0;text-decoration:none}
+.shellgrid figure{margin:0}
+.shellgrid img{width:236px;height:auto;border-radius:4px;border:1px solid var(--line);background:#000}
+.shellgrid figcaption{font-size:11px;color:var(--dim);line-height:1.4;padding-top:4px;font-family:ui-monospace,Menlo,monospace}
+ul.plain{list-style:none;margin:0;padding:0;columns:2;column-gap:32px}
+ul.plain li{margin:0 0 8px;font-size:13px;break-inside:avoid}
+ul.plain .meta{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--dim)}
 footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-size:12px;color:var(--dim);max-width:660px}
+@media(max-width:560px){ul.plain{columns:1}}
 </style>
 </head>
 <body>
 <div class="wrap">
+<header>
 <p class="crumb"><a href="/">lab.philipbaker.us</a> / vault</p>
 <h1>The <span class="gold">Vault</span></h1>
-<p class="lede">Everything recovered from the Ackerman&nbsp;McQueen era that isn't a game: the TV spots and venue films the crawlers happened to catch, and hundreds of stills cut out of Shockwave movies that stopped playing twenty years ago. Games live in <a href="/arcade/">the arcade</a>; the black-and-white site lives at <a href="/am-1998/">/am-1998</a>.</p>
-<h2>The screening room</h2>
-<p class="sub">Every movie recovered so far, converted to play here. The untouched originals (QuickTime, AVI, Windows Media) live in the master archive.</p>
-<div class="vidgrid">
-<figure><video controls preload="metadata" src="movies/OK-Tourism_Spot-1_60sec.mp4"></video><figcaption>All-Terrain Vacation — Spot 1 (:60) · Oklahoma Tourism</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/OK-Tourism_Spot-2_30sec.mp4"></video><figcaption>All-Terrain Vacation — Spot 2 (:30) · recovered after the manifest called it lost</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/OK-Tourism_Spot-3_30sec.mp4"></video><figcaption>All-Terrain Vacation — Spot 3 (:30)</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/OK-Tourism_Spot-4_Oklahoma-City_30sec.mp4"></video><figcaption>Feature: Oklahoma City (:30)</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/OK-Tourism_Spot-5_Tulsa_30sec.mp4"></video><figcaption>Feature: Tulsa (:30)</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/brunswick_video_SpeedZone_HIGH.mp4"></video><figcaption>Brunswick Speed Zone — NASCAR film, 1998 (full quality)</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/brunswick_video_SpeedZone_MED.mp4"></video><figcaption>Speed Zone — 4 MB web version, as served in 1998</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/brunswick_video_SpeedZone_LOW.mp4"></video><figcaption>Speed Zone — 1.8 MB dial-up version</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/tulsaconvention_Arena.mp4"></video><figcaption>Tulsa Convention Center — Arena, 1998</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/tulsaconvention_Assembly.mp4"></video><figcaption>Tulsa Convention Center — Assembly Hall</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/tulsaconvention_Conference.mp4"></video><figcaption>Tulsa Convention Center — Conference</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/tulsaconvention_Exhibit.mp4"></video><figcaption>Tulsa Convention Center — Exhibit Hall</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/tulsaconvention_Gallery.mp4"></video><figcaption>Tulsa Convention Center — Gallery</figcaption></figure>
-<figure><video controls preload="metadata" src="movies/oge_safety_video.mp4"></video><figcaption>OG&amp;E safety video, 1998</figcaption></figure>
+<p class="lede">In the late '90s I was part of the New Media <strong>"Lab"</strong> at Ackerman&nbsp;McQueen, building Shockwave and Flash games when a game in a browser was a small miracle. The plugins died; the work didn't. These are the original binaries, recovered from the <a href="https://web.archive.org" rel="noopener">Wayback Machine</a> — running again through WebAssembly emulation, alongside the few other things worth keeping. The black-and-white site lives at <a href="/am-1998/">/am-1998</a>.</p>
+</header>
+
+<h2>The games</h2>
+<p class="sub">Played in place through <a href="https://github.com/igorlira/dirplayer-rs" rel="noopener">dirplayer</a> (Shockwave/Director) and <a href="https://ruffle.rs" rel="noopener">Ruffle</a> (Flash). Emulation of 25-year-old plugins is imperfect — every card also serves the untouched original file.</p>
+<div class="grid">
+<div class="card"><h3>Virtual Boomerang</h3><div class="meta">Darien Lake · 1998 · .dcr · 167&nbsp;KB</div><p>Ride the coaster with real mouse physics — pull down-left, push up-right; speed is power, stroke is lift, release angle is curve.</p><div class="row"><a class="play" href="player.html?f=03-darien-lake/darienlake_GAME_virtual-boomerang.dcr&t=Virtual+Boomerang">Play</a><a class="dl" href="media/03-darien-lake/darienlake_GAME_virtual-boomerang.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Darien Lake '97</h3><div class="meta">Darien Lake · 1997 · .dcr · 136&nbsp;KB</div><p>The park's 1997 Shockwave attraction, from the site root — one of the earliest pieces in the archive.</p><div class="row"><a class="play" href="player.html?f=03-darien-lake/darienlake_GAME_1997-root.dcr&t=Darien+Lake+%2797">Play</a><a class="dl" href="media/03-darien-lake/darienlake_GAME_1997-root.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Virtual Bowling</h3><div class="meta">Brunswick · 2001 · .dcr · 146&nbsp;KB</div><p>The online bowling game that ran a $500 monthly prize with live hi-score posting — the 2003 boards still showed real perfect 300s.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_GAME_bowling-preloader-1998.dcr&then=04-brunswick/brunswick_GAME_virtual-bowling.dcr&t=Virtual+Bowling">Play</a><a class="dl" href="media/04-brunswick/brunswick_GAME_virtual-bowling.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Attitude Arena</h3><div class="meta">Brunswick · 1998–2001 · .dcr · 238&nbsp;KB</div><p>"The hottest arcade game on the net," per the 1998 Brunswick homepage. This is the full Shockwave game, recovered whole from adveract.com — behind its original preloader. The 1998 Flash&nbsp;v1 teaser survives too.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_GAME_attitude-preloader.dcr&then=08-adveractive/attitude_attitud1.dcr&t=Attitude+Arena">Play</a><a class="dl" href="player.html?f=04-brunswick/brunswick_GAME_attitude-alley.swf&t=Attitude+Alley+%2798">'98 teaser</a><a class="dl" href="media/08-adveractive/attitude_attitud1.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Zone Pilot <span class="tag">found</span></h3><div class="meta">Brunswickids · 2001 · .dcr · 1&nbsp;MB</div><p>Presumed lost — only the 5&nbsp;KB loader was thought to survive. The whole game was archived at brunswickids.com: pilot a bowling ball, dodge the Cola Spill, e-Club splash intact. Plays start to finish.</p><div class="row"><a class="play" href="player.html?f=05-brunswickids/brunswickids_GAME_zone-pilot-loader.dcr&then=05-brunswickids/zonepilot.dcr&t=Zone+Pilot">Play</a><a class="dl" href="media/05-brunswickids/zonepilot.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Shockwave Bowling</h3><div class="meta">Adveractive · 2001 · .dcr · 71&nbsp;KB</div><p>The bowling engine in its own right, from the studio that built the games behind the Lab's client work — the lineage that ran from Cosmic Bowling through every branded lane.</p><div class="row"><a class="play" href="player.html?f=08-adveractive/bowling_bowl7.dcr&t=Shockwave+Bowling">Play</a><a class="dl" href="media/08-adveractive/bowling_bowl7.dcr">original .dcr</a></div></div>
+<div class="card"><h3>Alien Maze</h3><div class="meta">Six Flags · 2001 · .dcr · 76&nbsp;KB</div><p>The sixflags.com arcade's maze game, complete in one file — high-score email gate, easy-to-hard slider, neon walls and all. Enter as "anonymous" and go.</p><div class="row"><a class="play" href="player.html?f=09-sixflags/sixflags_arcade_maze_2001.dcr&t=Alien+Maze">Play</a><a class="dl" href="player.html?f=09-sixflags/sixflags_arcade_2000.swf&t=Six+Flags+Arcade+Menu">'00 arcade menu</a><a class="dl" href="media/09-sixflags/sixflags_arcade_maze_2001.dcr">original .dcr</a></div></div>
+<div class="card"><h3>DNA Pinball Challenge</h3><div class="meta">WilTel · 2004 · .swf · 64&nbsp;KB</div><p>Full pinball table from a WilTel email campaign — football theme, arrow-key flippers, click to play.</p><div class="row"><a class="play" href="player.html?f=10-wiltel/wiltel_dna-pinball_2004.swf&t=DNA+Pinball+Challenge">Play</a><a class="dl" href="media/10-wiltel/wiltel_dna-pinball_2004.swf">original .swf</a></div></div>
+<div class="card"><h3>Winner with Vyvx</h3><div class="meta">WilTel · 2004 · .swf · 308&nbsp;KB</div><p>The Vyvx campaign contest game — the biggest Flash game in the collection.</p><div class="row"><a class="play" href="player.html?f=10-wiltel/wiltel_vyvx-game_2004.swf&t=Winner+with+Vyvx">Play</a><a class="dl" href="media/10-wiltel/wiltel_vyvx-game_2004.swf">original .swf</a></div></div>
+<div class="card"><h3>Brunswick Consumer Site</h3><div class="meta">Brunswick · 2000 · .swf&nbsp;v4 · 148&nbsp;KB</div><p>The full Flash shell of brunswickbowling.com's consumer side.</p><div class="row"><a class="play" href="player.html?f=04-brunswick/brunswick_consumer-shell.swf&t=Brunswick+Consumer+Site">Play</a><a class="dl" href="media/04-brunswick/brunswick_consumer-shell.swf">original .swf</a></div></div>
 </div>
-<h2>Contact sheets — inside the Shockwave site</h2>
-<p class="sub">454 JPEGs pulled out of the 2001–03 am.com Director movies with a decompiler. Grouped by the movie they were embedded in; click any frame for full size.</p>
-<h3 class="sheet">The Broadcast Reel — spot frames <span class="meta">(88)</span></h3><div class="sheet-grid">
-<a href="stills/am_BROADCAST-REEL/ediM-2098.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2098.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2294.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2294.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2302.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2302.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2306.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2306.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2325.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2325.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2335.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2335.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2342.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2342.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2369.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2369.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2373.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2373.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2377.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2377.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2381.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2381.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2385.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2385.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2396.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2396.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2406.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2406.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2410.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2410.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2414.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2414.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2418.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2418.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2422.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2422.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2569.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2569.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2573.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2573.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2577.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2577.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2581.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2581.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2585.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2585.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2589.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2589.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2593.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2593.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2597.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2597.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2601.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2601.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2605.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2605.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2609.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2609.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2613.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2613.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2617.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2617.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2621.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2621.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2625.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2625.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2629.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2629.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2633.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2633.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2637.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2637.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2641.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2641.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2645.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2645.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2652.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2652.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2656.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2656.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2660.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2660.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2664.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2664.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2670.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2670.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2674.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2674.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2678.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2678.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2682.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2682.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2689.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2689.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2693.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2693.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2697.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2697.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2701.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2701.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2708.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2708.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2712.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2712.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2716.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2716.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2721.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2721.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2725.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2725.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2729.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2729.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2733.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2733.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2737.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2737.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2741.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2741.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2745.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2745.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2749.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2749.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2753.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2753.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2757.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2757.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2761.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2761.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2765.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2765.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2769.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2769.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2781.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2781.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2785.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2785.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2789.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2789.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2793.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2793.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2798.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2798.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2802.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2802.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2806.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2806.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2810.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2810.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2815.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2815.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2819.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2819.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2823.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2823.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2827.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2827.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2832.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2832.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2836.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2836.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2840.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2840.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2844.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2844.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2900.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2900.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2904.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2904.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2908.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2908.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2912.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2912.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2918.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2918.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_BROADCAST-REEL/ediM-2922.jpg"><img src="stills/am_BROADCAST-REEL/ediM-2922.jpg" loading="lazy" alt=""></a>
+
+<h2>Six Flags, as it shipped</h2>
+<p class="sub">The park homepages and the arcade menu, recovered from the sites themselves and re-rendered through <a href="https://ruffle.rs" rel="noopener">Ruffle</a>. Click any one to run it live; missing text or panels means the shell streamed assets that were never archived.</p>
+<div class="shellgrid">
+<a href="play.html?f=sixflags_darienlake_home_2000.swf&t=Six Flags Darien Lake"><figure><img src="shellshots/sixflags_darienlake_home_2000.jpg" loading="lazy" alt="Six Flags Darien Lake — homepage shell, 2000"><figcaption>Six Flags Darien Lake — homepage shell, 2000 &#8599;</figcaption></figure></a>
+<a href="play.html?f=sixflags_greatadventure_home_2000.swf&t=Six Flags Great Adventure"><figure><img src="shellshots/sixflags_greatadventure_home_2000.jpg" loading="lazy" alt="Six Flags Great Adventure — homepage shell, 2000"><figcaption>Six Flags Great Adventure — homepage shell, 2000 &#8599;</figcaption></figure></a>
+<a href="play.html?f=sixflags_georgia_home_2000.swf&t=Six Flags Over Georgia"><figure><img src="shellshots/sixflags_georgia_home_2000.jpg" loading="lazy" alt="Six Flags Over Georgia — homepage shell, 2000"><figcaption>Six Flags Over Georgia — homepage shell, 2000 &#8599;</figcaption></figure></a>
+<a href="play.html?f=sixflags_arcade_2000.swf&t=sixflags.com arcade menu, 2000"><figure><img src="shellshots/sixflags_arcade_2000.jpg" loading="lazy" alt="sixflags.com arcade menu, 2000"><figcaption>sixflags.com arcade menu, 2000 &#8599;</figcaption></figure></a>
+<a href="play.html?f=sixflags_parkhome_2002.swf&t=Six Flags park template, 2002"><figure><img src="shellshots/sixflags_parkhome_2002.jpg" loading="lazy" alt="Six Flags park template, 2002"><figcaption>Six Flags park template, 2002 &#8599;</figcaption></figure></a>
 </div>
-<h3 class="sheet">Photography <span class="meta">(39)</span></h3><div class="sheet-grid">
-<a href="stills/am_photography/ediM-105.jpg"><img src="stills/am_photography/ediM-105.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-122.jpg"><img src="stills/am_photography/ediM-122.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-127.jpg"><img src="stills/am_photography/ediM-127.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-130.jpg"><img src="stills/am_photography/ediM-130.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-147.jpg"><img src="stills/am_photography/ediM-147.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-153.jpg"><img src="stills/am_photography/ediM-153.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-171.jpg"><img src="stills/am_photography/ediM-171.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-173.jpg"><img src="stills/am_photography/ediM-173.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-174.jpg"><img src="stills/am_photography/ediM-174.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-189.jpg"><img src="stills/am_photography/ediM-189.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-193.jpg"><img src="stills/am_photography/ediM-193.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-195.jpg"><img src="stills/am_photography/ediM-195.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-202.jpg"><img src="stills/am_photography/ediM-202.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-209.jpg"><img src="stills/am_photography/ediM-209.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-215.jpg"><img src="stills/am_photography/ediM-215.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-249.jpg"><img src="stills/am_photography/ediM-249.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-257.jpg"><img src="stills/am_photography/ediM-257.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-261.jpg"><img src="stills/am_photography/ediM-261.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-274.jpg"><img src="stills/am_photography/ediM-274.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-290.jpg"><img src="stills/am_photography/ediM-290.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-299.jpg"><img src="stills/am_photography/ediM-299.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-30.jpg"><img src="stills/am_photography/ediM-30.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-313.jpg"><img src="stills/am_photography/ediM-313.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-314.jpg"><img src="stills/am_photography/ediM-314.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-357.jpg"><img src="stills/am_photography/ediM-357.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-362.jpg"><img src="stills/am_photography/ediM-362.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-372.jpg"><img src="stills/am_photography/ediM-372.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-378.jpg"><img src="stills/am_photography/ediM-378.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-379.jpg"><img src="stills/am_photography/ediM-379.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-389.jpg"><img src="stills/am_photography/ediM-389.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-401.jpg"><img src="stills/am_photography/ediM-401.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-404.jpg"><img src="stills/am_photography/ediM-404.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-442.jpg"><img src="stills/am_photography/ediM-442.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-447.jpg"><img src="stills/am_photography/ediM-447.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-475.jpg"><img src="stills/am_photography/ediM-475.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-56.jpg"><img src="stills/am_photography/ediM-56.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-69.jpg"><img src="stills/am_photography/ediM-69.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-77.jpg"><img src="stills/am_photography/ediM-77.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_photography/ediM-91.jpg"><img src="stills/am_photography/ediM-91.jpg" loading="lazy" alt=""></a>
-</div>
+
+<h2>Brunswick Speed Zone</h2>
+<p class="sub">The NASCAR film cut for Brunswick's Speed Zone launch, 1998 — full quality, as delivered.</p>
+<figure class="film">
+<video controls preload="metadata" src="movies/brunswick_video_SpeedZone_HIGH.mp4"></video>
+<figcaption>Brunswick Speed Zone — NASCAR film, 1998</figcaption>
+</figure>
+
+<h2>The offices</h2>
+<p class="sub">Pulled out of the am.com Shockwave movies with a decompiler — the Tulsa, Oklahoma City and Colorado Springs offices as they were photographed for the site. Click any frame for full size.</p>
 <h3 class="sheet">Offices <span class="meta">(40)</span></h3><div class="sheet-grid">
 <a href="stills/am_offices/ediM-373.jpg"><img src="stills/am_offices/ediM-373.jpg" loading="lazy" alt=""></a>
 <a href="stills/am_offices/ediM-377.jpg"><img src="stills/am_offices/ediM-377.jpg" loading="lazy" alt=""></a>
@@ -316,290 +223,22 @@ footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--line);font-si
 <a href="stills/am_office_colorado/ediM-968.jpg"><img src="stills/am_office_colorado/ediM-968.jpg" loading="lazy" alt=""></a>
 <a href="stills/am_office_colorado/ediM-976.jpg"><img src="stills/am_office_colorado/ediM-976.jpg" loading="lazy" alt=""></a>
 </div>
-<h3 class="sheet">Executives, 2001 <span class="meta">(24)</span></h3><div class="sheet-grid">
-<a href="stills/am_executives/ediM-1249.jpg"><img src="stills/am_executives/ediM-1249.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1258.jpg"><img src="stills/am_executives/ediM-1258.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1263.jpg"><img src="stills/am_executives/ediM-1263.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1283.jpg"><img src="stills/am_executives/ediM-1283.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1288.jpg"><img src="stills/am_executives/ediM-1288.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1293.jpg"><img src="stills/am_executives/ediM-1293.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1299.jpg"><img src="stills/am_executives/ediM-1299.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1303.jpg"><img src="stills/am_executives/ediM-1303.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1321.jpg"><img src="stills/am_executives/ediM-1321.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1326.jpg"><img src="stills/am_executives/ediM-1326.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1540.jpg"><img src="stills/am_executives/ediM-1540.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1544.jpg"><img src="stills/am_executives/ediM-1544.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1548.jpg"><img src="stills/am_executives/ediM-1548.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1552.jpg"><img src="stills/am_executives/ediM-1552.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1556.jpg"><img src="stills/am_executives/ediM-1556.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1560.jpg"><img src="stills/am_executives/ediM-1560.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1564.jpg"><img src="stills/am_executives/ediM-1564.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1568.jpg"><img src="stills/am_executives/ediM-1568.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1572.jpg"><img src="stills/am_executives/ediM-1572.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1576.jpg"><img src="stills/am_executives/ediM-1576.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1580.jpg"><img src="stills/am_executives/ediM-1580.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1584.jpg"><img src="stills/am_executives/ediM-1584.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1588.jpg"><img src="stills/am_executives/ediM-1588.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_executives/ediM-1592.jpg"><img src="stills/am_executives/ediM-1592.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Interactive portfolio <span class="meta">(22)</span></h3><div class="sheet-grid">
-<a href="stills/am_interactive/ediM-1677.jpg"><img src="stills/am_interactive/ediM-1677.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1686.jpg"><img src="stills/am_interactive/ediM-1686.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1710.jpg"><img src="stills/am_interactive/ediM-1710.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1714.jpg"><img src="stills/am_interactive/ediM-1714.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1718.jpg"><img src="stills/am_interactive/ediM-1718.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1724.jpg"><img src="stills/am_interactive/ediM-1724.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1728.jpg"><img src="stills/am_interactive/ediM-1728.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1736.jpg"><img src="stills/am_interactive/ediM-1736.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1849.jpg"><img src="stills/am_interactive/ediM-1849.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1853.jpg"><img src="stills/am_interactive/ediM-1853.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1857.jpg"><img src="stills/am_interactive/ediM-1857.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1861.jpg"><img src="stills/am_interactive/ediM-1861.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1872.jpg"><img src="stills/am_interactive/ediM-1872.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1876.jpg"><img src="stills/am_interactive/ediM-1876.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1880.jpg"><img src="stills/am_interactive/ediM-1880.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1884.jpg"><img src="stills/am_interactive/ediM-1884.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1888.jpg"><img src="stills/am_interactive/ediM-1888.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1892.jpg"><img src="stills/am_interactive/ediM-1892.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1896.jpg"><img src="stills/am_interactive/ediM-1896.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1900.jpg"><img src="stills/am_interactive/ediM-1900.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1911.jpg"><img src="stills/am_interactive/ediM-1911.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_interactive/ediM-1915.jpg"><img src="stills/am_interactive/ediM-1915.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Print <span class="meta">(18)</span></h3><div class="sheet-grid">
-<a href="stills/am_print/ediM-243.jpg"><img src="stills/am_print/ediM-243.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-244.jpg"><img src="stills/am_print/ediM-244.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-305.jpg"><img src="stills/am_print/ediM-305.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-435.jpg"><img src="stills/am_print/ediM-435.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-437.jpg"><img src="stills/am_print/ediM-437.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-441.jpg"><img src="stills/am_print/ediM-441.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-445.jpg"><img src="stills/am_print/ediM-445.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-456.jpg"><img src="stills/am_print/ediM-456.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-460.jpg"><img src="stills/am_print/ediM-460.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-464.jpg"><img src="stills/am_print/ediM-464.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-468.jpg"><img src="stills/am_print/ediM-468.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-472.jpg"><img src="stills/am_print/ediM-472.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-476.jpg"><img src="stills/am_print/ediM-476.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-480.jpg"><img src="stills/am_print/ediM-480.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-484.jpg"><img src="stills/am_print/ediM-484.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-488.jpg"><img src="stills/am_print/ediM-488.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-492.jpg"><img src="stills/am_print/ediM-492.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_print/ediM-496.jpg"><img src="stills/am_print/ediM-496.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Case: Six Flags <span class="meta">(12)</span></h3><div class="sheet-grid">
-<a href="stills/am_case_six-flags/ediM-126.jpg"><img src="stills/am_case_six-flags/ediM-126.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-134.jpg"><img src="stills/am_case_six-flags/ediM-134.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-138.jpg"><img src="stills/am_case_six-flags/ediM-138.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-161.jpg"><img src="stills/am_case_six-flags/ediM-161.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-196.jpg"><img src="stills/am_case_six-flags/ediM-196.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-236.jpg"><img src="stills/am_case_six-flags/ediM-236.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-36.jpg"><img src="stills/am_case_six-flags/ediM-36.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-40.jpg"><img src="stills/am_case_six-flags/ediM-40.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-44.jpg"><img src="stills/am_case_six-flags/ediM-44.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-48.jpg"><img src="stills/am_case_six-flags/ediM-48.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-52.jpg"><img src="stills/am_case_six-flags/ediM-52.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_six-flags/ediM-72.jpg"><img src="stills/am_case_six-flags/ediM-72.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Case: Williams <span class="meta">(15)</span></h3><div class="sheet-grid">
-<a href="stills/am_case_williams/ediM-341.jpg"><img src="stills/am_case_williams/ediM-341.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-345.jpg"><img src="stills/am_case_williams/ediM-345.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-349.jpg"><img src="stills/am_case_williams/ediM-349.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-353.jpg"><img src="stills/am_case_williams/ediM-353.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-365.jpg"><img src="stills/am_case_williams/ediM-365.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-371.jpg"><img src="stills/am_case_williams/ediM-371.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-375.jpg"><img src="stills/am_case_williams/ediM-375.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-379.jpg"><img src="stills/am_case_williams/ediM-379.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-391.jpg"><img src="stills/am_case_williams/ediM-391.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-395.jpg"><img src="stills/am_case_williams/ediM-395.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-399.jpg"><img src="stills/am_case_williams/ediM-399.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-406.jpg"><img src="stills/am_case_williams/ediM-406.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-419.jpg"><img src="stills/am_case_williams/ediM-419.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-430.jpg"><img src="stills/am_case_williams/ediM-430.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_case_williams/ediM-434.jpg"><img src="stills/am_case_williams/ediM-434.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Homepage <span class="meta">(13)</span></h3><div class="sheet-grid">
-<a href="stills/am_homepage/ediM-398.jpg"><img src="stills/am_homepage/ediM-398.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-402.jpg"><img src="stills/am_homepage/ediM-402.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-406.jpg"><img src="stills/am_homepage/ediM-406.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-410.jpg"><img src="stills/am_homepage/ediM-410.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-414.jpg"><img src="stills/am_homepage/ediM-414.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-428.jpg"><img src="stills/am_homepage/ediM-428.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-436.jpg"><img src="stills/am_homepage/ediM-436.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-452.jpg"><img src="stills/am_homepage/ediM-452.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-498.jpg"><img src="stills/am_homepage/ediM-498.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-502.jpg"><img src="stills/am_homepage/ediM-502.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-506.jpg"><img src="stills/am_homepage/ediM-506.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-549.jpg"><img src="stills/am_homepage/ediM-549.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_homepage/ediM-569.jpg"><img src="stills/am_homepage/ediM-569.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Contact <span class="meta">(23)</span></h3><div class="sheet-grid">
-<a href="stills/am_contact/ediM-276.jpg"><img src="stills/am_contact/ediM-276.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-365.jpg"><img src="stills/am_contact/ediM-365.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-369.jpg"><img src="stills/am_contact/ediM-369.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-373.jpg"><img src="stills/am_contact/ediM-373.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-381.jpg"><img src="stills/am_contact/ediM-381.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-384.jpg"><img src="stills/am_contact/ediM-384.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-387.jpg"><img src="stills/am_contact/ediM-387.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-391.jpg"><img src="stills/am_contact/ediM-391.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-395.jpg"><img src="stills/am_contact/ediM-395.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-399.jpg"><img src="stills/am_contact/ediM-399.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-403.jpg"><img src="stills/am_contact/ediM-403.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-407.jpg"><img src="stills/am_contact/ediM-407.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-411.jpg"><img src="stills/am_contact/ediM-411.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-415.jpg"><img src="stills/am_contact/ediM-415.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-419.jpg"><img src="stills/am_contact/ediM-419.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-423.jpg"><img src="stills/am_contact/ediM-423.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-427.jpg"><img src="stills/am_contact/ediM-427.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-431.jpg"><img src="stills/am_contact/ediM-431.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-435.jpg"><img src="stills/am_contact/ediM-435.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-438.jpg"><img src="stills/am_contact/ediM-438.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-458.jpg"><img src="stills/am_contact/ediM-458.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-477.jpg"><img src="stills/am_contact/ediM-477.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_contact/ediM-508.jpg"><img src="stills/am_contact/ediM-508.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Services <span class="meta">(15)</span></h3><div class="sheet-grid">
-<a href="stills/am_services/ediM-183.jpg"><img src="stills/am_services/ediM-183.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-187.jpg"><img src="stills/am_services/ediM-187.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-191.jpg"><img src="stills/am_services/ediM-191.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-195.jpg"><img src="stills/am_services/ediM-195.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-199.jpg"><img src="stills/am_services/ediM-199.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-203.jpg"><img src="stills/am_services/ediM-203.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-207.jpg"><img src="stills/am_services/ediM-207.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-219.jpg"><img src="stills/am_services/ediM-219.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-223.jpg"><img src="stills/am_services/ediM-223.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-227.jpg"><img src="stills/am_services/ediM-227.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-239.jpg"><img src="stills/am_services/ediM-239.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-243.jpg"><img src="stills/am_services/ediM-243.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-247.jpg"><img src="stills/am_services/ediM-247.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-276.jpg"><img src="stills/am_services/ediM-276.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services/ediM-84.jpg"><img src="stills/am_services/ediM-84.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Services: Media <span class="meta">(14)</span></h3><div class="sheet-grid">
-<a href="stills/am_services_media/ediM-109.jpg"><img src="stills/am_services_media/ediM-109.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-184.jpg"><img src="stills/am_services_media/ediM-184.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-188.jpg"><img src="stills/am_services_media/ediM-188.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-192.jpg"><img src="stills/am_services_media/ediM-192.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-196.jpg"><img src="stills/am_services_media/ediM-196.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-200.jpg"><img src="stills/am_services_media/ediM-200.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-204.jpg"><img src="stills/am_services_media/ediM-204.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-208.jpg"><img src="stills/am_services_media/ediM-208.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-220.jpg"><img src="stills/am_services_media/ediM-220.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-224.jpg"><img src="stills/am_services_media/ediM-224.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-228.jpg"><img src="stills/am_services_media/ediM-228.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-240.jpg"><img src="stills/am_services_media/ediM-240.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-244.jpg"><img src="stills/am_services_media/ediM-244.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_media/ediM-248.jpg"><img src="stills/am_services_media/ediM-248.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Services: Marketing <span class="meta">(14)</span></h3><div class="sheet-grid">
-<a href="stills/am_services_marketing/ediM-109.jpg"><img src="stills/am_services_marketing/ediM-109.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-184.jpg"><img src="stills/am_services_marketing/ediM-184.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-188.jpg"><img src="stills/am_services_marketing/ediM-188.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-192.jpg"><img src="stills/am_services_marketing/ediM-192.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-196.jpg"><img src="stills/am_services_marketing/ediM-196.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-200.jpg"><img src="stills/am_services_marketing/ediM-200.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-204.jpg"><img src="stills/am_services_marketing/ediM-204.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-208.jpg"><img src="stills/am_services_marketing/ediM-208.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-220.jpg"><img src="stills/am_services_marketing/ediM-220.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-224.jpg"><img src="stills/am_services_marketing/ediM-224.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-228.jpg"><img src="stills/am_services_marketing/ediM-228.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-240.jpg"><img src="stills/am_services_marketing/ediM-240.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-244.jpg"><img src="stills/am_services_marketing/ediM-244.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_services_marketing/ediM-248.jpg"><img src="stills/am_services_marketing/ediM-248.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Client list <span class="meta">(5)</span></h3><div class="sheet-grid">
-<a href="stills/am_client-list/ediM-121.jpg"><img src="stills/am_client-list/ediM-121.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_client-list/ediM-48.jpg"><img src="stills/am_client-list/ediM-48.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_client-list/ediM-52.jpg"><img src="stills/am_client-list/ediM-52.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_client-list/ediM-56.jpg"><img src="stills/am_client-list/ediM-56.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_client-list/ediM-60.jpg"><img src="stills/am_client-list/ediM-60.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Client creative menu <span class="meta">(4)</span></h3><div class="sheet-grid">
-<a href="stills/am_client-creative-menu/ediM-120.jpg"><img src="stills/am_client-creative-menu/ediM-120.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_client-creative-menu/ediM-124.jpg"><img src="stills/am_client-creative-menu/ediM-124.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_client-creative-menu/ediM-128.jpg"><img src="stills/am_client-creative-menu/ediM-128.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_client-creative-menu/ediM-133.jpg"><img src="stills/am_client-creative-menu/ediM-133.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Creative menu <span class="meta">(5)</span></h3><div class="sheet-grid">
-<a href="stills/am_creative-menu/ediM-121.jpg"><img src="stills/am_creative-menu/ediM-121.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_creative-menu/ediM-125.jpg"><img src="stills/am_creative-menu/ediM-125.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_creative-menu/ediM-129.jpg"><img src="stills/am_creative-menu/ediM-129.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_creative-menu/ediM-150.jpg"><img src="stills/am_creative-menu/ediM-150.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_creative-menu/ediM-160.jpg"><img src="stills/am_creative-menu/ediM-160.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Menu <span class="meta">(7)</span></h3><div class="sheet-grid">
-<a href="stills/am_menu/ediM-141.jpg"><img src="stills/am_menu/ediM-141.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_menu/ediM-291.jpg"><img src="stills/am_menu/ediM-291.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_menu/ediM-295.jpg"><img src="stills/am_menu/ediM-295.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_menu/ediM-301.jpg"><img src="stills/am_menu/ediM-301.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_menu/ediM-313.jpg"><img src="stills/am_menu/ediM-313.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_menu/ediM-317.jpg"><img src="stills/am_menu/ediM-317.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_menu/ediM-379.jpg"><img src="stills/am_menu/ediM-379.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">People <span class="meta">(4)</span></h3><div class="sheet-grid">
-<a href="stills/am_people/ediM-20.jpg"><img src="stills/am_people/ediM-20.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_people/ediM-31.jpg"><img src="stills/am_people/ediM-31.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_people/ediM-35.jpg"><img src="stills/am_people/ediM-35.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_people/ediM-39.jpg"><img src="stills/am_people/ediM-39.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Subsidiaries <span class="meta">(5)</span></h3><div class="sheet-grid">
-<a href="stills/am_subsidiaries/ediM-37.jpg"><img src="stills/am_subsidiaries/ediM-37.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_subsidiaries/ediM-71.jpg"><img src="stills/am_subsidiaries/ediM-71.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_subsidiaries/ediM-75.jpg"><img src="stills/am_subsidiaries/ediM-75.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_subsidiaries/ediM-79.jpg"><img src="stills/am_subsidiaries/ediM-79.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_subsidiaries/ediM-83.jpg"><img src="stills/am_subsidiaries/ediM-83.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">OK Events <span class="meta">(3)</span></h3><div class="sheet-grid">
-<a href="stills/am_OK-Events/ediM-23.jpg"><img src="stills/am_OK-Events/ediM-23.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_OK-Events/ediM-27.jpg"><img src="stills/am_OK-Events/ediM-27.jpg" loading="lazy" alt=""></a>
-<a href="stills/am_OK-Events/ediM-71.jpg"><img src="stills/am_OK-Events/ediM-71.jpg" loading="lazy" alt=""></a>
-</div>
-<h3 class="sheet">Brunswick bowling preloader &#x27;03 <span class="meta">(4)</span></h3><div class="sheet-grid">
-<a href="stills/brunswick_GAME_bowling-preloader-2003/ediM-73.jpg"><img src="stills/brunswick_GAME_bowling-preloader-2003/ediM-73.jpg" loading="lazy" alt=""></a>
-<a href="stills/brunswick_GAME_bowling-preloader-2003/ediM-77.jpg"><img src="stills/brunswick_GAME_bowling-preloader-2003/ediM-77.jpg" loading="lazy" alt=""></a>
-<a href="stills/brunswick_GAME_bowling-preloader-2003/ediM-81.jpg"><img src="stills/brunswick_GAME_bowling-preloader-2003/ediM-81.jpg" loading="lazy" alt=""></a>
-<a href="stills/brunswick_GAME_bowling-preloader-2003/ediM-85.jpg"><img src="stills/brunswick_GAME_bowling-preloader-2003/ediM-85.jpg" loading="lazy" alt=""></a>
-</div>
-<h2>The Flash shells — running again</h2>
-<p class="sub">Flash movies recovered from the sites themselves — Six Flags park homepages, NRALive interface pieces, WilTel campaign games — re-rendered through Ruffle. Click any one to run it live; missing text or panels means the shell streamed assets that were never archived. The maze game from the sixflags.com arcade survives too, as Shockwave: <a href="play.html?f=sixflags_arcade_maze_2001.dcr&t=Six+Flags+Alien+Maze">play it</a>.</p>
-<div class="sheet-grid sites">
-<a href="play.html?f=sixflags_darienlake_home_2000.swf&t=Six Flags Darien Lake"><figure><img src="shellshots/sixflags_darienlake_home_2000.jpg" loading="lazy" alt="Six Flags Darien Lake — homepage shell, 2000"><figcaption>Six Flags Darien Lake — homepage shell, 2000 ↗</figcaption></figure></a>
-<a href="play.html?f=sixflags_greatadventure_home_2000.swf&t=Six Flags Great Adventure"><figure><img src="shellshots/sixflags_greatadventure_home_2000.jpg" loading="lazy" alt="Six Flags Great Adventure — homepage shell, 2000"><figcaption>Six Flags Great Adventure — homepage shell, 2000 ↗</figcaption></figure></a>
-<a href="play.html?f=sixflags_georgia_home_2000.swf&t=Six Flags Over Georgia"><figure><img src="shellshots/sixflags_georgia_home_2000.jpg" loading="lazy" alt="Six Flags Over Georgia — homepage shell, 2000"><figcaption>Six Flags Over Georgia — homepage shell, 2000 ↗</figcaption></figure></a>
-<a href="play.html?f=sixflags_arcade_2000.swf&t=sixflags.com arcade menu, 2000"><figure><img src="shellshots/sixflags_arcade_2000.jpg" loading="lazy" alt="sixflags.com arcade menu, 2000"><figcaption>sixflags.com arcade menu, 2000 ↗</figcaption></figure></a>
-<a href="play.html?f=sixflags_parkhome_2002.swf&t=Six Flags park template, 2002"><figure><img src="shellshots/sixflags_parkhome_2002.jpg" loading="lazy" alt="Six Flags park template, 2002"><figcaption>Six Flags park template, 2002 ↗</figcaption></figure></a>
-<a href="play.html?f=nralive_nav_2000.swf&t=NRALive"><figure><img src="shellshots/nralive_nav_2000.jpg" loading="lazy" alt="NRALive — navigation, 2000"><figcaption>NRALive — navigation, 2000 ↗</figcaption></figure></a>
-<a href="play.html?f=nralive_hestontv_2000.swf&t=NRALive"><figure><img src="shellshots/nralive_hestontv_2000.jpg" loading="lazy" alt="NRALive — Heston TV, 2000"><figcaption>NRALive — Heston TV, 2000 ↗</figcaption></figure></a>
-<a href="play.html?f=nralive_silverbullet_2000.swf&t=NRALive"><figure><img src="shellshots/nralive_silverbullet_2000.jpg" loading="lazy" alt="NRALive — Silver Bullet, 2000"><figcaption>NRALive — Silver Bullet, 2000 ↗</figcaption></figure></a>
-<a href="play.html?f=wiltel_dna-pinball_2004.swf&t=WilTel"><figure><img src="shellshots/wiltel_dna-pinball_2004.jpg" loading="lazy" alt="WilTel — DNA Pinball Challenge, 2004 (playable)"><figcaption>WilTel — DNA Pinball Challenge, 2004 (playable) ↗</figcaption></figure></a>
-<a href="play.html?f=wiltel_vyvx-game_2004.swf&t=WilTel"><figure><img src="shellshots/wiltel_vyvx-game_2004.jpg" loading="lazy" alt="WilTel — Winner with Vyvx game, 2004 (playable)"><figcaption>WilTel — Winner with Vyvx game, 2004 (playable) ↗</figcaption></figure></a>
-</div>
-<h2>The sites, as designed</h2>
-<p class="sub">Homepage captures of the sites Philip designed, 1996–2003 — shot from the Wayback Machine.</p><div class="sheet-grid sites">
-<a href="sites/brunswickbowling_1998.jpg"><figure><img src="sites/brunswickbowling_1998.jpg" loading="lazy" alt="brunswickbowling 1998"><figcaption>brunswickbowling 1998</figcaption></figure></a>
-<a href="sites/brunswickbowling_2000.jpg"><figure><img src="sites/brunswickbowling_2000.jpg" loading="lazy" alt="brunswickbowling 2000"><figcaption>brunswickbowling 2000</figcaption></figure></a>
-<a href="sites/brunswickbowling_2002.jpg"><figure><img src="sites/brunswickbowling_2002.jpg" loading="lazy" alt="brunswickbowling 2002"><figcaption>brunswickbowling 2002</figcaption></figure></a>
-<a href="sites/leapfrog_2002.jpg"><figure><img src="sites/leapfrog_2002.jpg" loading="lazy" alt="leapfrog 2002"><figcaption>leapfrog 2002</figcaption></figure></a>
-<a href="sites/leapfrog_2003.jpg"><figure><img src="sites/leapfrog_2003.jpg" loading="lazy" alt="leapfrog 2003"><figcaption>leapfrog 2003</figcaption></figure></a>
-<a href="sites/mountainboardsports_2001.jpg"><figure><img src="sites/mountainboardsports_2001.jpg" loading="lazy" alt="mountainboardsports 2001"><figcaption>mountainboardsports 2001</figcaption></figure></a>
-<a href="sites/mountainboardsports_2002.jpg"><figure><img src="sites/mountainboardsports_2002.jpg" loading="lazy" alt="mountainboardsports 2002"><figcaption>mountainboardsports 2002</figcaption></figure></a>
-<a href="sites/nrahq_2000.jpg"><figure><img src="sites/nrahq_2000.jpg" loading="lazy" alt="nrahq 2000"><figcaption>nrahq 2000</figcaption></figure></a>
-<a href="sites/nrahq_2001.jpg"><figure><img src="sites/nrahq_2001.jpg" loading="lazy" alt="nrahq 2001"><figcaption>nrahq 2001</figcaption></figure></a>
-<a href="sites/nrahq_2002.jpg"><figure><img src="sites/nrahq_2002.jpg" loading="lazy" alt="nrahq 2002"><figcaption>nrahq 2002</figcaption></figure></a>
-<a href="sites/nralive_2002.jpg"><figure><img src="sites/nralive_2002.jpg" loading="lazy" alt="nralive 2002"><figcaption>nralive 2002</figcaption></figure></a>
-<a href="sites/nralive_2003.jpg"><figure><img src="sites/nralive_2003.jpg" loading="lazy" alt="nralive 2003"><figcaption>nralive 2003</figcaption></figure></a>
-<a href="sites/oktravel_2001.jpg"><figure><img src="sites/oktravel_2001.jpg" loading="lazy" alt="oktravel 2001"><figcaption>oktravel 2001</figcaption></figure></a>
-<a href="sites/oktravel_2002.jpg"><figure><img src="sites/oktravel_2002.jpg" loading="lazy" alt="oktravel 2002"><figcaption>oktravel 2002</figcaption></figure></a>
-<a href="sites/oktravel_2003.jpg"><figure><img src="sites/oktravel_2003.jpg" loading="lazy" alt="oktravel 2003"><figcaption>oktravel 2003</figcaption></figure></a>
-<a href="sites/sixflags_1996.jpg"><figure><img src="sites/sixflags_1996.jpg" loading="lazy" alt="sixflags 1996"><figcaption>sixflags 1996</figcaption></figure></a>
-<a href="sites/sixflags_1997.jpg"><figure><img src="sites/sixflags_1997.jpg" loading="lazy" alt="sixflags 1997"><figcaption>sixflags 1997</figcaption></figure></a>
-<a href="sites/sixflags_1998.jpg"><figure><img src="sites/sixflags_1998.jpg" loading="lazy" alt="sixflags 1998"><figcaption>sixflags 1998</figcaption></figure></a>
-<a href="sites/sixflags_2001.jpg"><figure><img src="sites/sixflags_2001.jpg" loading="lazy" alt="sixflags 2001"><figcaption>sixflags 2001</figcaption></figure></a>
-<a href="sites/williamscomm_1999.jpg"><figure><img src="sites/williamscomm_1999.jpg" loading="lazy" alt="williamscomm 1999"><figcaption>williamscomm 1999</figcaption></figure></a>
-<a href="sites/williamscomm_2001.jpg"><figure><img src="sites/williamscomm_2001.jpg" loading="lazy" alt="williamscomm 2001"><figcaption>williamscomm 2001</figcaption></figure></a>
-<a href="sites/wiltel_1998.jpg"><figure><img src="sites/wiltel_1998.jpg" loading="lazy" alt="wiltel 1998"><figcaption>wiltel 1998</figcaption></figure></a>
-</div>
+
+<h2>Fragments &amp; downloads</h2>
+<p class="sub">Pieces that survive but can't run in a browser: streaming-Shockwave ride stubs whose external casts were never archived, QuickTime&nbsp;VR tours, and the era's screensavers and installers — served as-is.</p>
+<ul class="plain">
+<li>Darien Lake ride stubs <span class="meta">(~830&nbsp;bytes each)</span> — <a class="dl" href="media/03-darien-lake/darienlake_ride_boomerang.dcr">Boomerang</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_mind-eraser.dcr">Mind&nbsp;Eraser</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_nightmare-phantom-cave.dcr">Nightmare</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_grizzly-run.dcr">Grizzly&nbsp;Run</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_crocodile-isle.dcr">Crocodile&nbsp;Isle</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_hooks-lagoon.dcr">Hook's&nbsp;Lagoon</a>, <a class="dl" href="media/03-darien-lake/darienlake_ride_popeyes-seaport.dcr">Popeye's&nbsp;Seaport</a>, <a class="dl" href="media/03-darien-lake/darienlake_lodge-on-the-lake.dcr">Lodge&nbsp;on&nbsp;the&nbsp;Lake</a></li>
+<li>Brunswick preloaders <span class="meta">(the '98 and Attitude ones now play in front of their games)</span> — <a class="dl" href="media/04-brunswick/brunswick_GAME_attitude-preloader.dcr">Attitude</a> <span class="meta">.dcr 9&nbsp;KB</span>, <a class="dl" href="media/04-brunswick/brunswick_GAME_bowling-preloader-1998.dcr">Bowling&nbsp;'98</a> <span class="meta">.dcr 14&nbsp;KB</span>, <a class="dl" href="media/04-brunswick/brunswick_GAME_bowling-preloader-2003.dcr">Bowling&nbsp;'03</a> <span class="meta">.dcr 25&nbsp;KB</span></li>
+<li>QuickTime&nbsp;VR — <a class="dl" href="media/04-brunswick/brunswick_QTVR_bowling-center.mov">Streamwood bowling center</a> <span class="meta">.mov 252&nbsp;KB</span>, <a class="dl" href="media/04-brunswick/brunswick_QTVR_frameworx-tour.mov">Frameworx tour</a> <span class="meta">.mov 252&nbsp;KB</span></li>
+<li>Brunswickids screensaver <span class="meta">.exe 2.4&nbsp;MB</span> — <a class="dl" href="media/05-brunswickids/brunswickids_screensaver.exe">download</a></li>
+<li>WillTales — <a class="dl" href="media/06-willtales/WillTales%20Installer.exe">installer</a> <span class="meta">.exe 2.4&nbsp;MB</span>, <a class="dl" href="media/06-willtales/willtales_screensaver_windows.zip">Windows screensaver</a> <span class="meta">.zip 2.4&nbsp;MB</span>, <a class="dl" href="media/06-willtales/willtales_screensaver_mac.sit.hqx">Mac screensaver</a> <span class="meta">.sit.hqx 3&nbsp;MB</span></li>
+<li>DataTimes EyeQ upgrade <span class="meta">.exe 2&nbsp;MB</span> — <a class="dl" href="media/07-datatimes/datatimes_EyeQ_upgrade.exe">download</a></li>
+</ul>
+
 <footer>
-<p>Recovered from the Internet Archive's Wayback Machine, August 2026. Stills extracted from Director .dcr binaries with <a href="https://github.com/ProjectorRays/ProjectorRays" rel="noopener">ProjectorRays</a>. The 2002 broadcast reel's actual videos were RealMedia streams and were never archived — the frames here are what survives of them.</p>
+<p>Every binary here was recovered from the Internet Archive's Wayback Machine in August 2026 and is served unmodified. In-browser playback is emulation — <a href="https://github.com/igorlira/dirplayer-rs" rel="noopener">dirplayer</a> for Director/Shockwave, <a href="https://ruffle.rs" rel="noopener">Ruffle</a> for Flash — and some movies streamed assets that no longer exist, so not everything will run. The vintage executables are offered as historical artifacts; run them in an emulator, not on your actual machine.</p>
+<p>The TV spots and venue films from these years now sit with <a href="/am-1998/">the Ackerman&nbsp;McQueen page</a>.</p>
+<p><em>"Each member of the 'Lab' matured from a successful history in traditional concepts — and a mouse in one hand."</em> — am.com, 1998</p>
 </footer>
 </div>
 <script src="/shared/menu.js" defer></script>

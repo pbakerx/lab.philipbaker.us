@@ -19,13 +19,13 @@ linked to that team in `.vercel/project.json` but the logged-in user `pbakerx-75
 explicit scope). Production alias: https://lab.philipbaker.us — allow ~10–15s of CDN
 propagation before verifying new paths (fresh 404s right after READY are usually just lag).
 
-`vercel.json` sets `Access-Control-Allow-Origin: *` on `/arcade/media/*` so external tools
+`vercel.json` sets `Access-Control-Allow-Origin: *` on `/vault/media/*` so external tools
 (e.g. the Infinite Mac emulator) can fetch recovered binaries cross-origin.
 
 ## Shared chrome
 
 Every lab page except the full-screen players (`widget-maker/frame.html`,
-`arcade/player.html`, `vault/play.html`) loads `<script src="/shared/menu.js" defer>`,
+`vault/player.html`, `vault/play.html`) loads `<script src="/shared/menu.js" defer>`,
 which mounts the philipbaker.us hamburger menu.
 
 **It is not a copy.** `api/menu.js` fetches philipbaker.us server-side, parses the links
@@ -111,21 +111,34 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     never runs on the lab origin (hence postMessage rather than a blob URL).
 - **/honda-acura** — Honda × Acura HTML5 display-ad case study (PB Productions branded).
   Self-contained; `?still` mode for screenshots; og:image must stay an absolute URL.
-- **/arcade** — '90s Shockwave/Flash games recovered from the Wayback Machine, played via
-  emulation. `player.html?f=<path>&t=<title>` plays anything under `arcade/media/`;
-  `&then=<path>` chains a preloader movie into its game (7s handoff).
-  - `.dcr` → dirplayer (self-hosted 15MB polyfill at `arcade/vendor/dirplayer-polyfill.js`).
-    Quirks: some movies don't paint until first click; some crash the WASM VM (bitmap
-    decoder) — player.html shows a graceful message; some throw "Invalid stage property
-    picture" (dirplayer hasn't implemented `(the stage).picture`).
-  - `.swf` → Ruffle from unpkg CDN, loaded with `openUrlMode:"deny"` because era shells
-    call getURL on load and would navigate the page away.
 - **/am-1998** — the black-and-white am.com (1997–99) Philip designed; Wayback screenshots.
   The homepage hero was reconstructed: original HTML + the separately-recovered
   `graphics/main/on.gif` (Wayback replay never rendered it).
-- **/vault** — screening room (recovered TV spots/films as MP4) + contact sheets of stills
-  extracted from Director movies + site-design screenshots + Flash shells with
-  `play.html` (same engine rules as arcade).
+  - **The Screening Room** at the bottom (under the closing note) holds the 14 recovered
+    TV spots and venue films. Philip did **not** produce these — they're agency work from
+    the same years, and the page says so. The files still live in `vault/movies/`, so the
+    references are absolute (`/vault/movies/…`).
+- **/vault** — "The Vault": the '90s Shockwave/Flash games plus the few non-game pieces
+  worth keeping. This absorbed the old **/arcade** in Aug 2026; `vercel.json` permanently
+  redirects `/arcade/:path*` → `/vault/:path*`, so old links still work.
+  - `player.html?f=<path>&t=<title>` plays anything under `vault/media/`; `&then=<path>`
+    chains a preloader movie into its game (7s handoff). `play.html?f=<file>` plays the
+    Six Flags shells out of `vault/shells/`.
+  - `.dcr` → dirplayer (self-hosted 15MB polyfill at `vault/vendor/dirplayer-polyfill.js`).
+    Quirks: some movies don't paint until first click; some crash the WASM VM (bitmap
+    decoder) — player.html shows a graceful message; some throw "Invalid stage property
+    picture" (dirplayer hasn't implemented `(the stage).picture`). The `xtra-registry.json`
+    and `ruffle/dirplayer_ruffle.js` 404s are dirplayer probing for optional extras and
+    have always been there.
+  - `.swf` → Ruffle from unpkg CDN, loaded with `openUrlMode:"deny"` because era shells
+    call getURL on load and would navigate the page away.
+  - What survived the Aug 2026 cull: the 10 games, the 5 Six Flags shells, the three
+    office contact sheets (120 stills), and Speed Zone at full quality. Gone: the other
+    22 contact sheets, the site-design screenshots, the NRALive/WilTel shells (the WilTel
+    games survive as game cards). The screening room moved to **/am-1998**. Everything
+    removed is still in git history and in the master archive.
+  - Office stills are sprite strips up to 2500px wide; `.sheet-grid img` caps them with
+    `max-width:100%` + `object-fit:cover` or they drag the page into horizontal scroll.
 - **/hello** — the original example.
 
 ## The master archive (not in this repo)
