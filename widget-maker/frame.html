@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Widget · lab.philipbaker.us</title>
+<meta name="robots" content="noindex">
+<style>
+  html,body{margin:0;height:100%;background:#000;overflow:hidden}
+  iframe{width:100%;height:100%;border:0;display:block}
+  .wait{position:absolute;inset:0;display:grid;place-items:center;color:#c9b39d;
+        font:14px Inter,system-ui,sans-serif}
+</style>
+</head>
+<body>
+<div class="wait" id="wait">Waiting for the widget…</div>
+<script>
+// Full-screen viewer. The widget still runs inside a sandboxed iframe here, so
+// generated code never executes on the lab.philipbaker.us origin.
+(() => {
+  "use strict";
+  const opener = window.opener;
+  if (!opener) {
+    document.getElementById("wait").textContent = "Open this from the Widget Maker.";
+    return;
+  }
+  let loaded = false;
+  window.addEventListener("message", (e) => {
+    if (e.origin !== window.location.origin || e.source !== opener) return;
+    const data = e.data;
+    if (loaded || !data || data.type !== "widget" || typeof data.html !== "string") return;
+    loaded = true;
+    opener.postMessage("widget-frame-loaded", window.location.origin);
+
+    if (data.title) document.title = data.title + " · lab.philipbaker.us";
+    const frame = document.createElement("iframe");
+    frame.setAttribute("sandbox", "allow-scripts allow-pointer-lock allow-popups");
+    frame.setAttribute("allow", "autoplay; fullscreen; gamepad");
+    frame.title = data.title || "Widget";
+    frame.srcdoc = data.html;
+    document.body.replaceChildren(frame);
+  });
+  opener.postMessage("widget-frame-ready", window.location.origin);
+})();
+</script>
+</body>
+</html>

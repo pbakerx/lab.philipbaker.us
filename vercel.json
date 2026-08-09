@@ -1,4 +1,10 @@
 {
+  "framework": null,
+  "functions": {
+    "api/generate.js": {
+      "maxDuration": 60
+    }
+  },
   "headers": [
     {
       "source": "/arcade/media/(.*)",

@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Widget Maker · lab.philipbaker.us</title>
+<meta name="description" content="Type what you want and watch it get built — particle mirrors, asteroids, rain simulators, matrix screens, calculators. A creative sandbox that writes and runs its own widgets.">
+<style>
+:root{
+  --bg:#1a0e05;--ink:#fdf3ea;--dim:#c9b39d;--gold:#ffd24a;
+  --card:#241408;--line:#3c2612;--line-soft:#2e1c0d;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--gold)}
+.wrap{max-width:1240px;margin:0 auto;padding:34px 24px 64px}
+
+.crumb{margin:0 0 26px;font-size:13px;color:var(--dim)}
+.crumb a{text-decoration:none}
+h1{font-size:clamp(32px,5vw,50px);line-height:1.02;margin:0 0 12px;letter-spacing:-.025em}
+h1 .gold{color:var(--gold)}
+.lede{max-width:620px;color:var(--dim);font-size:16px;margin:0 0 24px}
+
+/* ── Composer ──────────────────────────────────────────── */
+/* align-items:flex-start matters: with `stretch`, the textarea is sized by the
+   flex line, so autosize reads a stretched scrollHeight and runs away. */
+.composer{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
+textarea#prompt{
+  flex:1;height:58px;min-height:58px;max-height:200px;resize:none;overflow-y:auto;
+  background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;font:inherit;font-size:16px;line-height:1.45;
+}
+textarea#prompt::placeholder{color:#8a7460}
+textarea#prompt:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,210,74,.13)}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);transition:background .15s,border-color .15s,opacity .15s}
+button:hover:not(:disabled){border-color:#5a3a19;background:#2d1a0b}
+button:disabled{opacity:.45;cursor:default}
+#make{
+  flex:0 0 auto;height:58px;padding:0 26px;font-weight:600;font-size:15px;letter-spacing:.01em;
+  background:var(--gold);color:#1a0e05;border-color:var(--gold);border-radius:10px;
+}
+#make:hover:not(:disabled){background:#ffdd72;border-color:#ffdd72}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;min-height:32px}
+.chip{padding:6px 13px;font-size:13px;color:var(--dim);border-radius:99px;background:transparent}
+.chip:hover{color:var(--ink)}
+.chips-label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7d6752;align-self:center;padding-right:4px}
+
+/* ── App ───────────────────────────────────────────────── */
+.app{display:grid;grid-template-columns:minmax(0,1fr) 244px;gap:20px;align-items:start}
+.stage{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#000}
+.stage-bar{
+  display:flex;align-items:center;gap:6px;padding:8px 10px;
+  background:var(--card);border-bottom:1px solid var(--line);
+}
+.tabs{display:flex;gap:2px;margin-right:auto}
+.tab{padding:5px 13px;font-size:13px;color:var(--dim);border-color:transparent;background:transparent}
+.tab[aria-selected="true"]{color:#1a0e05;background:var(--gold);border-color:var(--gold);font-weight:600}
+.act{padding:5px 12px;font-size:13px;color:var(--dim)}
+.act:hover:not(:disabled){color:var(--ink)}
+
+.stage-body{position:relative;aspect-ratio:16/10;min-height:340px;background:#000}
+@media (max-width:900px){.stage-body{aspect-ratio:4/3}}
+#frame{width:100%;height:100%;border:0;display:block;background:#000}
+#code{
+  position:absolute;inset:0;margin:0;overflow:auto;padding:18px 20px;
+  font-family:var(--mono);font-size:12px;line-height:1.65;color:#d8c6b2;
+  background:#120802;white-space:pre-wrap;word-break:break-word;tab-size:2;
+}
+.hidden{display:none !important}
+
+/* Empty + working states */
+.veil{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:32px;background:#120802;color:var(--dim)}
+.veil p{margin:8px 0 0;font-size:14px;max-width:380px}
+.veil strong{display:block;color:var(--ink);font-size:17px;font-weight:600}
+.spinner{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--gold);animation:spin .8s linear infinite;margin:0 auto 4px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spinner{animation-duration:2.4s}}
+
+.stage-status{
+  display:flex;align-items:center;gap:10px;padding:8px 12px;
+  background:var(--card);border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:11.5px;color:#8a7460;min-height:34px;
+}
+.stage-status .err{color:#ff9d7a}
+.stage-status .ok{color:var(--gold)}
+
+/* ── Rail ──────────────────────────────────────────────── */
+.rail h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}
+.rail .empty{font-size:13px;color:#7d6752;margin:0}
+.versions{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.versions button{
+  width:100%;text-align:left;padding:9px 11px;background:transparent;border-color:var(--line-soft);
+  display:block;line-height:1.35;
+}
+.versions button:hover{background:var(--card)}
+.versions li.on button{border-color:var(--gold);background:var(--card)}
+.v-n{font-family:var(--mono);font-size:10.5px;color:#7d6752;display:block}
+.v-t{font-size:13px;color:var(--ink);display:block;margin-top:2px}
+.versions li.on .v-n{color:var(--gold)}
+
+footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim);max-width:660px}
+footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
+
+@media (max-width:880px){
+  .wrap{padding:32px 16px 56px}
+  .app{grid-template-columns:1fr}
+  .rail{order:-1}
+  .versions{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .versions button{white-space:nowrap;width:auto}
+  .composer{flex-direction:column}
+  #make{padding:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="crumb"><a href="/">lab.philipbaker.us</a> / widget-maker</p>
+
+<h1>Widget <span class="gold">Maker</span></h1>
+<p class="lede">Describe something and it gets built, then and there — a particle mirror, an asteroids game, a rain simulator, a matrix screen, a calculator. It runs live in the frame below. Don't like it? Say what to change.</p>
+
+<div class="composer">
+  <textarea id="prompt" rows="1" placeholder="Make a bunch of red balls bouncing around…" autocomplete="off" spellcheck="false"></textarea>
+  <button id="make" type="button">Make it</button>
+</div>
+
+<div class="chips" id="chips">
+  <span class="chips-label">Try</span>
+</div>
+
+<div class="app">
+  <section class="stage">
+    <div class="stage-bar">
+      <div class="tabs" role="tablist">
+        <button class="tab" id="tab-preview" role="tab" aria-selected="true" type="button">Preview</button>
+        <button class="tab" id="tab-code" role="tab" aria-selected="false" type="button">Code</button>
+      </div>
+      <button class="act" id="act-full" type="button" disabled>Full screen</button>
+      <button class="act" id="act-copy" type="button" disabled>Copy</button>
+      <button class="act" id="act-save" type="button" disabled>Download</button>
+    </div>
+
+    <div class="stage-body">
+      <iframe id="frame"
+        title="Widget preview"
+        sandbox="allow-scripts allow-pointer-lock allow-popups"
+        allow="autoplay; fullscreen; gamepad"></iframe>
+      <pre id="code" class="hidden" aria-label="Generated HTML"></pre>
+      <div class="veil" id="veil">
+        <div>
+          <strong id="veil-title">Nothing built yet</strong>
+          <p id="veil-note">Type what you want up there and press Make it.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage-status"><span id="status">Ready — ⌘↵ builds.</span></div>
+  </section>
+
+  <aside class="rail">
+    <h2>Versions</h2>
+    <p class="empty" id="rail-empty">Each build lands here. Click one to go back to it.</p>
+    <ul class="versions" id="versions"></ul>
+  </aside>
+</div>
+
+<footer>
+  Every widget is a single self-contained HTML file — no libraries, no network, no
+  storage — generated on request and run in a sandboxed frame. <code>Download</code>
+  gives you the file; it works offline, anywhere. Nothing is saved server-side, so
+  reloading this page clears the lot.
+</footer>
+
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const promptEl = $("prompt"), makeEl = $("make"), frameEl = $("frame"),
+        codeEl = $("code"), veilEl = $("veil"), veilTitle = $("veil-title"),
+        veilNote = $("veil-note"), statusEl = $("status"), versionsEl = $("versions"),
+        railEmpty = $("rail-empty"), tabPreview = $("tab-preview"), tabCode = $("tab-code"),
+        actFull = $("act-full"), actCopy = $("act-copy"), actSave = $("act-save");
+
+  const EXAMPLES = [
+    "A bunch of red balls bouncing around",
+    "Asteroids",
+    "A rain simulator",
+    "A matrix screen",
+    "A particle mirror that follows my cursor",
+    "A tip calculator",
+    "A flocking simulation",
+    "An analogue clock",
+  ];
+
+  const state = {
+    basePrompt: "",     // the original wish; everything after is a change request
+    versions: [],       // { html, title, prompt, at }
+    active: -1,
+    busy: false,
+    abort: null,
+    mode: "preview",
+  };
+
+  const current = () => state.versions[state.active] || null;
+
+  // ── Chips ──────────────────────────────────────────────
+  const chipsEl = $("chips");
+  for (const text of EXAMPLES) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.textContent = text;
+    b.addEventListener("click", () => {
+      promptEl.value = text;
+      autosize();
+      promptEl.focus();
+    });
+    chipsEl.appendChild(b);
+  }
+
+  // ── Composer ───────────────────────────────────────────
+  function autosize() {
+    promptEl.style.height = "auto";
+    promptEl.style.height = Math.min(promptEl.scrollHeight, 220) + "px";
+  }
+  promptEl.addEventListener("input", autosize);
+  promptEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); go(); }
+  });
+  makeEl.addEventListener("click", () => (state.busy ? stop() : go()));
+
+  // ── Tabs & actions ─────────────────────────────────────
+  function setMode(mode) {
+    state.mode = mode;
+    const preview = mode === "preview";
+    tabPreview.setAttribute("aria-selected", String(preview));
+    tabCode.setAttribute("aria-selected", String(!preview));
+    frameEl.classList.toggle("hidden", !preview);
+    codeEl.classList.toggle("hidden", preview);
+    if (preview) applyFrame();
+  }
+
+  // A `display:none` iframe measures 0×0, so a widget loaded while the Code tab
+  // is up sizes its canvas to nothing and never gets a resize event to recover.
+  // Only ever hand it a srcdoc while the frame is actually on screen.
+  let loadedHtml = null;
+  function applyFrame() {
+    const v = current();
+    if (!v || state.mode !== "preview") return;
+    if (v.html === loadedHtml) return;
+    loadedHtml = v.html;
+    frameEl.srcdoc = v.html;
+  }
+  tabPreview.addEventListener("click", () => setMode("preview"));
+  tabCode.addEventListener("click", () => setMode("code"));
+
+  actCopy.addEventListener("click", async () => {
+    const v = current(); if (!v) return;
+    try {
+      await navigator.clipboard.writeText(v.html);
+      flash("Copied the HTML to your clipboard.");
+    } catch { flash("Couldn't reach the clipboard — use Download instead.", true); }
+  });
+
+  actSave.addEventListener("click", () => {
+    const v = current(); if (!v) return;
+    const name = (v.title || "widget").toLowerCase().replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "").slice(0, 48) || "widget";
+    const url = URL.createObjectURL(new Blob([v.html], { type: "text/html" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = name + ".html";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  });
+
+  // frame.html re-sandboxes the widget, so generated code never runs on this
+  // origin. The handshake keeps offering until the viewer acknowledges: the tab
+  // can finish loading before this listener attaches, and its "ready" would
+  // otherwise land on nobody.
+  actFull.addEventListener("click", () => {
+    const v = current(); if (!v) return;
+    let win = null, timer = null, tries = 0;
+
+    const cleanup = () => {
+      window.removeEventListener("message", onMsg);
+      clearInterval(timer);
+    };
+    const offer = () => {
+      if (win && !win.closed) {
+        win.postMessage({ type: "widget", html: v.html, title: v.title }, location.origin);
+      }
+    };
+    function onMsg(e) {
+      if (e.origin !== location.origin || !win || e.source !== win) return;
+      if (e.data === "widget-frame-ready") offer();
+      else if (e.data === "widget-frame-loaded") cleanup();
+    }
+
+    window.addEventListener("message", onMsg);
+    win = window.open("frame.html", "_blank");
+    if (!win) { cleanup(); flash("Your browser blocked the pop-up.", true); return; }
+    timer = setInterval(() => {
+      if (++tries > 20 || win.closed) cleanup();
+      else offer();
+    }, 250);
+  });
+
+  // ── Status ─────────────────────────────────────────────
+  let flashTimer = null;
+  function setStatus(text, kind) {
+    clearTimeout(flashTimer);
+    statusEl.className = kind || "";
+    statusEl.textContent = text;
+  }
+  function flash(text, isError) {
+    setStatus(text, isError ? "err" : "ok");
+    flashTimer = setTimeout(() => setStatus(restingStatus()), 4000);
+  }
+  function restingStatus() {
+    const v = current();
+    if (!v) return "Ready — ⌘↵ builds.";
+    return `v${state.active + 1} · ${v.title} · ${(v.html.length / 1024).toFixed(1)} KB`;
+  }
+
+  // ── Versions ───────────────────────────────────────────
+  function renderVersions() {
+    versionsEl.innerHTML = "";
+    railEmpty.classList.toggle("hidden", state.versions.length > 0);
+    state.versions.forEach((v, i) => {
+      const li = document.createElement("li");
+      if (i === state.active) li.className = "on";
+      const b = document.createElement("button");
+      b.type = "button";
+      b.innerHTML = `<span class="v-n">v${i + 1}</span><span class="v-t"></span>`;
+      b.querySelector(".v-t").textContent = v.title;
+      b.title = v.prompt;
+      b.addEventListener("click", () => show(i));
+      li.appendChild(b);
+      versionsEl.appendChild(li);
+    });
+  }
+
+  function show(i) {
+    const v = state.versions[i];
+    if (!v) return;
+    state.active = i;
+    codeEl.textContent = v.html;
+    applyFrame();
+    veilEl.classList.add("hidden");
+    actFull.disabled = actCopy.disabled = actSave.disabled = false;
+    renderVersions();
+    setStatus(restingStatus());
+    promptEl.placeholder = "What should change? e.g. make them blue, add gravity";
+  }
+
+  // ── Model output housekeeping ──────────────────────────
+  function cleanHtml(raw) {
+    let s = raw.trim();
+    // Belt and braces: the prompt forbids fences, but strip them if they appear.
+    s = s.replace(/^```(?:html)?\s*\n?/i, "").replace(/\n?```\s*$/, "");
+    const start = s.search(/<!doctype html|<html[\s>]/i);
+    if (start > 0) s = s.slice(start);
+    return s.trim();
+  }
+  function titleOf(html, fallback) {
+    const m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    const t = m && m[1].trim().replace(/\s*·.*$/, "").trim();
+    if (t) return t.slice(0, 42);
+    return fallback.slice(0, 42) + (fallback.length > 42 ? "…" : "");
+  }
+
+  // ── Generate ───────────────────────────────────────────
+  function stop() {
+    if (state.abort) state.abort.abort();
+  }
+
+  function setBusy(busy) {
+    state.busy = busy;
+    makeEl.textContent = busy ? "Stop" : "Make it";
+    promptEl.disabled = busy;
+    for (const el of [actFull, actCopy, actSave]) {
+      if (busy) el.disabled = true;
+      else el.disabled = !current();
+    }
+  }
+
+  async function go() {
+    const prompt = promptEl.value.trim();
+    if (!prompt || state.busy) return;
+
+    const base = current();
+    setBusy(true);
+    veilEl.classList.remove("hidden");
+    veilTitle.innerHTML = '<span class="spinner"></span>';
+    veilNote.textContent = base ? "Reworking it…" : "Building it…";
+    codeEl.textContent = "";
+    setMode("code");
+    setStatus("Thinking…");
+
+    const started = Date.now();
+    state.abort = new AbortController();
+    let raw = "";
+    let failed = null;
+    let completed = false;
+
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          basePrompt: state.basePrompt,
+          currentHtml: base ? base.html : "",
+        }),
+        signal: state.abort.signal,
+      });
+
+      if (!res.ok || !res.body) {
+        let msg = `Request failed (${res.status}).`;
+        try { const j = await res.json(); if (j.error) msg = j.error; } catch {}
+        throw new Error(msg);
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        let split;
+        while ((split = buffer.indexOf("\n\n")) !== -1) {
+          const chunk = buffer.slice(0, split);
+          buffer = buffer.slice(split + 2);
+
+          let event = "message", data = "";
+          for (const line of chunk.split("\n")) {
+            if (line.startsWith("event:")) event = line.slice(6).trim();
+            else if (line.startsWith("data:")) data += line.slice(5).trim();
+          }
+          if (!data) continue;
+
+          let payload;
+          try { payload = JSON.parse(data); } catch { continue; }
+
+          if (event === "delta") {
+            raw += payload.text;
+            codeEl.textContent = raw;
+            codeEl.scrollTop = codeEl.scrollHeight;
+            const secs = ((Date.now() - started) / 1000).toFixed(0);
+            setStatus(`Writing… ${(raw.length / 1024).toFixed(1)} KB · ${secs}s`);
+          } else if (event === "notice") {
+            veilNote.textContent = payload.message;
+          } else if (event === "error") {
+            failed = payload.message || "Generation failed.";
+          } else if (event === "done") {
+            completed = true;
+            if (payload.truncated) {
+              failed = "The widget ran past the length limit and got cut off. Ask for something simpler.";
+            }
+          }
+        }
+      }
+    } catch (err) {
+      failed = err.name === "AbortError" ? "Stopped." : (err.message || "Something went wrong.");
+    }
+
+    // No `done` event and no error means the connection died mid-write — almost
+    // always the serverless function hitting its wall-clock limit. The HTML we
+    // have is a fragment, so don't pass it off as a finished widget.
+    if (!failed && !completed) {
+      failed = raw
+        ? "The build ran out of time on the server and got cut off. Try asking for something a bit simpler."
+        : "The connection dropped before anything was built.";
+    }
+
+    state.abort = null;
+    setBusy(false);
+
+    if (failed) {
+      veilTitle.textContent = failed === "Stopped." ? "Stopped" : "That didn't work";
+      veilNote.textContent = failed === "Stopped." ? "Nothing was kept." : failed;
+      setStatus(failed, "err");
+      if (current()) setTimeout(() => show(state.active), 1200);
+      return;
+    }
+
+    const html = cleanHtml(raw);
+    if (!/<html[\s>]/i.test(html)) {
+      veilTitle.textContent = "That didn't work";
+      veilNote.textContent = "The model didn't return a usable HTML document. Try again, or reword it.";
+      setStatus("No document returned.", "err");
+      return;
+    }
+
+    if (!state.basePrompt) state.basePrompt = prompt;
+    state.versions.push({ html, title: titleOf(html, prompt), prompt, at: Date.now() });
+    setMode("preview"); // before show(), so the frame is visible when it loads
+    show(state.versions.length - 1);
+    promptEl.value = "";
+    autosize();
+
+    const secs = ((Date.now() - started) / 1000).toFixed(0);
+    flash(`Built in ${secs}s.`);
+  }
+
+  autosize();
+  renderVersions();
+})();
+</script>
+</body>
+</html>

@@ -4,6 +4,10 @@ One-off static projects, FTP-style. **Each top-level folder = a path on lab.phil
 Drop a folder with an `index.html`, deploy, done. Curated by Philip; keep the root index
 (`index.html`) list in sync when adding/removing a project.
 
+Mostly static — `/api/*.js` are Vercel Node serverless functions (see /widget-maker). The
+root `package.json` exists only so Vercel installs their deps; there is no build step, and
+`vercel.json` pins `"framework": null` to keep it that way.
+
 ## Deploy
 
 ```bash
@@ -20,6 +24,24 @@ propagation before verifying new paths (fresh 404s right after READY are usually
 
 ## Projects
 
+- **/widget-maker** — creative sandbox: type a wish ("a bunch of red balls bouncing
+  around", "asteroids", "a rain simulator"), Claude writes a self-contained HTML widget,
+  and it runs live in a sandboxed iframe. Iterate by saying what to change; every build
+  lands in a version rail you can jump back to. Nothing is persisted server-side.
+  - `api/generate.js` — Vercel Node function. Streams SSE (`delta`/`done`/`error`) from
+    `claude-opus-5` via `@anthropic-ai/sdk`. The system prompt is the product here: it
+    dictates one complete HTML document, no fences, no external resources, no storage
+    APIs (opaque origin — they throw), fill-the-viewport + DPI-aware canvas, and
+    "return the whole document again" on iteration.
+  - Iteration context is collapsed to `[original wish, current HTML, new instruction]`
+    rather than the full transcript — the document already embodies every earlier change.
+  - Needs `ANTHROPIC_API_KEY` in the Vercel project env. Optional: `WIDGET_MAKER_PASSCODE`
+    (gates the endpoint) and `WIDGET_MAKER_EFFORT` (defaults to `medium` to stay inside
+    the 60s function limit).
+  - Guardrails: origin allowlist, 8 req/min per IP (in-memory, per warm instance),
+    prompt/HTML size caps. The endpoint spends real money — watch it if the URL spreads.
+  - `frame.html` is the full-screen viewer; it re-sandboxes the widget so generated code
+    never runs on the lab origin (hence postMessage rather than a blob URL).
 - **/honda-acura** — Honda × Acura HTML5 display-ad case study (PB Productions branded).
   Self-contained; `?still` mode for screenshots; og:image must stay an absolute URL.
 - **/arcade** — '90s Shockwave/Flash games recovered from the Wayback Machine, played via
