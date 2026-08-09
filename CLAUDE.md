@@ -119,10 +119,12 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     named directories (byte-identical — the "three offices" were one set shown thrice);
     23 of those were text banners, rules and gradients, so only the actual building
     exteriors and interiors were kept.
-  - **The Screening Room** at the bottom (under the closing note) holds the 14 recovered
-    TV spots and venue films. Philip did **not** produce these — they're agency work from
-    the same years, and the page says so. The files still live in `vault/movies/`, so the
-    references are absolute (`/vault/movies/…`).
+  - **The Screening Room** at the bottom (under the closing note) holds the five
+    Oklahoma Tourism spots. Philip did **not** produce these — they're agency work from
+    the same years, and the page says so. The files live in `vault/movies/`, so the
+    references are absolute (`/vault/movies/…`). The Speed Zone, Tulsa Convention Center
+    and OG&E films were cut in Aug 2026; only `brunswick_video_SpeedZone_HIGH.mp4`
+    survives, because the Vault still plays it.
 - **/vault** — "The Vault": the '90s Shockwave/Flash games plus the few non-game pieces
   worth keeping. This absorbed the old **/arcade** in Aug 2026; `vercel.json` permanently
   redirects `/arcade/:path*` → `/vault/:path*`, so old links still work.
