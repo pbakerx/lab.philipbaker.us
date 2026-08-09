@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Player · The Vault</title>
+<style>
+:root{--bg:#1a0e05;--ink:#fdf3ea;--dim:#c9b39d;--gold:#ffd24a;--line:#3c2612}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--gold)}
+header{padding:20px 24px;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+header .crumb{font-size:13px;color:var(--dim)}
+header .crumb a{text-decoration:none}
+h1{font-size:18px;margin:0;font-weight:600}
+main{flex:1;display:grid;place-items:center;padding:12px 24px 40px}
+#stage{background:#000;border:1px solid var(--line);border-radius:8px;padding:10px;box-shadow:0 0 80px rgba(255,210,74,.06);max-width:100%}
+#stage embed,#stage ruffle-player{display:block;max-width:100%}
+#stage ruffle-player{width:760px;height:560px}
+#msg{color:var(--dim);font-size:14px;max-width:480px;text-align:center;padding:40px 20px}
+footer{padding:0 24px 28px;font-size:12px;color:var(--dim);text-align:center}
+footer a{color:var(--dim)}
+</style>
+</head>
+<body>
+<header>
+  <span class="crumb"><a href="index.html">← the vault</a></span>
+  <h1 id="title"></h1>
+  <span class="crumb" id="orig"></span>
+</header>
+<main><div id="stage"></div></main>
+<footer id="note"></footer>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var f = q.get("f") || "";
+  var t = q.get("t") || f.split("/").pop() || "Player";
+  var stage = document.getElementById("stage");
+  document.getElementById("title").textContent = t;
+  document.title = t + " · The Vault";
+  if (!/^[\w][\w. '-]*\.(swf|dcr)$/i.test(f)) {
+    stage.innerHTML = '<div id="msg">Nothing to play — go back to <a href="index.html">the vault</a>.</div>';
+    return;
+  }
+  var src = "shells/" + encodeURIComponent(f);
+  document.getElementById("orig").innerHTML = '<a href="' + src + '">original file</a>';
+  if (/\.dcr$/i.test(f)) {
+    var em = document.createElement("embed");
+    em.setAttribute("src", src); em.setAttribute("type", "application/x-director");
+    em.setAttribute("width", "640"); em.setAttribute("height", "480");
+    stage.appendChild(em);
+    var s = document.createElement("script");
+    s.src = "../arcade/vendor/dirplayer-polyfill.js";
+    document.body.appendChild(s);
+    document.getElementById("note").innerHTML = 'Shockwave emulation by dirplayer.';
+  } else {
+    var s2 = document.createElement("script");
+    s2.src = "https://unpkg.com/@ruffle-rs/ruffle";
+    s2.onload = function(){
+      var player = window.RufflePlayer.newest().createPlayer();
+      stage.appendChild(player);
+      player.load({url: src, openUrlMode: "deny", allowScriptAccess: false, autoplay: "on", unmuteOverlay: "hidden"});
+    };
+    document.body.appendChild(s2);
+    document.getElementById("note").innerHTML = 'Flash emulation by Ruffle. Era shells often reference assets that were never archived — what renders is what survives.';
+  }
+})();
+</script>
+</body>
+</html>
