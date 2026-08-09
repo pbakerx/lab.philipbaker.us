@@ -112,6 +112,44 @@ button:disabled{opacity:.45;cursor:default}
 .versions li.on .v-n{color:var(--gold)}
 .versions li.on .v-t{color:var(--ink)}
 
+/* ── Favorites gallery ─────────────────────────────────── */
+.gallery{margin-top:56px}
+.gallery-head{display:flex;align-items:baseline;gap:10px;margin:0 0 4px}
+.gallery-head h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0}
+.gallery-note{font-size:12px;color:#7d6752}
+.gallery .empty{font-size:14px;color:var(--dim);margin:14px 0 0;max-width:520px}
+.gallery .empty strong{color:var(--ink);font-weight:600}
+
+.cards{
+  list-style:none;margin:18px 0 0;padding:0;display:grid;gap:16px;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+}
+.card{
+  border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card);
+  display:flex;flex-direction:column;
+}
+.card-stage{
+  position:relative;aspect-ratio:16/10;background:#000;overflow:hidden;
+  border-bottom:1px solid var(--line);
+}
+/* The preview is inert — the overlay button on top is what you click. */
+.card-stage iframe{width:100%;height:100%;border:0;display:block;pointer-events:none}
+.card-ph{position:absolute;inset:0;display:grid;place-items:center;color:#5e4a36;font-size:11px;
+         font-family:var(--mono);background:#120802}
+.card-open{
+  position:absolute;inset:0;width:100%;display:grid;place-items:center;cursor:pointer;
+  border:0;border-radius:0;padding:0;opacity:0;transition:opacity .15s;
+  background:rgba(10,4,0,.62);color:var(--ink);font-size:13px;font-weight:600;letter-spacing:.02em;
+}
+.card-stage:hover .card-open,.card-open:focus-visible{opacity:1}
+@media (hover:none){.card-open{opacity:0}}
+.card-body{padding:10px 12px 12px}
+.card-title{font-size:13.5px;font-weight:600;color:var(--ink);margin:0;
+            overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card-prompt{font-size:12px;color:var(--dim);margin:3px 0 0;line-height:1.4;
+             display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{font-family:var(--mono);font-size:10.5px;color:#7d6752;margin:7px 0 0}
+
 footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim);max-width:660px}
 footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
 
@@ -160,6 +198,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
         <button class="tab" id="tab-preview" role="tab" aria-selected="true" type="button">Preview</button>
         <button class="tab" id="tab-code" role="tab" aria-selected="false" type="button">Code</button>
       </div>
+      <button class="act" id="act-fav" type="button" disabled>♥ Favorite</button>
       <button class="act" id="act-full" type="button" disabled>Full screen</button>
       <button class="act" id="act-copy" type="button" disabled>Copy</button>
       <button class="act" id="act-save" type="button" disabled>Download</button>
@@ -192,11 +231,23 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   </aside>
 </div>
 
+<section class="gallery" id="gallery">
+  <div class="gallery-head">
+    <h2>Favorites</h2>
+    <span class="gallery-note" id="gallery-note">Loading…</span>
+  </div>
+  <p class="empty" id="gallery-empty" hidden>
+    Nothing saved yet. Build something good and hit <strong>♥ Favorite</strong> — it'll
+    show up here for everyone.
+  </p>
+  <ul class="cards" id="cards"></ul>
+</section>
+
 <footer>
   Every widget is a single self-contained HTML file — no libraries, no network, no
   storage — generated on request and run in a sandboxed frame. <code>Download</code>
-  gives you the file; it works offline, anywhere. Nothing is saved server-side, so
-  reloading this page clears the lot.
+  gives you the file; it works offline, anywhere. Your own session clears on reload —
+  but anything you <strong>♥ Favorite</strong> is kept, and everyone who visits sees it.
 </footer>
 
 </div>
@@ -211,7 +262,8 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
         veilNote = $("veil-note"), statusEl = $("status"), widgetsEl = $("widgets"),
         railEmpty = $("rail-empty"), tabPreview = $("tab-preview"), tabCode = $("tab-code"),
         actFull = $("act-full"), actCopy = $("act-copy"), actSave = $("act-save"),
-        newEl = $("new-widget");
+        actFav = $("act-fav"), newEl = $("new-widget"), cardsEl = $("cards"),
+        galleryNote = $("gallery-note"), galleryEmpty = $("gallery-empty");
 
   const EXAMPLES = [
     "A bunch of red balls bouncing around",
@@ -349,6 +401,216 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     }, 250);
   });
 
+  // ── Favorites ──────────────────────────────────────────
+  // The gallery is shared: anything saved here shows up for everyone who visits.
+  const favHtml = new Map();   // blob url -> html, so a card is fetched once
+  let savedIds = new Set();    // ids already in the gallery, to label the button
+
+  actFav.addEventListener("click", async () => {
+    const v = current();
+    if (!v) return;
+    if (!v.signature) {
+      flash("This one can't be saved — rebuild it and try again.", true);
+      return;
+    }
+    actFav.disabled = true;
+    actFav.textContent = "Saving…";
+    try {
+      const res = await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          html: v.html,
+          signature: v.signature,
+          title: v.title,
+          prompt: v.prompt,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Save failed (${res.status}).`);
+      flash(data.already ? "Already in the favorites." : "Saved to the favorites.");
+      await loadGallery();
+    } catch (err) {
+      flash(err.message || "Couldn't save that.", true);
+    } finally {
+      syncFavButton();
+    }
+  });
+
+  function syncFavButton() {
+    const v = current();
+    if (state.busy || !v) {
+      actFav.disabled = true;
+      actFav.textContent = "♥ Favorite";
+      return;
+    }
+    const saved = savedIds.has(v.id || "");
+    actFav.disabled = !v.signature;
+    actFav.textContent = saved ? "♥ Saved" : "♥ Favorite";
+    actFav.title = v.signature
+      ? "Save this widget to the shared favorites"
+      : "Only freshly generated widgets can be saved";
+  }
+
+  // Previews are real widgets, so running every card at once would be brutal.
+  // Each one is mounted when it scrolls into view and torn down when it leaves,
+  // which keeps only a handful alive at a time.
+  const cardObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const stage = entry.target;
+      if (entry.isIntersecting) mountPreview(stage);
+      else unmountPreview(stage);
+    }
+  }, { rootMargin: "200px 0px" });
+
+  async function mountPreview(stage) {
+    if (stage.dataset.mounted === "1") return;
+    stage.dataset.mounted = "1";
+    const url = stage.dataset.url;
+    try {
+      const html = await fetchFavorite(url);
+      if (stage.dataset.mounted !== "1") return; // scrolled away mid-fetch
+      const frame = document.createElement("iframe");
+      frame.setAttribute("sandbox", "allow-scripts");
+      frame.setAttribute("loading", "lazy");
+      frame.setAttribute("scrolling", "no");
+      frame.title = stage.dataset.title || "Widget preview";
+      frame.srcdoc = html;
+      stage.querySelector(".card-ph")?.remove();
+      stage.prepend(frame);
+    } catch {
+      const ph = stage.querySelector(".card-ph");
+      if (ph) ph.textContent = "preview unavailable";
+    }
+  }
+
+  function unmountPreview(stage) {
+    if (stage.dataset.mounted !== "1") return;
+    stage.dataset.mounted = "0";
+    stage.querySelector("iframe")?.remove();
+    if (!stage.querySelector(".card-ph")) {
+      const ph = document.createElement("div");
+      ph.className = "card-ph";
+      ph.textContent = "···";
+      stage.prepend(ph);
+    }
+  }
+
+  async function fetchFavorite(url) {
+    if (favHtml.has(url)) return favHtml.get(url);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("fetch failed");
+    const data = await res.json();
+    favHtml.set(url, data.html);
+    return data.html;
+  }
+
+  // Opening a favorite drops it into the rail as its own widget, so it can be
+  // iterated on like anything else.
+  async function openFavorite(item) {
+    try {
+      galleryNote.textContent = "Opening…";
+      const html = await fetchFavorite(item.url);
+      state.widgets.push({
+        basePrompt: item.prompt || item.title,
+        versions: [{
+          html,
+          title: item.title,
+          prompt: item.prompt || `Favorite: ${item.title}`,
+          at: Date.now(),
+          signature: null, // not ours to re-sign; it's already in the gallery
+          id: item.id,
+        }],
+      });
+      setMode("preview");
+      show(state.widgets.length - 1, 0);
+      document.querySelector(".app").scrollIntoView({ behavior: "smooth", block: "start" });
+      galleryNote.textContent = galleryCount;
+    } catch {
+      galleryNote.textContent = galleryCount;
+      flash("Couldn't open that favorite.", true);
+    }
+  }
+
+  let galleryCount = "";
+  async function loadGallery() {
+    try {
+      const res = await fetch("/api/favorites");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Couldn't load the gallery.");
+      renderGallery(data.items || []);
+    } catch (err) {
+      cardsEl.innerHTML = "";
+      galleryEmpty.hidden = false;
+      galleryEmpty.textContent = err.message;
+      galleryNote.textContent = "";
+    }
+  }
+
+  function renderGallery(items) {
+    savedIds = new Set(items.map((i) => i.id));
+    galleryCount = items.length
+      ? `${items.length} saved by visitors`
+      : "";
+    galleryNote.textContent = galleryCount;
+    galleryEmpty.hidden = items.length > 0;
+
+    cardObserver.disconnect();
+    cardsEl.innerHTML = "";
+
+    for (const item of items) {
+      const li = document.createElement("li");
+      li.className = "card";
+
+      const stage = document.createElement("div");
+      stage.className = "card-stage";
+      stage.dataset.url = item.url;
+      stage.dataset.title = item.title;
+
+      const ph = document.createElement("div");
+      ph.className = "card-ph";
+      ph.textContent = "···";
+      stage.appendChild(ph);
+
+      const open = document.createElement("button");
+      open.type = "button";
+      open.className = "card-open";
+      open.textContent = "Open";
+      open.setAttribute("aria-label", `Open ${item.title}`);
+      open.addEventListener("click", () => openFavorite(item));
+      stage.appendChild(open);
+
+      const body = document.createElement("div");
+      body.className = "card-body";
+      const h = document.createElement("p");
+      h.className = "card-title";
+      h.textContent = item.title;
+      const p = document.createElement("p");
+      p.className = "card-prompt";
+      p.textContent = item.prompt || "—";
+      const meta = document.createElement("p");
+      meta.className = "card-meta";
+      meta.textContent = relativeDate(item.savedAt);
+      body.append(h, p, meta);
+
+      li.append(stage, body);
+      cardsEl.appendChild(li);
+      cardObserver.observe(stage);
+    }
+    syncFavButton();
+  }
+
+  function relativeDate(iso) {
+    const then = new Date(iso).getTime();
+    if (!Number.isFinite(then)) return "";
+    const mins = Math.max(0, Math.round((Date.now() - then) / 60000));
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.round(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.round(hrs / 24)}d ago`;
+  }
+
   // ── Status ─────────────────────────────────────────────
   let flashTimer = null;
   function setStatus(text, kind) {
@@ -415,6 +677,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     applyFrame();
     veilEl.classList.add("hidden");
     actFull.disabled = actCopy.disabled = actSave.disabled = false;
+    syncFavButton();
     renderRail();
     setStatus(restingStatus());
     promptEl.placeholder = "What should change? e.g. make them blue, add gravity";
@@ -434,6 +697,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     veilTitle.textContent = "New widget";
     veilNote.textContent = "Describe the next one. The others are still in the rail.";
     actFull.disabled = actCopy.disabled = actSave.disabled = true;
+    syncFavButton();
     promptEl.placeholder = "Make a bunch of red balls bouncing around…";
     promptEl.value = "";
     autosize();
@@ -473,6 +737,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
       if (busy) el.disabled = true;
       else el.disabled = !current();
     }
+    syncFavButton();
   }
 
   async function go() {
@@ -493,6 +758,8 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     let raw = "";
     let failed = null;
     let completed = false;
+    let signature = null;
+    let widgetId = null;
 
     try {
       const res = await fetch("/api/generate", {
@@ -548,6 +815,12 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
             failed = payload.message || "Generation failed.";
           } else if (event === "done") {
             completed = true;
+            signature = payload.signature || null;
+            widgetId = payload.id || null;
+            // The server decides the finished document so its signature covers
+            // exactly what we'd send back; `canonical` is only present when
+            // tidying actually changed something.
+            if (payload.canonical) raw = payload.canonical;
             if (payload.truncated) {
               failed = "The widget ran past the length limit and got cut off. Ask for something simpler.";
             }
@@ -586,7 +859,14 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
       return;
     }
 
-    const version = { html, title: titleOf(html, prompt), prompt, at: Date.now() };
+    const version = {
+      html,
+      title: titleOf(html, prompt),
+      prompt,
+      at: Date.now(),
+      signature, // only a signed document can be saved to the gallery
+      id: widgetId,
+    };
     let wi = state.wi;
     if (wi === -1) {
       state.widgets.push({ basePrompt: prompt, versions: [version] });
@@ -605,6 +885,8 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
 
   autosize();
   renderRail();
+  syncFavButton();
+  loadGallery();
 })();
 </script>
 </body>

@@ -5,6 +5,7 @@
 // project env as ANTHROPIC_API_KEY.
 
 import Anthropic from "@anthropic-ai/sdk";
+import { sign, idFor } from "../lib/favorites.js";
 
 // maxDuration is 300s (vercel.json), so wall clock is no longer the binding
 // constraint — cost is. At effort "high" a build runs ~2.5k-5.6k output tokens,
@@ -52,6 +53,17 @@ function originAllowed(req) {
   }
   if (host === "localhost" || host === "127.0.0.1") return true;
   return origin === `https://${req.headers.host}`;
+}
+
+// The model is told not to wrap the document in a code fence and generally
+// doesn't, but strip one if it appears and drop anything before the doctype.
+// The browser applies the identical transform to the same bytes.
+export function tidy(raw) {
+  let s = raw.trim();
+  s = s.replace(/^```(?:html)?\s*\n?/i, "").replace(/\n?```\s*$/, "");
+  const start = s.search(/<!doctype html|<html[\s>]/i);
+  if (start > 0) s = s.slice(start);
+  return s.trim();
 }
 
 const hits = new Map();
@@ -270,6 +282,7 @@ export default async function handler(req, res) {
     messages,
   };
 
+  let text = "";
   let produced = 0;
   let clientGone = false;
   req.on("close", () => {
@@ -287,6 +300,7 @@ export default async function handler(req, res) {
           event.delta.type === "text_delta"
         ) {
           produced += event.delta.text.length;
+          text += event.delta.text;
           send("delta", { text: event.delta.text });
         }
       }
@@ -322,9 +336,25 @@ export default async function handler(req, res) {
       return res.end();
     }
 
+    // The favorites gallery will only accept a document this server signed, and
+    // the signature has to cover the exact bytes the browser sends back. So the
+    // server decides what the finished document *is*. Deltas are concatenated
+    // identically on both sides, so when tidying is a no-op — the usual case —
+    // saying so beats re-sending the whole document.
+    const canonical = tidy(text);
+    let signature = null;
+    try {
+      signature = sign(canonical);
+    } catch {
+      signature = null; // WIDGET_MAKER_SECRET unset — build works, saving won't.
+    }
+
     send("done", {
       truncated: final.stop_reason === "max_tokens",
       speed: final.usage?.speed ?? "standard",
+      signature,
+      id: idFor(canonical),
+      canonical: canonical === text.trim() ? null : canonical,
       usage: {
         input: final.usage.input_tokens,
         output: final.usage.output_tokens,

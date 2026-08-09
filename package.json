@@ -4,6 +4,7 @@
   "type": "module",
   "description": "Static one-off projects for lab.philipbaker.us. No build step — this file exists only so Vercel installs deps for the /api serverless functions.",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.116.0"
+    "@anthropic-ai/sdk": "^0.116.0",
+    "@vercel/blob": "^2.7.0"
   }
 }

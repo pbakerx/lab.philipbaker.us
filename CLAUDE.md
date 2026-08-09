@@ -27,7 +27,8 @@ propagation before verifying new paths (fresh 404s right after READY are usually
 - **/widget-maker** — creative sandbox: type a wish ("a bunch of red balls bouncing
   around", "asteroids", "a rain simulator"), Claude writes a self-contained HTML widget,
   and it runs live in a sandboxed iframe. Iterate by saying what to change; every build
-  lands in a version rail you can jump back to. Nothing is persisted server-side.
+  lands in a version rail you can jump back to. **The favorites gallery is shared** —
+  anything a visitor saves is visible to everyone, and is the only persisted state.
   - `api/generate.js` — Vercel Node function. Streams SSE (`delta`/`done`/`error`) from
     `claude-fable-5` at `effort: high` via `@anthropic-ai/sdk`. Fable 5 always thinks (an
     explicit `thinking` config is rejected, so we never send one) and its classifiers can
@@ -46,8 +47,30 @@ propagation before verifying new paths (fresh 404s right after READY are usually
     `wi === -1` so the next build starts a fresh lineage without discarding the old ones.
     A group is labelled with its newest version's title (rain that became snow reads
     "Snow"); each row is labelled with the prompt that produced it.
-  - Needs `ANTHROPIC_API_KEY` in the Vercel project env. Optional: `WIDGET_MAKER_PASSCODE`
-    (gates the endpoint), `WIDGET_MAKER_MODEL`, `WIDGET_MAKER_EFFORT`, `WIDGET_MAKER_SPEED`.
+  - `api/favorites.js` + `lib/favorites.js` — the shared gallery, on Vercel Blob (store
+    `widget-favorites`, public). **The load-bearing rule: only HTML this server generated
+    can be saved.** `/api/generate` HMACs each finished document with
+    `WIDGET_MAKER_SECRET` and returns the signature; `/api/favorites` refuses anything
+    that doesn't verify, so the gallery can't be used to host arbitrary POSTed HTML.
+    Editing one byte invalidates it.
+    - The signature covers the *server's* idea of the finished document, so `generate`
+      also returns `canonical` — but only when tidying actually changed something, which
+      keeps the common case from re-sending the whole file.
+    - Blob `list()` returns no custom metadata, so title+prompt ride inside the pathname
+      base64url-encoded (`favorites/<b64>.<id>.json`). The gallery is therefore one
+      `list()` call, and a widget's HTML is fetched only when a card is opened. Identity
+      is `sha256(html)`, so re-saving is a no-op rather than a duplicate.
+    - Blobs are stored as `application/json`, not `text/html` — a public blob URL must
+      not render user HTML as a page, even on a foreign origin.
+    - Card previews mount/unmount on scroll (IntersectionObserver); running every
+      favorite at once would be brutal.
+  - Moderation: `DELETE /api/favorites?pathname=…` with `x-admin-key`, enabled only if
+    `WIDGET_MAKER_ADMIN_KEY` is set. Otherwise `npx vercel blob del <pathname>` always
+    works. Cap is 200 favorites.
+  - Needs `ANTHROPIC_API_KEY`, `WIDGET_MAKER_SECRET` and `BLOB_READ_WRITE_TOKEN` in the
+    Vercel project env. Optional: `WIDGET_MAKER_PASSCODE` (gates generation),
+    `WIDGET_MAKER_ADMIN_KEY`, `WIDGET_MAKER_MODEL`, `WIDGET_MAKER_EFFORT`,
+    `WIDGET_MAKER_SPEED`.
   - Guardrails: origin allowlist, 8 req/min per IP (in-memory, per warm instance),
     prompt/HTML size caps. The endpoint spends real money — watch it if the URL spreads.
   - `frame.html` is the full-screen viewer; it re-sandboxes the widget so generated code
