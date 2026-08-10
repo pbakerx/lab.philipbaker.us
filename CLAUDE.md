@@ -118,7 +118,7 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
   figures. The invoice is labelled an example with its figures struck, and the footer says
   so. Philip's call — keep it that way when editing. The unredacted original lives at
   `~/Documents/Client Work/pb/Lab/billing-case-study/index.html` (that original still has the real numbers).
-- **/am-1998** — the black-and-white am.com (1997–99) Philip designed; Wayback screenshots.
+- **/90s-web-ackerman-mcqueen** — the black-and-white am.com (1997–99) Philip designed; Wayback screenshots.
   The homepage hero was reconstructed: original HTML + the separately-recovered
   `graphics/main/on.gif` (Wayback replay never rendered it).
   - The page opens on the homepage screenshot, then **the collage** (`hero/*.gif`) — the
@@ -159,7 +159,7 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     Gone: all 25 contact sheets, the site-design screenshots, the NRALive/WilTel shells,
     the DNA Pinball, Winner-with-Vyvx and Shockwave Bowling cards, and the Six Flags
     park template 2002.
-    The screening room and the offices both moved to **/am-1998**. Everything removed is
+    The screening room and the offices both moved to **/90s-web-ackerman-mcqueen**. Everything removed is
     still in git history and in the master archive.
   - **Card artwork is opt-in by file.** Each game card carries `data-shot="<slug>"`; an
     inline script probes `vault/shots/<slug>.jpg` with `new Image()` and only inserts an
