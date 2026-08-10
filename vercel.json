@@ -8,6 +8,9 @@
   "redirects": [
     { "source": "/billing", "destination": "/ai-solves-billing", "permanent": true },
     { "source": "/billing/", "destination": "/ai-solves-billing/", "permanent": true },
+    { "source": "/am-1998", "destination": "/90s-web-ackerman-mcqueen", "permanent": true },
+    { "source": "/am-1998/", "destination": "/90s-web-ackerman-mcqueen/", "permanent": true },
+    { "source": "/am-1998/:path+", "destination": "/90s-web-ackerman-mcqueen/:path+", "permanent": true },
     { "source": "/arcade", "destination": "/vault", "permanent": true },
     { "source": "/arcade/", "destination": "/vault/", "permanent": true },
     { "source": "/arcade/:path+", "destination": "/vault/:path+", "permanent": true }
