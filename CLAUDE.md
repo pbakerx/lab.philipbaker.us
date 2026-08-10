@@ -10,6 +10,13 @@ root `package.json` exists only so Vercel installs their deps; there is no build
 
 ## Deploy
 
+**Pushing to `main` deploys to production.** The Vercel project has been connected to
+`pbakerx/lab.philipbaker.us` (Aug 10 2026), so git and production are no longer
+independent — a push is a deploy, and anything committed goes live. The repo is public;
+that is now also the deploy path, so treat a commit as publication.
+
+To deploy without pushing — or to ship uncommitted working-tree edits:
+
 ```bash
 npx vercel --prod --scope team_msxsmiFFlh80LDtD36JrW9pk
 ```
