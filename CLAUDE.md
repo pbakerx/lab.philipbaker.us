@@ -111,7 +111,8 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     never runs on the lab origin (hence postMessage rather than a blob URL).
 - **/honda-acura** — Honda × Acura HTML5 display-ad case study (PB Productions branded).
   Self-contained; `?still` mode for screenshots; og:image must stay an absolute URL.
-- **/billing** — case study on the AI billing workflow (spoken timesheets → QBO invoices).
+- **/ai-solves-billing** — case study on the AI billing workflow (spoken timesheets → QBO
+  invoices). Shipped briefly as `/billing`; `vercel.json` keeps that path redirecting.
   Single self-contained `index.html`, no local assets. **Deliberately carries no real
   financial data**: no client names, no rates, no markup detail, no A/R table, no revenue
   figures. The invoice is labelled an example with its figures struck, and the footer says
