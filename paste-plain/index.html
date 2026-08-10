@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlainPaste — paste as plain text</title>
+<meta name="description" content="A tiny free Mac menu bar app: hit ⌃⌘V to paste any clipboard as plain text, formatting stripped.">
+<style>
+:root{--bg:#1a0e05;--ink:#fdf3ea;--gold:#ffd24a;--dim:#c9b39d;--card:#241408;--hair:#3a2410}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);
+     margin:0;line-height:1.55}
+main{max-width:680px;margin:0 auto;padding:56px 22px 80px}
+h1{margin:0 0 4px;font-size:2rem}
+h2{margin:2.2em 0 .5em;font-size:1.15rem;color:var(--gold)}
+a{color:var(--gold)}
+.tag{color:var(--dim);margin:0 0 28px}
+kbd{font-family:ui-monospace,Menlo,monospace;background:var(--card);border:1px solid var(--hair);
+    border-radius:5px;padding:1px 7px;font-size:.95em;white-space:nowrap}
+.dl{display:inline-block;background:var(--gold);color:#1a0e05;font-weight:600;
+    padding:12px 22px;border-radius:8px;text-decoration:none;margin:8px 0 4px}
+.dl:hover{filter:brightness(1.08)}
+.meta{font-size:13px;color:var(--dim);margin:4px 0 0}
+ol li,ul li{margin:.45em 0}
+code{font-family:ui-monospace,Menlo,monospace;background:var(--card);border:1px solid var(--hair);
+     border-radius:5px;padding:1px 6px;font-size:.92em}
+.note{background:var(--card);border:1px solid var(--hair);border-radius:10px;
+      padding:14px 18px;font-size:.95em}
+.back{margin:48px 0 0;font-size:14px}
+.back a{color:var(--dim);text-decoration:none}
+.back a:hover{color:var(--gold)}
+</style>
+</head>
+<body>
+<main>
+<h1>PlainPaste</h1>
+<p class="tag">A tiny Mac menu bar app that pastes as plain text. No formatting, ever.</p>
+
+<p>You copy something from a web page or a document, paste it, and drag along the fonts,
+colors and sizes you never asked for. PlainPaste fixes that two ways:</p>
+<ul>
+<li><strong>Hit <kbd>⌃⌘V</kbd></strong> — pastes the clipboard as plain text, in any app.</li>
+<li><strong>Click the clipboard icon → Scrub Clipboard</strong> — strips the formatting off
+whatever is on the clipboard, then paste normally with <kbd>⌘V</kbd>.</li>
+</ul>
+
+<p><a class="dl" href="PlainPaste.zip" download>Download PlainPaste</a></p>
+<p class="meta">Free · 36&thinsp;KB · macOS 13 or later · Apple&nbsp;Silicon &amp; Intel ·
+<a href="https://github.com/pbakerx/lab.philipbaker.us/tree/main/paste-plain">source</a></p>
+
+<h2>Installing</h2>
+<ol>
+<li>Unzip, and drag <strong>PlainPaste.app</strong> into your Applications folder.</li>
+<li>Open it. macOS will likely refuse the first time — this is a small unsigned app, not
+from the App Store. Go to <strong>System Settings → Privacy&nbsp;&amp;&nbsp;Security</strong>,
+scroll down, and click <strong>Open&nbsp;Anyway</strong>. That's a one-time step.</li>
+<li>A clipboard icon appears in the menu bar. The first time you use <kbd>⌃⌘V</kbd>,
+macOS asks for an <strong>Accessibility</strong> grant — that's what lets the app press
+⌘V for you. (Scrubbing from the menu needs no permission at all.)</li>
+</ol>
+
+<p class="note">Tick <strong>Launch at Login</strong> in the menu so it's always there.
+The icon flashes a checkmark whenever it scrubs.</p>
+
+<h2>For scripters</h2>
+<p>Anything on your Mac can trigger a scrub:
+<code>notifyutil&nbsp;-p&nbsp;us.philipbaker.plainpaste.scrub</code> —
+handy from Shortcuts, Keyboard Maestro, or a shell script.</p>
+
+<h2>What it doesn't do</h2>
+<p>No clipboard history, no network, no analytics, no background snooping — it reads the
+clipboard only at the moment you trigger it. The whole app is
+<a href="https://github.com/pbakerx/lab.philipbaker.us/blob/main/paste-plain/src/main.swift">one
+Swift file</a>.</p>
+
+<p class="back"><a href="/">&larr; lab</a></p>
+</main>
+<script src="/shared/menu.js" defer></script>
+</body>
+</html>
