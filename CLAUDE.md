@@ -183,6 +183,22 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     Ruffle (`.swf`) *does* render on screen but its WebGL context is
     `preserveDrawingBuffer:false`, so `drawImage`/`toDataURL` read back blank. The
     decompile harvest has no game frames either. Screenshot in a normal browser window.
+- **/paste-plain** — PlainPaste, a macOS menu bar app (Swift/AppKit, single file):
+  ⌃⌘V pastes the clipboard as plain text anywhere; the menu's Scrub Clipboard strips
+  formatting in place. Branded AechTech, LLC (About box + page credit).
+  - `build.sh` compiles a universal binary and produces `PlainPaste.zip`; **that committed
+    zip is the download the page serves** — rebuild and re-commit it whenever `src/`
+    changes.
+  - The hotkey is a **CGEvent tap**, not Carbon `RegisterEventHotKey` — Carbon silently
+    delivered nothing on this machine (both app and dispatcher event targets tried).
+    The tap needs Accessibility; the app prompts at launch and polls until granted.
+  - **Ad-hoc signed, so every rebuild invalidates the Accessibility grant** (Settings
+    shows it on but macOS re-prompts and denies). Fix:
+    `tccutil reset Accessibility us.philipbaker.plainpaste`, reinstall to /Applications,
+    re-grant. A stable Developer ID signature (planned, via the AechTech Apple account)
+    will end this.
+  - Logs to `~/Library/Logs/PlainPaste.log` (unified log is useless for ad-hoc apps).
+    Scriptable scrub: `notifyutil -p us.philipbaker.plainpaste.scrub`.
 - **/hello** — the original example.
 
 ## The master archive (not in this repo)

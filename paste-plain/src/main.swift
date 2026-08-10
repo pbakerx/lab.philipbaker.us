@@ -16,9 +16,24 @@ import ServiceManagement
 
 private let scrubNotification = "us.philipbaker.plainpaste.scrub"
 
+private func logLine(_ message: String) {
+    let url = FileManager.default.homeDirectoryForCurrentUser
+        .appendingPathComponent("Library/Logs/PlainPaste.log")
+    let stamp = ISO8601DateFormatter().string(from: Date())
+    let line = "\(stamp) \(message)\n"
+    if let handle = try? FileHandle(forWritingTo: url) {
+        handle.seekToEndOfFile()
+        handle.write(line.data(using: .utf8)!)
+        try? handle.close()
+    } else {
+        try? line.data(using: .utf8)!.write(to: url)
+    }
+}
+
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
-    private var hotKeyRef: EventHotKeyRef?
+    private var eventTap: CFMachPort?
+    private var tapRetryTimer: Timer?
     private let launchAtLoginItem = NSMenuItem(
         title: "Launch at Login", action: #selector(toggleLaunchAtLogin(_:)), keyEquivalent: "")
     private var flashRestore: DispatchWorkItem?
@@ -29,6 +44,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         let menu = NSMenu()
         menu.delegate = self
+
+        let about = NSMenuItem(title: "About PlainPaste", action: #selector(showAbout), keyEquivalent: "")
+        about.target = self
+        menu.addItem(about)
+        menu.addItem(.separator())
 
         let paste = NSMenuItem(title: "Paste Plain Text", action: #selector(pasteFromMenu), keyEquivalent: "v")
         paste.keyEquivalentModifierMask = [.control, .command]
@@ -49,8 +69,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         statusItem.menu = menu
 
-        registerHotKey()
+        // Ask for Accessibility up front — the ⌃⌘V hotkey is the whole point,
+        // and the event tap can only be created once the grant exists.
+        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+        _ = AXIsProcessTrustedWithOptions(options)
+        startHotKeyTapWhenTrusted()
         registerScrubNotification()
+    }
+
+    // MARK: - About
+
+    @objc private func showAbout() {
+        NSApp.activate(ignoringOtherApps: true)
+        let base: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 12),
+            .paragraphStyle: {
+                let p = NSMutableParagraphStyle(); p.alignment = .center; return p
+            }(),
+        ]
+        let credits = NSMutableAttributedString(string: "Built by AechTech, LLC\n", attributes: base)
+        credits.append(NSAttributedString(
+            string: "support@aechtech.com",
+            attributes: base.merging([.link: URL(string: "mailto:support@aechtech.com")!]) { $1 }))
+        credits.append(NSAttributedString(string: "  \u{00B7}  ", attributes: base))
+        credits.append(NSAttributedString(
+            string: "aechtech.com",
+            attributes: base.merging([.link: URL(string: "https://aechtech.com")!]) { $1 }))
+        NSApp.orderFrontStandardAboutPanel(options: [.credits: credits])
     }
 
     // MARK: - Actions
@@ -145,29 +190,66 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
     }
 
-    // MARK: - Global hotkey (⌃⌘V)
+    // MARK: - Global hotkey (⌃⌘V) via CGEvent tap
 
-    private func registerHotKey() {
-        var eventType = EventTypeSpec(
-            eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-        // Dispatcher target, not application target — hotkey events for
-        // accessory (menu bar only) apps are only reliably delivered there.
-        InstallEventHandler(GetEventDispatcherTarget(), { _, _, userData -> OSStatus in
-            guard let userData else { return noErr }
+    /// The tap can only be created while the process is Accessibility-trusted,
+    /// which on first run happens only after the user grants it — so poll
+    /// briefly until the grant lands.
+    private func startHotKeyTapWhenTrusted() {
+        if startHotKeyTap() { return }
+        logLine("waiting for Accessibility grant before starting hotkey tap")
+        tapRetryTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] timer in
+            guard let self else { timer.invalidate(); return }
+            if self.startHotKeyTap() {
+                timer.invalidate()
+                self.tapRetryTimer = nil
+            }
+        }
+    }
+
+    @discardableResult
+    private func startHotKeyTap() -> Bool {
+        guard eventTap == nil else { return true }
+        guard AXIsProcessTrusted() else { return false }
+
+        let callback: CGEventTapCallBack = { _, type, event, userData in
+            guard let userData else { return Unmanaged.passUnretained(event) }
             let delegate = Unmanaged<AppDelegate>.fromOpaque(userData).takeUnretainedValue()
-            NSLog("PlainPaste: hotkey fired")
-            DispatchQueue.main.async { delegate.pasteFromHotKey() }
-            return noErr
-        }, 1, &eventType, Unmanaged.passUnretained(self).toOpaque(), nil)
+            if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
+                delegate.reenableTap()
+                return Unmanaged.passUnretained(event)
+            }
+            let flags = event.flags
+            if event.getIntegerValueField(.keyboardEventKeycode) == Int64(kVK_ANSI_V),
+               flags.contains(.maskControl), flags.contains(.maskCommand),
+               !flags.contains(.maskShift), !flags.contains(.maskAlternate) {
+                logLine("hotkey fired")
+                DispatchQueue.main.async { delegate.pasteFromHotKey() }
+                return nil  // swallow the ⌃⌘V itself
+            }
+            return Unmanaged.passUnretained(event)
+        }
 
-        let hotKeyID = EventHotKeyID(signature: OSType(0x5050_5354) /* 'PPST' */, id: 1)
-        let status = RegisterEventHotKey(
-            UInt32(kVK_ANSI_V), UInt32(controlKey | cmdKey), hotKeyID,
-            GetEventDispatcherTarget(), 0, &hotKeyRef)
-        if status != noErr {
-            NSLog("PlainPaste: could not register \u{2303}\u{2318}V (error \(status)) — is another app using it?")
-        } else {
-            NSLog("PlainPaste: registered \u{2303}\u{2318}V")
+        guard let tap = CGEvent.tapCreate(
+            tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap,
+            eventsOfInterest: CGEventMask(1 << CGEventType.keyDown.rawValue),
+            callback: callback, userInfo: Unmanaged.passUnretained(self).toOpaque())
+        else {
+            logLine("event tap creation failed despite Accessibility trust")
+            return false
+        }
+        eventTap = tap
+        let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
+        CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
+        CGEvent.tapEnable(tap: tap, enable: true)
+        logLine("hotkey tap active — \u{2303}\u{2318}V is live")
+        return true
+    }
+
+    fileprivate func reenableTap() {
+        if let tap = eventTap {
+            CGEvent.tapEnable(tap: tap, enable: true)
+            logLine("event tap re-enabled after system disable")
         }
     }
 

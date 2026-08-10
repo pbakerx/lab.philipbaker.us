@@ -11,9 +11,9 @@
 	<key>CFBundleExecutable</key>
 	<string>PlainPaste</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>3</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.2</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>LSMinimumSystemVersion</key>
@@ -23,6 +23,6 @@
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Philip Baker — lab.philipbaker.us</string>
+	<string>© 2026 AechTech, LLC. All rights reserved.</string>
 </dict>
 </plist>
