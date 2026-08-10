@@ -150,9 +150,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func registerHotKey() {
         var eventType = EventTypeSpec(
             eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-        InstallEventHandler(GetApplicationEventTarget(), { _, _, userData -> OSStatus in
+        // Dispatcher target, not application target — hotkey events for
+        // accessory (menu bar only) apps are only reliably delivered there.
+        InstallEventHandler(GetEventDispatcherTarget(), { _, _, userData -> OSStatus in
             guard let userData else { return noErr }
             let delegate = Unmanaged<AppDelegate>.fromOpaque(userData).takeUnretainedValue()
+            NSLog("PlainPaste: hotkey fired")
             DispatchQueue.main.async { delegate.pasteFromHotKey() }
             return noErr
         }, 1, &eventType, Unmanaged.passUnretained(self).toOpaque(), nil)
@@ -160,9 +163,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let hotKeyID = EventHotKeyID(signature: OSType(0x5050_5354) /* 'PPST' */, id: 1)
         let status = RegisterEventHotKey(
             UInt32(kVK_ANSI_V), UInt32(controlKey | cmdKey), hotKeyID,
-            GetApplicationEventTarget(), 0, &hotKeyRef)
+            GetEventDispatcherTarget(), 0, &hotKeyRef)
         if status != noErr {
             NSLog("PlainPaste: could not register \u{2303}\u{2318}V (error \(status)) — is another app using it?")
+        } else {
+            NSLog("PlainPaste: registered \u{2303}\u{2318}V")
         }
     }
 
