@@ -7,8 +7,8 @@ Drop a folder with an `index.html`, deploy, done. Curated by Philip; keep the ro
 `robots.txt` points crawlers at `sitemap.xml` and disallows `/api/` plus the three
 full-screen players (they're plumbing, not pages). A new project page wants, at minimum, a
 unique `<title>`, a `<meta name="description">`, an absolute `<link rel="canonical">`, and
-og/twitter tags with an absolute `og:image` — `/second-brain` is the fullest example and is
-the only page carrying JSON-LD.
+og/twitter tags with an absolute `og:image` — `/second-brain-case-study` is the fullest
+example and is the only page carrying JSON-LD.
 
 `.claude/seo-check.sh` checks all of that mechanically against a live URL — no arguments
 walks every `<loc>` in the sitemap; a path argument checks one page. It fetches the
@@ -142,7 +142,7 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
   figures. The invoice is labelled an example with its figures struck, and the footer says
   so. Philip's call — keep it that way when editing. The unredacted original lives at
   `~/Documents/Client Work/pb/Lab/billing-case-study/index.html` (that original still has the real numbers).
-- **/second-brain** — case study on the Second Brain: ten scattered places folded into one
+- **/second-brain-case-study** — case study on the Second Brain: ten scattered places folded into one
   page you can talk to. Aimed at other operators, ends in a consulting CTA. Companion to
   `/ai-solves-billing` (they cross-link); don't let the two repeat each other.
   - Built in the **private** `~/Software Development/SecondBrain/case-study/` repo, which
@@ -159,9 +159,13 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
   - `img/og.png` is a generated 1200×630 social card, not a screenshot — regenerate it if
     the headline changes. The four screenshots carry intrinsic `width`/`height` so the
     stacked layout doesn't shift while they load.
-  - `/second-brain` previously redirected to `https://brain-site-tan.vercel.app/` (the live
-    brain, Basic-auth gated — a dead end for the public). That rule is gone; the folder
-    serves. `/ai-second-brain-case-study/*` redirects here.
+  - **`/second-brain` is NOT this page and must not be taken over.** It redirects to
+    `https://brain-site-tan.vercel.app/` — Philip's live Second Brain, password-gated on
+    purpose. He uses that link from the lab list daily to reach the app. Those two redirect
+    rules in `vercel.json` are load-bearing; leave them alone. They were once uncommitted
+    (working tree only, deployed by hand) and got destroyed by a `git add -A`, so they are
+    committed now precisely so a push can't drop them again.
+  - `/ai-second-brain-case-study/*` (the staging folder's name) redirects here.
 - **/90s-web-ackerman-mcqueen** — the black-and-white am.com (1997–99) Philip designed; Wayback screenshots.
   The homepage hero was reconstructed: original HTML + the separately-recovered
   `graphics/main/on.gif` (Wayback replay never rendered it).

@@ -14,9 +14,11 @@
     { "source": "/arcade", "destination": "/vault", "permanent": true },
     { "source": "/arcade/", "destination": "/vault/", "permanent": true },
     { "source": "/arcade/:path+", "destination": "/vault/:path+", "permanent": true },
-    { "source": "/ai-second-brain-case-study", "destination": "/second-brain", "permanent": true },
-    { "source": "/ai-second-brain-case-study/", "destination": "/second-brain/", "permanent": true },
-    { "source": "/ai-second-brain-case-study/:path+", "destination": "/second-brain/:path+", "permanent": true }
+    { "source": "/second-brain", "destination": "https://brain-site-tan.vercel.app/", "permanent": false },
+    { "source": "/second-brain/", "destination": "https://brain-site-tan.vercel.app/", "permanent": false },
+    { "source": "/ai-second-brain-case-study", "destination": "/second-brain-case-study", "permanent": true },
+    { "source": "/ai-second-brain-case-study/", "destination": "/second-brain-case-study/", "permanent": true },
+    { "source": "/ai-second-brain-case-study/:path+", "destination": "/second-brain-case-study/:path+", "permanent": true }
   ],
   "headers": [
     {
