@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8901"],
       "port": 8901
+    },
+    {
+      "name": "lab-vercel",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vercel", "dev", "--listen", "8902", "--scope", "team_msxsmiFFlh80LDtD36JrW9pk", "--yes"],
+      "port": 8902
     }
   ]
 }

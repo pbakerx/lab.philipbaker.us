@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Serverless endpoints and full-screen players — not pages, nothing to index.
+Disallow: /api/
+Disallow: /widget-maker/frame.html
+Disallow: /vault/player.html
+Disallow: /vault/play.html
+
+Sitemap: https://lab.philipbaker.us/sitemap.xml

@@ -2,7 +2,24 @@
 
 One-off static projects, FTP-style. **Each top-level folder = a path on lab.philipbaker.us.**
 Drop a folder with an `index.html`, deploy, done. Curated by Philip; keep the root index
-(`index.html`) list in sync when adding/removing a project.
+(`index.html`) list **and `sitemap.xml`** in sync when adding/removing a project.
+
+`robots.txt` points crawlers at `sitemap.xml` and disallows `/api/` plus the three
+full-screen players (they're plumbing, not pages). A new project page wants, at minimum, a
+unique `<title>`, a `<meta name="description">`, an absolute `<link rel="canonical">`, and
+og/twitter tags with an absolute `og:image` — `/second-brain` is the fullest example and is
+the only page carrying JSON-LD.
+
+`.claude/seo-check.sh` checks all of that mechanically against a live URL — no arguments
+walks every `<loc>` in the sitemap; a path argument checks one page. It fetches the
+`og:image` too, so an absolute URL that 404s gets caught. Point it at a local `vercel dev`
+with `BASE=http://localhost:8902` (the two `og:image` checks will fail there by design —
+they're absolute production URLs).
+
+Two launch configs: `lab-static` (python http.server, layout only) and `lab-vercel`
+(`vercel dev`, the one that actually runs `api/menu.js` so the real hamburger mounts). The
+Browser pane doesn't fire `loading="lazy"`, and it blanks out on very tall pages — render
+proof shots with `Google Chrome --headless --window-size=W,H --screenshot=…` instead.
 
 Mostly static — `/api/*.js` are Vercel Node serverless functions (see /widget-maker). The
 root `package.json` exists only so Vercel installs their deps; there is no build step, and
@@ -125,6 +142,26 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
   figures. The invoice is labelled an example with its figures struck, and the footer says
   so. Philip's call — keep it that way when editing. The unredacted original lives at
   `~/Documents/Client Work/pb/Lab/billing-case-study/index.html` (that original still has the real numbers).
+- **/second-brain** — case study on the Second Brain: ten scattered places folded into one
+  page you can talk to. Aimed at other operators, ends in a consulting CTA. Companion to
+  `/ai-solves-billing` (they cross-link); don't let the two repeat each other.
+  - Built in the **private** `~/Software Development/SecondBrain/case-study/` repo, which
+    holds real client names, invoice numbers and receivable balances. Only this folder is
+    public. **Everything here is already sanitized and must stay that way**: every client
+    name in the screenshots is invented, every dollar figure is `$123.45` on purpose, and a
+    caption says so. Do not re-shoot the screens against the live brain and do not make the
+    numbers "more realistic" — earlier passes leaked through page *filenames* and a form
+    placeholder, then through the prose. Grep the copy, not just the images.
+  - **The numbers are load-bearing.** "Ten places" appears in the hero, a stat tile, the CTA
+    and a ten-row table — edit the table and fix all four. "Zero new subscriptions" is a
+    claim about replacement and lock-in, not cost; Vercel, the Anthropic API and ElevenLabs
+    are all metered, so never upgrade it to "free". There is deliberately no ROI figure.
+  - `img/og.png` is a generated 1200×630 social card, not a screenshot — regenerate it if
+    the headline changes. The four screenshots carry intrinsic `width`/`height` so the
+    stacked layout doesn't shift while they load.
+  - `/second-brain` previously redirected to `https://brain-site-tan.vercel.app/` (the live
+    brain, Basic-auth gated — a dead end for the public). That rule is gone; the folder
+    serves. `/ai-second-brain-case-study/*` redirects here.
 - **/90s-web-ackerman-mcqueen** — the black-and-white am.com (1997–99) Philip designed; Wayback screenshots.
   The homepage hero was reconstructed: original HTML + the separately-recovered
   `graphics/main/on.gif` (Wayback replay never rendered it).

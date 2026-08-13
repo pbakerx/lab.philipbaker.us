@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>I stopped running my businesses out of my head — a second brain case study</title>
+<meta name="description" content="Ten scattered places became one page. How one operator running several businesses consolidated projects, hours, receivables and renewals into a single system he can talk to from the car.">
+<meta name="theme-color" content="#0e0f11">
+<meta name="author" content="Philip Baker">
+<link rel="canonical" href="https://lab.philipbaker.us/second-brain/">
+<meta property="og:title" content="I stopped running my businesses out of my head">
+<meta property="og:description" content="Ten scattered places, one page. A management system I can talk to from the car.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://lab.philipbaker.us/second-brain/">
+<meta property="og:site_name" content="PB Productions Lab">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://lab.philipbaker.us/second-brain/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A second brain: ten scattered places became one page you can talk to.">
+<meta property="article:published_time" content="2026-08-13">
+<meta property="article:author" content="Philip Baker">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="I stopped running my businesses out of my head">
+<meta name="twitter:description" content="Ten scattered places, one page. A management system I can talk to from the car.">
+<meta name="twitter:image" content="https://lab.philipbaker.us/second-brain/img/og.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://lab.philipbaker.us/second-brain/#article",
+      "headline": "I stopped running my businesses out of my head",
+      "description": "Ten scattered places became one page. How one operator running several businesses consolidated projects, hours, receivables and renewals into a single system he can talk to from the car.",
+      "image": "https://lab.philipbaker.us/second-brain/img/og.png",
+      "datePublished": "2026-08-13",
+      "dateModified": "2026-08-13",
+      "inLanguage": "en-US",
+      "author": {"@type": "Person", "name": "Philip Baker", "url": "https://philipbaker.us"},
+      "publisher": {"@type": "Organization", "name": "PB Productions", "url": "https://philipbaker.us"},
+      "mainEntityOfPage": {"@type": "WebPage", "@id": "https://lab.philipbaker.us/second-brain/"},
+      "about": ["Small business operations", "AI assistants", "Accounts receivable", "Time tracking"]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "lab", "item": "https://lab.philipbaker.us/"},
+        {"@type": "ListItem", "position": 2, "name": "Second brain case study", "item": "https://lab.philipbaker.us/second-brain/"}
+      ]
+    }
+  ]
+}
+</script>
+<style>
+:root{
+  --bg:#0e0f11; --surface:#16181b; --raised:#1c1f23;
+  --text:#e6e8ea; --dim:#b7bcc2; --faint:#ffffff8c; --ghost:#ffffff59;
+  --line:#ffffff14; --line-strong:#ffffff29;
+  --accent:#e5502b; --accent-soft:#e5502b26; --accent-line:#e5502b8c;
+  --gold:#c9a24b;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --wrap:820px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--dim);
+  font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent-soft);color:var(--text)}
+/* height:auto is required — the imgs carry intrinsic width/height attributes (they
+   reserve the box so nothing shifts while loading) and without it they render at
+   the literal pixel height. */
+img{max-width:100%;height:auto;display:block}
+a{color:var(--text);text-decoration:none;border-bottom:1px solid var(--accent-line)}
+a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+.wide{max-width:1180px;margin:0 auto;padding:0 24px}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:20;background:#0e0f11f2;backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.top .wide{display:flex;align-items:center;gap:16px;padding-top:14px;padding-bottom:14px;
+  /* /shared/menu.js pins a 40px hamburger at top:26 right:28 — keep the CTA out from under it */
+  padding-right:80px}
+.brand{color:var(--text);font-size:12.5px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;border:none}
+.brand:hover{color:var(--text)}
+.top .sp{flex:1}
+.top .cta{font-size:13.5px;color:var(--accent);border:none;font-weight:600}
+
+/* ---------- hero ---------- */
+/* padding-top only — the shorthand was clobbering .wrap's side padding and
+   pinning the hero text to the viewport edge on phones */
+.hero{padding-top:110px}
+.eyebrow{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;margin:0 0 22px}
+h1{color:var(--text);font-size:clamp(38px,6.2vw,62px);line-height:1.04;font-weight:700;
+  letter-spacing:-.03em;margin:0 0 26px}
+.lede{font-size:21px;line-height:1.55;color:var(--faint);max-width:62ch;margin:0 0 34px}
+.lede strong{color:var(--text);font-weight:600}
+.byline{color:var(--ghost);font-size:13.5px;border-top:1px solid var(--line);
+  padding-top:18px;margin-top:40px}
+
+/* ---------- sections ---------- */
+section{padding:92px 0}
+section + section{border-top:1px solid var(--line)}
+h2{color:var(--text);font-size:clamp(27px,3.6vw,36px);line-height:1.15;font-weight:700;
+  letter-spacing:-.02em;margin:0 0 22px}
+h3{color:var(--text);font-size:19px;font-weight:650;margin:44px 0 10px}
+p{margin:0 0 20px;max-width:68ch}
+.kicker{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;margin:0 0 16px}
+.big{font-size:20px;color:var(--text)}
+
+blockquote{margin:34px 0;padding:4px 0 4px 22px;border-left:2px solid var(--accent);
+  color:var(--text);font-size:20px;line-height:1.5}
+blockquote p{margin:0;max-width:58ch}
+blockquote cite{display:block;color:var(--ghost);font-size:13.5px;font-style:normal;margin-top:10px}
+
+/* ---------- figures ---------- */
+figure{margin:40px 0 0}
+figure img{border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+figcaption{color:var(--ghost);font-size:13px;margin-top:12px;max-width:64ch}
+
+/* ---------- stat band ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:44px 0 0}
+.stat{background:var(--surface);padding:24px}
+.stat b{display:block;color:var(--text);font-size:32px;font-weight:700;letter-spacing:-.02em;
+  line-height:1.05;font-variant-numeric:tabular-nums}
+.stat span{display:block;color:var(--ghost);font-size:11.5px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.12em;margin-top:8px}
+.stat.hot b{color:var(--accent)}
+.stat.gold b{color:var(--gold)}
+
+/* ---------- say-this list ---------- */
+.says{list-style:none;padding:0;margin:26px 0 0}
+.says li{border-left:2px solid var(--line-strong);padding:2px 0 2px 18px;margin:0 0 18px;
+  color:var(--text);font-size:18px}
+.says li em{display:block;color:var(--ghost);font-size:14px;font-style:normal;margin-top:5px}
+
+/* ---------- what folded in ---------- */
+.folded{margin:28px 0 0;border-top:1px solid var(--line-strong)}
+.folded div{display:flex;gap:24px;align-items:baseline;justify-content:space-between;
+  padding:11px 2px;border-bottom:1px solid var(--line)}
+.folded b{color:var(--text);font-weight:500;font-size:16.5px}
+.folded span{color:var(--ghost);font-size:14px;text-align:right;flex:0 0 auto;max-width:46%}
+.folded div:last-child span{color:var(--accent)}
+.folded + p{margin-top:26px}
+
+/* ---------- pull ---------- */
+.pull{background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:28px 30px;margin:40px 0 0}
+.pull p:last-child{margin-bottom:0}
+.pull .lab{color:var(--accent);font-size:11.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;margin:0 0 12px}
+
+/* ---------- CTA ---------- */
+.cta-band{background:var(--surface);border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);padding:88px 0}
+.cta-band h2{margin-bottom:18px}
+.btnrow{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:9px;background:var(--accent);border:1px solid var(--accent);
+  color:#fff;font-weight:650;font-size:15.5px;padding:13px 24px;border-radius:7px}
+.btn:hover{filter:brightness(1.1);color:#fff;border-color:var(--accent)}
+.btn--ghost{background:transparent;border-color:var(--line-strong);color:var(--text)}
+.btn--ghost:hover{border-color:var(--accent-line);color:var(--text);filter:none}
+
+footer{padding:56px 0 80px;color:var(--ghost);font-size:13.5px}
+footer p{max-width:70ch}
+
+@media(max-width:700px){
+  section{padding:64px 0}
+  .hero{padding-top:64px}
+  /* brand + CTA + the shared hamburger have to share 375px without wrapping */
+  .top .wide{gap:12px;padding-right:64px}
+  .brand{font-size:11px;letter-spacing:.12em;white-space:nowrap}
+  .top .cta{font-size:12.5px;white-space:nowrap}
+  body{font-size:16px}
+  .lede{font-size:18.5px}
+  blockquote{font-size:18px}
+  .folded div{display:block;padding:10px 2px}
+  .folded b{font-size:15.5px}
+  .folded span{display:block;text-align:left;max-width:none;margin-top:3px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wide">
+    <a class="brand" href="/">PB Productions</a>
+    <span class="sp"></span>
+    <a class="cta" href="#talk">Work with us &rarr;</a>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <p class="eyebrow">Case study — Operations</p>
+  <h1>I stopped running my businesses out of my head.</h1>
+  <p class="lede">I run several at once. The tracking was spread across <strong>ten different
+  places</strong> — my memory, a spreadsheet, three invoicing tabs, an email folder, and a dashboard
+  that had gone stale eight days before I noticed. Now it's one page, and I can talk to it from the
+  car.</p>
+  <p class="byline">Philip Baker · PB Productions · Oklahoma City</p>
+</div>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">The problem</p>
+    <h2>Nothing was wrong. That was the problem.</h2>
+    <p>No crisis. No fire. Just the ordinary drift of running more than one business by yourself:
+    an invoice created but never sent, a hosting renewal nobody was watching, a promise made on a
+    call that never made it onto a list.</p>
+    <p>I had tools. That was the issue — too many, none of them talking to each other. The dashboard
+    I'd built to fix it needed me to sit at a desk and update it. So it stopped getting updated, and
+    by the time I looked again it was more than a week out of date and I trusted it less than my own
+    memory.</p>
+    <p class="big">A management system you have to remember to update is not a management system.
+    It's another thing on the list.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">What changed</p>
+    <h2>One place. Two locations. And a microphone.</h2>
+    <p>Before I built this, I was tracking ten things about my own businesses. Here's where each one
+    actually lived:</p>
+
+    <div class="folded">
+      <div><b>What every project's status is</b><span>Monday.com, in theory. My head, in fact.</span></div>
+      <div><b>To-dos</b><span>Sticky notes, phone notes, texts to myself</span></div>
+      <div><b>Hours worked</b><span>A spreadsheet, updated Fridays if I remembered</span></div>
+      <div><b>Which of those hours were billable</b><span>Same spreadsheet, guessed at later</span></div>
+      <div><b>Who owes me money</b><span>QuickBooks, opened only when absolutely necessary</span></div>
+      <div><b>Which invoices actually went out</b><span>Three browser tabs I never closed</span></div>
+      <div><b>Hosting and domain renewals</b><span>Registrar emails, and hope</span></div>
+      <div><b>Things to remember at tax time</b><span>An email folder called "taxes"</span></div>
+      <div><b>New work coming in</b><span>Portals I checked when I thought of it</span></div>
+      <div><b>What I actually did last Tuesday</b><span>Nowhere</span></div>
+    </div>
+
+    <p>Ten places, one of which was nowhere. None of them talked to each other, so the real answer to
+    any question — <em>am I ahead or behind this month?</em> — meant opening five of them and doing
+    arithmetic. So I mostly didn't ask.</p>
+    <p><strong>All ten are now one page.</strong> Projects, to-dos, hours, receivables, incoming work,
+    tax notes, renewals — one screen, one search, one login.</p>
+
+    <p>Here's the part I want to be clear about, because it's the part people assume wrong:
+    <strong>I didn't buy anything.</strong> No new platform, no new seat licenses, no migration
+    weekend, nothing to move my data into and get locked to. QuickBooks is still the books. The
+    registrar is still the registrar. My files are still my files, plain text, on my own machine.</p>
+
+    <p>This is a <strong>layer on top of what I already had</strong> — it reads from those systems,
+    puts the answers in one view, and lets me talk to it. Nothing got replaced, so nothing had to be
+    learned twice or paid for twice. That's also why it can't strand me: pull the layer off tomorrow
+    and every underlying system is exactly where it was.</p>
+
+    <p>Consolidating the view was worth doing on its own. It still isn't the reason this one stuck.</p>
+    <p>It stuck because <strong>I never have to go to it to put something in.</strong> And there are
+    exactly two places I ever am — so there are two ways in, and no third thing to remember.</p>
+    <p><strong>On the go:</strong> the side button on my phone. I'm in the car between a shoot and a
+    client meeting, I hold it, I talk, it's recorded before I've pulled out of the lot.
+    <strong>At the office:</strong> a microphone on every page of the site. Same voice, same brain,
+    whichever one is closer. Four seconds later it reads back what it wrote, so I know it heard me.</p>
+    <ul class="says">
+      <li>"Log two hours billable to Northgate for the contact form."
+        <em>Lands on the timesheet, tagged billable, against that client.</em></li>
+      <li>"Hosting for the Vale site renews October third, a hundred eighty a year."
+        <em>Recurring deadline. It re-arms itself every year without me.</em></li>
+      <li>"What's on my list today?"
+        <em>Reads back the real list.</em></li>
+      <li>"What's my A/R?"
+        <em>Total open, how much of it is past due, and who's furthest behind — read off the
+        snapshot, not guessed.</em></li>
+      <li>"What's the status of invoice 2041?"
+        <em>Who it's for, what's still open on it, when it was due, how late that makes it.</em></li>
+      <li>"How many hours did I put on the Vale site this week?"
+        <em>Split billable from working, because those are different questions.</em></li>
+    </ul>
+    <p style="margin-top:26px">That last group matters as much as the capture does. Asking "what's my
+    A/R" out loud while I'm driving is a question I'd never have asked otherwise — not because it's
+    hard, but because it used to mean a laptop, a login, and a report. Lowering the cost of a question
+    means you ask more of them, and that's most of what being on top of a business actually is.</p>
+    <p style="margin-top:30px">One rule matters more than the rest: <strong>it will not log anything
+    billable unless I say the word "billable."</strong> Everything else goes down as working time and it
+    says so out loud. A wrong billable entry ends up on a client's invoice. A wrong working entry
+    costs nothing. It's built to make the cheap mistake, never the expensive one.</p>
+  </div>
+  <div class="wide">
+    <figure>
+      <img src="img/dashboard.png" width="2880" height="3000" decoding="async" alt="The dashboard: receivables, incoming RFPs, upcoming deadlines, today's focus and today's to-do cards.">
+      <figcaption>The morning view. Money owed, work coming in, what's due, and the three things that
+      actually matter today — rewritten every morning before I'm awake.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">The work</p>
+    <h2>A to-do and a project are different things.</h2>
+    <p>Most tools mash them together, your task list hits 200 items, and you stop opening it.
+    Projects have a finish line. To-dos are the loose stuff — call this person, send that invoice,
+    deposit the check. So they're separate: four lanes, cards I drag around when priorities move,
+    which they do daily. It works on the phone, because that's where I am when they move.</p>
+    <p>Hours land the same way. The panel I actually open is the one showing billable time that
+    hasn't been invoiced yet, checked against what's already gone out the door.</p>
+  </div>
+  <div class="wide">
+    <figure>
+      <img src="img/pair-work.png" width="2560" height="1079" loading="lazy" decoding="async" alt="Left: the to-do board with four lanes. Right: the timesheet showing hours by project and unbilled time.">
+      <figcaption>Left, the board — "Waiting On" is the lane that earns its keep, where things other
+      people owe me stop disappearing. Right, hours by project, and what hasn't been billed.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">Money out, work in</p>
+    <h2>Who owes me, and what's coming next.</h2>
+    <p>Receivables come straight out of QuickBooks onto a page I actually look at, ranked by who's
+    furthest behind. That's the call list. It's read-only on purpose — the system shows what's owed
+    and points at the work; it doesn't send invoices or move money. I decide that.</p>
+    <p>New business used to reach me by accident. Now something goes looking every morning: state and
+    city procurement portals, school districts, regional postings, plus the softer signals — a company
+    announcing a launch is a prospect before there's ever an RFP. It scores each one against what I
+    actually sell. Anything strong also shows up in my afternoon text, because a two-week clock
+    shouldn't depend on me remembering to check a page.</p>
+  </div>
+  <div class="wide">
+    <figure>
+      <img src="img/pair-money.png" width="2560" height="1079" loading="lazy" decoding="async" alt="Left: accounts receivable with aging by customer and a collection priority list. Right: the RFP page with fit ratings and deadlines.">
+      <figcaption>Left, aging and the call list. Right, incoming work scored honestly — <em>strong</em>,
+      <em>possible</em>, <em>weak</em>. A page where everything is "strong" is a page nobody reads.
+      <strong>All figures shown are $123.45 sample data.</strong></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">The rest of it</p>
+    <h2>Renewals, tax notes, and three routines that run without me.</h2>
+    <p>Quarterly estimates. Domain expiries. Insurance. The monitor I bought for the edit bay that I
+    will absolutely not remember next spring. None of these are projects — no finish line, they just
+    come around. They go in the same way as everything else, and recurring ones roll forward on
+    their own so a renewal never vanishes because its date passed. When I'm not sure something's
+    deductible it flags it for my accountant rather than guessing; the system keeps records, it
+    doesn't give tax advice.</p>
+    <p>Three things then run daily on their own. <strong>7 AM</strong> pulls fresh receivables, folds in
+    yesterday's work, rewrites today's priorities and texts me the short version.
+    <strong>9 AM</strong> goes looking for work. <strong>2 PM</strong> reads what my working sessions
+    actually did and texts me the end of the day — even on a quiet day, because "nothing moved" is
+    information too.</p>
+    <div class="pull">
+      <p class="lab">The part I didn't expect</p>
+      <p>The afternoon check-in catches commitments I made out loud and never wrote down. A date
+      mentioned in passing, a "sure, I can have that by Friday." Those used to live in my head until
+      they didn't.</p>
+    </div>
+  </div>
+  <div class="wide">
+    <figure>
+      <img src="img/admin.png" width="2600" height="2000" loading="lazy" decoding="async" alt="Admin page: upcoming obligations, money logged, and notes for filing.">
+      <figcaption>One list where a hosting renewal sits next to a quarterly estimate. Both are dated,
+      neither is a project, and both get missed the same way.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">Where it landed</p>
+    <h2>Four weeks in.</h2>
+    <p>I don't have a chart showing this made me thirty percent more efficient. Nobody has that number.
+    They make it up. Here's what I can actually point at:</p>
+    <div class="stats">
+      <div class="stat"><b>10 &rarr; 1</b><span>Places I check</span></div>
+      <div class="stat"><b>0</b><span>New subscriptions</span></div>
+      <div class="stat gold"><b>~4 sec</b><span>To capture a note by voice</span></div>
+      <div class="stat hot"><b>0</b><span>Days stale since</span></div>
+    </div>
+    <p style="margin-top:40px">It didn't arrive finished. It started as a plain markdown folder in
+    mid-July and grew a piece at a time between client jobs — the voice capture, then the money page,
+    then the thing that watches for work. Every piece got added because something slipped and I got
+    tired of it slipping.</p>
+    <p>The dashboard is current because updating it costs four seconds instead of a sit-down.
+    Invoices don't sit created-but-unsent. I stopped losing commitments I made on the phone. And
+    because it's a layer rather than a platform, the whole thing is plain text I own — nothing here
+    can raise its price, change its terms, or shut down and take my data with it.</p>
+    <p>The real return isn't hours saved. It's that I'm not carrying it all anymore. I stopped waking
+    up at two in the morning trying to remember whether I sent that invoice, because the answer is
+    somewhere other than my head now. <strong>A clear head is a smart head.</strong> That's most of
+    what this bought.</p>
+    <blockquote>
+      <p>The win isn't automation. It's that the gap between "something happened" and "it's
+      recorded" got small enough that I actually do it.</p>
+    </blockquote>
+  </div>
+</section>
+
+<div class="cta-band" id="talk">
+  <div class="wrap">
+    <p class="kicker">Work with us</p>
+    <h2>Running more than you can hold in your head?</h2>
+    <p class="big">That's the problem I know how to solve. Not "let's add AI to it" — a system built
+    around how you actually work, that captures things at the moment they happen instead of asking
+    you to come back later.</p>
+    <p><strong>You don't have to replace anything.</strong> Keep your accounting, keep your CRM, keep
+    the spreadsheet you like. This goes on top: it reads what you already run, puts the answers in one
+    place, and lets you talk to it from wherever you actually are. No migration, no new seats, nothing
+    to learn twice.</p>
+    <p>I build these for other operators: agencies, contractors, studios, professional practices.
+    Anyone running several things at once who's tired of the answer living in ten places.</p>
+    <p>Start with a conversation. Tell me what keeps slipping, and I'll tell you honestly whether
+    this approach helps — or whether you just need to fix a process.</p>
+    <div class="btnrow">
+      <a class="btn" href="mailto:pbaker@philipbaker.us?subject=Second%20Brain%20consulting">Get in touch</a>
+      <a class="btn btn--ghost" href="https://philipbaker.us">See more work</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>Built with Claude Code. Markdown and JSON in a private Git repository, rendered to a static
+    site, with a small write layer so a phone can talk to it. Voice capture through ElevenLabs and
+    Apple Shortcuts. Receivables from QuickBooks.</p>
+    <p style="margin-top:14px;color:var(--ghost)">Screens shown here use fictional client names and
+    figures. The live system is private.</p>
+    <p style="margin-top:22px">Related: <a href="/ai-solves-billing/">how billing stopped getting
+    ignored</a> — the same idea aimed at one job, spoken timesheets in and invoices out.</p>
+    <p style="margin-top:14px">&copy; PB Productions · <a href="https://philipbaker.us">philipbaker.us</a>
+    · <a href="/">lab</a></p>
+  </div>
+</footer>
+
+<script src="/shared/menu.js" defer></script>
+</body>
+</html>

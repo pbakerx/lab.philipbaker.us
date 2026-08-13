@@ -5,3 +5,5 @@ node_modules
 .env.local
 .env*
 paste-plain/build/
+# staging drop for /second-brain — holds internal handoff notes, never publish it
+ai-second-brain-case-study/
