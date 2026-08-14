@@ -162,7 +162,8 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
   - **`/second-brain` is NOT this page and must not be taken over.** It redirects to
     `https://brain-site-tan.vercel.app/` — Philip's live Second Brain, password-gated on
     purpose. He uses that link from the lab list daily to reach the app. Those two redirect
-    rules in `vercel.json` are load-bearing; leave them alone. They were once uncommitted
+    rules in `vercel.json` are load-bearing; leave them alone. `/mind-harvest` is a second
+    alias onto the same app (added Aug 14 2026) — same target, same treatment. They were once uncommitted
     (working tree only, deployed by hand) and got destroyed by a `git add -A`, so they are
     committed now precisely so a push can't drop them again.
   - `/ai-second-brain-case-study/*` (the staging folder's name) redirects here.
