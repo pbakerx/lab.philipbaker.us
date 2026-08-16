@@ -18,11 +18,41 @@
 
 /* global AD, FallEngine, clickTag */
 
-(function () {
+(async function () {
   const root = document.getElementById('ad');
   const W = AD.w, H = AD.h;
   root.style.width = W + 'px';
   root.style.height = H + 'px';
+
+  /* ---------- asset gate ----------
+     Nothing builds and no clock starts until every image the config
+     references has decoded. Without this, first paint raced the network:
+     frame-2 pieces that only the scene canvas covers (the technician
+     rides panSlow/move, which start visible) flashed through while the
+     scene photo was still downloading, and late art popped in mid-cue.
+     The page shows only the unit's own bg color during the wait; a 3s
+     cap means a missing file degrades to the old behavior, never a hang. */
+  await (function preload() {
+    const srcs = new Set();
+    for (const spec of AD.els || []) {
+      if (spec.src) srcs.add(spec.src);
+      const a = spec.anim || {};
+      for (const s of a.srcs || []) srcs.add(s);
+    }
+    const eng = AD.engine || {};
+    for (const k in (eng.sceneSources || {})) srcs.add(eng.sceneSources[k]);
+    if (eng.cutout) srcs.add(eng.cutout);
+    const loads = [...srcs].map(src => new Promise(res => {
+      const im = new Image();
+      im.onload = im.onerror = () => res();
+      im.src = src;
+      if (im.decode) im.decode().then(res, res);
+    }));
+    return Promise.race([
+      Promise.all(loads),
+      new Promise(res => setTimeout(res, 3000)),
+    ]);
+  })();
 
   const S = 1000; // ms
   const timers = [];    // wall-clock cues; __adSeek clears them so a seek wins
