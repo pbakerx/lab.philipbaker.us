@@ -25,13 +25,21 @@
   root.style.height = H + 'px';
 
   /* ---------- asset gate ----------
-     Nothing builds and no clock starts until every image the config
-     references has decoded. Without this, first paint raced the network:
-     frame-2 pieces that only the scene canvas covers (the technician
-     rides panSlow/move, which start visible) flashed through while the
-     scene photo was still downloading, and late art popped in mid-cue.
-     The page shows only the unit's own bg color during the wait; a 3s
-     cap means a missing file degrades to the old behavior, never a hang. */
+     Nothing builds and no clock starts until everything the first paint
+     depends on is here: every image the config references, the declared
+     webfonts, the leaf sprite sheets, and — critically — recipe.json.
+     Without the recipe in the gate, the drive-relative cues stayed
+     unarmed for one network round-trip (the fetch is no-store, so EVERY
+     load pays it) and the exit-only frame-2 pieces — the technician —
+     flashed through on any real connection; localhost's ~0ms RTT is why
+     it never reproduced on the preview server. The page shows only the
+     unit's own bg color during the wait; a 3s cap means a missing file
+     degrades to the old behavior, never a hang. */
+  const recipeP = fetch('recipe.json', { cache: 'no-store' })
+    .then((r) => (r.ok ? r.json() : null));
+  // decoded instances survive the gate: the engine adopts these directly, so
+  // its first frame never waits on a fresh Image resolving from cache
+  const gateImgs = new Map();
   await (function preload() {
     const srcs = new Set();
     for (const spec of AD.els || []) {
@@ -42,12 +50,24 @@
     const eng = AD.engine || {};
     for (const k in (eng.sceneSources || {})) srcs.add(eng.sceneSources[k]);
     if (eng.cutout) srcs.add(eng.cutout);
+    if (eng.canvas && typeof FallEngine !== 'undefined' && FallEngine.SPRITE_SETS) {
+      for (const setName in FallEngine.SPRITE_SETS) {
+        for (const f of FallEngine.SPRITE_SETS[setName]) srcs.add('images/' + f);
+      }
+    }
     const loads = [...srcs].map(src => new Promise(res => {
       const im = new Image();
       im.onload = im.onerror = () => res();
       im.src = src;
+      gateImgs.set(src, im);
       if (im.decode) im.decode().then(res, res);
     }));
+    loads.push(recipeP.catch(() => null));
+    // @font-face fetches normally start only when rendered text first needs
+    // them — force them now so copy never restyles mid-entrance (FOUT)
+    if (document.fonts && document.fonts.forEach) {
+      document.fonts.forEach((ff) => loads.push(ff.load().catch(() => null)));
+    }
     return Promise.race([
       Promise.all(loads),
       new Promise(res => setTimeout(res, 3000)),
@@ -341,14 +361,20 @@
       // frame. a.soft overrides the ramp width; 0 turns it off.
       const soft = a.soft != null ? a.soft : 18;
       if (soft > 0) {
+        // The mask box is oversized by 2×soft and parked so the ramp BEGINS a
+        // full soft-width past the canvas edge at rest. Parked at exactly the
+        // edge (the old 1×), WebKit's calc/mask rounding could pull the ramp
+        // a fraction inside — a ~1px translucent sliver down the right edge
+        // of the resting ad in Safari. The slide travels 2×soft, so the ramp
+        // lands at the same mid-slide position as before, frame for frame.
         t.style.webkitMaskImage = t.style.maskImage =
           `linear-gradient(to right, #000 calc(100% - ${soft}px), transparent)`;
-        t.style.webkitMaskSize = t.style.maskSize = `calc(100% + ${soft}px) 100%`;
+        t.style.webkitMaskSize = t.style.maskSize = `calc(100% + ${2 * soft}px) 100%`;
         t.style.webkitMaskRepeat = t.style.maskRepeat = 'no-repeat';
         run(t, [
           { webkitMaskPosition: '0px 0px', maskPosition: '0px 0px' },
-          { webkitMaskPosition: `${-soft}px 0px`, maskPosition: `${-soft}px 0px`, offset: 0.15 },
-          { webkitMaskPosition: `${-soft}px 0px`, maskPosition: `${-soft}px 0px` },
+          { webkitMaskPosition: `${-2 * soft}px 0px`, maskPosition: `${-2 * soft}px 0px`, offset: 0.15 },
+          { webkitMaskPosition: `${-2 * soft}px 0px`, maskPosition: `${-2 * soft}px 0px` },
         ], { delay: a.at * S, duration: (a.dur || 0.9) * S, easing: 'linear' });
       }
       run(t, [
@@ -361,14 +387,17 @@
       const t = el.querySelector('canvas') || el;   // same split as slideOutLeft
       const soft = a.soft != null ? a.soft : 14;    // and the same soft edge, on the bottom
       if (soft > 0) {
+        // 2×soft parking, same reason as slideOutLeft: the resting ramp must
+        // start clear of the canvas edge or WebKit rounding shaves the last
+        // pixel row of the resting ad
         t.style.webkitMaskImage = t.style.maskImage =
           `linear-gradient(to bottom, #000 calc(100% - ${soft}px), transparent)`;
-        t.style.webkitMaskSize = t.style.maskSize = `100% calc(100% + ${soft}px)`;
+        t.style.webkitMaskSize = t.style.maskSize = `100% calc(100% + ${2 * soft}px)`;
         t.style.webkitMaskRepeat = t.style.maskRepeat = 'no-repeat';
         run(t, [
           { webkitMaskPosition: '0px 0px', maskPosition: '0px 0px' },
-          { webkitMaskPosition: `0px ${-soft}px`, maskPosition: `0px ${-soft}px`, offset: 0.15 },
-          { webkitMaskPosition: `0px ${-soft}px`, maskPosition: `0px ${-soft}px` },
+          { webkitMaskPosition: `0px ${-2 * soft}px`, maskPosition: `0px ${-2 * soft}px`, offset: 0.15 },
+          { webkitMaskPosition: `0px ${-2 * soft}px`, maskPosition: `0px ${-2 * soft}px` },
         ], { delay: a.at * S, duration: (a.dur || 0.9) * S, easing: 'linear' });
       }
       run(t, [
@@ -533,8 +562,10 @@
         if (e.P.scene !== 'none') e.playScene();
       }
     }
-    fetch('recipe.json', { cache: 'no-store' })
-      .then((r) => (r.ok ? r.json() : null))
+    // resolved by the asset gate before the DOM ever built — the .then
+    // below runs on the microtask queue right behind cue creation, so the
+    // deferred (drive-relative) cues arm in the same frame they are born
+    recipeP
       .then((recipe) => {
         if (recipe) for (const e of engines) applyRecipe(e, recipe);
         const drive = recipe && recipe.sceneDur ? +recipe.sceneDur : (AD.engine.taperAt || 4.6);
@@ -579,10 +610,15 @@
     im.complete ? Promise.resolve() : new Promise((r) => { im.onload = im.onerror = r; }));
   if (AD.engine && engine) {
     for (const key in AD.engine.sceneSources) {
-      const im = new Image();
-      im.src = AD.engine.sceneSources[key];
+      // adopt the gate's already-decoded instance; fall back to a fresh one
+      const src = AD.engine.sceneSources[key];
+      const im = gateImgs.get(src) || new Image();
+      if (!im.src) im.src = src;
       engine._sceneImgs[key] = im;
       pending.push(im.complete ? Promise.resolve() : new Promise((r) => { im.onload = im.onerror = r; }));
+    }
+    if (AD.engine.cutout && gateImgs.has(AD.engine.cutout)) {
+      for (const e of engines) if (e.cutoutImg) e.cutoutImg = gateImgs.get(AD.engine.cutout);
     }
     const sprites = engine._sprites; // warm the sprite set too
     const files = FallEngine.SPRITE_SETS[engine.P.spriteSet] || [];
