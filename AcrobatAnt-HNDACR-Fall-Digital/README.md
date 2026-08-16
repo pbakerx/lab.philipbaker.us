@@ -53,8 +53,12 @@ right page, and the footer credit renders.
 
 - Ads are one-shot (~8.5 s). Replay reloads the iframe — that is the
   intended replay mechanism; the units have no external replay hook.
-- Dealer names are baked per package: Honda shows Norm Reeves Honda
-  Superstore Huntington Beach, Acura shows Open Road Acura of East
-  Brunswick. (Dealer is a build-time variable in the production pipeline.)
+- The Dealer pulldown carries the full production feeds (687 Honda /
+  189 Acura dealers, from `dealers.js`). Each ad folder ships its
+  template (`template.html`); the page substitutes the chosen dealer
+  client-side and loads the result via iframe srcdoc with an injected
+  <base>, so one set of images serves every dealer. `index.html` in each
+  ad folder is a pre-built fallback (board dealer) for direct linking.
+  (In production, dealer is a build-time variable.)
 - Ad photography in `ads/` was downsampled for web delivery in THIS
   package only; production masters live in the build repo untouched.

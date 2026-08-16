@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HND_160x600_A</title>
+<meta name="ad.size" content="width=160,height=600">
+<script>var clickTag = "{{CLICK_URL}}";</script>
+<style>
+  html, body { margin: 0; padding: 0; }
+  /* No border on the ad root: with box-sizing:border-box a 1px rule turns a
+     728x90 slot into a 726x88 canvas, shifts every element 1px in, and draws a
+     hairline over art meant to bleed off the edge. The Review Deck outlines the
+     ad on its own frame instead. */
+  #ad {
+    position: relative; overflow: hidden; background: #ffffff;
+  }
+  #ad, #ad * { box-sizing: border-box; }
+  #ad img { user-select: none; -webkit-user-select: none; }
+  @font-face {
+    font-family: 'HondaRound';
+    src: url('fonts/AvenirNextRoundedStd-Medium.ttf') format('truetype');
+    font-display: block;
+  }
+</style>
+</head>
+<body>
+<div id="ad" data-dealer-id="{{DEALER_ID}}"></div>
+<script>const AD = {
+ "unit": "HND_160x600_A",
+ "w": 160,
+ "h": 600,
+ "brand": "HND",
+ "bg": "#ffffff",
+ "clickUrl": "https://automobiles.honda.com/tools/dealership-locator",
+ "dur": 9.0,
+ "els": [
+  {
+   "id": "logo",
+   "type": "img",
+   "src": "images/logo.png",
+   "box": [
+    16,
+    31,
+    129,
+    33
+   ],
+   "z": 30,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "cta",
+   "type": "rect",
+   "box": [
+    9,
+    536,
+    142,
+    34
+   ],
+   "z": 30,
+   "css": {
+    "background": "#0077c0",
+    "borderRadius": "17.0px"
+   },
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "ctatext",
+   "type": "img",
+   "src": "images/cta_text.png",
+   "box": [
+    23.2,
+    546.2,
+    113.6,
+    13.6
+   ],
+   "z": 31,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "f1canvas",
+   "type": "canvas",
+   "box": [
+    5,
+    83,
+    150,
+    433
+   ],
+   "z": 10,
+   "radius": 7,
+   "anim": {
+    "type": "out",
+    "dur": 0.75
+   },
+   "relTo": "driveEnd",
+   "lead": 0.0
+  },
+  {
+   "id": "leafcanvas",
+   "type": "canvas",
+   "box": [
+    0,
+    0,
+    160,
+    600
+   ],
+   "z": 18
+  },
+  {
+   "id": "headline",
+   "type": "img",
+   "src": "images/headline.png",
+   "box": [
+    15.0,
+    426.0,
+    128.0,
+    71.0
+   ],
+   "z": 21,
+   "fit": "contain",
+   "anim": {
+    "type": "upFade",
+    "at": 0.0,
+    "also": [
+     {
+      "type": "out",
+      "at": 3.33
+     }
+    ],
+    "dur": 1.1
+   }
+  },
+  {
+   "id": "tech",
+   "type": "img",
+   "src": "images/tech.png",
+   "box": [
+    5,
+    83,
+    150,
+    242
+   ],
+   "z": 8,
+   "fit": "cover",
+   "clip": true,
+   "radius": 7,
+   "anim": {
+    "type": "move",
+    "at": 3.5,
+    "dur": 7.6,
+    "to": [
+     4.0,
+     -28.0
+    ],
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "s0": 1,
+    "s1": 1.33,
+    "ease": "cubic-bezier(0.000,0,1.000,1)",
+    "also": [
+     {
+      "type": "fade",
+      "at": 0.0,
+      "dur": 0.75
+     }
+    ]
+   },
+   "relTo": "driveEnd",
+   "lead": 0.0,
+   "imgPose": {
+    "dx": 37.0,
+    "dy": 0.0,
+    "scale": 1.0,
+    "rot": 0.0
+   },
+   "natural": [
+    576,
+    384
+   ]
+  },
+  {
+   "id": "passport_under",
+   "type": "img",
+   "src": "images/passport_under.png",
+   "box": [
+    -74,
+    257,
+    594,
+    459
+   ],
+   "z": 6,
+   "fit": "fill",
+   "shadow": "-2px 3px 4px rgba(0,0,0,0.45)",
+   "anim": {
+    "type": "fade",
+    "at": 4.8999999999999995,
+    "dur": 0.4
+   }
+  },
+  {
+   "id": "passport_2",
+   "type": "img",
+   "src": "images/passport_2.png",
+   "box": [
+    357.1,
+    360.4,
+    243.7,
+    169.2
+   ],
+   "z": 19,
+   "fit": "fill",
+   "rot": 60.21,
+   "shadow": "-2px 3px 4px rgba(0,0,0,0.45)",
+   "anim": {
+    "type": "move",
+    "at": 0.2,
+    "dur": 1.25,
+    "to": [
+     -241.0,
+     -93.0
+    ],
+    "rot0": 60.21,
+    "rot1": -27.79,
+    "s0": 1,
+    "s1": 1.0,
+    "ease": "cubic-bezier(0.000,0,0.450,1)",
+    "also": [
+     {
+      "type": "out",
+      "at": 4.6,
+      "dur": 0.3
+     }
+    ]
+   },
+   "clipTo": [
+    5,
+    83,
+    150,
+    433
+   ],
+   "clipRadius": 7,
+   "unclipAt": 0.2
+  },
+  {
+   "id": "passport_top",
+   "type": "img",
+   "src": "images/passport_top.png",
+   "box": [
+    -242.2,
+    -109.8,
+    260.5,
+    180.6
+   ],
+   "z": 20,
+   "fit": "fill",
+   "shadow": "-2px 3px 4px rgba(0,0,0,0.45)",
+   "anim": {
+    "type": "move",
+    "at": 0.0,
+    "dur": 1.0,
+    "to": [
+     46.0,
+     156.0
+    ],
+    "rot0": -74.0,
+    "rot1": 27.0,
+    "s0": 1,
+    "s1": 1.0,
+    "ease": "cubic-bezier(0.000,0,0.550,1)",
+    "zTo": 19,
+    "also": [
+     {
+      "type": "move",
+      "at": 3.0,
+      "dur": 1.7,
+      "from": [
+       46.0,
+       156.0
+      ],
+      "to": [
+       344.0,
+       484.0
+      ],
+      "rot0": 27.0,
+      "rot1": -12.5,
+      "s0": 1.0,
+      "s1": 2.09,
+      "fill": "forwards",
+      "ease": "cubic-bezier(0.400,0,0.200,1)"
+     }
+    ]
+   },
+   "rot": -74.0
+  },
+  {
+   "id": "dealer",
+   "type": "text",
+   "box": [
+    14.0,
+    430.0,
+    132.0,
+    74.0
+   ],
+   "z": 22,
+   "html": "<span>Visit the experts at {{DEALER_NAME}}.</span>",
+   "css": {
+    "font": "16px/1.18 'HondaRound', 'Avenir Next', Helvetica, sans-serif",
+    "color": "#002543",
+    "textAlign": "center",
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "anim": {
+    "type": "upFade",
+    "at": 4.1,
+    "dur": 0.7
+   },
+   "autoFit": 11
+  }
+ ],
+ "engine": {
+  "canvas": "f1canvas",
+  "leafCanvas": "leafcanvas",
+  "taperAt": 4.6,
+  "sceneSources": {
+   "honda": "images/vehicle.png",
+   "acura": "images/vehicle.png",
+   "custom": "images/vehicle.png"
+  },
+  "stopAt": 5.8
+ }
+};</script>
+<script src="leaf-engine.js"></script>
+<script src="ad-player.js"></script>
+</body>
+</html>

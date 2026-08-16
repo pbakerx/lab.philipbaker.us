@@ -55,6 +55,26 @@
   .brand[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
   .brand:hover { color: var(--ink); }
 
+  /* ---------- dealer pulldown ---------- */
+  .dealer-row { display: flex; justify-content: center; align-items: baseline;
+                gap: 10px; padding: 18px 0 0; }
+  .dealer-label {
+    font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  #dealerSel {
+    -webkit-appearance: none; appearance: none;
+    background: transparent; color: var(--ink-dim); cursor: pointer;
+    border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+    font: 13px/1.5 var(--sans); letter-spacing: .03em;
+    padding: 4px 22px 5px 2px; max-width: min(64vw, 380px);
+    text-overflow: ellipsis;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23d9b96c' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 4px center;
+  }
+  #dealerSel:hover, #dealerSel:focus { color: var(--ink); border-bottom-color: var(--accent); outline: none; }
+  #dealerSel option { background: var(--ground); color: var(--ink); }
+
   /* ---------- pickers ---------- */
   .pickers { padding: 8px 0 2px; }
   .group { display: flex; align-items: baseline; justify-content: center;
@@ -206,6 +226,10 @@
       <button class="ctl" id="replay">&#8635;&nbsp; Replay</button>
       <button class="ctl" id="seeBoard">See Storyboard</button>
     </div>
+    <div class="dealer-row">
+      <span class="dealer-label">Dealer</span>
+      <select id="dealerSel" aria-label="Dealer"></select>
+    </div>
   </section>
 
   <footer>
@@ -222,6 +246,7 @@
   <div class="modal-hint">tap image to zoom &middot; tap outside or esc to close</div>
 </div>
 
+<script src="dealers.js"></script>
 <script>
 const SIZES = [
   { key: '728x90',  w: 728, h: 90,  label: '728 × 90'  },
@@ -238,7 +263,40 @@ const CREATIVES = {
     { key: 'B', name: 'Creative B — Breeze Through Fall' },
   ],
 };
-const state = { brand: 'HND', size: '728x90', creative: 'A' };
+const CLICK_URL = {
+  HND: 'https://automobiles.honda.com/tools/dealership-locator',
+  ACR: 'https://www.acura.com/service',
+};
+const DEFAULT_DEALER = {
+  HND: 'Norm Reeves Honda Superstore Huntington Beach',
+  ACR: 'Open Road Acura of East Brunswick',
+};
+const state = { brand: 'HND', size: '728x90', creative: 'A',
+                dealer: { HND: null, ACR: null } };
+for (const b of ['HND', 'ACR']) {
+  const i = DEALER_FEED[b].findIndex(d => d[1] === DEFAULT_DEALER[b]);
+  state.dealer[b] = i >= 0 ? i : 0;
+}
+const dealerSel = document.getElementById('dealerSel');
+function renderDealers() {
+  dealerSel.innerHTML = DEALER_FEED[state.brand].map((d, i) =>
+    `<option value="${i}" ${i === state.dealer[state.brand] ? 'selected' : ''}>${d[1]}</option>`).join('');
+}
+dealerSel.addEventListener('change', () => {
+  state.dealer[state.brand] = +dealerSel.value; loadAd();
+});
+const tplCache = {};
+async function unitHtml(id) {
+  if (!tplCache[id]) {
+    tplCache[id] = await (await fetch(`ads/${id}/template.html`)).text();
+  }
+  const d = DEALER_FEED[state.brand][state.dealer[state.brand]];
+  return tplCache[id]
+    .replace('<head>', `<head><base href="ads/${id}/">`)
+    .replaceAll('{{DEALER_NAME}}', d[1])
+    .replaceAll('{{DEALER_ID}}', d[0])
+    .replaceAll('{{CLICK_URL}}', CLICK_URL[state.brand]);
+}
 
 const pickersEl = document.getElementById('pickers');
 const frame = document.getElementById('adFrame');
@@ -308,12 +366,12 @@ scrub.addEventListener('input', () => {
   timecode.textContent = `${fmt(t)} / ${fmt(adDur)}s`;
 });
 
-function loadAd() {
+async function loadAd() {
   const id = unitId();
   layoutFrame();
   playT0 = null;
   scrub.value = 0;
-  frame.src = `ads/${id}/index.html?t=${Date.now()}`;
+  frame.srcdoc = await unitHtml(id);
   unitName.textContent = id.replace(/_/g, ' · ');
   // warm the storyboard for a fast peek
   const img = new Image();
@@ -326,7 +384,7 @@ document.querySelectorAll('.brand').forEach(b => b.addEventListener('click', () 
   state.brand = b.dataset.brand;
   document.querySelectorAll('.brand').forEach(x =>
     x.setAttribute('aria-selected', x === b ? 'true' : 'false'));
-  renderPickers(); loadAd();
+  renderDealers(); renderPickers(); loadAd();
 }));
 document.getElementById('replay').addEventListener('click', loadAd);
 window.addEventListener('resize', layoutFrame);
@@ -349,6 +407,7 @@ modalScroll.addEventListener('click', e => { if (e.target === modalScroll) close
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 boardImg.addEventListener('click', () => boardImg.classList.toggle('zoomed'));
 
+renderDealers();
 renderPickers();
 loadAd();
 </script>

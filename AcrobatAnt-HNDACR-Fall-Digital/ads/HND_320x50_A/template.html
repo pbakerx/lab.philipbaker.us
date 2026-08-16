@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HND_320x50_A</title>
+<meta name="ad.size" content="width=320,height=50">
+<script>var clickTag = "{{CLICK_URL}}";</script>
+<style>
+  html, body { margin: 0; padding: 0; }
+  /* No border on the ad root: with box-sizing:border-box a 1px rule turns a
+     728x90 slot into a 726x88 canvas, shifts every element 1px in, and draws a
+     hairline over art meant to bleed off the edge. The Review Deck outlines the
+     ad on its own frame instead. */
+  #ad {
+    position: relative; overflow: hidden; background: #ffffff;
+  }
+  #ad, #ad * { box-sizing: border-box; }
+  #ad img { user-select: none; -webkit-user-select: none; }
+  @font-face {
+    font-family: 'HondaRound';
+    src: url('fonts/AvenirNextRoundedStd-Medium.ttf') format('truetype');
+    font-display: block;
+  }
+</style>
+</head>
+<body>
+<div id="ad" data-dealer-id="{{DEALER_ID}}"></div>
+<script>const AD = {
+ "unit": "HND_320x50_A",
+ "w": 320,
+ "h": 50,
+ "brand": "HND",
+ "bg": "#ffffff",
+ "clickUrl": "https://automobiles.honda.com/tools/dealership-locator",
+ "dur": 9.0,
+ "els": [
+  {
+   "id": "logo",
+   "type": "img",
+   "src": "images/logo.png",
+   "box": [
+    10,
+    12,
+    97,
+    24
+   ],
+   "z": 30,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "cta",
+   "type": "rect",
+   "box": [
+    158,
+    8,
+    142,
+    34
+   ],
+   "z": 30,
+   "css": {
+    "background": "#0077c0",
+    "borderRadius": "17.0px"
+   },
+   "anim": {
+    "type": "slideBottom",
+    "at": 5.7
+   }
+  },
+  {
+   "id": "ctatext",
+   "type": "img",
+   "src": "images/cta_text.png",
+   "box": [
+    172.2,
+    18.2,
+    113.6,
+    13.6
+   ],
+   "z": 31,
+   "fit": "contain",
+   "anim": {
+    "type": "slideBottom",
+    "at": 5.7
+   }
+  },
+  {
+   "id": "passportbg",
+   "type": "img",
+   "src": "images/stamps1.png",
+   "box": [
+    -28,
+    -84,
+    381,
+    298
+   ],
+   "z": 2,
+   "fit": "cover",
+   "clip": true,
+   "anim": {
+    "type": "stampSeq",
+    "at": 0,
+    "gap": 2.9,
+    "fade": 0.6,
+    "srcs": [
+     "images/stamps1.png",
+     "images/stamps2.png",
+     "images/stamps3.png"
+    ]
+   },
+   "natural": [
+    638,
+    443
+   ]
+  },
+  {
+   "id": "stamp2",
+   "type": "img",
+   "src": "images/stamp2.png",
+   "box": [
+    297,
+    8.5,
+    22.9,
+    41.3
+   ],
+   "z": 3,
+   "fit": "contain",
+   "anim": {
+    "type": "fade",
+    "at": 6.15,
+    "dur": 0.6
+   }
+  },
+  {
+   "id": "headline",
+   "type": "img",
+   "src": "images/headline.png",
+   "box": [
+    143,
+    13,
+    165,
+    25
+   ],
+   "z": 21,
+   "fit": "contain",
+   "anim": {
+    "type": "upFade",
+    "at": 0.3,
+    "also": [
+     {
+      "type": "out",
+      "at": 2.9
+     }
+    ]
+   }
+  },
+  {
+   "id": "dealer",
+   "type": "text",
+   "box": [
+    150,
+    8,
+    144,
+    37
+   ],
+   "z": 22,
+   "html": "<span>Visit the experts at {{DEALER_NAME}}.</span>",
+   "css": {
+    "font": "11px/1.15 'HondaRound', 'Avenir Next', Helvetica, sans-serif",
+    "color": "#002543",
+    "textAlign": "center",
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "anim": {
+    "type": "upFade",
+    "at": 3.1999999999999997,
+    "also": [
+     {
+      "type": "out",
+      "at": 5.7
+     }
+    ]
+   },
+   "autoFit": 11
+  }
+ ],
+ "engine": null
+};</script>
+<script src="leaf-engine.js"></script>
+<script src="ad-player.js"></script>
+</body>
+</html>
