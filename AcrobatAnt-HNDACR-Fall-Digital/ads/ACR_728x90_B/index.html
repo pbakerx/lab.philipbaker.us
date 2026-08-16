@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ACR_728x90_B</title>
+<meta name="ad.size" content="width=728,height=90">
+<script>var clickTag = "https://www.acura.com/service";</script>
+<style>
+  html, body { margin: 0; padding: 0; }
+  /* No border on the ad root: with box-sizing:border-box a 1px rule turns a
+     728x90 slot into a 726x88 canvas, shifts every element 1px in, and draws a
+     hairline over art meant to bleed off the edge. The Review Deck outlines the
+     ad on its own frame instead. */
+  #ad {
+    position: relative; overflow: hidden; background: #000000;
+  }
+  #ad, #ad * { box-sizing: border-box; }
+  #ad img { user-select: none; -webkit-user-select: none; }
+  
+</style>
+</head>
+<body>
+<div id="ad" data-dealer-id="301"></div>
+<script>const AD = {
+ "unit": "ACR_728x90_B",
+ "w": 728,
+ "h": 90,
+ "brand": "ACR",
+ "bg": "#000000",
+ "clickUrl": "https://www.acura.com/service",
+ "dur": 9.0,
+ "els": [
+  {
+   "id": "logo",
+   "type": "img",
+   "src": "images/logo.svg",
+   "box": [
+    16,
+    29,
+    100,
+    32
+   ],
+   "z": 30,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "cta",
+   "type": "text",
+   "box": [
+    565,
+    28,
+    153,
+    34
+   ],
+   "z": 30,
+   "html": "<div style=\"height:100%; width:calc(100% - 18.4px); margin:0 auto; border:2px solid #ffffff; transform:skewX(-31deg)\"></div>",
+   "css": {},
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "ctatext",
+   "type": "img",
+   "src": "images/cta_text.png",
+   "box": [
+    580.3,
+    38.2,
+    122.4,
+    13.6
+   ],
+   "z": 31,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "f1canvas",
+   "type": "canvas",
+   "box": [
+    0,
+    0,
+    728,
+    90
+   ],
+   "z": 10,
+   "radius": 0,
+   "anim": {
+    "type": "out",
+    "dur": 0.08
+   },
+   "relTo": "driveEnd",
+   "lead": 0.0
+  },
+  {
+   "id": "leafcanvas",
+   "type": "canvas",
+   "box": [
+    0,
+    0,
+    728,
+    90
+   ],
+   "z": 18
+  },
+  {
+   "id": "carcut",
+   "type": "canvas",
+   "box": [
+    0,
+    0,
+    728,
+    90
+   ],
+   "z": 19,
+   "radius": 0,
+   "anim": {
+    "type": "out",
+    "dur": 0.08
+   },
+   "relTo": "driveEnd",
+   "lead": 0.0
+  },
+  {
+   "id": "headline",
+   "type": "img",
+   "src": "images/headline.png",
+   "box": [
+    361,
+    17,
+    201,
+    58
+   ],
+   "z": 21,
+   "fit": "contain",
+   "anim": {
+    "type": "shootIn",
+    "at": 0.5,
+    "dir": "right",
+    "dist": 12,
+    "also": [
+     {
+      "type": "out",
+      "at": 4.6
+     }
+    ]
+   }
+  },
+  {
+   "id": "tech",
+   "type": "img",
+   "src": "images/tech.png",
+   "box": [
+    0,
+    0,
+    728,
+    90
+   ],
+   "z": 8,
+   "fit": "cover",
+   "clip": true,
+   "radius": 0,
+   "anim": {
+    "type": "move",
+    "at": 3.5,
+    "dur": 4.45,
+    "to": [
+     0.0,
+     0.0
+    ],
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "s0": 1,
+    "s1": 1.109,
+    "ease": "cubic-bezier(0.400,0,0.200,1)",
+    "also": [
+     {
+      "type": "fade",
+      "at": 3.5,
+      "dur": 0.6
+     }
+    ]
+   },
+   "relTo": "driveEnd",
+   "lead": 1.0,
+   "imgPose": {
+    "dx": -74.0,
+    "dy": 0.0,
+    "scale": 0.44,
+    "rot": 0.0
+   },
+   "natural": [
+    3300,
+    2291
+   ]
+  },
+  {
+   "id": "dealer",
+   "type": "text",
+   "box": [
+    370.0,
+    18.0,
+    184.0,
+    54.0
+   ],
+   "z": 22,
+   "html": "<span>Visit the experts at<br>Open Road Acura of East Brunswick.</span>",
+   "css": {
+    "font": "bold 15px/1.3 Arial, Helvetica, sans-serif",
+    "color": "#ffffff",
+    "textAlign": "center",
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "anim": {
+    "type": "shootIn",
+    "dir": "right",
+    "dist": 12,
+    "dur": 0.35,
+    "at": 5.0
+   }
+  },
+  {
+   "id": "logoscrim",
+   "type": "rect",
+   "box": [
+    0,
+    0,
+    200,
+    90
+   ],
+   "z": 11,
+   "css": {
+    "background": "linear-gradient(to right, rgba(0,0,0,0.85) 0px, rgba(0,0,0,0.5) 90px, rgba(0,0,0,0) 190px)"
+   },
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "cardblend",
+   "type": "rect",
+   "box": [
+    0,
+    0,
+    728,
+    90
+   ],
+   "z": 11,
+   "css": {
+    "background": "linear-gradient(to right, rgba(0,0,0,0) 45.3%, rgba(0,0,0,0.45) 53.6%, rgba(0,0,0,0.85) 61.8%, rgba(0,0,0,1) 69.4%)"
+   },
+   "anim": {
+    "type": "none"
+   }
+  }
+ ],
+ "engine": {
+  "canvas": "f1canvas",
+  "leafCanvas": "leafcanvas",
+  "taperAt": 4.6,
+  "sceneSources": {
+   "honda": "images/vehicle.png",
+   "acura": "images/vehicle.png",
+   "custom": "images/vehicle.png"
+  },
+  "stopAt": 5.8,
+  "taperRel": true,
+  "cutout": "images/vehicle_cutout.png",
+  "cutoutCanvas": "carcut"
+ }
+};</script>
+<script src="leaf-engine.js"></script>
+<script src="ad-player.js"></script>
+</body>
+</html>

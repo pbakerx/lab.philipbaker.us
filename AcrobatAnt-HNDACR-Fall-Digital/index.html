@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Honda Acura Fall Digital — Version 1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Honda + Acura Fall 2026 seasonal HTML5 display — Version 1, 3 example sizes.">
+<style>
+  :root {
+    --ink: #ece7dd;
+    --ink-dim: #9a938a;
+    --ink-faint: #5f5a53;
+    --ground: #12100d;
+    --panel: #1a1713;
+    --line: #2e2a24;
+    --accent: #c9a961;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { background: var(--ground); }
+  body {
+    background: var(--ground); color: var(--ink);
+    font: 16px/1.6 var(--sans);
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  .wrap { width: 100%; max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- masthead ---------- */
+  header { padding: 52px 0 8px; text-align: center; }
+  .eyebrow {
+    font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 18px;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 400; letter-spacing: .01em;
+    font-size: clamp(30px, 6vw, 46px); line-height: 1.12;
+  }
+  .version {
+    margin-top: 10px; font-size: 13px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-dim);
+  }
+  .rule {
+    width: 44px; height: 1px; background: var(--accent);
+    margin: 30px auto 0; opacity: .8;
+  }
+
+  /* ---------- brand tabs ---------- */
+  .brands { display: flex; justify-content: center; gap: 40px; padding: 34px 0 4px; }
+  .brand {
+    background: none; border: 0; cursor: pointer; color: var(--ink-dim);
+    font-family: var(--serif); font-size: 21px; letter-spacing: .04em;
+    padding: 6px 2px; border-bottom: 1px solid transparent; transition: color .25s, border-color .25s;
+  }
+  .brand[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .brand:hover { color: var(--ink); }
+
+  /* ---------- pickers ---------- */
+  .pickers { padding: 22px 0 6px; }
+  .group { display: flex; align-items: baseline; justify-content: center;
+           gap: 14px; flex-wrap: wrap; padding: 7px 0; }
+  .group-name {
+    font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--ink-faint); min-width: 148px; text-align: right;
+  }
+  .chips { display: flex; gap: 8px; }
+  .chip {
+    background: none; cursor: pointer; color: var(--ink-dim);
+    border: 1px solid var(--line); border-radius: 999px;
+    font: 12.5px/1 var(--sans); letter-spacing: .04em;
+    padding: 8px 14px; transition: all .2s;
+  }
+  .chip:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .chip[aria-selected="true"] {
+    border-color: var(--accent); color: var(--ground);
+    background: var(--accent);
+  }
+
+  /* ---------- stage ---------- */
+  .stage-outer { padding: 30px 0 10px; }
+  .stage-meta {
+    display: flex; justify-content: center; align-items: baseline; gap: 18px;
+    padding-bottom: 14px; flex-wrap: wrap;
+  }
+  .unit-name { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); }
+  .stage {
+    display: flex; justify-content: center;
+  }
+  /* the ad sits on a publisher-white card, the way it will ship */
+  .slot {
+    background: #ffffff; border-radius: 3px; padding: 14px;
+    box-shadow: 0 30px 70px -30px rgba(0,0,0,.9);
+  }
+  .fit { position: relative; overflow: hidden; }
+  .fit iframe { border: 0; display: block; background: #fff; transform-origin: 0 0; }
+  .controls {
+    display: flex; justify-content: center; gap: 26px; padding: 20px 0 0;
+  }
+  .ctl {
+    background: none; border: 0; cursor: pointer; color: var(--ink-dim);
+    font: 13px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase;
+    padding: 8px 2px; border-bottom: 1px solid transparent;
+    text-decoration: none; transition: color .2s, border-color .2s;
+  }
+  .ctl:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .note {
+    max-width: 460px; margin: 26px auto 0; text-align: center;
+    font-size: 13.5px; line-height: 1.65; color: var(--ink-dim);
+  }
+
+  /* ---------- storyboard modal ---------- */
+  .modal {
+    position: fixed; inset: 0; z-index: 50; display: none;
+    background: rgba(8,7,5,.94);
+  }
+  .modal.open { display: block; }
+  .modal-scroll {
+    position: absolute; inset: 0; overflow: auto;
+    -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y pinch-zoom;
+    display: flex; padding: 56px 0 30px;
+  }
+  .modal-scroll img {
+    margin: auto; display: block; background: #fff;
+    width: min(96vw, 1400px); max-width: none; cursor: zoom-in;
+  }
+  .modal-scroll img.zoomed { width: 2400px; cursor: zoom-out; }
+  .modal-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 51;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 18px;
+    background: linear-gradient(to bottom, rgba(8,7,5,.9), rgba(8,7,5,0));
+  }
+  .modal-title { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-dim); }
+  .modal-close {
+    background: none; border: 1px solid var(--line); border-radius: 999px;
+    color: var(--ink); font: 13px/1 var(--sans); letter-spacing: .08em;
+    padding: 9px 18px; cursor: pointer;
+  }
+  .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+  .modal-hint {
+    position: fixed; bottom: 10px; left: 0; right: 0; text-align: center;
+    font-size: 11px; letter-spacing: .1em; color: var(--ink-faint); pointer-events: none;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: auto; padding: 64px 0 26px; text-align: center;
+  }
+  footer p { font-size: 11.5px; letter-spacing: .06em; color: var(--ink-faint); }
+  footer a { color: var(--ink-faint); text-decoration: none; border-bottom: 1px solid var(--line); }
+  footer a:hover { color: var(--ink-dim); }
+
+  @media (max-width: 560px) {
+    header { padding-top: 38px; }
+    .group { flex-direction: column; align-items: center; gap: 8px; }
+    .group-name { text-align: center; min-width: 0; }
+    .slot { padding: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Fall 2026 · Seasonal Display</div>
+    <h1>Honda&nbsp;Acura Fall&nbsp;Digital</h1>
+    <div class="version">Version 1 &middot; 3 Example Sizes</div>
+    <div class="rule"></div>
+  </header>
+
+  <nav class="brands" role="tablist" aria-label="Brand">
+    <button class="brand" role="tab" data-brand="HND" aria-selected="true">Honda</button>
+    <button class="brand" role="tab" data-brand="ACR" aria-selected="false">Acura</button>
+  </nav>
+
+  <div class="pickers" id="pickers"></div>
+
+  <section class="stage-outer">
+    <div class="stage-meta">
+      <span class="unit-name" id="unitName"></span>
+    </div>
+    <div class="stage">
+      <div class="slot"><div class="fit" id="fit"><iframe id="adFrame" scrolling="no" title="Ad preview"></iframe></div></div>
+    </div>
+    <div class="controls">
+      <button class="ctl" id="replay">&#8635;&nbsp; Replay</button>
+      <button class="ctl" id="seeBoard">See Storyboard</button>
+    </div>
+    <p class="note" id="unitNote"></p>
+  </section>
+
+  <footer>
+    <p>Philip Baker &middot; design &amp; build &middot;
+       <a href="https://philipbaker.us">philipbaker.us</a> &middot;
+       <a href="mailto:pbakerx@gmail.com">pbakerx@gmail.com</a></p>
+  </footer>
+</div>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-bar">
+    <span class="modal-title" id="modalTitle"></span>
+    <button class="modal-close" id="modalClose">Back to the work</button>
+  </div>
+  <div class="modal-scroll" id="modalScroll"><img id="boardImg" alt="Storyboard"></div>
+  <div class="modal-hint">tap image to zoom &middot; tap outside or esc to close</div>
+</div>
+
+<script>
+const SIZES = [
+  { key: '728x90',  w: 728, h: 90,  label: '728 × 90'  },
+  { key: '160x600', w: 160, h: 600, label: '160 × 600' },
+  { key: '320x50',  w: 320, h: 50,  label: '320 × 50'  },
+];
+const CREATIVES = {
+  HND: [
+    { key: 'A', name: 'Creative A — Passport' },
+    { key: 'B', name: 'Creative B — Fall Rush' },
+  ],
+  ACR: [
+    { key: 'A', name: 'Creative A — Precision Service' },
+    { key: 'B', name: 'Creative B — Breeze Through Fall' },
+  ],
+};
+const NOTES = {
+  HND_728x90_A:  'Passport sweep masks the drive and reveals the technician.',
+  HND_160x600_A: 'Car dissolves to the technician; stamps carry the story.',
+  HND_320x50_A:  'Stamp sequence on the passport page — apple, then the haunted-house stamp under the CTA.',
+  HND_728x90_B:  'Drive under a long blend into the card; the vehicle slides up to the technician.',
+  HND_160x600_B: 'Leaves ride the wind; the vehicle slides out left to the technician.',
+  HND_320x50_B:  'Dark road, leaves across all three frames — white lockup, outline CTA.',
+  ACR_728x90_A:  'Full-bleed drive melting into black; cut to the technician, leaves riding past.',
+  ACR_160x600_A: 'Word-by-word headline; the technician melts from black at top and bottom.',
+  ACR_320x50_A:  'Animated leaves over the PSD ground — three frames, drawn outline CTA.',
+  ACR_728x90_B:  'Pen-drawn speed lines and leaves passing behind the car; melt into the copy field.',
+  ACR_160x600_B: 'Streaks behind the red car; the scene slides out to the technician.',
+  ACR_320x50_B:  'Lines up with the headline, away for the dealer, back softer with the CTA.',
+};
+const state = { brand: 'HND', size: '728x90', creative: 'A' };
+
+const pickersEl = document.getElementById('pickers');
+const frame = document.getElementById('adFrame');
+const fit = document.getElementById('fit');
+const unitName = document.getElementById('unitName');
+const unitNote = document.getElementById('unitNote');
+
+function unitId() { return `${state.brand}_${state.size}_${state.creative}`; }
+
+function renderPickers() {
+  pickersEl.innerHTML = CREATIVES[state.brand].map(c => `
+    <div class="group">
+      <span class="group-name">${c.name}</span>
+      <span class="chips">${SIZES.map(s => `
+        <button class="chip" data-creative="${c.key}" data-size="${s.key}"
+          aria-selected="${state.creative === c.key && state.size === s.key}">${s.label}</button>`).join('')}
+      </span>
+    </div>`).join('');
+  pickersEl.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => {
+    state.creative = b.dataset.creative; state.size = b.dataset.size;
+    renderPickers(); loadAd();
+  }));
+}
+
+function sizeOf() { return SIZES.find(s => s.key === state.size); }
+
+function layoutFrame() {
+  const s = sizeOf();
+  const pad = 68; // page padding + slot padding
+  const scale = Math.min(1, (document.documentElement.clientWidth - pad) / s.w);
+  frame.width = s.w; frame.height = s.h;
+  frame.style.width = s.w + 'px'; frame.style.height = s.h + 'px';
+  frame.style.transform = `scale(${scale})`;
+  fit.style.width = (s.w * scale) + 'px';
+  fit.style.height = (s.h * scale) + 'px';
+}
+
+function loadAd() {
+  const id = unitId();
+  layoutFrame();
+  frame.src = `ads/${id}/index.html?t=${Date.now()}`;
+  unitName.textContent = id.replace(/_/g, ' · ');
+  unitNote.textContent = NOTES[id] || '';
+  // warm the storyboard for a fast peek
+  const img = new Image();
+  img.src = boardSrc();
+}
+
+function boardSrc() { return `boards/${state.brand.toLowerCase()}_${state.size}.jpg`; }
+
+document.querySelectorAll('.brand').forEach(b => b.addEventListener('click', () => {
+  state.brand = b.dataset.brand;
+  document.querySelectorAll('.brand').forEach(x =>
+    x.setAttribute('aria-selected', x === b ? 'true' : 'false'));
+  renderPickers(); loadAd();
+}));
+document.getElementById('replay').addEventListener('click', loadAd);
+window.addEventListener('resize', layoutFrame);
+
+/* ---------- storyboard peek ---------- */
+const modal = document.getElementById('modal');
+const boardImg = document.getElementById('boardImg');
+const modalScroll = document.getElementById('modalScroll');
+document.getElementById('seeBoard').addEventListener('click', () => {
+  boardImg.classList.remove('zoomed');
+  boardImg.src = boardSrc();
+  document.getElementById('modalTitle').textContent =
+    (state.brand === 'HND' ? 'Honda' : 'Acura') + ' · ' + sizeOf().label + ' · storyboard';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+});
+function closeModal() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+document.getElementById('modalClose').addEventListener('click', closeModal);
+modalScroll.addEventListener('click', e => { if (e.target === modalScroll) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+boardImg.addEventListener('click', () => boardImg.classList.toggle('zoomed'));
+
+renderPickers();
+loadAd();
+</script>
+</body>
+</html>
