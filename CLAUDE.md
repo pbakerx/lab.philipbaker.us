@@ -115,6 +115,31 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
       not render user HTML as a page, even on a foreign origin.
     - Card previews mount/unmount on scroll (IntersectionObserver); running every
       favorite at once would be brutal.
+  - **Post to social** (Aug 21 2026) — the button beside Download gives a widget its
+    own page at `/widget-maker/w/<id>` and a link to paste into a post. `api/widget.js`
+    renders that page server-side (a `vercel.json` rewrite maps the pretty URL to
+    `/api/widget?id=`) with og/twitter tags so the post unfurls into a card, and runs
+    the favorite in a sandboxed iframe fetched from its blob — same rule as everywhere:
+    generated code never runs on the lab origin. **Only favorites are shareable** — they
+    are the one persisted, signature-checked set — so the button saves the widget first
+    if it isn't one yet, which also means sharing puts it in the public gallery.
+    - The card image is a photograph of the running widget: a tiny listener rides along
+      in the *preview copy only* (`withHook` — never `v.html`, which the signature
+      covers) and answers a postMessage with the biggest canvas as JPEG; the page fits
+      it to 1200×630 and `POST /api/widget {id, snapshot}` stores it at
+      `shots/<id>.<hash8>.jpg` (content-hashed so a replacement never hides behind the
+      CDN cache of the old URL). First card in wins; JPEG magic bytes, ≤600 KB, and the
+      id must already be a favorite — so it can't host arbitrary images. A flat frame
+      (WebGL without `preserveDrawingBuffer`, or caught between clear and draw) is
+      detected client-side and not sent; widgets with no canvas fall back to the
+      generic `widget-maker/img/og.png`.
+    - Share links are pinned to `https://lab.philipbaker.us` (except on localhost), so a
+      preview deployment never hands out URLs nobody can open. The share page's
+      "Remix it" goes to `/widget-maker/#w=<id>`, which opens that favorite into the
+      rail once and drops the hash.
+    - Share pages are `noindex` (user-generated) but deliberately **not** in
+      `robots.txt` — Facebook/LinkedIn honour Disallow and would then get no card.
+    - `lib/guard.js` holds the origin check + rate limiter both endpoints share.
   - Moderation: `DELETE /api/favorites?pathname=…` with `x-admin-key`, enabled only if
     `WIDGET_MAKER_ADMIN_KEY` is set. The always-available fallback is the CLI — but pass
     the token explicitly, because a bare `vercel blob …` picks up `VERCEL_OIDC_TOKEN`

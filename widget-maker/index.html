@@ -150,6 +150,39 @@ button:disabled{opacity:.45;cursor:default}
              display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card-meta{font-family:var(--mono);font-size:10.5px;color:#7d6752;margin:7px 0 0}
 
+/* ── Share dialog ──────────────────────────────────────── */
+dialog.share{
+  border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);
+  padding:0;max-width:500px;width:calc(100% - 32px);box-shadow:0 30px 80px -20px rgba(0,0,0,.8);
+}
+dialog.share::backdrop{background:rgba(10,4,0,.72)}
+.share-in{padding:22px 22px 18px}
+.share-in h3{margin:0 0 4px;font-size:18px;letter-spacing:-.01em}
+.share-in .lead{margin:0 0 16px;font-size:13.5px;color:var(--dim)}
+.share-card{
+  display:flex;gap:12px;align-items:center;margin-bottom:16px;padding:10px;
+  border:1px solid var(--line);border-radius:10px;background:#120802;
+}
+.share-card img{width:132px;aspect-ratio:1200/630;object-fit:cover;border-radius:6px;background:#000;flex:0 0 auto}
+.share-card .sc-t{font-size:13.5px;font-weight:600;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.share-card .sc-n{font-size:11.5px;color:#8a7460;margin:3px 0 0;line-height:1.4}
+.share-url{display:flex;gap:8px;margin-bottom:14px}
+.share-url input{
+  flex:1;min-width:0;font:inherit;font-size:12.5px;font-family:var(--mono);padding:9px 11px;
+  background:#120802;color:var(--ink);border:1px solid var(--line);border-radius:8px;
+}
+.share-url button{padding:0 14px;font-size:13px;font-weight:600;background:var(--gold);color:#1a0e05;border-color:var(--gold)}
+.share-url button:hover:not(:disabled){background:#ffdd72;border-color:#ffdd72}
+.share-nets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.share-nets a{
+  display:inline-block;padding:7px 13px;font-size:13px;border:1px solid var(--line);border-radius:8px;
+  text-decoration:none;color:var(--ink);background:#2a1709;transition:border-color .15s;
+}
+.share-nets a:hover{border-color:#5a3a19}
+.share-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:#8a7460}
+.share-foot a{color:var(--dim)}
+.share-foot button{padding:5px 12px;font-size:13px;color:var(--dim)}
+
 footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim);max-width:660px}
 footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
 
@@ -202,6 +235,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
       <button class="act" id="act-full" type="button" disabled>Full screen</button>
       <button class="act" id="act-copy" type="button" disabled>Copy</button>
       <button class="act" id="act-save" type="button" disabled>Download</button>
+      <button class="act" id="act-share" type="button" disabled>Post to social</button>
     </div>
 
     <div class="stage-body">
@@ -243,11 +277,36 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   <ul class="cards" id="cards"></ul>
 </section>
 
+<dialog class="share" id="share-dlg" aria-labelledby="share-head">
+  <div class="share-in">
+    <h3 id="share-head">Link copied — paste it into your post.</h3>
+    <p class="lead">Your widget has its own page now. Anyone who opens the link sees it running.</p>
+    <div class="share-card">
+      <img id="share-img" alt="" width="132" height="69">
+      <div style="min-width:0">
+        <p class="sc-t" id="share-title"></p>
+        <p class="sc-n" id="share-note"></p>
+      </div>
+    </div>
+    <div class="share-url">
+      <input id="share-url" type="text" readonly aria-label="Share link" spellcheck="false">
+      <button id="share-copy" type="button">Copy</button>
+    </div>
+    <div class="share-nets" id="share-nets" aria-label="Post it on"></div>
+    <div class="share-foot">
+      <a id="share-open" href="#" target="_blank" rel="noopener">Open the page ↗</a>
+      <button id="share-close" type="button">Done</button>
+    </div>
+  </div>
+</dialog>
+
 <footer>
   Every widget is a single self-contained HTML file — no libraries, no network, no
   storage — generated on request and run in a sandboxed frame. <code>Download</code>
   gives you the file; it works offline, anywhere. Your own session clears on reload —
   but anything you <strong>♥ Favorite</strong> is kept, and everyone who visits sees it.
+  <strong>Post to social</strong> gives a widget its own page and a link you can paste
+  anywhere — the post unfurls into a card showing the widget.
 </footer>
 
 </div>
@@ -262,8 +321,12 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
         veilNote = $("veil-note"), statusEl = $("status"), widgetsEl = $("widgets"),
         railEmpty = $("rail-empty"), tabPreview = $("tab-preview"), tabCode = $("tab-code"),
         actFull = $("act-full"), actCopy = $("act-copy"), actSave = $("act-save"),
-        actFav = $("act-fav"), newEl = $("new-widget"), cardsEl = $("cards"),
-        galleryNote = $("gallery-note"), galleryEmpty = $("gallery-empty");
+        actFav = $("act-fav"), actShare = $("act-share"), newEl = $("new-widget"),
+        cardsEl = $("cards"), galleryNote = $("gallery-note"), galleryEmpty = $("gallery-empty"),
+        shareDlg = $("share-dlg"), shareHead = $("share-head"), shareImg = $("share-img"),
+        shareTitle = $("share-title"), shareNote = $("share-note"), shareUrl = $("share-url"),
+        shareCopy = $("share-copy"), shareNets = $("share-nets"), shareOpen = $("share-open"),
+        shareClose = $("share-close");
 
   const EXAMPLES = [
     "A bunch of red balls bouncing around",
@@ -345,7 +408,92 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     if (!v || state.mode !== "preview") return;
     if (v.html === loadedHtml) return;
     loadedHtml = v.html;
-    frameEl.srcdoc = v.html;
+    frameEl.srcdoc = withHook(v.html);
+  }
+
+  // ── Snapshot hook ──────────────────────────────────────
+  // "Post to social" wants a picture of the running widget for the card. The
+  // preview frame is sandboxed (opaque origin), so we can't read its canvas
+  // from out here — instead a tiny listener rides along in the *preview copy*
+  // of the document and answers a postMessage with the biggest canvas as a
+  // JPEG. Only the preview gets it: v.html — what the signature covers, what
+  // Download writes and what the Code tab shows — is never touched.
+  const SNAP_HOOK =
+    '<script>(function(){addEventListener("message",function(e){' +
+    'if(!e.data||e.data.type!=="pb-snap")return;var out=null;' +
+    'try{var cs=[].slice.call(document.querySelectorAll("canvas"));' +
+    'cs.sort(function(a,b){return b.width*b.height-a.width*a.height});' +
+    'if(cs[0]&&cs[0].width>0&&cs[0].height>0)out=cs[0].toDataURL("image/jpeg",.85)}catch(err){}' +
+    'parent.postMessage({type:"pb-snap",data:out},"*")})})()<\/script>';
+  function withHook(html) {
+    const i = html.search(/<\/body\s*>/i);
+    return i === -1 ? html + SNAP_HOOK : html.slice(0, i) + SNAP_HOOK + html.slice(i);
+  }
+  function snapshot(timeoutMs = 1500) {
+    return new Promise((resolve) => {
+      const win = frameEl.contentWindow;
+      if (!win || state.mode !== "preview") return resolve(null);
+      let done = false, timer = null;
+      const finish = (val) => {
+        if (done) return;
+        done = true;
+        window.removeEventListener("message", onMsg);
+        clearTimeout(timer);
+        resolve(val);
+      };
+      function onMsg(e) {
+        if (e.source !== win || !e.data || e.data.type !== "pb-snap") return;
+        finish(typeof e.data.data === "string" ? e.data.data : null);
+      }
+      window.addEventListener("message", onMsg);
+      timer = setTimeout(() => finish(null), timeoutMs);
+      try { win.postMessage({ type: "pb-snap" }, "*"); } catch { finish(null); }
+    });
+  }
+  // Samples a coarse grid: if almost every pixel is within a hair of the same
+  // luminance, there's nothing in the picture worth posting.
+  function isFlat(ctx, W, H) {
+    const px = ctx.getImageData(0, 0, W, H).data;
+    const step = 4 * 37; // every 37th pixel, row-agnostic
+    let min = 255, max = 0, n = 0, varied = 0, sum = 0;
+    const lum = [];
+    for (let i = 0; i < px.length; i += step) {
+      const l = px[i] * 0.299 + px[i + 1] * 0.587 + px[i + 2] * 0.114;
+      lum.push(l); sum += l; n++;
+      if (l < min) min = l;
+      if (l > max) max = l;
+    }
+    if (max - min < 10) return true;
+    const mean = sum / n;
+    for (const l of lum) if (Math.abs(l - mean) > 12) varied++;
+    return varied / n < 0.004; // under 0.4% of the frame differs from the field
+  }
+
+  // Fit whatever the widget drew onto a 1200×630 card (cover-cropped).
+  function toCard(dataUrl) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const W = 1200, H = 630;
+          const c = document.createElement("canvas");
+          c.width = W; c.height = H;
+          const ctx = c.getContext("2d");
+          ctx.fillStyle = "#000";
+          ctx.fillRect(0, 0, W, H);
+          const s = Math.max(W / img.width, H / img.height);
+          const w = img.width * s, h = img.height * s;
+          ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+          // A flat frame (WebGL without preserveDrawingBuffer, or a widget
+          // caught between clear and draw) would make a dud card, and the
+          // server keeps the first card it gets — so refuse to send one.
+          if (isFlat(ctx, W, H)) return resolve(null);
+          resolve(c.toDataURL("image/jpeg", 0.82));
+        } catch { resolve(null); }
+      };
+      img.onerror = () => resolve(null);
+      img.src = dataUrl;
+    });
   }
   tabPreview.addEventListener("click", () => setMode("preview"));
   tabCode.addEventListener("click", () => setMode("code"));
@@ -406,6 +554,22 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   const favHtml = new Map();   // blob url -> html, so a card is fetched once
   let savedIds = new Set();    // ids already in the gallery, to label the button
 
+  async function saveFavorite(v) {
+    const res = await fetch("/api/favorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        html: v.html,
+        signature: v.signature,
+        title: v.title,
+        prompt: v.prompt,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `Save failed (${res.status}).`);
+    return data;
+  }
+
   actFav.addEventListener("click", async () => {
     const v = current();
     if (!v) return;
@@ -416,18 +580,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     actFav.disabled = true;
     actFav.textContent = "Saving…";
     try {
-      const res = await fetch("/api/favorites", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          html: v.html,
-          signature: v.signature,
-          title: v.title,
-          prompt: v.prompt,
-        }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || `Save failed (${res.status}).`);
+      const data = await saveFavorite(v);
       flash(data.already ? "Already in the favorites." : "Saved to the favorites.");
       await loadGallery();
     } catch (err) {
@@ -438,6 +591,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   });
 
   function syncFavButton() {
+    syncShareButton();
     const v = current();
     if (state.busy || !v) {
       actFav.disabled = true;
@@ -451,6 +605,126 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
       ? "Save this widget to the shared favorites"
       : "Only freshly generated widgets can be saved";
   }
+
+  // ── Post to social ─────────────────────────────────────
+  // A share link is /widget-maker/w/<id> — a page the server renders for one
+  // saved favorite, with og/twitter tags so the post unfurls into a card. So
+  // sharing means: make sure it's a favorite, photograph it for the card,
+  // put the link on the clipboard, and show where to paste it.
+  const shareable = (v) => !!v && (!!v.signature || savedIds.has(v.id || ""));
+  // Links always point at the real site — a preview deployment or a local
+  // vercel dev shouldn't hand out URLs nobody else can open. (Local stays
+  // local so the flow can be tested end to end.)
+  const SHARE_ORIGIN = /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+    ? location.origin
+    : "https://lab.philipbaker.us";
+
+  function syncShareButton() {
+    const v = current();
+    const can = !state.busy && shareable(v);
+    actShare.disabled = !can;
+    actShare.title = can
+      ? "Give this widget its own page and get a link to post"
+      : "Only freshly generated widgets can be shared";
+  }
+
+  actShare.addEventListener("click", async () => {
+    const v = current();
+    if (!v || state.busy || !shareable(v)) return;
+    actShare.disabled = true;
+    actShare.textContent = "Making the page…";
+    try {
+      let id = v.id;
+      if (!savedIds.has(id || "")) {
+        const data = await saveFavorite(v);
+        id = data.item?.id || id;
+        await loadGallery();
+      }
+      if (!id) throw new Error("Couldn't work out this widget's id.");
+      const url = `${SHARE_ORIGIN}/widget-maker/w/${id}`;
+
+      // Best effort: a picture of the widget for the card. Needs the preview on
+      // screen (a hidden frame has nothing to photograph), and a canvas to read.
+      if (state.mode !== "preview") {
+        setMode("preview");
+        await new Promise((r) => setTimeout(r, 700));
+      }
+      let image = null;
+      const raw = await snapshot();
+      const card = raw ? await toCard(raw) : null;
+      if (card) {
+        try {
+          const r = await fetch("/api/widget", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, snapshot: card }),
+          });
+          const d = await r.json().catch(() => ({}));
+          if (r.ok && d.image) image = d.image;
+        } catch {}
+      }
+
+      let copied = false;
+      try { await navigator.clipboard.writeText(url); copied = true; } catch {}
+      openShareDialog({ url, title: v.title, image, copied });
+    } catch (err) {
+      flash(err.message || "Couldn't make the page.", true);
+    } finally {
+      actShare.textContent = "Post to social";
+      syncShareButton();
+    }
+  });
+
+  function openShareDialog({ url, title, image, copied }) {
+    shareHead.textContent = copied
+      ? "Link copied — paste it into your post."
+      : "Here's the link — copy it into your post.";
+    shareUrl.value = url;
+    shareOpen.href = url;
+    shareTitle.textContent = title;
+    shareImg.src = image || "/widget-maker/img/og.png";
+    shareNote.textContent = image
+      ? "This is the card your post will show."
+      : "Your post will show the Widget Maker card — this widget doesn't draw to a canvas we could photograph.";
+
+    const text = `${title} — made with the Widget Maker`;
+    const e = encodeURIComponent;
+    const nets = [
+      ["X", `https://twitter.com/intent/tweet?text=${e(text)}&url=${e(url)}`],
+      ["Threads", `https://www.threads.net/intent/post?text=${e(`${text} ${url}`)}`],
+      ["Bluesky", `https://bsky.app/intent/compose?text=${e(`${text} ${url}`)}`],
+      ["LinkedIn", `https://www.linkedin.com/sharing/share-offsite/?url=${e(url)}`],
+      ["Facebook", `https://www.facebook.com/sharer/sharer.php?u=${e(url)}`],
+    ];
+    shareNets.innerHTML = "";
+    for (const [name, href] of nets) {
+      const a = document.createElement("a");
+      a.href = href;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = name;
+      shareNets.appendChild(a);
+    }
+    shareCopy.textContent = "Copy";
+    if (typeof shareDlg.showModal === "function") shareDlg.showModal();
+    else shareDlg.setAttribute("open", "");
+  }
+
+  shareCopy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl.value);
+      shareCopy.textContent = "Copied";
+    } catch {
+      shareUrl.focus();
+      shareUrl.select();
+      shareCopy.textContent = "Press ⌘C";
+    }
+    setTimeout(() => (shareCopy.textContent = "Copy"), 1800);
+  });
+  shareUrl.addEventListener("focus", () => shareUrl.select());
+  shareClose.addEventListener("click", () => shareDlg.close());
+  // A click on the backdrop lands on the dialog element itself, not its content.
+  shareDlg.addEventListener("click", (e) => { if (e.target === shareDlg) shareDlg.close(); });
 
   // Previews are real widgets, so running every card at once would be brutal.
   // Each one is mounted when it scrolls into view and torn down when it leaves,
@@ -532,6 +806,20 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     }
   }
 
+  // A share page's "Remix it" lands here as /widget-maker/#w=<id>: open that
+  // favorite into the rail once, then drop the hash so a reload starts clean.
+  let hashHandled = false;
+  function openFromHash(items) {
+    if (hashHandled) return;
+    hashHandled = true;
+    const m = location.hash.match(/^#w=([a-f0-9]{16})$/);
+    if (!m) return;
+    const item = items.find((i) => i.id === m[1]);
+    history.replaceState(null, "", location.pathname);
+    if (item) openFavorite(item);
+    else flash("That widget isn't in the gallery any more.", true);
+  }
+
   let galleryCount = "";
   async function loadGallery() {
     try {
@@ -539,6 +827,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Couldn't load the gallery.");
       renderGallery(data.items || []);
+      openFromHash(data.items || []);
     } catch (err) {
       cardsEl.innerHTML = "";
       galleryEmpty.hidden = false;

@@ -9,51 +9,17 @@
 //          down (see CLAUDE.md — the token has to be passed explicitly).
 
 import { list, put, del } from "@vercel/blob";
-import { PREFIX, verify, idFor, encodePath, decodePath } from "../lib/favorites.js";
+import { PREFIX, verify, idFor, encodePath, decodePath, listFavorites, itemFor } from "../lib/favorites.js";
+import { originAllowed, clientIp, rateLimiter } from "../lib/guard.js";
 
 const MAX_FAVORITES = 200;
 const MAX_HTML_CHARS = 400_000;
 const MAX_TITLE = 60;
 const MAX_PROMPT = 140;
 const GALLERY_LIMIT = 60;
-const RATE_LIMIT = { windowMs: 60_000, max: 10 };
-
-const hits = new Map();
-
-function rateLimited(ip) {
-  const now = Date.now();
-  const recent = (hits.get(ip) || []).filter((t) => now - t < RATE_LIMIT.windowMs);
-  recent.push(now);
-  hits.set(ip, recent);
-  if (hits.size > 500) hits.clear();
-  return recent.length > RATE_LIMIT.max;
-}
-
-function originAllowed(req) {
-  const origin = req.headers.origin;
-  if (!origin) return true;
-  let host;
-  try {
-    host = new URL(origin).hostname;
-  } catch {
-    return false;
-  }
-  if (host === "localhost" || host === "127.0.0.1") return true;
-  return origin === `https://${req.headers.host}`;
-}
+const rateLimited = rateLimiter({ windowMs: 60_000, max: 10 });
 
 const clip = (s, n) => String(s ?? "").replace(/\s+/g, " ").trim().slice(0, n);
-
-async function readAll() {
-  const out = [];
-  let cursor;
-  do {
-    const page = await list({ prefix: PREFIX, cursor, limit: 1000 });
-    out.push(...page.blobs);
-    cursor = page.hasMore ? page.cursor : undefined;
-  } while (cursor);
-  return out;
-}
 
 export default async function handler(req, res) {
   if (!originAllowed(req)) {
@@ -68,18 +34,9 @@ export default async function handler(req, res) {
   // ── The gallery ────────────────────────────────────────────────────────────
   if (req.method === "GET") {
     try {
-      const blobs = await readAll();
+      const blobs = await listFavorites();
       const items = blobs
-        .map((b) => {
-          const meta = decodePath(b.pathname);
-          if (!meta) return null;
-          return {
-            ...meta,
-            url: b.url,
-            savedAt: b.uploadedAt,
-            pathname: b.pathname,
-          };
-        })
+        .map(itemFor)
         .filter(Boolean)
         .sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))
         .slice(0, GALLERY_LIMIT);
@@ -94,8 +51,7 @@ export default async function handler(req, res) {
 
   // ── Saving ─────────────────────────────────────────────────────────────────
   if (req.method === "POST") {
-    const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
-    if (rateLimited(ip)) {
+    if (rateLimited(clientIp(req))) {
       return res.status(429).json({ error: "Easy — too many saves in a minute." });
     }
 
@@ -123,7 +79,7 @@ export default async function handler(req, res) {
 
     try {
       const id = idFor(html);
-      const existing = await readAll();
+      const existing = await listFavorites();
 
       const already = existing.find((b) => decodePath(b.pathname)?.id === id);
       if (already) {
