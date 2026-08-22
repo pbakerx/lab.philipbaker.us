@@ -195,6 +195,14 @@ dialog.share::backdrop{background:rgba(10,4,0,.72)}
 }
 .share-url button{padding:0 14px;font-size:13px;font-weight:600;background:var(--gold);color:#1a0e05;border-color:var(--gold)}
 .share-url button:hover:not(:disabled){background:#ffdd72;border-color:#ffdd72}
+.share-post{display:block;margin-bottom:14px}
+.share-post span{display:block;font-size:11.5px;color:#8a7460;margin-bottom:6px}
+.share-post textarea{
+  width:100%;box-sizing:border-box;resize:vertical;min-height:64px;font:inherit;font-size:13px;
+  line-height:1.5;padding:9px 11px;background:#120802;color:var(--ink);
+  border:1px solid var(--line);border-radius:8px;
+}
+.share-post textarea:focus{outline:none;border-color:#5a3a19}
 .share-nets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .share-nets a{
   display:inline-block;padding:7px 13px;font-size:13px;border:1px solid var(--line);border-radius:8px;
@@ -324,6 +332,10 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
       <input id="share-url" type="text" readonly aria-label="Share link" spellcheck="false">
       <button id="share-copy" type="button">Copy</button>
     </div>
+    <label class="share-post" for="post-text">
+      <span>Your post — edit it here; it rides along wherever you share</span>
+      <textarea id="post-text" rows="3" spellcheck="true"></textarea>
+    </label>
     <div class="share-nets" id="share-nets" aria-label="Post it on"></div>
     <div class="share-foot">
       <a id="share-open" href="#" target="_blank" rel="noopener">Open the page ↗</a>
@@ -340,7 +352,8 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   <strong>Post to social</strong> gives a widget its own page and a link you can paste
   anywhere — the post unfurls into a card showing the widget, and on X the card is
   playable: the widget itself runs in the timeline. Want it moving before anyone taps?
-  The share dialog records a short clip you can attach to the post.
+  The share dialog records a short movie of you driving the widget and shares it — with
+  your post text — straight to your apps; attached video autoplays in the feed.
 </footer>
 
 </div>
@@ -361,7 +374,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
         shareTitle = $("share-title"), shareNote = $("share-note"), shareUrl = $("share-url"),
         shareCopy = $("share-copy"), shareNets = $("share-nets"), shareOpen = $("share-open"),
         shareClose = $("share-close"), clipBtn = $("clip-btn"), clipNote = $("clip-note"),
-        recPill = $("rec-pill"), recCount = $("rec-count");
+        recPill = $("rec-pill"), recCount = $("rec-count"), postText = $("post-text");
 
   const EXAMPLES = [
     "A bunch of red balls bouncing around",
@@ -767,24 +780,12 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     clip = { status: "idle", blob: null, title };
     syncClipUI();
 
-    const text = `${title} — made with the Widget Maker`;
-    const e = encodeURIComponent;
-    const nets = [
-      ["X", `https://twitter.com/intent/tweet?text=${e(text)}&url=${e(url)}`],
-      ["Threads", `https://www.threads.net/intent/post?text=${e(`${text} ${url}`)}`],
-      ["Bluesky", `https://bsky.app/intent/compose?text=${e(`${text} ${url}`)}`],
-      ["LinkedIn", `https://www.linkedin.com/sharing/share-offsite/?url=${e(url)}`],
-      ["Facebook", `https://www.facebook.com/sharer/sharer.php?u=${e(url)}`],
-    ];
-    shareNets.innerHTML = "";
-    for (const [name, href] of nets) {
-      const a = document.createElement("a");
-      a.href = href;
-      a.target = "_blank";
-      a.rel = "noopener";
-      a.textContent = name;
-      shareNets.appendChild(a);
-    }
+    // The post is the user's to write. It seeds sensible, they edit it in the
+    // dialog, and both the network intent links and the share sheet carry
+    // whatever it says at that moment.
+    shareCtx = { url, title };
+    postText.value = `${title} — made with the Widget Maker\n${url}`;
+    buildNets();
     shareCopy.textContent = "Copy";
     if (typeof shareDlg.showModal === "function") shareDlg.showModal();
     else shareDlg.setAttribute("open", "");
@@ -806,17 +807,65 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   // A click on the backdrop lands on the dialog element itself, not its content.
   shareDlg.addEventListener("click", (e) => { if (e.target === shareDlg) shareDlg.close(); });
 
+  // ── The post text + network links ──────────────────────
+  // One editable message drives everything: the intent links rebuild from it
+  // on every keystroke, and the share sheet sends it along with the video.
+  // LinkedIn and Facebook only accept a URL, so they take the page link.
+  let shareCtx = { url: "", title: "" };
+
+  function buildNets() {
+    const msg = postText.value.trim();
+    const e = encodeURIComponent;
+    const nets = [
+      ["X", `https://twitter.com/intent/tweet?text=${e(msg)}`],
+      ["Threads", `https://www.threads.net/intent/post?text=${e(msg)}`],
+      ["Bluesky", `https://bsky.app/intent/compose?text=${e(msg)}`],
+      ["LinkedIn", `https://www.linkedin.com/sharing/share-offsite/?url=${e(shareCtx.url)}`],
+      ["Facebook", `https://www.facebook.com/sharer/sharer.php?u=${e(shareCtx.url)}`],
+    ];
+    shareNets.replaceChildren();
+    for (const [name, href] of nets) {
+      const a = document.createElement("a");
+      a.href = href;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = name;
+      shareNets.appendChild(a);
+    }
+  }
+  postText.addEventListener("input", buildNets);
+
   // ── The clip ───────────────────────────────────────────
   // A timeline only ever *autoplays* media attached to the post itself — the
   // card, however good, waits for a tap. So the dialog also offers a short
   // recording of the widget: the dialog steps aside for six seconds while you
   // play with the thing (that's the footage — a live run, not an idle start
-  // screen), then comes back with a file to attach next to the link.
+  // screen), then comes back ready to share. Where the Web Share API can take
+  // files (phones, mostly), "Share clip" opens the system sheet with the video
+  // attached and your post text riding along — X, Threads, Messages, whatever
+  // you pick. Elsewhere it falls back to downloading the file.
   let clip = { status: "idle", blob: null, title: "" };
 
   const clipExt = (blob) => (/mp4/.test(blob?.type || "") ? "mp4" : "webm");
   const slugify = (t) => (t || "widget").toLowerCase().replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "").slice(0, 48) || "widget";
+  const clipFile = () =>
+    new File([clip.blob], `${slugify(clip.title)}-clip.${clipExt(clip.blob)}`,
+      { type: clip.blob.type || "video/mp4" });
+  function canShareClip() {
+    try {
+      return !!(navigator.canShare && clip.blob && navigator.canShare({ files: [clipFile()] }));
+    } catch { return false; }
+  }
+
+  function noteLink(label, onClick) {
+    const a = document.createElement("a");
+    a.href = "#";
+    a.className = "again";
+    a.textContent = label;
+    a.addEventListener("click", (e) => { e.preventDefault(); onClick(); });
+    return a;
+  }
 
   function syncClipUI() {
     clipNote.replaceChildren();
@@ -829,21 +878,22 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     }
     if (clip.status === "ready") {
       const ext = clipExt(clip.blob);
-      clipBtn.textContent = `Download .${ext}`;
-      clipNote.textContent = `Got it — attach ${slugify(clip.title)}-clip.${ext} to your post next to the link and the timeline plays it on its own.` +
-        (ext === "webm" ? " (Heads up: X only takes .mp4 — Chrome, Edge and Safari record that.)" : "");
-      const again = document.createElement("a");
-      again.href = "#";
-      again.className = "again";
-      again.textContent = "Record again";
-      again.addEventListener("click", (e) => { e.preventDefault(); beginClipRecording(); });
-      clipNote.append(" ", again);
+      if (canShareClip()) {
+        clipBtn.textContent = "Share clip";
+        clipNote.textContent = "Got the movie — Share opens your apps with the video attached and your post text along for the ride. Attached video plays in the timeline on its own.";
+        clipNote.append(" ", noteLink("Download", downloadClip), " · ", noteLink("Record again", beginClipRecording));
+      } else {
+        clipBtn.textContent = `Download .${ext}`;
+        clipNote.textContent = `Got it — attach ${slugify(clip.title)}-clip.${ext} to your post next to the link and the timeline plays it on its own.` +
+          (ext === "webm" ? " (Heads up: X only takes .mp4 — Chrome, Edge and Safari record that.)" : "");
+        clipNote.append(" ", noteLink("Record again", beginClipRecording));
+      }
     } else if (clip.status === "failed") {
       clipBtn.hidden = true;
       clipNote.textContent = "Couldn't record this one — it doesn't draw to a canvas we can capture. The link still gets the playable card.";
     } else {
       clipBtn.textContent = "● Record clip";
-      clipNote.textContent = "The card waits for a tap — an attached video autoplays. Record 6 seconds of the widget running (you get to drive) and attach the file to your post.";
+      clipNote.textContent = "The card waits for a tap — an attached video autoplays. Record 6 seconds of the widget running (you get to drive), then share it with your post.";
     }
   }
 
@@ -872,14 +922,35 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     else shareDlg.setAttribute("open", "");
   }
 
+  function downloadClip() {
+    if (!clip.blob) return;
+    const url = URL.createObjectURL(clip.blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${slugify(clip.title)}-clip.${clipExt(clip.blob)}`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+
+  async function shareClip() {
+    const file = clipFile();
+    try {
+      await navigator.share({ files: [file], text: postText.value });
+    } catch (err) {
+      if (err?.name === "AbortError") return; // they closed the sheet — fine
+      // Some platforms refuse text+files together; the file is the point.
+      try {
+        await navigator.share({ files: [file] });
+      } catch (err2) {
+        if (err2?.name !== "AbortError") downloadClip();
+      }
+    }
+  }
+
   clipBtn.addEventListener("click", () => {
     if (clip.status === "ready" && clip.blob) {
-      const url = URL.createObjectURL(clip.blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${slugify(clip.title)}-clip.${clipExt(clip.blob)}`;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      if (canShareClip()) shareClip();
+      else downloadClip();
       return;
     }
     beginClipRecording();

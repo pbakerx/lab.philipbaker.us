@@ -141,6 +141,12 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
       attached video is the one thing timelines autoplay. Client-side only: the clip is
       never uploaded, so no new server surface. MP4 (`avc1` preferred) where the browser
       can encode it, `.webm` elsewhere with a "X only takes .mp4" caveat in the note.
+      Where the Web Share API takes files (phones), the button is **Share clip** — the OS
+      share sheet gets the video plus the dialog's editable "Your post" text (which also
+      rebuilds the X/Threads/Bluesky intent links on every keystroke; LinkedIn/Facebook
+      only accept a URL). Download and Record-again stay as note links; desktop without
+      file-share keeps the old Download button. Born of a real phone test: a browser
+      "download" lands in the Files app, not Photos, and nobody finds it there.
     - The card image is a photograph of the running widget: a tiny listener rides along
       in the *preview copy only* (`withHook` — never `v.html`, which the signature
       covers) and answers a postMessage with the biggest canvas as JPEG; the page fits
