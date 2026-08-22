@@ -79,6 +79,19 @@ button:disabled{opacity:.45;cursor:default}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spinner{animation-duration:2.4s}}
 
+/* Floats over the preview while a share clip records — the widget stays live
+   and playable underneath, which is the whole point: the footage is you using it. */
+.rec-pill{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5;
+  display:flex;align-items:center;gap:8px;padding:8px 15px;border-radius:999px;
+  background:rgba(18,8,2,.88);border:1px solid #5a3a19;font-size:12.5px;color:var(--ink);
+  pointer-events:none;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
+.rec-pill .dot{width:8px;height:8px;border-radius:50%;background:#ff4d3d;animation:recblink 1s steps(2,start) infinite;flex:0 0 auto}
+.rec-pill .n{font-family:var(--mono);color:var(--gold);min-width:1.4em;text-align:center}
+@keyframes recblink{to{visibility:hidden}}
+@media (prefers-reduced-motion:reduce){.rec-pill .dot{animation:none}}
+
 .stage-status{
   display:flex;align-items:center;gap:10px;padding:8px 12px;
   background:var(--card);border-top:1px solid var(--line);
@@ -166,6 +179,15 @@ dialog.share::backdrop{background:rgba(10,4,0,.72)}
 .share-card img{width:132px;aspect-ratio:1200/630;object-fit:cover;border-radius:6px;background:#000;flex:0 0 auto}
 .share-card .sc-t{font-size:13.5px;font-weight:600;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .share-card .sc-n{font-size:11.5px;color:#8a7460;margin:3px 0 0;line-height:1.4}
+.share-clip{
+  display:flex;gap:12px;align-items:center;margin-bottom:16px;padding:10px 10px 10px 14px;
+  border:1px dashed #5a3a19;border-radius:10px;background:#120802;
+}
+.share-clip button{padding:8px 14px;font-size:13px;color:var(--ink);background:#2a1709;white-space:nowrap;flex:0 0 auto}
+.share-clip button:hover:not(:disabled){border-color:#5a3a19}
+.share-clip button.ready{background:var(--gold);border-color:var(--gold);color:#1a0e05;font-weight:600}
+.share-clip button.ready:hover:not(:disabled){background:#ffdd72;border-color:#ffdd72}
+.share-clip .again{color:#8a7460;font-size:11.5px}
 .share-url{display:flex;gap:8px;margin-bottom:14px}
 .share-url input{
   flex:1;min-width:0;font:inherit;font-size:12.5px;font-family:var(--mono);padding:9px 11px;
@@ -250,6 +272,9 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
           <p id="veil-note">Type what you want up there and press Make it.</p>
         </div>
       </div>
+      <div class="rec-pill hidden" id="rec-pill" aria-live="polite">
+        <span class="dot"></span><span>Recording — play with it!</span><span class="n" id="rec-count">6</span>
+      </div>
     </div>
 
     <div class="stage-status"><span id="status">Ready — ⌘↵ builds.</span></div>
@@ -280,13 +305,20 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
 <dialog class="share" id="share-dlg" aria-labelledby="share-head">
   <div class="share-in">
     <h3 id="share-head">Link copied — paste it into your post.</h3>
-    <p class="lead">Your widget has its own page now. Anyone who opens the link sees it running.</p>
+    <p class="lead">Your widget has its own page now. Anyone who opens the link sees it running — and on X, the card itself plays: tap ▶ and the widget runs right in the timeline.</p>
     <div class="share-card">
       <img id="share-img" alt="" width="132" height="69">
       <div style="min-width:0">
         <p class="sc-t" id="share-title"></p>
         <p class="sc-n" id="share-note"></p>
       </div>
+    </div>
+    <div class="share-clip" id="share-clip">
+      <div style="min-width:0;flex:1">
+        <p class="sc-t">Make it move on its own</p>
+        <p class="sc-n" id="clip-note"></p>
+      </div>
+      <button id="clip-btn" type="button">● Record clip</button>
     </div>
     <div class="share-url">
       <input id="share-url" type="text" readonly aria-label="Share link" spellcheck="false">
@@ -306,7 +338,9 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   gives you the file; it works offline, anywhere. Your own session clears on reload —
   but anything you <strong>♥ Favorite</strong> is kept, and everyone who visits sees it.
   <strong>Post to social</strong> gives a widget its own page and a link you can paste
-  anywhere — the post unfurls into a card showing the widget.
+  anywhere — the post unfurls into a card showing the widget, and on X the card is
+  playable: the widget itself runs in the timeline. Want it moving before anyone taps?
+  The share dialog records a short clip you can attach to the post.
 </footer>
 
 </div>
@@ -326,7 +360,8 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
         shareDlg = $("share-dlg"), shareHead = $("share-head"), shareImg = $("share-img"),
         shareTitle = $("share-title"), shareNote = $("share-note"), shareUrl = $("share-url"),
         shareCopy = $("share-copy"), shareNets = $("share-nets"), shareOpen = $("share-open"),
-        shareClose = $("share-close");
+        shareClose = $("share-close"), clipBtn = $("clip-btn"), clipNote = $("clip-note"),
+        recPill = $("rec-pill"), recCount = $("rec-count");
 
   const EXAMPLES = [
     "A bunch of red balls bouncing around",
@@ -411,23 +446,44 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     frameEl.srcdoc = withHook(v.html);
   }
 
-  // ── Snapshot hook ──────────────────────────────────────
+  // ── Snapshot + clip hooks ──────────────────────────────
   // "Post to social" wants a picture of the running widget for the card. The
   // preview frame is sandboxed (opaque origin), so we can't read its canvas
   // from out here — instead a tiny listener rides along in the *preview copy*
   // of the document and answers a postMessage with the biggest canvas as a
-  // JPEG. Only the preview gets it: v.html — what the signature covers, what
-  // Download writes and what the Code tab shows — is never touched.
-  const SNAP_HOOK =
-    '<script>(function(){addEventListener("message",function(e){' +
-    'if(!e.data||e.data.type!=="pb-snap")return;var out=null;' +
-    'try{var cs=[].slice.call(document.querySelectorAll("canvas"));' +
+  // JPEG. "pb-clip" is the moving version: it records that same canvas for a
+  // few seconds (captureStream + MediaRecorder, MP4 where the browser can)
+  // and answers with a video Blob — Blobs structured-clone across the sandbox
+  // boundary. captureStream reads each composited frame, so it even works on
+  // WebGL widgets whose toDataURL comes back blank. Only the preview gets the
+  // hook: v.html — what the signature covers, what Download writes and what
+  // the Code tab shows — is never touched.
+  const FRAME_HOOK =
+    '<script>(function(){function biggest(){var cs=[].slice.call(document.querySelectorAll("canvas"));' +
     'cs.sort(function(a,b){return b.width*b.height-a.width*a.height});' +
-    'if(cs[0]&&cs[0].width>0&&cs[0].height>0)out=cs[0].toDataURL("image/jpeg",.85)}catch(err){}' +
-    'parent.postMessage({type:"pb-snap",data:out},"*")})})()<\/script>';
+    'return cs[0]&&cs[0].width>0&&cs[0].height>0?cs[0]:null}' +
+    'addEventListener("message",function(e){var d=e.data;if(!d)return;' +
+    'if(d.type==="pb-snap"){var out=null;' +
+    'try{var c=biggest();if(c)out=c.toDataURL("image/jpeg",.85)}catch(err){}' +
+    'parent.postMessage({type:"pb-snap",data:out},"*");return}' +
+    'if(d.type!=="pb-clip")return;' +
+    'var fail=function(){parent.postMessage({type:"pb-clip",data:null},"*")};' +
+    'try{var cv=biggest();' +
+    'if(!cv||typeof cv.captureStream!=="function"||typeof MediaRecorder==="undefined")return fail();' +
+    'var ms=Math.min(Math.max(+d.ms||6000,1000),12000);' +
+    'var mime=["video/mp4;codecs=avc1.42E01E","video/mp4","video/webm;codecs=vp9","video/webm"]' +
+    '.filter(function(m){return MediaRecorder.isTypeSupported(m)})[0];' +
+    'var opts={videoBitsPerSecond:4e6};if(mime)opts.mimeType=mime;' +
+    'var rec=new MediaRecorder(cv.captureStream(30),opts);var parts=[];' +
+    'rec.ondataavailable=function(ev){if(ev.data&&ev.data.size)parts.push(ev.data)};' +
+    'rec.onerror=fail;' +
+    'rec.onstop=function(){var b=new Blob(parts,{type:rec.mimeType||mime||"video/webm"});' +
+    'parent.postMessage({type:"pb-clip",data:b.size>2e3?b:null},"*")};' +
+    'rec.start(1000);setTimeout(function(){try{rec.stop()}catch(err){fail()}},ms)}' +
+    'catch(err){fail()}})})()<\/script>';
   function withHook(html) {
     const i = html.search(/<\/body\s*>/i);
-    return i === -1 ? html + SNAP_HOOK : html.slice(0, i) + SNAP_HOOK + html.slice(i);
+    return i === -1 ? html + FRAME_HOOK : html.slice(0, i) + FRAME_HOOK + html.slice(i);
   }
   function snapshot(timeoutMs = 1500) {
     return new Promise((resolve) => {
@@ -448,6 +504,29 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
       window.addEventListener("message", onMsg);
       timer = setTimeout(() => finish(null), timeoutMs);
       try { win.postMessage({ type: "pb-snap" }, "*"); } catch { finish(null); }
+    });
+  }
+  // Same handshake, longer exposure: resolves with a video Blob (or null).
+  // The generous grace on the timeout covers the recorder finalizing the file.
+  function recordClip(ms = 6000) {
+    return new Promise((resolve) => {
+      const win = frameEl.contentWindow;
+      if (!win || state.mode !== "preview") return resolve(null);
+      let done = false, timer = null;
+      const finish = (val) => {
+        if (done) return;
+        done = true;
+        window.removeEventListener("message", onMsg);
+        clearTimeout(timer);
+        resolve(val);
+      };
+      function onMsg(e) {
+        if (e.source !== win || !e.data || e.data.type !== "pb-clip") return;
+        finish(e.data.data instanceof Blob ? e.data.data : null);
+      }
+      window.addEventListener("message", onMsg);
+      timer = setTimeout(() => finish(null), ms + 5000);
+      try { win.postMessage({ type: "pb-clip", ms }, "*"); } catch { finish(null); }
     });
   }
   // Samples a coarse grid: if almost every pixel is within a hair of the same
@@ -508,8 +587,7 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
 
   actSave.addEventListener("click", () => {
     const v = current(); if (!v) return;
-    const name = (v.title || "widget").toLowerCase().replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "").slice(0, 48) || "widget";
+    const name = slugify(v.title);
     const url = URL.createObjectURL(new Blob([v.html], { type: "text/html" }));
     const a = document.createElement("a");
     a.href = url; a.download = name + ".html";
@@ -684,8 +762,10 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
     shareTitle.textContent = title;
     shareImg.src = image || "/widget-maker/img/og.png";
     shareNote.textContent = image
-      ? "This is the card your post will show."
-      : "Your post will show the Widget Maker card — this widget doesn't draw to a canvas we could photograph.";
+      ? "This is the card your post will show — on X it gets a ▶ that runs the widget in place."
+      : "Your post will show the Widget Maker card — this widget doesn't draw to a canvas we could photograph. On X the ▶ still runs it in place.";
+    clip = { status: "idle", blob: null, title };
+    syncClipUI();
 
     const text = `${title} — made with the Widget Maker`;
     const e = encodeURIComponent;
@@ -725,6 +805,85 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   shareClose.addEventListener("click", () => shareDlg.close());
   // A click on the backdrop lands on the dialog element itself, not its content.
   shareDlg.addEventListener("click", (e) => { if (e.target === shareDlg) shareDlg.close(); });
+
+  // ── The clip ───────────────────────────────────────────
+  // A timeline only ever *autoplays* media attached to the post itself — the
+  // card, however good, waits for a tap. So the dialog also offers a short
+  // recording of the widget: the dialog steps aside for six seconds while you
+  // play with the thing (that's the footage — a live run, not an idle start
+  // screen), then comes back with a file to attach next to the link.
+  let clip = { status: "idle", blob: null, title: "" };
+
+  const clipExt = (blob) => (/mp4/.test(blob?.type || "") ? "mp4" : "webm");
+  const slugify = (t) => (t || "widget").toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "").slice(0, 48) || "widget";
+
+  function syncClipUI() {
+    clipNote.replaceChildren();
+    clipBtn.classList.toggle("ready", clip.status === "ready");
+    clipBtn.hidden = false;
+    if (!("MediaRecorder" in window)) {
+      clipBtn.hidden = true;
+      clipNote.textContent = "Your browser can't record video — the link alone still gets the playable card.";
+      return;
+    }
+    if (clip.status === "ready") {
+      const ext = clipExt(clip.blob);
+      clipBtn.textContent = `Download .${ext}`;
+      clipNote.textContent = `Got it — attach ${slugify(clip.title)}-clip.${ext} to your post next to the link and the timeline plays it on its own.` +
+        (ext === "webm" ? " (Heads up: X only takes .mp4 — Chrome, Edge and Safari record that.)" : "");
+      const again = document.createElement("a");
+      again.href = "#";
+      again.className = "again";
+      again.textContent = "Record again";
+      again.addEventListener("click", (e) => { e.preventDefault(); beginClipRecording(); });
+      clipNote.append(" ", again);
+    } else if (clip.status === "failed") {
+      clipBtn.hidden = true;
+      clipNote.textContent = "Couldn't record this one — it doesn't draw to a canvas we can capture. The link still gets the playable card.";
+    } else {
+      clipBtn.textContent = "● Record clip";
+      clipNote.textContent = "The card waits for a tap — an attached video autoplays. Record 6 seconds of the widget running (you get to drive) and attach the file to your post.";
+    }
+  }
+
+  const CLIP_SECS = 6;
+  async function beginClipRecording() {
+    const v = current();
+    if (!v || clip.status === "recording") return;
+    if (state.mode !== "preview") setMode("preview");
+    shareDlg.close();
+    clip = { status: "recording", blob: null, title: v.title };
+    let left = CLIP_SECS;
+    recCount.textContent = String(left);
+    recPill.classList.remove("hidden");
+    const tick = setInterval(() => {
+      left = Math.max(0, left - 1);
+      recCount.textContent = String(left);
+    }, 1000);
+    const blob = await recordClip(CLIP_SECS * 1000);
+    clearInterval(tick);
+    recPill.classList.add("hidden");
+    clip = blob
+      ? { status: "ready", blob, title: v.title }
+      : { status: "failed", blob: null, title: v.title };
+    syncClipUI();
+    if (typeof shareDlg.showModal === "function") shareDlg.showModal();
+    else shareDlg.setAttribute("open", "");
+  }
+
+  clipBtn.addEventListener("click", () => {
+    if (clip.status === "ready" && clip.blob) {
+      const url = URL.createObjectURL(clip.blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${slugify(clip.title)}-clip.${clipExt(clip.blob)}`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      return;
+    }
+    beginClipRecording();
+  });
 
   // Previews are real widgets, so running every card at once would be brutal.
   // Each one is mounted when it scrolls into view and torn down when it leaves,

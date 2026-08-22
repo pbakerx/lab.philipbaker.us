@@ -5,6 +5,10 @@
 //        vercel.json rewrites /widget-maker/w/:id here. The widget itself is
 //        fetched from its favorites blob client-side and run in a sandboxed
 //        iframe — generated code never executes on the lab origin.
+//        The card is a *player* card (twitter:card=player + og:video): X puts
+//        a ▶ on the snapshot, and tapping it iframes ?player=1 — the same page
+//        stripped to nothing but the running widget — into the timeline. So
+//        the widget itself plays (and is playable) inside the feed.
 // POST {id, snapshot} → store the social-card image for that widget. The
 //        browser photographs the running widget (a canvas readback), fits it
 //        to 1200×630 and sends a JPEG data URL. First one in wins, JPEG magic
@@ -72,38 +76,10 @@ ${body}
 </html>`;
 }
 
-function sharePage({ id, title, prompt, blobUrl, image }) {
-  const url = `${SITE}/widget-maker/w/${id}`;
-  const desc = prompt
-    ? `“${prompt}” — built on request by the Widget Maker at lab.philipbaker.us. Runs live; make your own.`
-    : "Built on request by the Widget Maker at lab.philipbaker.us. Runs live; make your own.";
-  const card = image || FALLBACK_CARD;
-  const head = `<meta name="description" content="${esc(desc)}">
-<meta name="robots" content="noindex">
-<link rel="canonical" href="${esc(url)}">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Widget Maker · lab.philipbaker.us">
-<meta property="og:title" content="${esc(title)}">
-<meta property="og:description" content="${esc(desc)}">
-<meta property="og:url" content="${esc(url)}">
-<meta property="og:image" content="${esc(card)}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${esc(title)}">
-<meta name="twitter:description" content="${esc(desc)}">
-<meta name="twitter:image" content="${esc(card)}">`;
-
-  const body = `<div class="stage" id="stage">
-  <div class="wait" id="wait"><div><strong>${esc(title)}</strong>Loading the widget…</div></div>
-</div>
-<div class="bar">
-  <div class="t">${esc(title)}<small>${esc(prompt || "")}</small></div>
-  <a class="btn" href="/widget-maker/#w=${esc(id)}">Remix it</a>
-  <a class="make" href="/widget-maker/">Make your own →</a>
-  <a class="home" href="/">lab.philipbaker.us</a>
-</div>
-<script>
+// The client script both pages share: pull the favorite's JSON from its blob
+// and mount it in a sandboxed iframe — never as markup on this origin.
+function runScript(blobUrl, title) {
+  return `<script>
 (() => {
   "use strict";
   const src = ${JSON.stringify(blobUrl)};
@@ -124,6 +100,75 @@ function sharePage({ id, title, prompt, blobUrl, image }) {
     });
 })();
 </script>`;
+}
+
+function sharePage({ id, title, prompt, blobUrl, image }) {
+  const url = `${SITE}/widget-maker/w/${id}`;
+  const player = `${url}?player=1`;
+  const desc = prompt
+    ? `“${prompt}” — built on request by the Widget Maker at lab.philipbaker.us. Runs live; make your own.`
+    : "Built on request by the Widget Maker at lab.philipbaker.us. Runs live; make your own.";
+  const card = image || FALLBACK_CARD;
+  // twitter:card=player instead of summary_large_image: the snapshot stays as
+  // the thumbnail, but X adds a ▶ and plays the widget in the timeline. The
+  // og:video pair says the same thing in Open Graph for anyone else who
+  // understands an HTML player; platforms that don't just use og:image.
+  const head = `<meta name="description" content="${esc(desc)}">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="${esc(url)}">
+<meta property="og:type" content="video.other">
+<meta property="og:site_name" content="Widget Maker · lab.philipbaker.us">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${esc(url)}">
+<meta property="og:image" content="${esc(card)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:video" content="${esc(player)}">
+<meta property="og:video:secure_url" content="${esc(player)}">
+<meta property="og:video:type" content="text/html">
+<meta property="og:video:width" content="640">
+<meta property="og:video:height" content="360">
+<meta name="twitter:card" content="player">
+<meta name="twitter:player" content="${esc(player)}">
+<meta name="twitter:player:width" content="640">
+<meta name="twitter:player:height" content="360">
+<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${esc(card)}">`;
+
+  const body = `<div class="stage" id="stage">
+  <div class="wait" id="wait"><div><strong>${esc(title)}</strong>Loading the widget…</div></div>
+</div>
+<div class="bar">
+  <div class="t">${esc(title)}<small>${esc(prompt || "")}</small></div>
+  <a class="btn" href="/widget-maker/#w=${esc(id)}">Remix it</a>
+  <a class="make" href="/widget-maker/">Make your own →</a>
+  <a class="home" href="/">lab.philipbaker.us</a>
+</div>
+${runScript(blobUrl, title)}`;
+
+  return shell({ title: `${title} · Widget Maker`, head, body });
+}
+
+// The ?player=1 variant: the widget and nothing else. This is what the card
+// iframes into a timeline, so every pixel of the little box X grants is the
+// widget itself — the share page keeps the title bar and the links. A quiet
+// badge escapes back to the full page for anyone who wants more.
+function playerPage({ id, title, blobUrl }) {
+  const url = `${SITE}/widget-maker/w/${id}`;
+  const head = `<meta name="robots" content="noindex">`;
+  const body = `<div class="stage" id="stage">
+  <div class="wait" id="wait"><div><strong>${esc(title)}</strong>Starting…</div></div>
+</div>
+<style>
+  .tag{position:fixed;right:10px;bottom:10px;z-index:2;font-size:11px;line-height:1;color:var(--ink);
+    background:rgba(20,10,3,.6);border:1px solid rgba(255,210,74,.35);border-radius:999px;
+    padding:5px 10px;text-decoration:none;opacity:.7}
+  .tag:hover{opacity:1}
+</style>
+<a class="tag" href="${esc(url)}" target="_blank" rel="noopener">Widget Maker ↗</a>
+${runScript(blobUrl, title)}`;
 
   return shell({ title: `${title} · Widget Maker`, head, body });
 }
@@ -161,6 +206,13 @@ export default async function handler(req, res) {
       // CDN can hold this; stale-while-revalidate covers the card arriving a
       // beat after the page was first fetched.
       res.setHeader("Cache-Control", "public, s-maxage=120, stale-while-revalidate=86400");
+      // vercel.json's rewrite keeps the incoming query, so /w/<id>?player=1
+      // lands here with both params.
+      if (req.query?.player != null) {
+        return res.status(200).send(
+          playerPage({ id, title: fav.title, blobUrl: fav.url }),
+        );
+      }
       return res.status(200).send(
         sharePage({ id, title: fav.title, prompt: fav.prompt, blobUrl: fav.url, image }),
       );

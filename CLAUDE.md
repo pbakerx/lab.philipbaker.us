@@ -125,6 +125,22 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     generated code never runs on the lab origin. **Only favorites are shareable** — they
     are the one persisted, signature-checked set — so the button saves the widget first
     if it isn't one yet, which also means sharing puts it in the public gallery.
+    - **The card plays** (Aug 22 2026). The share page is a *player* card
+      (`twitter:card=player` + `og:video`, both pointing at `/widget-maker/w/<id>?player=1`
+      — the same handler stripped to nothing but the running widget and a corner badge;
+      the rewrite forwards the query). On X the snapshot gets a ▶ and tapping it runs the
+      live widget in the timeline. Nothing about this is stored — same blob, same
+      signature rules. X caches card metadata per URL, so links posted before a widget's
+      card changed keep their old unfurl. Note X never *autoplays* card content —
+      only media attached to the post — which is why the clip exists:
+    - **The clip.** The share dialog can record ~6s of the widget via the same preview
+      hook that takes the snapshot (`pb-clip`: `canvas.captureStream` + `MediaRecorder`
+      inside the sandboxed frame, answered as a Blob — works on WebGL widgets whose
+      `toDataURL` reads blank). The dialog closes while it records so the footage is the
+      user actually driving the widget, then offers the file to attach to the post —
+      attached video is the one thing timelines autoplay. Client-side only: the clip is
+      never uploaded, so no new server surface. MP4 (`avc1` preferred) where the browser
+      can encode it, `.webm` elsewhere with a "X only takes .mp4" caveat in the note.
     - The card image is a photograph of the running widget: a tiny listener rides along
       in the *preview copy only* (`withHook` — never `v.html`, which the signature
       covers) and answers a postMessage with the biggest canvas as JPEG; the page fits
