@@ -2,7 +2,9 @@
 
 One-off static projects, FTP-style. **Each top-level folder = a path on lab.philipbaker.us.**
 Drop a folder with an `index.html`, deploy, done. Curated by Philip; keep the root index
-(`index.html`) list **and `sitemap.xml`** in sync when adding/removing a project.
+(`index.html`) list **and `sitemap.xml`** in sync when adding/removing a project — except
+**unlisted client links** (see `/AcrobatAnt-HNDACR-Fall-Digital`), which are deliberately
+on neither and shared by URL only.
 
 `robots.txt` points crawlers at `sitemap.xml` and disallows `/api/` plus the three
 full-screen players (they're plumbing, not pages). A new project page wants, at minimum, a
@@ -273,6 +275,35 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     will end this.
   - Logs to `~/Library/Logs/PlainPaste.log` (unified log is useless for ad-hoc apps).
     Scriptable scrub: `notifyutil -p us.philipbaker.plainpaste.scrub`.
+- **/AcrobatAnt-HNDACR-Fall-Digital** — **unlisted client link** for AcrobatAnt: the
+  Honda × Acura Fall 2026 seasonal HTML5 display ads, presented for client review.
+  12 ads (HND/ACR × Creative A "Passport" / B "Fall Rush" × 728×90, 160×600, 320×50), six
+  storyboard renders, a timeline scrubber, and a Dealer pulldown. **Not on the root index
+  and not in `sitemap.xml` — on purpose.** Don't "fix" that; the URL is handed to the client
+  directly.
+  - **It's a drop-in package built elsewhere** (Philip's production ad pipeline), not
+    authored here. It arrives as `hnd-acr-fall-v1.zip` on the NAS share `/Volumes/Public`.
+    Deploy routine: unzip to the scratchpad → `diff -rq` against the folder (know what's
+    changing before it ships) → `rsync -a --delete --exclude .DS_Store --exclude __MACOSX
+    --exclude '._*'` the zip's `hnd-acr-fall-v1/` over the folder → commit → push. Keep the
+    `ads/<UNIT>/` structure intact. The package's own `README.md` suggests a
+    `philipbaker.us/lab/honda-acura-fall-v1/` install path — ignore that; here the folder
+    name is the URL. Quirks of the share: an overwritten zip sometimes lands in
+    `/Volumes/Public/#Recycle` (look there if the root is empty — the newest copy is the
+    one), and a copy in flight needs its size to settle before unzipping.
+  - The page loads each ad into an iframe via `srcdoc` with an injected `<base>` so one set
+    of images serves every dealer (`template.html` per ad, `{{DEALER_NAME}}` etc.
+    substituted client-side; `index.html` per ad is the board-dealer fallback). Chrome's
+    preload scanner prefetches `ad-player.js`/`leaf-engine.js` against the *page* base first
+    (two 404s per dealer change) before the real base-relative loads succeed. Cosmetic —
+    not a bug, don't chase it.
+  - `dealers.js` is the real production dealer feed (687 Honda / 189 Acura — public
+    dealership names + feed ids). It's in this public repo; flagged to Philip at deploy.
+  - Versions shipped (Aug 16–21 2026): v1 package → v2 slate theme + scrubber driving the
+    ads' `__adSeek` → v3 asset-preload gate in all 12 ads → v4 dealer pulldown with full
+    feeds → v5 `?v=` cache-bust on script URLs → v6 static first-paint CSS, engine reuses the
+    gated images, display-weight art (pushed from another session). Each was a diff-checked
+    zip replacement; the ads' runtime is theirs, the presentation page is theirs too.
 - **/hello** — the original example.
 
 ## The master archive (not in this repo)
