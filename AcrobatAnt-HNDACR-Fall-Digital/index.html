@@ -212,7 +212,7 @@
   }
   .compare-cta:hover { filter: brightness(1.08); }
   .compare-cta[aria-pressed="true"] { background: transparent; color: var(--accent); box-shadow: none; }
-  .compare-row { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 18px 0 2px; flex-wrap: wrap; }
+  .compare-row { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 6px 0 16px; flex-wrap: wrap; }
 
   .round-line { margin-top: 4px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-dim); }
   .masthead-links { margin-top: 10px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
@@ -336,15 +336,15 @@
     <div class="stage-meta">
       <span class="unit-name" id="unitName"></span>
     </div>
+    <div class="compare-row">
+      <button class="compare-cta" id="compareBtn" aria-pressed="false">&#8646;&nbsp; Compare with Round 0</button>
+      <label id="roundPickWrap2" style="display:none">against <select id="roundPick2" aria-label="Earlier round"></select></label>
+    </div>
     <div class="stage" id="stageRow">
       <div class="pair"><div class="pair-label" id="mainLabel" hidden><b>This round</b></div>
         <div class="slot"><div class="fit" id="fit"><iframe id="adFrame" scrolling="no" title="Ad preview"></iframe></div></div></div>
       <div class="pair" id="cmpPair" hidden><div class="pair-label" id="cmpLabel">Round 0 &middot; as presented</div>
         <div class="slot"><div class="fit" id="cmpFit2"><iframe id="cmpFrame2" scrolling="no" title="Earlier round"></iframe></div></div></div>
-    </div>
-    <div class="compare-row">
-      <button class="compare-cta" id="compareBtn" aria-pressed="false">&#8646;&nbsp; Compare with Round 0</button>
-      <label id="roundPickWrap2" style="display:none">against <select id="roundPick2" aria-label="Earlier round"></select></label>
     </div>
     <div class="timeline">
       <input type="range" id="scrub" min="0" max="9000" step="50" value="0" aria-label="Timeline">
