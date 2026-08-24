@@ -1,0 +1,19 @@
+[
+ {
+  "key": "rv0",
+  "label": "Round 0",
+  "title": "Version 1 \u00b7 presented 2026-08-16",
+  "note": "The package the agency reviewed \u2014 exact bytes of the 12 ads as deployed to lab.philipbaker.us on 2026-08-16.",
+  "deployed": "2026-08-16",
+  "hasFeedback": false
+ },
+ {
+  "key": "rv1",
+  "label": "Round 1",
+  "title": "Version 2 \u00b7 client revisions, round 1",
+  "note": "Every note from the agency's round-1 review (R1 AHM Fall Seasonal Display Creative Feedback, 2026-08-19) addressed across all 12 ads.",
+  "feedbackTitle": "R1 AHM Fall Seasonal Display Creative Feedback",
+  "feedbackDate": "2026-08-19",
+  "hasFeedback": true
+ }
+]

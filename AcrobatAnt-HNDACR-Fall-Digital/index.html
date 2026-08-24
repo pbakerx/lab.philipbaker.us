@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Honda Acura Fall Digital — Version 1</title>
+<title>Honda Acura Fall Digital</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Honda + Acura Fall 2026 seasonal HTML5 display — Version 1, 3 example sizes.">
+<meta name="description" content="Honda + Acura Fall 2026 seasonal HTML5 display — the current round, every earlier round beside it, and the client's notes word for word.">
 <style>
   :root {
     --ink: #f1f5f9;
@@ -190,6 +190,123 @@
   footer a { color: var(--ink-faint); text-decoration: none; border-bottom: 1px solid var(--line); }
   footer a:hover { color: var(--ink-dim); }
 
+
+  /* ---------- rounds: side-by-side compare, the button, the notes drawer ---------- */
+  /* Compare renders the earlier round NEXT TO the work: beside it for the tall
+     units (so both fit one screen), beneath it for the wide ones. */
+  .stage { flex-wrap: wrap; gap: 26px 34px; align-items: flex-start; }
+  .pair { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .pair-label {
+    font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .pair-label b { color: var(--accent); font-weight: 400; }
+  /* THE compare control: a real button, not a text link */
+  .compare-cta {
+    display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+    background: var(--accent); color: var(--ground);
+    border: 1px solid var(--accent); border-radius: 999px;
+    font: 600 13px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase;
+    padding: 13px 26px; transition: all .2s;
+    box-shadow: 0 6px 18px rgba(217,185,108,.25);
+  }
+  .compare-cta:hover { filter: brightness(1.08); }
+  .compare-cta[aria-pressed="true"] { background: transparent; color: var(--accent); box-shadow: none; }
+  .compare-row { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 18px 0 2px; flex-wrap: wrap; }
+
+  .round-line { margin-top: 4px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-dim); }
+  .masthead-links { margin-top: 10px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+  .masthead-links a, .masthead-links button {
+    background: none; border: 0; cursor: pointer; color: var(--ink-faint); font: inherit;
+    letter-spacing: inherit; text-transform: inherit; text-decoration: none; padding: 2px 0;
+    border-bottom: 1px solid transparent; transition: color .2s, border-color .2s;
+  }
+  .masthead-links a:hover, .masthead-links button:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .ctl.handle { color: var(--accent); }
+  .ctl.handle .n { color: var(--ink-faint); font-size: 11px; margin-left: 6px; letter-spacing: .04em; text-transform: none; }
+  .ctl.handle[aria-expanded="true"] { border-bottom-color: var(--accent); }
+  /* the drawer: a sheet on the same slate ground, the gold hairline on top, the
+     stage stays visible above it. Nothing on the stage itself changes. */
+  .drawer {
+    /* in flow, right under the controls: it slides open and pushes the dealer row
+       and footer down, so the stage and the timeline above are never covered */
+    margin: 14px -20px 0; overflow: hidden;
+    max-height: 0; opacity: 0; transition: max-height .42s cubic-bezier(.2,.7,.2,1), opacity .3s;
+    background: var(--ground); border-top: 1px solid transparent;
+  }
+  .drawer.open { max-height: 2400px; opacity: 1; border-top-color: var(--accent); }
+  .drawer-inner { border-bottom: 1px solid var(--line); }
+  .drawer .mini { display: flex; align-items: center; gap: 10px; min-width: 200px; }
+  .drawer .mini input[type=range] { flex: 1; -webkit-appearance: none; appearance: none; height: 2px; background: var(--line); border-radius: 1px; outline: none; cursor: pointer; }
+  .drawer .mini input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 0; cursor: pointer; }
+  .drawer .mini input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 0; cursor: pointer; }
+  .drawer .mini .ctl { padding: 4px 2px; font-size: 12px; }
+  .drawer-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 10px 20px 8px; border-bottom: 1px solid var(--line); flex-wrap: wrap;
+  }
+  .drawer-bar .tabs { display: flex; gap: 18px; }
+  .dtab {
+    background: none; border: 0; cursor: pointer; color: var(--ink-dim);
+    font: 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase;
+    padding: 8px 2px; border-bottom: 1px solid transparent;
+  }
+  .dtab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .dtab:hover { color: var(--ink); }
+  .drawer-bar .right { display: flex; align-items: center; gap: 14px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+  .drawer-bar select {
+    -webkit-appearance: none; appearance: none; background: transparent; color: var(--ink-dim);
+    border: 0; border-bottom: 1px solid var(--line); font: 12px/1.4 var(--sans); padding: 3px 18px 3px 2px; cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23d9b96c' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 2px center;
+  }
+  .drawer-bar select option { background: var(--ground); color: var(--ink); }
+  .drawer-body { padding: 16px 20px 22px; }
+  .pane { display: none; }
+  .pane.on { display: block; }
+  /* compare pane: the earlier round's ad, same unit, same dealer, on the same ground */
+  .cmp-meta { display: flex; justify-content: center; gap: 18px; align-items: baseline; flex-wrap: wrap; padding-bottom: 10px; }
+  .cmp-meta .who { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); }
+  .cmp-meta .what { font-size: 12px; color: var(--ink-faint); }
+  .cmp-stage { display: flex; justify-content: center; }
+  .cmp-stage .slot { background: var(--ground); padding: 10px; }
+  .cmp-stage .fit iframe { opacity: 0; }
+  .cmp-hint { text-align: center; font-size: 11px; letter-spacing: .06em; color: var(--ink-faint); margin-top: 10px; }
+  /* notes pane: the client's sentences as written, our response beneath */
+  .notes-head { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-faint); margin: 2px 0 12px; text-align: center; }
+  .notes-head b { color: var(--ink-dim); font-weight: 400; }
+  .note-group { max-width: 760px; margin: 0 auto 18px; }
+  .note-group h3 { font: 11px/1.4 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  .note { display: grid; grid-template-columns: 16px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .note:first-of-type { border-top: 0; }
+  .mark { width: 9px; height: 9px; border-radius: 50%; margin-top: 9px; border: 1px solid var(--accent); background: var(--accent); }
+  .mark.partial { background: transparent; }
+  .mark.flagged { background: transparent; border-color: #e07a2f; box-shadow: 0 0 0 3px rgba(224,122,47,.18); }
+  .note q { font-family: var(--serif); font-size: 16px; line-height: 1.45; color: var(--ink); quotes: "\201C" "\201D"; display: block; white-space: pre-line; }
+  .note .resp { margin-top: 7px; font-size: 13px; line-height: 1.5; color: var(--ink-dim); }
+  .note .resp .tag { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint); margin-right: 8px; }
+  .note .resp .tag.flagged { color: #e07a2f; }
+  .note .show {
+    background: none; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-dim);
+    font: 11px/1 var(--sans); letter-spacing: .08em; padding: 5px 10px; margin-left: 10px; cursor: pointer; vertical-align: middle;
+  }
+  .note .show:hover { border-color: var(--accent); color: var(--accent); }
+  .notes-empty { text-align: center; color: var(--ink-faint); font-size: 13px; padding: 20px 0; }
+  /* full-text modal body */
+  .doc { max-width: 760px; margin: 0 auto; padding: 70px 20px 60px; color: var(--ink); }
+  .doc h2 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0 0 4px; }
+  .doc .src { font-size: 11px; letter-spacing: .06em; color: var(--ink-faint); margin-bottom: 26px; line-height: 1.6; }
+  .doc .doc-sec { margin-bottom: 26px; }
+  .doc .doc-sec h3 { font: 11px/1.4 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  .doc .doc-sec h3 a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
+  .doc .doc-sec h3 a:hover { border-bottom-color: var(--accent); }
+  .modal-scroll.doc-scroll { display: block; padding: 0; }
+  .modal-scroll.doc-scroll::after { content: ""; display: block; height: 20px; }
+  @media (max-width: 560px) {
+    .drawer-bar { padding: 8px 14px; }
+    .drawer-body { padding: 12px 14px 18px; }
+    .note q { font-size: 15px; }
+  }
   @media (max-width: 560px) {
     header { padding-top: 38px; }
     .group { flex-direction: column; align-items: center; gap: 8px; }
@@ -203,7 +320,8 @@
   <header>
     <div class="eyebrow">Fall 2026 · Seasonal Display</div>
     <h1>Honda&nbsp;Acura Fall&nbsp;Digital</h1>
-    <div class="version">Version 1 &middot; 3 Example Sizes</div>
+    <div class="version" id="versionLine">&nbsp;</div>
+    <div class="masthead-links"><button id="fullDoc" type="button">Client feedback &middot; full text</button></div>
     <div class="rule"></div>
   </header>
 
@@ -218,8 +336,15 @@
     <div class="stage-meta">
       <span class="unit-name" id="unitName"></span>
     </div>
-    <div class="stage">
-      <div class="slot"><div class="fit" id="fit"><iframe id="adFrame" scrolling="no" title="Ad preview"></iframe></div></div>
+    <div class="stage" id="stageRow">
+      <div class="pair"><div class="pair-label" id="mainLabel" hidden><b>This round</b></div>
+        <div class="slot"><div class="fit" id="fit"><iframe id="adFrame" scrolling="no" title="Ad preview"></iframe></div></div></div>
+      <div class="pair" id="cmpPair" hidden><div class="pair-label" id="cmpLabel">Round 0 &middot; as presented</div>
+        <div class="slot"><div class="fit" id="cmpFit2"><iframe id="cmpFrame2" scrolling="no" title="Earlier round"></iframe></div></div></div>
+    </div>
+    <div class="compare-row">
+      <button class="compare-cta" id="compareBtn" aria-pressed="false">&#8646;&nbsp; Compare with Round 0</button>
+      <label id="roundPickWrap2" style="display:none">against <select id="roundPick2" aria-label="Earlier round"></select></label>
     </div>
     <div class="timeline">
       <input type="range" id="scrub" min="0" max="9000" step="50" value="0" aria-label="Timeline">
@@ -228,7 +353,23 @@
     <div class="controls">
       <button class="ctl" id="replay">&#8635;&nbsp; Replay</button>
       <button class="ctl" id="seeBoard">See Storyboard</button>
+      <button class="ctl handle" id="drawerHandle" aria-expanded="false" aria-controls="drawer">Client notes<span class="n" id="handleNotes"></span></button>
     </div>
+    <aside class="drawer" id="drawer" aria-hidden="true" aria-label="Compare rounds and client notes"><div class="drawer-inner">
+      <div class="drawer-bar">
+      <span class="dtab" aria-selected="true" style="cursor:default">Client notes &middot; this ad</span>
+        <div class="right">
+          <span class="mini"><button class="ctl" id="miniReplay" title="replay both from 0">&#8635;</button><input type="range" id="miniScrub" min="0" max="9000" step="50" value="0" aria-label="Timeline (both ads)"><span class="timecode" id="miniTime">0.0s</span></span>
+          <button class="modal-close" id="drawerClose">Close</button>
+        </div>
+      </div>
+      <div class="drawer-body">
+        <section class="pane on" id="paneNotes" role="tabpanel">
+          <div class="notes-head" id="notesHead"></div>
+          <div id="notesList"></div>
+        </section>
+      </div>
+    </div></aside>
     <div class="dealer-row">
       <span class="dealer-label">Dealer</span>
       <select id="dealerSel" aria-label="Dealer"></select>
@@ -245,11 +386,11 @@
     <span class="modal-title" id="modalTitle"></span>
     <button class="modal-close" id="modalClose">Back to the work</button>
   </div>
-  <div class="modal-scroll" id="modalScroll"><img id="boardImg" alt="Storyboard"></div>
-  <div class="modal-hint">tap image to zoom &middot; tap outside or esc to close</div>
+  <div class="modal-scroll" id="modalScroll"><img id="boardImg" alt="Storyboard"><div class="doc" id="docBody" hidden></div></div>
+  <div class="modal-hint" id="modalHint">tap image to zoom &middot; tap outside or esc to close</div>
 </div>
 
-<script src="dealers.js?v=6982ad9616"></script>
+<script src="dealers.js?v=bfcb407450"></script>
 <script>
 const SIZES = [
   { key: '728x90',  w: 728, h: 90,  label: '728 × 90'  },
@@ -280,6 +421,35 @@ for (const b of ['HND', 'ACR']) {
   const i = DEALER_FEED[b].findIndex(d => d[1] === DEFAULT_DEALER[b]);
   state.dealer[b] = i >= 0 ? i : 0;
 }
+
+/* ---------- rounds ----------
+   rounds.json lists every round oldest-first (build_lab_package.py writes it from
+   present/rounds/<rv>/round.json). The newest is the work on the main stage; every
+   earlier one is available in the drawer, same unit, same dealer. A round may carry
+   feedback.json — the client's notes for THAT round, word for word. */
+let ROUNDS = [], current = null, compareKey = null, feedback = {};
+async function loadRounds() {
+  try { ROUNDS = await (await fetch('rounds.json?v=bfcb407450', { cache: 'no-store' })).json(); } catch (e) { ROUNDS = []; }
+  if (!ROUNDS.length) ROUNDS = [{ key: 'rv1', label: 'Round 1', title: '' }];
+  current = ROUNDS[ROUNDS.length - 1];
+  const earlier = ROUNDS.slice(0, -1);
+  compareKey = earlier.length ? earlier[earlier.length - 1].key : null;
+  document.getElementById('versionLine').textContent = current.title || current.label;
+  const pick = document.getElementById('roundPick2');
+  pick.innerHTML = earlier.map(r => `<option value="${r.key}">${r.label} · ${r.title || ''}</option>`).join('');
+  if (compareKey) pick.value = compareKey;
+  document.getElementById('roundPickWrap2').style.display = earlier.length > 1 ? '' : 'none';
+  const hasEarlier = !!compareKey;
+  document.getElementById('compareBtn').style.display = hasEarlier ? '' : 'none';
+  if (hasEarlier) document.getElementById('compareBtn').innerHTML = `&#8646;&nbsp; Compare with ${roundOf(compareKey).label}`;
+  for (const r of ROUNDS) {
+    if (!r.hasFeedback) continue;
+    try { feedback[r.key] = await (await fetch(`rounds/${r.key}/feedback.json`, { cache: 'no-store' })).json(); } catch (e) {}
+  }
+  document.getElementById('fullDoc').style.display = feedback[current.key] ? '' : 'none';
+}
+function roundOf(key) { return ROUNDS.find(r => r.key === key) || {}; }
+
 const dealerSel = document.getElementById('dealerSel');
 function renderDealers() {
   dealerSel.innerHTML = DEALER_FEED[state.brand].map((d, i) =>
@@ -289,14 +459,16 @@ dealerSel.addEventListener('change', () => {
   state.dealer[state.brand] = +dealerSel.value; loadAd();
 });
 const tplCache = {};
-async function unitHtml(id) {
-  if (!tplCache[id]) {
-    tplCache[id] = await (await fetch(`ads/${id}/template.html`)).text();
+async function unitHtml(id, roundKey) {
+  const k = `${roundKey}/${id}`;
+  if (!tplCache[k]) {
+    tplCache[k] = await (await fetch(`rounds/${roundKey}/ads/${id}/template.html`)).text();
   }
   const d = DEALER_FEED[state.brand][state.dealer[state.brand]];
-  return tplCache[id]
-    .replace('<head>', `<head><base href="ads/${id}/">`)
+  return tplCache[k]
+    .replace('<head>', `<head><base href="rounds/${roundKey}/ads/${id}/">`)
     .replaceAll('{{DEALER_NAME}}', d[1])
+    .replaceAll('{{DEALER_NAME_RAW}}', d[1])
     .replaceAll('{{DEALER_ID}}', d[0])
     .replaceAll('{{CLICK_URL}}', CLICK_URL[state.brand]);
 }
@@ -304,6 +476,8 @@ async function unitHtml(id) {
 const pickersEl = document.getElementById('pickers');
 const frame = document.getElementById('adFrame');
 const fit = document.getElementById('fit');
+const cmpFrame = document.getElementById('cmpFrame2');
+const cmpFit = document.getElementById('cmpFit2');
 const unitName = document.getElementById('unitName');
 
 function unitId() { return `${state.brand}_${state.size}_${state.creative}`; }
@@ -325,18 +499,28 @@ function renderPickers() {
 
 function sizeOf() { return SIZES.find(s => s.key === state.size); }
 
-function layoutFrame() {
+function layoutOne(f, box, maxW, maxH) {
   const s = sizeOf();
+  const scale = Math.min(1, maxW / s.w, maxH ? maxH / s.h : 1);
+  f.width = s.w; f.height = s.h;
+  f.style.width = s.w + 'px'; f.style.height = s.h + 'px';
+  f.style.transform = `scale(${scale})`;
+  box.style.width = (s.w * scale) + 'px';
+  box.style.height = (s.h * scale) + 'px';
+}
+function layoutFrame() {
   const pad = 68; // page padding + slot padding
-  const scale = Math.min(1, (document.documentElement.clientWidth - pad) / s.w);
-  frame.width = s.w; frame.height = s.h;
-  frame.style.width = s.w + 'px'; frame.style.height = s.h + 'px';
-  frame.style.transform = `scale(${scale})`;
-  fit.style.width = (s.w * scale) + 'px';
-  fit.style.height = (s.h * scale) + 'px';
+  const cw = document.documentElement.clientWidth || 1120;   // 0 while hidden
+  const s = sizeOf();
+  const tall = s.h > s.w;
+  document.getElementById('stageRow').style.flexDirection = (state.compare && tall) ? 'row' : 'column';
+  // side by side for the talls when comparing, so both fit one screen
+  const each = Math.max(140, (state.compare && tall) ? (cw - pad - 60) / 2 : cw - pad);
+  layoutOne(frame, fit, each);
+  layoutOne(cmpFrame, cmpFit, each);
 }
 
-/* ---------- timeline ---------- */
+/* ---------- timeline (drives both frames when the drawer is open) ---------- */
 const scrub = document.getElementById('scrub');
 const timecode = document.getElementById('timecode');
 let playT0 = null;      // wall-clock start while playing; null once scrubbed
@@ -361,28 +545,43 @@ frame.addEventListener('load', () => {
   const img = new Image();              // warm the storyboard AFTER the ad —
   img.src = boardSrc();                 // racing it lengthened the cold boot
 });
+cmpFrame.addEventListener('load', () => { cmpFrame.style.opacity = '1'; });
+const miniScrub = document.getElementById('miniScrub'), miniTime = document.getElementById('miniTime');
+function showTime(t) {
+  scrub.value = t; miniScrub.value = t; miniScrub.max = scrub.max;
+  timecode.textContent = `${fmt(t)} / ${fmt(adDur)}s`;
+  miniTime.textContent = `${fmt(t)}s`;
+}
 setInterval(() => {
   if (playT0 == null) return;
-  const t = Math.min(adDur, performance.now() - playT0);
-  scrub.value = t;
-  timecode.textContent = `${fmt(t)} / ${fmt(adDur)}s`;
+  showTime(Math.min(adDur, performance.now() - playT0));
 }, 120);
-scrub.addEventListener('input', () => {
-  playT0 = null;        // scrubbing takes over: the ad parks on the chosen frame
-  const t = +scrub.value;
+function seekBoth(t) {
+  playT0 = null;        // scrubbing takes over: the ads park on the chosen frame
   try { frame.contentWindow.__adSeek(t); } catch (e) {}
-  timecode.textContent = `${fmt(t)} / ${fmt(adDur)}s`;
-});
+  if (state.compare && cmpFrame.srcdoc) { try { cmpFrame.contentWindow.__adSeek(t); } catch (e) {} }
+  showTime(t);
+}
+scrub.addEventListener('input', () => seekBoth(+scrub.value));
+miniScrub.addEventListener('input', () => seekBoth(+miniScrub.value));
+document.getElementById('miniReplay').addEventListener('click', loadAd);
 
 async function loadAd() {
   const id = unitId();
   playT0 = null;
   scrub.value = 0;
   frame.style.opacity = '0';
-  const html = await unitHtml(id);      // fetch BEFORE touching the stage —
-  layoutFrame();                        // resizing first squished the old ad
+  cmpFrame.style.opacity = '0';
+  const html = await unitHtml(id, current.key);      // fetch BEFORE touching the stage —
+  let cmpHtml = null;
+  if (compareKey && state.compare) cmpHtml = await unitHtml(id, compareKey).catch(() => null);
+  layoutFrame();                                       // resizing first squished the old ad
   frame.srcdoc = html;
+  if (cmpHtml) cmpFrame.srcdoc = cmpHtml;              // both start together: lockstep from 0
+  else cmpFrame.removeAttribute('srcdoc');
   unitName.textContent = id.replace(/_/g, ' · ');
+  renderCompareMeta();
+  renderNotes();
 }
 
 function boardSrc() { return `boards/${state.brand.toLowerCase()}_${state.size}.jpg`; }
@@ -396,27 +595,125 @@ document.querySelectorAll('.brand').forEach(b => b.addEventListener('click', () 
 document.getElementById('replay').addEventListener('click', loadAd);
 window.addEventListener('resize', layoutFrame);
 
-/* ---------- storyboard peek ---------- */
+/* ---------- the drawer: an earlier round beside the work, and the client's notes ---------- */
+const drawer = document.getElementById('drawer');
+function drawerOpen() { return drawer.classList.contains('open'); }
+function setDrawer(open) {
+  drawer.classList.toggle('open', open);
+  drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+  document.getElementById('drawerHandle').setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (open) setTimeout(() => drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 420);
+}
+document.getElementById('drawerHandle').addEventListener('click', () => setDrawer(!drawerOpen()));
+document.getElementById('drawerClose').addEventListener('click', () => setDrawer(false));
+state.compare = false;
+function setCompare(on) {
+  state.compare = on;
+  const btn = document.getElementById('compareBtn');
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.innerHTML = on ? '&#10005;&nbsp; Close comparison'
+                     : `&#8646;&nbsp; Compare with ${roundOf(compareKey).label || 'Round 0'}`;
+  document.getElementById('cmpPair').hidden = !on;
+  document.getElementById('mainLabel').hidden = !on;
+  loadAd();   // reload both so they run in lockstep from 0
+}
+document.getElementById('compareBtn').addEventListener('click', () => setCompare(!state.compare));
+document.getElementById('roundPick2').addEventListener('change', (e) => {
+  compareKey = e.target.value;
+  renderCompareMeta();
+  if (state.compare) loadAd(); else setCompare(false);
+});
+
+function renderCompareMeta() {
+  const r = roundOf(compareKey);
+  document.getElementById('cmpLabel').textContent = compareKey ? `${r.label} · as presented${r.deployed ? ' ' + r.deployed : ''}` : '';
+  if (!state.compare) document.getElementById('compareBtn').innerHTML = `&#8646;&nbsp; Compare with ${r.label || 'Round 0'}`;
+}
+
+/* notes for the current unit: the client's sentences exactly as written (serif,
+   quoted), our response beneath, a mark for its status, and "show me" where a
+   note is about a moment — it parks both ads on that frame */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function noteHtml(n, fb) {
+  const st = n.status || 'done';
+  const tag = (fb.statuses && fb.statuses[st]) || st;
+  return `<div class="note"><span class="mark ${st}" title="${esc(tag)}"></span><div>
+    <q>${esc(n.text)}</q>
+    <div class="resp"><span class="tag ${st}">${esc(tag)}</span>${esc(n.response || '')}
+      ${n.at != null ? `<button class="show" data-at="${n.at}" title="park both ads on this moment">&#8635; show me · ${Number(n.at).toFixed(1)}s</button>` : ''}
+    </div></div></div>`;
+}
+function renderNotes() {
+  const fb = feedback[current.key];
+  const head = document.getElementById('notesHead'), list = document.getElementById('notesList');
+  const handleN = document.getElementById('handleNotes');
+  if (!fb) { head.textContent = ''; list.innerHTML = '<div class="notes-empty">No client notes on this round.</div>'; handleN.textContent = ''; return; }
+  const id = unitId();
+  const mine = fb.sections.filter(s => s.unit === id);
+  const global = fb.sections.filter(s => !s.unit);
+  const n = mine.reduce((a, s) => a + s.notes.length, 0);
+  handleN.textContent = n ? `· ${n} note${n === 1 ? '' : 's'}` : '';
+  head.innerHTML = `<b>${esc(fb.title)}</b> · ${esc(fb.date)} · ${n} note${n === 1 ? '' : 's'} on this ad · word for word`;
+  list.innerHTML = [...mine, ...global].map(s => `<div class="note-group"><h3>${esc(s.heading)}</h3>${s.notes.map(x => noteHtml(x, fb)).join('')}</div>`).join('')
+    || '<div class="notes-empty">No notes on this ad this round.</div>';
+  list.querySelectorAll('.show').forEach(b => b.addEventListener('click', () => {
+    const t = Math.round(+b.dataset.at * 1000);
+    seekBoth(t);
+  }));
+}
+
+/* ---------- full text of the client document (the storyboard modal doubles as the reader) ---------- */
 const modal = document.getElementById('modal');
 const boardImg = document.getElementById('boardImg');
 const modalScroll = document.getElementById('modalScroll');
+const docBody = document.getElementById('docBody');
+function openModal(title, mode) {
+  document.getElementById('modalTitle').textContent = title;
+  const isDoc = mode === 'doc';
+  boardImg.hidden = isDoc; docBody.hidden = !isDoc;
+  modalScroll.classList.toggle('doc-scroll', isDoc);
+  document.getElementById('modalHint').textContent = isDoc ? 'esc to close' : 'tap image to zoom · tap outside or esc to close';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+}
 document.getElementById('seeBoard').addEventListener('click', () => {
   boardImg.classList.remove('zoomed');
   boardImg.src = boardSrc();
-  document.getElementById('modalTitle').textContent =
-    (state.brand === 'HND' ? 'Honda' : 'Acura') + ' · ' + sizeOf().label + ' · storyboard';
-  modal.classList.add('open');
-  modal.setAttribute('aria-hidden', 'false');
+  openModal((state.brand === 'HND' ? 'Honda' : 'Acura') + ' · ' + sizeOf().label + ' · storyboard', 'board');
+});
+document.getElementById('fullDoc').addEventListener('click', () => {
+  const fb = feedback[current.key];
+  if (!fb) return;
+  docBody.innerHTML = `<h2>${esc(fb.title)}</h2><div class="src">${esc(fb.date)} · ${esc(fb.source || '')}</div>`
+    + fb.sections.map(s => `<div class="doc-sec" id="doc-${esc(s.unit || 'global')}"><h3>${s.unit
+        ? `<a href="#" data-unit="${esc(s.unit)}" title="open this ad">${esc(s.heading)}</a>` : esc(s.heading)}</h3>${s.notes.map(x => noteHtml(x, fb)).join('')}</div>`).join('');
+  docBody.querySelectorAll('h3 a').forEach(a => a.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    const [b, size, c] = a.dataset.unit.split('_');
+    state.brand = b; state.size = size; state.creative = c;
+    document.querySelectorAll('.brand').forEach(x => x.setAttribute('aria-selected', x.dataset.brand === b ? 'true' : 'false'));
+    renderDealers(); renderPickers(); closeModal(); loadAd();
+    setDrawer(true);
+  }));
+  docBody.querySelectorAll('.show').forEach(b => b.addEventListener('click', () => {
+    const sec = b.closest('.doc-sec'); const a = sec && sec.querySelector('h3 a');
+    if (a) a.click();
+    setTimeout(() => seekBoth(Math.round(+b.dataset.at * 1000)), 900);
+  }));
+  openModal('Client feedback · ' + (current.label || ''), 'doc');
 });
 function closeModal() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
 document.getElementById('modalClose').addEventListener('click', closeModal);
 modalScroll.addEventListener('click', e => { if (e.target === modalScroll) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (modal.classList.contains('open')) closeModal(); else if (drawerOpen()) setDrawer(false); } });
 boardImg.addEventListener('click', () => boardImg.classList.toggle('zoomed'));
 
-renderDealers();
-renderPickers();
-loadAd();
+(async () => {
+  await loadRounds();
+  renderDealers();
+  renderPickers();
+  loadAd();
+})();
 </script>
 </body>
 </html>

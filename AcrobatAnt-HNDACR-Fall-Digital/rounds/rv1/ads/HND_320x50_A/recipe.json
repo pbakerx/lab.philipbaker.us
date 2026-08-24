@@ -1,0 +1,22 @@
+{
+ "seed": 1337,
+ "stage": "320x50",
+ "customW": 320,
+ "customH": 50,
+ "spawnMode": "top",
+ "scene": "none",
+ "count": 1,
+ "renderLeaves": false,
+ "renderStreaks": false,
+ "streaksOn": false,
+ "sceneDur": 4.2,
+ "sceneStartX": 0,
+ "sceneEndX": 0,
+ "sceneStartY": 0,
+ "sceneEndY": 0,
+ "sceneStartZoom": 1,
+ "sceneEndZoom": 1,
+ "sceneStartRot": 0,
+ "sceneEndRot": 0,
+ "bgSelect": "bg-white"
+}

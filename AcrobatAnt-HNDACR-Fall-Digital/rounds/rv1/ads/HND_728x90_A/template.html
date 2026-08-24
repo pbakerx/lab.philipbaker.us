@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HND_728x90_A</title>
+<meta name="ad.size" content="width=728,height=90">
+<script>var clickTag = "{{CLICK_URL}}";</script>
+<style>
+  /* The page carries the unit's ground and the root its SIZE in static CSS:
+     the browser can paint the document while the runtime scripts are still
+     downloading (parser-blocking, end of body), and without these a black
+     unit opened as a white page for that whole window on a cold cache.
+     The JS sizing in ad-player.js stays as a harmless no-op. */
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  /* No border on the ad root: with box-sizing:border-box a 1px rule turns a
+     728x90 slot into a 726x88 canvas, shifts every element 1px in, and draws a
+     hairline over art meant to bleed off the edge. The Review Deck outlines the
+     ad on its own frame instead. */
+  #ad {
+    position: relative; overflow: hidden; background: #ffffff;
+    width: 728px; height: 90px;
+  }
+  #ad, #ad * { box-sizing: border-box; }
+  #ad img { user-select: none; -webkit-user-select: none; }
+  @font-face {
+    font-family: 'HondaRound';
+    src: url('fonts/AvenirNextRoundedStd-Medium.ttf') format('truetype');
+    font-display: block;
+  }
+</style>
+</head>
+<body>
+<div id="ad" data-dealer-id="{{DEALER_ID}}"></div>
+<script>const AD = {
+ "unit": "HND_728x90_A",
+ "w": 728,
+ "h": 90,
+ "brand": "HND",
+ "bg": "#ffffff",
+ "clickUrl": "https://automobiles.honda.com/tools/dealership-locator",
+ "dur": 9.0,
+ "els": [
+  {
+   "id": "logo",
+   "type": "img",
+   "src": "images/logo.png",
+   "box": [
+    22,
+    29,
+    129,
+    33
+   ],
+   "z": 30,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "cta",
+   "type": "rect",
+   "box": [
+    565,
+    30,
+    144,
+    32
+   ],
+   "z": 30,
+   "css": {
+    "background": "#0077c0",
+    "borderRadius": "16.0px"
+   },
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "ctatext",
+   "type": "img",
+   "src": "images/cta_text.png",
+   "box": [
+    579.4,
+    39.6,
+    115.2,
+    12.8
+   ],
+   "z": 31,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "card",
+   "type": "rect",
+   "box": [
+    171,
+    5,
+    548,
+    80
+   ],
+   "z": 5,
+   "css": {
+    "background": "#ffffff",
+    "borderRadius": "6px"
+   },
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "f1canvas",
+   "type": "canvas",
+   "box": [
+    171,
+    5,
+    548,
+    80
+   ],
+   "z": 10,
+   "radius": 7,
+   "anim": {
+    "type": "out",
+    "dur": 0.004166666666666667
+   },
+   "relTo": "driveEnd",
+   "lead": 0.0
+  },
+  {
+   "id": "leafcanvas",
+   "type": "canvas",
+   "box": [
+    0.0,
+    0.0,
+    728.0,
+    90.0
+   ],
+   "z": 19
+  },
+  {
+   "id": "headline",
+   "type": "text",
+   "box": [
+    339.0,
+    26.0,
+    188.0,
+    52.0
+   ],
+   "z": 22,
+   "html": "<div style=\"font:16px/1.2 'HondaRound', Helvetica, Arial, sans-serif; color:#00324e; text-align:left; white-space:nowrap;\">More places to be, more<br>reasons for expert service<br>this fall.</div>",
+   "css": {
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "flex-start"
+   },
+   "anim": {
+    "type": "move",
+    "at": 0.0,
+    "dur": 0.55,
+    "to": [
+     0.0,
+     -7.0
+    ],
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "s0": 1,
+    "s1": 1.0,
+    "ease": "cubic-bezier(0.400,0,0.200,1)",
+    "also": [
+     {
+      "type": "fade",
+      "at": 0.0,
+      "dur": 0.55
+     },
+     {
+      "type": "out",
+      "at": 2.8
+     },
+     {
+      "type": "move",
+      "at": 2.7,
+      "dur": 0.8,
+      "from": [
+       0.0,
+       -7.0
+      ],
+      "to": [
+       -713.0,
+       8.0
+      ],
+      "rot0": 0.0,
+      "rot1": 0.0,
+      "s0": 1.0,
+      "s1": 1.0,
+      "fill": "forwards",
+      "ease": "cubic-bezier(0.250,0,1.000,1)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "tech",
+   "type": "img",
+   "src": "images/tech.png",
+   "box": [
+    171,
+    5,
+    220,
+    80
+   ],
+   "z": 8,
+   "fit": "cover",
+   "clip": true,
+   "radius": 7,
+   "anim": {
+    "type": "move",
+    "at": 3.5,
+    "dur": 5.5,
+    "to": [
+     5.0,
+     -7.0
+    ],
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "s0": 1,
+    "s1": 1.111,
+    "ease": "cubic-bezier(0.000,0,1.000,1)"
+   },
+   "relTo": "driveEnd",
+   "lead": 0.0,
+   "imgPose": {
+    "dx": -18.0,
+    "dy": -16.0,
+    "scale": 0.81,
+    "rot": 0.0
+   },
+   "natural": [
+    576,
+    384
+   ]
+  },
+  {
+   "id": "passport_under",
+   "type": "img",
+   "src": "images/passport_under.png",
+   "box": [
+    315.2,
+    -46.3,
+    526.6,
+    383.4
+   ],
+   "z": 18,
+   "fit": "fill",
+   "shadow": "-2px 3px 4px rgba(0,0,0,0.45)",
+   "rot": -3.36,
+   "anim": {
+    "type": "hold",
+    "at": 0
+   }
+  },
+  {
+   "id": "passport_top",
+   "type": "img",
+   "src": "images/passport_top.png",
+   "box": [
+    274.9,
+    -278.4,
+    474.1,
+    377.9
+   ],
+   "z": 21,
+   "fit": "fill",
+   "shadow": "-2px 3px 4px rgba(0,0,0,0.45)",
+   "anim": {
+    "type": "move",
+    "at": 2.7,
+    "dur": 0.8,
+    "to": [
+     -713.0,
+     15.0
+    ],
+    "rot0": -26.5,
+    "rot1": -52.0,
+    "s0": 1,
+    "s1": 0.909,
+    "ease": "cubic-bezier(0.250,0,1.000,1)",
+    "also": [
+     {
+      "type": "out",
+      "at": 4.2
+     }
+    ]
+   },
+   "rot": -26.5
+  },
+  {
+   "id": "scrim",
+   "type": "rect",
+   "box": [
+    0,
+    0,
+    728,
+    90
+   ],
+   "z": 25,
+   "css": {
+    "background": "linear-gradient(to right, rgba(0,0,0,0) 65.6%, rgba(0,0,0,0.38) 100%)"
+   },
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "dealer",
+   "type": "text",
+   "box": [
+    334.0,
+    12.0,
+    197.0,
+    66.0
+   ],
+   "z": 20,
+   "html": "<span>Visit the experts at {{DEALER_NAME}}.</span>",
+   "css": {
+    "font": "16px/1.2 'HondaRound', Helvetica, Arial, sans-serif",
+    "color": "#00324e",
+    "textAlign": "left",
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "flex-start"
+   },
+   "anim": {
+    "type": "fade",
+    "at": 1.0,
+    "dur": 0.004166666666666667
+   },
+   "autoFit": 11
+  }
+ ],
+ "engine": {
+  "canvas": "f1canvas",
+  "leafCanvas": "leafcanvas",
+  "taperAt": 4.6,
+  "sceneSources": {
+   "honda": "images/vehicle.png",
+   "acura": "images/vehicle.png",
+   "custom": "images/vehicle.png"
+  },
+  "stopAt": 5.8
+ }
+};</script>
+<script src="leaf-engine.js?v=7310ed9414"></script>
+<script src="ad-player.js?v=7310ed9414"></script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HND_320x50_A</title>
+<meta name="ad.size" content="width=320,height=50">
+<script>var clickTag = "{{CLICK_URL}}";</script>
+<style>
+  /* The page carries the unit's ground and the root its SIZE in static CSS:
+     the browser can paint the document while the runtime scripts are still
+     downloading (parser-blocking, end of body), and without these a black
+     unit opened as a white page for that whole window on a cold cache.
+     The JS sizing in ad-player.js stays as a harmless no-op. */
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  /* No border on the ad root: with box-sizing:border-box a 1px rule turns a
+     728x90 slot into a 726x88 canvas, shifts every element 1px in, and draws a
+     hairline over art meant to bleed off the edge. The Review Deck outlines the
+     ad on its own frame instead. */
+  #ad {
+    position: relative; overflow: hidden; background: #ffffff;
+    width: 320px; height: 50px;
+  }
+  #ad, #ad * { box-sizing: border-box; }
+  #ad img { user-select: none; -webkit-user-select: none; }
+  @font-face {
+    font-family: 'HondaRound';
+    src: url('fonts/AvenirNextRoundedStd-Medium.ttf') format('truetype');
+    font-display: block;
+  }
+</style>
+</head>
+<body>
+<div id="ad" data-dealer-id="{{DEALER_ID}}"></div>
+<script>const AD = {
+ "unit": "HND_320x50_A",
+ "w": 320,
+ "h": 50,
+ "brand": "HND",
+ "bg": "#ffffff",
+ "clickUrl": "https://automobiles.honda.com/tools/dealership-locator",
+ "dur": 9.0,
+ "els": [
+  {
+   "id": "logo",
+   "type": "img",
+   "src": "images/logo.png",
+   "box": [
+    10,
+    12,
+    97,
+    24
+   ],
+   "z": 30,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "cta",
+   "type": "rect",
+   "box": [
+    158,
+    8,
+    142,
+    34
+   ],
+   "z": 30,
+   "css": {
+    "background": "#0077c0",
+    "borderRadius": "17.0px"
+   },
+   "anim": {
+    "type": "slideBottom",
+    "at": 5.7
+   }
+  },
+  {
+   "id": "ctatext",
+   "type": "img",
+   "src": "images/cta_text.png",
+   "box": [
+    172.2,
+    18.2,
+    113.6,
+    13.6
+   ],
+   "z": 31,
+   "fit": "contain",
+   "anim": {
+    "type": "slideBottom",
+    "at": 5.7
+   }
+  },
+  {
+   "id": "passportbg",
+   "type": "img",
+   "src": "images/stamps1.png",
+   "box": [
+    -28,
+    -84,
+    381,
+    298
+   ],
+   "z": 2,
+   "fit": "cover",
+   "clip": true,
+   "anim": {
+    "type": "stampSeq",
+    "at": 0.7,
+    "gap": 1.1,
+    "fade": 0.6,
+    "srcs": [
+     "images/stamps1.png",
+     "images/stamps2.png",
+     "images/stamps3.png"
+    ]
+   },
+   "imgPose": {
+    "dx": 0.0,
+    "dy": -10.0,
+    "scale": 0.75,
+    "rot": 0.0
+   },
+   "natural": [
+    638,
+    443
+   ]
+  },
+  {
+   "id": "stamp_apple",
+   "type": "img",
+   "src": "images/stamp_apple.png",
+   "box": [
+    112.5,
+    24.7,
+    45.5,
+    52.3
+   ],
+   "z": 3,
+   "fit": "contain",
+   "anim": {
+    "type": "fade",
+    "at": 1.5,
+    "dur": 0.6
+   },
+   "rot": -15.0
+  },
+  {
+   "id": "stamp2",
+   "type": "img",
+   "src": "images/stamp2.png",
+   "box": [
+    297.0,
+    8.5,
+    22.9,
+    41.3
+   ],
+   "z": 3,
+   "fit": "contain",
+   "anim": {
+    "type": "fade",
+    "at": 2.9,
+    "dur": 0.6
+   }
+  },
+  {
+   "id": "headline",
+   "type": "text",
+   "box": [
+    143,
+    13,
+    165,
+    25
+   ],
+   "z": 21,
+   "html": "<div style=\"font:11px/1.2 'HondaRound', Helvetica, Arial, sans-serif; color:#00324e; text-align:center; white-space:nowrap;\">More places to be, more reasons<br>for expert service this fall.</div>",
+   "css": {
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "anim": {
+    "type": "upFade",
+    "at": 0.3,
+    "dist": 8,
+    "dur": 0.5,
+    "also": [
+     {
+      "type": "out",
+      "at": 2.9
+     }
+    ]
+   }
+  },
+  {
+   "id": "dealer",
+   "type": "text",
+   "box": [
+    150,
+    8,
+    144,
+    37
+   ],
+   "z": 22,
+   "html": "<span>Visit the experts at {{DEALER_NAME}}.</span>",
+   "css": {
+    "font": "11px/1.2 'HondaRound', Helvetica, Arial, sans-serif",
+    "color": "#00324e",
+    "textAlign": "center",
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "anim": {
+    "type": "upFade",
+    "at": 3.1999999999999997,
+    "dist": 8,
+    "dur": 0.5,
+    "also": [
+     {
+      "type": "out",
+      "at": 5.7
+     }
+    ]
+   },
+   "autoFit": 11
+  }
+ ],
+ "engine": null
+};</script>
+<script src="leaf-engine.js?v=7310ed9414"></script>
+<script src="ad-player.js?v=7310ed9414"></script>
+</body>
+</html>

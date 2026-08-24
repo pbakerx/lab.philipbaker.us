@@ -1,0 +1,436 @@
+{
+ "title": "R1 AHM Fall Seasonal Display Creative Feedback",
+ "date": "2026-08-19",
+ "source": "Client Feedback/R1 AHM Fall Seasonal Display Creative Feedback.docx — every note below is reproduced word for word, in the document's order.",
+ "statuses": {
+  "done": "Done in this round",
+  "partial": "Done, with a caveat noted",
+  "flagged": "Needs a decision — please read the note"
+ },
+ "sections": [
+  {
+   "heading": "Global",
+   "unit": null,
+   "notes": [
+    {
+     "text": "We’ve noticed the dynamic CTA text (Visit the expert…)Honda ads looks like Avenir Next Rounded font. Could you confirm that it is? Will everyone be able to see the font or is there a fallback font for audience who can’t see the brand font? If there is a fallback font, can we use Helvetica?",
+     "response": "Confirmed: it is Avenir Next Rounded Std Medium, and every viewer sees it — the font file ships inside each ad and is loaded before the first frame. Helvetica is now the first fallback. (The layout PSDs themselves set that line in Helvetica 16, so either reading of the comp is honoured.)",
+     "status": "done"
+    },
+    {
+     "text": "If we’re able to use the brand font for the dynamic CTA text can we do the same for Acura and use the Acura Bespoke font? The fallback font for Acura can be Helvetica as well.",
+     "response": "The Acura dealer line is now Acura Bespoke Bold (the weight the PSDs use for the CTA label), shipped inside each ad, Helvetica fallback.",
+     "status": "done"
+    }
+   ]
+  },
+  {
+   "heading": "Honda · Creative A · 728x90",
+   "unit": "HND_728x90_A",
+   "notes": [
+    {
+     "text": "Gradient on the side should not be on top of the button. Can the button be on the top layer?",
+     "response": "The button sits above the gradient on every frame (the layer order was fixed at the source).",
+     "status": "done",
+     "at": 1.0
+    },
+    {
+     "text": "Can the passport move out of the frame faster, almost just flying out?",
+     "response": "The sheet leaves in 0.8 s (was 1.75 s) with a quicker start.",
+     "status": "done",
+     "at": 2.8
+    },
+    {
+     "text": "Can the 1st text move less in distance and faster when it appears? Also can we have the opacity change simultaneously as it moves up so the opacity is not 100% before it moves up.",
+     "response": "The headline now rises 7 px over 0.55 s (was 15 px over 1.25 s) and the fade runs over the same 0.55 s, so opacity and travel finish together.",
+     "status": "done",
+     "at": 0.3
+    },
+    {
+     "text": "Can the vehicle image move slower and less in distance? It can be more subtle in movement.",
+     "response": "The push-in is 1.28→1.45 (was 1.28→1.71) with a 4-point pan over the same 6.7 s.",
+     "status": "done",
+     "at": 2.0
+    },
+    {
+     "text": "Can the tech image grow in size slower so it’s not too cropped at the end?",
+     "response": "The technician grows to 0.90 over 5.5 s (was to 1.00 over 4.2 s).",
+     "status": "done",
+     "at": 8.5
+    },
+    {
+     "text": "1st text feels soft while the dealer CTA text is sharp. Can the 1st text be sharp as well? Can it also move with the passport instead of fading away?",
+     "response": "The headline is live type now (the same Avenir Next Rounded as the dealer line, set exactly as the PSD sets it) instead of a downscaled image, and it rides out with the passport sheet, fading as it goes.",
+     "status": "done",
+     "at": 2.95
+    }
+   ]
+  },
+  {
+   "heading": "Honda · Creative A · 160x600",
+   "unit": "HND_160x600_A",
+   "notes": [
+    {
+     "text": "The passport on top left doesn’t have to rotate too much. Can we lessen the rotation so it doesn’t look like it’s spinning in?",
+     "response": "It turns 19° on the way in (was 101°).",
+     "status": "done",
+     "at": 0.4
+    },
+    {
+     "text": "1st text feels soft while the dealer CTA text is sharp. Can the 1st text be sharp as well?",
+     "response": "Live type, same face and size as the PSD.",
+     "status": "done",
+     "at": 2.0
+    },
+    {
+     "text": "Can the texts move less in distance and slightly faster when they appear?",
+     "response": "Honda copy rises 8 px over 0.5–0.6 s everywhere (was 14 px over 0.7–1.1 s).",
+     "status": "done",
+     "at": 0.4
+    },
+    {
+     "text": "Can vehicle image move slightly from left to right? It can be subtle.",
+     "response": "A gentler left-to-right pan with less push-in (1.17→1.26).",
+     "status": "done",
+     "at": 2.0
+    },
+    {
+     "text": "Can the passport move just tad bit faster?",
+     "response": "In at 0.8 s (was 1.0), the sweep 1.3 s (was 1.7).",
+     "status": "done",
+     "at": 3.4
+    },
+    {
+     "text": "The tech image can grow in size slightly slower to be more subtle.",
+     "response": "Grows to 1.15 (was 1.33) over the same time.",
+     "status": "done",
+     "at": 8.5
+    }
+   ]
+  },
+  {
+   "heading": "Honda · Creative A · 320x50",
+   "unit": "HND_320x50_A",
+   "notes": [
+    {
+     "text": "The stamp should not overlap with the logo. Please check our composition.",
+     "response": "The passport art is re-framed: the apple stamp sits clear of the lockup, right of it, as in the board.",
+     "status": "done",
+     "at": 2.4
+    },
+    {
+     "text": "The stamps don’t need to come in as slowly as it is now. The apple stamp can come in right after the 1st text around 1.8 sec. and the hunted house stamp can come in around when the 1st text is disappearing.",
+     "response": "Apple at 1.8 s, haunted house at 2.9 s as the headline leaves.",
+     "status": "done",
+     "at": 3.1
+    },
+    {
+     "text": "Can we see a little more of the football stamps at the top?",
+     "response": "The tournament stamp's lower arc and lettering now show along the top edge.",
+     "status": "done",
+     "at": 0.5
+    }
+   ]
+  },
+  {
+   "heading": "Honda · Creative B · 728x90",
+   "unit": "HND_728x90_B",
+   "notes": [
+    {
+     "text": "Can the texts move less in distance and slightly faster when they appear?",
+     "response": "8 px over 0.5 s for both headline and dealer line.",
+     "status": "done",
+     "at": 0.4
+    },
+    {
+     "text": "1st text feels soft while the dealer CTA text is sharp. Can the 1st text be sharp as well?",
+     "response": "Live type.",
+     "status": "done",
+     "at": 1.5
+    },
+    {
+     "text": "The edge of the images are visible through the gradient layer. Please ensure the edge is not visible.",
+     "response": "The melt now reaches solid black before the photo's edge, on both frames.",
+     "status": "done",
+     "at": 1.5
+    },
+    {
+     "text": "Can the leaves move more directionally and not random? Perhaps the opposite direction of the vehicle?",
+     "response": "Gusts and turbulence cut right down; the leaves lift from the car's wake and drift left while the car moves right.",
+     "status": "done",
+     "at": 1.6
+    },
+    {
+     "text": "Can we turn off the leaves layer that is part of the image? We included it for you to use the leaves but intended them to be animated.",
+     "response": "The plate is re-exported from your PSB with the leaves group off; only the animated leaves remain.",
+     "status": "done",
+     "at": 0.5
+    },
+    {
+     "text": "Vehicle image can move out faster so you barely notice the transition. Also, can we not have the image edge feathered?",
+     "response": "The vehicle slides out in 0.45 s (was 0.9). The photo's static edge no longer shows — the melt is solid before it — and the sliding edge carries a soft feather as it leaves.",
+     "status": "done",
+     "at": 4.0
+    },
+    {
+     "text": "Can you zoom out of the tech image. It’s cropped to tight. Ideally we want to see the Honda logo on the sleeve when the image comes on.",
+     "response": "The technician is re-framed wider; the sleeve badge is in frame from the reveal.",
+     "status": "done",
+     "at": 4.6
+    }
+   ]
+  },
+  {
+   "heading": "Honda · Creative B · 160x600",
+   "unit": "HND_160x600_B",
+   "notes": [
+    {
+     "text": "1st text looks off centered. Please check.",
+     "response": "Live type centred on the card.",
+     "status": "done",
+     "at": 2.0
+    },
+    {
+     "text": "Can the leaves move more directionally and not random? Perhaps the opposite direction of the vehicle?",
+     "response": "A steady rightward stream while the car moves left.",
+     "status": "done",
+     "at": 1.8
+    },
+    {
+     "text": "Can the texts move less in distance and slightly faster when they appear?",
+     "response": "8 px over 0.5–0.6 s.",
+     "status": "done",
+     "at": 0.4
+    },
+    {
+     "text": "1st text feels soft while the dealer CTA text is sharp. Can the 1st text be sharp as well?",
+     "response": "Live type.",
+     "status": "done",
+     "at": 2.0
+    },
+    {
+     "text": "Vehicle image can move out faster so you barely notice the transition. Also, can we not have the image edge feathered?",
+     "response": "Same treatment at this size: 0.45 s slide, static edge buried, soft feather on the sliding edge.",
+     "status": "done",
+     "at": 3.6
+    },
+    {
+     "text": "Vehicle image should start larger and scale down a little bit since it’s driving away from the camera. Also the horizontal movement can be more subtle.",
+     "response": "1.18→1.08 with less than half the previous horizontal travel. The plate's own baked leaves were removed as well, so every leaf you see is animated.",
+     "status": "done",
+     "at": 1.0
+    }
+   ]
+  },
+  {
+   "heading": "Honda · Creative B · 320x50",
+   "unit": "HND_320x50_B",
+   "notes": [
+    {
+     "text": "Can all the leaves in the background move? Currently some are static and some animate.",
+     "response": "The background is re-exported without the baked leaves; every leaf is animated.",
+     "status": "done",
+     "at": 1.5
+    },
+    {
+     "text": "Can the leaves animation be more directional? Maybe falling from top left to bottom right at slower speed. \n1st text feels soft while the dealer CTA text is sharp. Can the 1st text be sharp as well?",
+     "response": "Leaves fall top-left to bottom-right at a slow, steady pace; the headline is live type.",
+     "status": "done",
+     "at": 1.5
+    },
+    {
+     "text": "Can the texts move less in distance when they appear?",
+     "response": "8 px rise.",
+     "status": "done",
+     "at": 0.4
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative A · 728x90",
+   "unit": "ACR_728x90_A",
+   "notes": [
+    {
+     "text": "Leaves should animate the opposite direction to how the vehicle image is moving, they also look like they have a lower opacity.",
+     "response": "Leaves now drift left against the car's rightward move, at full opacity (the random per-leaf dimming is off).",
+     "status": "done",
+     "at": 1.8
+    },
+    {
+     "text": "Remove static leaves from image",
+     "response": "Done for the two leaf overlays that were added on top of the photo. The leaves inside the stock photograph itself (swirling around the car) are part of that licensed image and would need retouching — flagged for your call.",
+     "status": "partial",
+     "at": 0.5
+    },
+    {
+     "text": "Check leading and kerning on headline based on Acuras brand guidelines.",
+     "response": "Set from your PSD: Futura Now for Acura Cn XBlk, leading 0.9, tracking −30 (it was shipping at 1.02 / 0).",
+     "status": "done",
+     "at": 2.0
+    },
+    {
+     "text": "Tech image is zooming in too fast, and also stops abruptly.",
+     "response": "A smaller push-in over 5.5 s that eases to a stop.",
+     "status": "done",
+     "at": 8.5
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative A · 160x600",
+   "unit": "ACR_160x600_A",
+   "notes": [
+    {
+     "text": "Leaves should fall down instead of floating up, they also look like they have a lower opacity. They also look too large in relation to the vehicle.",
+     "response": "They fall from the top at full opacity, smaller sprites.",
+     "status": "done",
+     "at": 1.5
+    },
+    {
+     "text": "Remove static leaves from image",
+     "response": "Plate re-exported with the leaves group off.",
+     "status": "done",
+     "at": 0.5
+    },
+    {
+     "text": "Check leading and kerning on headline based on Acuras brand guidelines.",
+     "response": "PSD metrics: leading 0.9, tracking −30.",
+     "status": "done",
+     "at": 2.0
+    },
+    {
+     "text": "Tech image has no animation applied to it.",
+     "response": "A slow push-in (1.0→1.10) that eases out.",
+     "status": "done",
+     "at": 7.5
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative A · 320x50",
+   "unit": "ACR_320x50_A",
+   "notes": [
+    {
+     "text": "Can the leaves look like they are falling instead of floating to the side, they also look like they have a lower opacity.",
+     "response": "A slow fall from the top, full opacity, smaller.",
+     "status": "done",
+     "at": 1.2
+    },
+    {
+     "text": "Check leading and kerning on headline based on Acuras brand guidelines.",
+     "response": "PSD metrics.",
+     "status": "done",
+     "at": 1.5
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative B · 728x90",
+   "unit": "ACR_728x90_B",
+   "notes": [
+    {
+     "text": "Remove duplicate vehicle.",
+     "response": "The echo was two baked streak groups in the PSB; the plate is re-exported with them off.",
+     "status": "done",
+     "at": 1.0
+    },
+    {
+     "text": "Leaves should animate the opposite direction to how the vehicle image is moving. Also can they be mostly behind the vehicle. They also look like they have a lower opacity. They also look too large in relation to the vehicle.",
+     "response": "Leaves rise from behind the car and trail off to the left behind it (they pass behind the vehicle where they overlap), at full opacity, smaller.",
+     "status": "done",
+     "at": 2.0
+    },
+    {
+     "text": "Remove static leaves from image",
+     "response": "Plate re-exported with the leaves group off.",
+     "status": "done",
+     "at": 0.5
+    },
+    {
+     "text": "Remove static motion lines from image",
+     "response": "Both baked streak groups off.",
+     "status": "done",
+     "at": 0.5
+    },
+    {
+     "text": "Tech image has a hard edge on the left side, add a black to clear gradient to blend it in.",
+     "response": "A black-to-clear melt over the left edge of the technician photo.",
+     "status": "done",
+     "at": 5.0
+    },
+    {
+     "text": "Can the headline animation have a similar left to right position change as the CTA second on the second frame. It also looks a bit blurry.",
+     "response": "The headline is live type now (sharp). Its entrance already matches the frame-2 copy exactly — both slide in 12 px from the right over 0.35 s — so we left the motion identical; if you meant a different move, tell us and we'll dial it.",
+     "status": "flagged",
+     "at": 0.6
+    },
+    {
+     "text": "Can the motion lines be thinner. ",
+     "response": "Roughly half the weight, softer.",
+     "status": "done",
+     "at": 1.5
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative B · 160x600",
+   "unit": "ACR_160x600_B",
+   "notes": [
+    {
+     "text": "Leaves should animate the opposite direction to how the vehicle image is moving. Also can they be mostly behind the vehicle. They also look like they have a lower opacity. They also look too large in relation to the vehicle.",
+     "response": "Rightward against the car's move, full opacity, smaller; they pass behind the car where they overlap.",
+     "status": "done",
+     "at": 1.8
+    },
+    {
+     "text": "Remove static leaves from image",
+     "response": "Plate re-exported with the leaves group off.",
+     "status": "done",
+     "at": 0.5
+    },
+    {
+     "text": "Remove static motion lines from image",
+     "response": "The baked streaks group off.",
+     "status": "done",
+     "at": 0.5
+    },
+    {
+     "text": "Headline looks a bit blurry.",
+     "response": "Live type.",
+     "status": "done",
+     "at": 1.5
+    },
+    {
+     "text": "Can the motion lines be thinner and adjust the curvature a bit more.",
+     "response": "Half the weight with per-stroke curvature added.",
+     "status": "done",
+     "at": 1.5
+    },
+    {
+     "text": "CTA copy does not come in from the right",
+     "response": "It slides in from the right again.",
+     "status": "done",
+     "at": 3.6
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative B · 320x50",
+   "unit": "ACR_320x50_B",
+   "notes": [
+    {
+     "text": "Headline looks blurry.",
+     "response": "Live type.",
+     "status": "done",
+     "at": 1.2
+    },
+    {
+     "text": "Motion lines here need to be a lot more subtle. As the text animates from the right maybe the motion streaks are just at the right end of the text then quickly resolve. This applies to the CTA copy and button.",
+     "response": "Eight short, faint lines at the right end of the copy that resolve quickly, and a quieter pass with the CTA.",
+     "status": "done",
+     "at": 0.5
+    }
+   ]
+  }
+ ]
+}
