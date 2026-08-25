@@ -1,0 +1,3092 @@
+{
+ "meta": {
+  "campaign": "OKEII — Strong Readers Act (SB 1778) Implementation",
+  "client": "Oklahoma Education Impact Initiative (OKEII)",
+  "agency": "PB Productions, LLC",
+  "launch": "2026-09-08",
+  "compiled": "2026-08-25",
+  "destination": "https://www.okeii.org/StrongReadersAct",
+  "creativeDirector": "David Downing",
+  "mediaBuyer": "LMR Media Mix (Lisa Ratcliff)"
+ },
+ "brand": {
+  "blue_cmyk": "C93 M57 Y0 K0",
+  "blue_hex": "#116DFF",
+  "navy_cmyk": "C94 M72 Y0 K52",
+  "navy_hex": "#082F7B",
+  "typeface": "Inter (OFL) used as a stand-in for the Wix Madefor Display face on okeii.org",
+  "anchor_card": "NOT OUR KIDS. NOT THIS STATE. NOT ANYMORE. / IMPLEMENTING THE STRONG READERS ACT / okeii.org + QR"
+ },
+ "notices": [
+  {
+   "id": "anchor-card-wording",
+   "severity": "high",
+   "title": "The anchor card reads two different ways across the campaign",
+   "detail": "The rendered :15 and the Round 1 paid social exports read \"NOT OUR KIDS. NOT OUR STATE. NOT ANYMORE.\" The Metro Family spread that has already run, David Downing's paid social copy doc and the campaign anchor card as recorded in HANDOFF.md all read \"NOT THIS STATE.\" One of the two is wrong and the delivered print piece cannot be changed. Settle the wording before the remaining paid social sizes and the video cutdowns are built, or the campaign ships two versions of its own tagline.",
+   "found": "Verified against Metro Family Print/OKEII_MetroFamily_SeptOct_Spread_V3_LAYERED v4.pdf, the :15 build script's element names, and copy/social-ads-copy.md."
+  },
+  {
+   "id": "pinterest-unspecced",
+   "severity": "medium",
+   "title": "Pinterest is in the plan and has no spec sheet",
+   "detail": "SRA_Implementation_Plan.pptx slide 14 names paid social as Meta, YouTube, TikTok and Pinterest. The iHeartMedia specs deck covers only the first three, so no Pinterest size or copy field is tracked anywhere in this package. Request Pinterest creative specs from Lisa Ratcliff before the paid social package is submitted, or confirm Pinterest is out of the buy.",
+   "found": "data/specs.json > paid_social.platforms lists meta, tiktok and youtube only."
+  },
+  {
+   "id": "tiktok-weight",
+   "severity": "high",
+   "title": "The TikTok stills are over their weight cap",
+   "detail": "TikTok caps the 1200×628 and 640×640 images at 102,400 bytes. The two 1200×628 exports on disk measure roughly 257 KB and 234 KB — two and a half times the limit. They will be rejected as they stand and have to be re-compressed before submission.",
+   "found": "data/specs.json > paid_social.stills[3] and [5]; file sizes measured on disk 2026-08-25."
+  }
+ ],
+ "categories": [
+  {
+   "id": "paid-social",
+   "name": "Paid Social Media",
+   "planRole": "Paid social delivers highly targeted messaging directly to Oklahoma parents on Meta, YouTube, TikTok and Pinterest, using engaging video and educational content designed to drive action (plan slide 14). It is one of the campaign's core conversion channels, driving engagement, website traffic and reading-resource downloads (plan slide 17).",
+   "flight": "Launches 2026-09-08 and runs continuously through December 2026 — heavy investment September through November 4, then sustained through the November and December phases (SRA_Implementation_Plan.pptx slide 20).",
+   "vendors": [
+    "iHeartMedia via LMR Media Mix"
+   ],
+   "specStatus": "partial",
+   "specNote": "Meta, TikTok and YouTube specs are captured; Pinterest — named as a paid social platform on plan slide 14 — has none on file, so no Pinterest size or copy field is tracked here. Request Pinterest specs from LMR Media Mix / iHeartMedia, or confirm Pinterest is out of the buy, before the package is submitted. Transcribed from 'OKEII Social Creative Specs.PPTX' (iHeartMedia, Kim Hallisay, forwarded by Lisa Ratcliff 2026-08-06); the deck itself is on disk at 'Paid Social/OKEII Social Creative Specs.PPTX'. Size list, copy caps, safe zones and account prerequisites all recorded in data/specs.json > paid_social. Platforms require 10 business days for approval ahead of the 2026-09-08 launch (data/specs.json > paid_social.lead_time_note).",
+   "groups": [
+    {
+     "id": "paid-social-ok50",
+     "title": "Scoreboard — \"OK: 50th in Public Education\"",
+     "status": "in_review",
+     "deliverableId": "paid-social-package",
+     "due": "2026-08-25",
+     "vendor": "iHeartMedia via LMR Media Mix",
+     "notes": "Round 1 covers this board at 1:1, 1.91:1 (1080×565, in two headline versions) and 9:16. A 1200×628 export exists on disk ahead of Round 2 but is not part of the Round 1 review set. The 1920×1080 and 640×640 exports have not been built. The two 1.91:1 headline versions at 1080×565 read \"Not Our Kids. Not Our State. Not Anymore.\" and \"Know The Plan. Show Up. Execute.\" Round 1 layouts carry the shared CTA line, which for this scoreboard is the same as its per-board line, so no change is required here.",
+     "copy": [
+      {
+       "label": "HEAD 1",
+       "text": "New Gameplan: The Strong Readers Act."
+      },
+      {
+       "label": "HEAD 2",
+       "text": "Mississippi Did It. We can too."
+      },
+      {
+       "label": "HEAD 3",
+       "text": "Know The Plan. Show Up. Execute."
+      },
+      {
+       "label": "HEAD 4",
+       "text": "Not Our Kids. Not Our State. Not Anymore."
+      },
+      {
+       "label": "BOLD CTA (all sizes)",
+       "text": "The Strong Readers Act is Now Law. Know What it Says."
+      },
+      {
+       "label": "LOGO / destination",
+       "text": "OKEII — links to www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "paid-social-ok50-still-1080x1080",
+       "label": "1:1 · 1080×1080",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[0]",
+       "seed": "Paid Social/exports/New Ads PBV-01.png",
+       "note": "Round 1 export, headline \"New Gameplan: The Strong Readers Act.\" Verified 1080×1080."
+      },
+      {
+       "id": "paid-social-ok50-still-1080x1920",
+       "label": "9:16 · 1080×1920",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[1]",
+       "seed": "Paid Social/exports/New Ads PBV-07.png",
+       "note": "Round 1 export, headline \"Not Our Kids. Not Our State. Not Anymore.\" Verified 1080×1920. Keep the top and bottom bands clear of text and logos per Meta safe zones."
+      },
+      {
+       "id": "paid-social-ok50-still-1080x565",
+       "label": "1.91:1 · 1080×565",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[2]",
+       "seed": "Paid Social/exports/New Ads PBV-05.png",
+       "note": "Round 1 export, headline \"Not Our Kids. Not Our State. Not Anymore.\" A second 1080×565 layout on this same board carries \"Know The Plan. Show Up. Execute.\" Verified 1080×565."
+      },
+      {
+       "id": "paid-social-ok50-still-1200x628",
+       "label": "1.91:1 · 1200×628 · TikTok",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[3] (max_bytes 102400)",
+       "seed": "Paid Social/exports/1200x628/1200x628_A_NotOurKids.jpg",
+       "note": "TikTok caps this file at 102,400 bytes (100 KB). The current export measures 256,935 bytes and must be re-compressed before submission. Same crop as the 1080×565 layout at a larger scale (data/specs.json > paid_social.stills_note)."
+      },
+      {
+       "id": "paid-social-ok50-still-1920x1080",
+       "label": "16:9 · 1920×1080",
+       "kind": "image",
+       "w": 1920,
+       "h": 1080,
+       "ratio": "16:9",
+       "use": "FB Search Results",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[4]",
+       "seed": null,
+       "note": "Not yet built. Requires an original 16:9 layout — it is not a crop of any Round 1 size."
+      },
+      {
+       "id": "paid-social-ok50-still-640x640",
+       "label": "1:1 · 640×640 · TikTok",
+       "kind": "image",
+       "w": 640,
+       "h": 640,
+       "ratio": "1:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[5] (max_bytes 102400)",
+       "seed": null,
+       "note": "Not yet built. Scales down from the 1080×1080 layout (data/specs.json > paid_social.stills_note). TikTok caps this file at 102,400 bytes (100 KB)."
+      }
+     ]
+    },
+    {
+     "id": "paid-social-teachers-win",
+     "title": "Scoreboard — \"Teachers Win\"",
+     "status": "in_review",
+     "deliverableId": "paid-social-package",
+     "due": "2026-08-25",
+     "vendor": "iHeartMedia via LMR Media Mix",
+     "notes": "Only the 1:1 layout exists from Round 1; the other five sizes are outstanding. The Round 1 layout carries the shared CTA line \"The Strong Readers Act is Now Law. Know What It Says.\" David's copy doc assigns this board its own CTA, \"Know How Teachers Win.\" — the per-board CTA is scheduled to be applied on layout approval. Standing direction: this board positions teachers as beneficiaries of the Act — the training and reading coaches they gain — never as the cause of the problem.",
+     "copy": [
+      {
+       "label": "HEAD 1",
+       "text": "New Gameplan: The Strong Readers Act."
+      },
+      {
+       "label": "HEAD 2",
+       "text": "The Right Training to Win."
+      },
+      {
+       "label": "HEAD 3",
+       "text": "More Reading Coaches."
+      },
+      {
+       "label": "BOLD CTA (all sizes)",
+       "text": "The Strong Readers Act is Now Law. Know How Teachers Win."
+      },
+      {
+       "label": "LOGO / destination",
+       "text": "OKEII — links to www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "paid-social-teachers-win-still-1080x1080",
+       "label": "1:1 · 1080×1080",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[0]",
+       "seed": "Paid Social/exports/New Ads PBV-02.png",
+       "note": "Round 1 export, headline \"The Right Training To Win.\" Verified 1080×1080."
+      },
+      {
+       "id": "paid-social-teachers-win-still-1080x1920",
+       "label": "9:16 · 1080×1920",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[1]",
+       "seed": null,
+       "note": "Not yet built."
+      },
+      {
+       "id": "paid-social-teachers-win-still-1080x565",
+       "label": "1.91:1 · 1080×565",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[2]",
+       "seed": null,
+       "note": "Not yet built."
+      },
+      {
+       "id": "paid-social-teachers-win-still-1200x628",
+       "label": "1.91:1 · 1200×628 · TikTok",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[3] (max_bytes 102400)",
+       "seed": null,
+       "note": "Not yet built. TikTok caps this file at 102,400 bytes (100 KB). Same crop as the 1080×565 layout at a larger scale."
+      },
+      {
+       "id": "paid-social-teachers-win-still-1920x1080",
+       "label": "16:9 · 1920×1080",
+       "kind": "image",
+       "w": 1920,
+       "h": 1080,
+       "ratio": "16:9",
+       "use": "FB Search Results",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[4]",
+       "seed": null,
+       "note": "Not yet built. Requires an original 16:9 layout."
+      },
+      {
+       "id": "paid-social-teachers-win-still-640x640",
+       "label": "1:1 · 640×640 · TikTok",
+       "kind": "image",
+       "w": 640,
+       "h": 640,
+       "ratio": "1:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[5] (max_bytes 102400)",
+       "seed": null,
+       "note": "Not yet built. Scales down from the 1080×1080 layout. TikTok caps this file at 102,400 bytes (100 KB)."
+      }
+     ]
+    },
+    {
+     "id": "paid-social-students-win",
+     "title": "Scoreboard — \"Students Win\"",
+     "status": "not_started",
+     "deliverableId": "paid-social-package",
+     "due": "2026-08-25",
+     "vendor": "iHeartMedia via LMR Media Mix",
+     "notes": "This is the fifth scoreboard and it has not been built in any size. Round 1 deliberately covered the other four boards so the type hierarchy could be judged against both light and dark backgrounds; the Round 1 contact sheet lists \"Students Win\" as the remaining board to build into all ratios on approval. All six sizes are outstanding.",
+     "copy": [
+      {
+       "label": "HEAD 1",
+       "text": "New Gameplan: The Strong Readers Act."
+      },
+      {
+       "label": "HEAD 2",
+       "text": "Individualized Support."
+      },
+      {
+       "label": "HEAD 3",
+       "text": "Read-at-Home Gameplans."
+      },
+      {
+       "label": "BOLD CTA (all sizes)",
+       "text": "The Strong Readers Act is Now Law. Know How Kids Win."
+      },
+      {
+       "label": "LOGO / destination",
+       "text": "OKEII — links to www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "paid-social-students-win-still-1080x1080",
+       "label": "1:1 · 1080×1080",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[0]",
+       "seed": null,
+       "note": "Not yet built. Scoreboard graphic for this board still to be produced."
+      },
+      {
+       "id": "paid-social-students-win-still-1080x1920",
+       "label": "9:16 · 1080×1920",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[1]",
+       "seed": null,
+       "note": "Not yet built."
+      },
+      {
+       "id": "paid-social-students-win-still-1080x565",
+       "label": "1.91:1 · 1080×565",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[2]",
+       "seed": null,
+       "note": "Not yet built."
+      },
+      {
+       "id": "paid-social-students-win-still-1200x628",
+       "label": "1.91:1 · 1200×628 · TikTok",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[3] (max_bytes 102400)",
+       "seed": null,
+       "note": "Not yet built. TikTok caps this file at 102,400 bytes (100 KB)."
+      },
+      {
+       "id": "paid-social-students-win-still-1920x1080",
+       "label": "16:9 · 1920×1080",
+       "kind": "image",
+       "w": 1920,
+       "h": 1080,
+       "ratio": "16:9",
+       "use": "FB Search Results",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[4]",
+       "seed": null,
+       "note": "Not yet built. Requires an original 16:9 layout."
+      },
+      {
+       "id": "paid-social-students-win-still-640x640",
+       "label": "1:1 · 640×640 · TikTok",
+       "kind": "image",
+       "w": 640,
+       "h": 640,
+       "ratio": "1:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[5] (max_bytes 102400)",
+       "seed": null,
+       "note": "Not yet built. Scales down from the 1080×1080 layout. TikTok caps this file at 102,400 bytes (100 KB)."
+      }
+     ]
+    },
+    {
+     "id": "paid-social-parents-win",
+     "title": "Scoreboard — \"Parents Win\"",
+     "status": "in_review",
+     "deliverableId": "paid-social-package",
+     "due": "2026-08-25",
+     "vendor": "iHeartMedia via LMR Media Mix",
+     "notes": "Only the 1:1 layout exists from Round 1; the other five sizes are outstanding. The Round 1 layout carries the shared CTA line \"The Strong Readers Act is Now Law. Know What It Says.\" David's copy doc assigns this board its own CTA, \"Know How Parents Win.\" — the per-board CTA is scheduled to be applied on layout approval. Standing direction: no \"Parent Playbook\" references until the law is in effect; the call to action is the bare URL plus QR code.",
+     "copy": [
+      {
+       "label": "HEAD 1",
+       "text": "New Gameplan: The Strong Readers Act."
+      },
+      {
+       "label": "HEAD 2",
+       "text": "Read-at-Home Gameplans."
+      },
+      {
+       "label": "HEAD 3",
+       "text": "Parents Are A Critical Part of the Team."
+      },
+      {
+       "label": "BOLD CTA (all sizes)",
+       "text": "The Strong Readers Act is Now Law. Know How Parents Win."
+      },
+      {
+       "label": "LOGO / destination",
+       "text": "OKEII — links to www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "paid-social-parents-win-still-1080x1080",
+       "label": "1:1 · 1080×1080",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[0]",
+       "seed": "Paid Social/exports/New Ads PBV-04.png",
+       "note": "Round 1 export, headline \"Read-at-Home Gameplans.\" Verified 1080×1080."
+      },
+      {
+       "id": "paid-social-parents-win-still-1080x1920",
+       "label": "9:16 · 1080×1920",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[1]",
+       "seed": null,
+       "note": "Not yet built."
+      },
+      {
+       "id": "paid-social-parents-win-still-1080x565",
+       "label": "1.91:1 · 1080×565",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[2]",
+       "seed": null,
+       "note": "Not yet built."
+      },
+      {
+       "id": "paid-social-parents-win-still-1200x628",
+       "label": "1.91:1 · 1200×628 · TikTok",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[3] (max_bytes 102400)",
+       "seed": null,
+       "note": "Not yet built. TikTok caps this file at 102,400 bytes (100 KB). Same crop as the 1080×565 layout at a larger scale."
+      },
+      {
+       "id": "paid-social-parents-win-still-1920x1080",
+       "label": "16:9 · 1920×1080",
+       "kind": "image",
+       "w": 1920,
+       "h": 1080,
+       "ratio": "16:9",
+       "use": "FB Search Results",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[4]",
+       "seed": null,
+       "note": "Not yet built. Requires an original 16:9 layout."
+      },
+      {
+       "id": "paid-social-parents-win-still-640x640",
+       "label": "1:1 · 640×640 · TikTok",
+       "kind": "image",
+       "w": 640,
+       "h": 640,
+       "ratio": "1:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[5] (max_bytes 102400)",
+       "seed": null,
+       "note": "Not yet built. Scales down from the 1080×1080 layout. TikTok caps this file at 102,400 bytes (100 KB)."
+      }
+     ]
+    },
+    {
+     "id": "paid-social-47th-reading",
+     "title": "Scoreboard — \"47th of 50 in Reading\"",
+     "status": "in_review",
+     "deliverableId": "paid-social-package",
+     "due": "2026-08-25",
+     "vendor": "iHeartMedia via LMR Media Mix",
+     "notes": "Round 1 covers this board at 1:1 and 9:16; the remaining four sizes are outstanding. One line to confirm before the remaining sizes are built: the Round 1 exports and the rendered :15 anchor card both read \"Not Our Kids. Not Our State. Not Anymore.\" while David's copy doc reads \"Not Our Kids. Not This State. Not Anymore.\" Round 1 also carries the shared CTA line; David's copy doc assigns this board \"Know How To Win.\"",
+     "copy": [
+      {
+       "label": "HEAD 1",
+       "text": "Not Our Kids. Not This State. Not Anymore."
+      },
+      {
+       "label": "HEAD 2",
+       "text": "Know The Plan. Show Up. Execute."
+      },
+      {
+       "label": "HEAD 3",
+       "text": "The Strong Readers Act is a Better Gameplan."
+      },
+      {
+       "label": "BOLD CTA (all sizes)",
+       "text": "The Strong Readers Act is Now Law. Know How To Win."
+      },
+      {
+       "label": "LOGO / destination",
+       "text": "OKEII — links to www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "paid-social-47th-reading-still-1080x1080",
+       "label": "1:1 · 1080×1080",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[0]",
+       "seed": "Paid Social/exports/New Ads PBV-03.png",
+       "note": "Round 1 export, headline as set reads \"Not Our Kids. Not Our State. Not Anymore.\" Verified 1080×1080."
+      },
+      {
+       "id": "paid-social-47th-reading-still-1080x1920",
+       "label": "9:16 · 1080×1920",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[1]",
+       "seed": "Paid Social/exports/New Ads PBV-08.png",
+       "note": "Round 1 export, headline as set reads \"Not Our Kids. Not Our State. Not Anymore.\" Verified 1080×1920. Keep the top and bottom bands clear of text and logos per Meta safe zones."
+      },
+      {
+       "id": "paid-social-47th-reading-still-1080x565",
+       "label": "1.91:1 · 1080×565",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[2]",
+       "seed": null,
+       "note": "Not yet built."
+      },
+      {
+       "id": "paid-social-47th-reading-still-1200x628",
+       "label": "1.91:1 · 1200×628 · TikTok",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[3] (max_bytes 102400)",
+       "seed": null,
+       "note": "Not yet built as a deliverable file. TikTok caps this file at 102,400 bytes (100 KB)."
+      },
+      {
+       "id": "paid-social-47th-reading-still-1920x1080",
+       "label": "16:9 · 1920×1080",
+       "kind": "image",
+       "w": 1920,
+       "h": 1080,
+       "ratio": "16:9",
+       "use": "FB Search Results",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[4]",
+       "seed": null,
+       "note": "Not yet built. Requires an original 16:9 layout."
+      },
+      {
+       "id": "paid-social-47th-reading-still-640x640",
+       "label": "1:1 · 640×640 · TikTok",
+       "kind": "image",
+       "w": 640,
+       "h": 640,
+       "ratio": "1:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "required": true,
+       "source": "data/specs.json > paid_social.stills[5] (max_bytes 102400)",
+       "seed": null,
+       "note": "Not yet built. Scales down from the 1080×1080 layout. TikTok caps this file at 102,400 bytes (100 KB)."
+      }
+     ]
+    },
+    {
+     "id": "paid-social-video-15",
+     "title": "Paid social video — \"Not Our Kids\" :15",
+     "status": "in_progress",
+     "deliverableId": "paid-social-package",
+     "due": "2026-08-25",
+     "vendor": "iHeartMedia via LMR Media Mix",
+     "notes": "The 16×9 :15 is rendered and review-ready. The 1080×1920 and 1080×1080 cutdowns that Meta and TikTok require have not been built — this is an open blocker on the 8/25 package. Meta's Placement Asset Customization takes all three sizes as a single ad, and static and video can be mixed, but imagery and messaging must stay consistent across them.",
+     "copy": [
+      {
+       "label": "Anchor card, as rendered in the :15",
+       "text": "NOT OUR KIDS. NOT OUR STATE. NOT ANYMORE. / The Strong Readers Act is Now Law. Know What It Says. / OK logo + okeii.org (bare URL on screen; the click destination is www.okeii.org/StrongReadersAct)"
+      },
+      {
+       "label": "Destination URL",
+       "text": "https://www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "paid-social-video-15-1080x1920",
+       "label": "9:16 · 1080×1920 · :15",
+       "kind": "video",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "Meta Stories/Reels, TikTok",
+       "formats": [
+        "MP4"
+       ],
+       "maxBytes": 524288000,
+       "required": true,
+       "source": "data/specs.json > paid_social.video[0]; cap from paid_social.platforms.tiktok.video_max_bytes (the binding limit for this size — Meta allows up to 4 GB)",
+       "seed": null,
+       "note": "Not yet built. This is the vertical cutdown required by both Meta Stories/Reels and TikTok, and is an open blocker on the 8/25 package (data/open-items.json > blockers 'video-cutdowns'). Meta accepts MP4, MOV or GIF; TikTok accepts MPEG-2 or MPEG-4, so a single MP4 satisfies both. TikTok crops device edges, so key elements must stay centred. The iHeart deck lists TikTok at 540×960; 1080×1920 is the same ratio at 2x and is accepted."
+      },
+      {
+       "id": "paid-social-video-15-1080x1080",
+       "label": "1:1 · 1080×1080 · :15",
+       "kind": "video",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "Meta feed",
+       "formats": [
+        "MP4",
+        "MOV",
+        "GIF"
+       ],
+       "maxBytes": 4294967296,
+       "required": true,
+       "source": "data/specs.json > paid_social.video[1]; cap from paid_social.platforms.meta.video_max_bytes",
+       "seed": null,
+       "note": "Not yet built. Required for the Meta feed placement and an open blocker on the 8/25 package (data/open-items.json > blockers 'video-cutdowns')."
+      },
+      {
+       "id": "paid-social-video-15-1920x1080",
+       "label": "16:9 · 1920×1080 · :15",
+       "kind": "video",
+       "w": 1920,
+       "h": 1080,
+       "ratio": "16:9",
+       "use": "FB Search Results, YouTube",
+       "formats": [
+        "MP4",
+        "MOV"
+       ],
+       "maxBytes": 4294967296,
+       "required": true,
+       "source": "data/specs.json > paid_social.video[2]; cap from paid_social.platforms.meta.video_max_bytes (the tighter of the two platforms for this size); asset from data/assets.json > groups[sra-notourkids-16x9-15s].items[0]",
+       "seed": "Video Production/Paid Social Video/SRA_16x9_15s/SRA_NotOurKids_16x9_15s.mp4",
+       "note": "Rendered (V3) and review-ready. At :15 this falls inside YouTube's non-skippable in-stream window of 6 to 15 seconds. Cap shown is Meta's 4 GB, the tighter of the two platforms for this size; YouTube's own ceiling is far higher. Before the YouTube buy can run, the file has to be uploaded to OKEII's own YouTube channel and the link supplied."
+      }
+     ]
+    },
+    {
+     "id": "paid-social-platform-copy",
+     "title": "Platform copy and account prerequisites",
+     "status": "blocked",
+     "deliverableId": "paid-social-package",
+     "due": "2026-08-25",
+     "vendor": "iHeartMedia via LMR Media Mix",
+     "notes": "Every channel needs its own copy fields alongside the artwork, and each has a hard character cap. YouTube's 15-character headline is the tightest constraint in the campaign and no headline written so far fits it — \"Strong Readers Act\" alone is 18 characters, so YouTube needs a short headline of its own written before the package can be submitted (data/specs.json > paid_social.platforms.youtube.copy_warning; data/open-items.json > blockers 'youtube-headline'). Account prerequisites still to be confirmed with the media buyer: Facebook Page compliant with Facebook Ad Policy, linked to Business Manager with page access granted; Instagram handle linked to the Facebook Page; domain verified and Meta pixel placed; organic TikTok profile connected to iHeartMedia and a TikTok profile image supplied (1:1, JPG or PNG, 51,200 bytes maximum); a TikTok pixel placed for traffic or conversion campaigns, and a Privacy Policy link and Terms of Use carried on the landing page; the :15 uploaded to OKEII's own YouTube channel with the link supplied and the YouTube ad account verified; Google Ads tag placed for traffic campaigns; Restricted Ad Category compliance reviewed on all four channels, since education advocacy tied to legislation may fall in that category. The landing page at okeii.org/StrongReadersAct is the destination for every field below and does not exist yet. One copy gap gates submission outright: YouTube caps the short headline at 15 characters and none of the campaign headlines fits — \"Strong Readers Act\" alone is 18. A YouTube-specific short headline, its 90-character long headline and its 70-character description all still have to be written.",
+     "copy": [
+      {
+       "label": "Destination URL (all channels)",
+       "text": "https://www.okeii.org/StrongReadersAct"
+      },
+      {
+       "label": "CTA line carried on Round 1 artwork",
+       "text": "The Strong Readers Act is Now Law. Know What It Says."
+      }
+     ],
+     "slots": [
+      {
+       "id": "paid-social-copy-meta-post-copy",
+       "label": "Meta · post copy · 125 characters",
+       "kind": "copy",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "Facebook and Instagram",
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.platforms.meta.copy.post_copy",
+       "seed": null,
+       "note": "125 characters is a recommendation rather than a hard cap (paid_social.platforms.meta.copy_note). Not yet written."
+      },
+      {
+       "id": "paid-social-copy-meta-headline",
+       "label": "Meta · headline · 40 characters",
+       "kind": "copy",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "Facebook and Instagram",
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.platforms.meta.copy.headline",
+       "seed": null,
+       "note": "40 characters is the hard cap (paid_social.platforms.meta.copy_note). Not yet written."
+      },
+      {
+       "id": "paid-social-copy-meta-link-description",
+       "label": "Meta · link description · 27 characters",
+       "kind": "copy",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "Facebook and Instagram",
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.platforms.meta.copy.link_description",
+       "seed": null,
+       "note": "Not yet written. Meta also requires a CTA button selection and the destination URL alongside these fields."
+      },
+      {
+       "id": "paid-social-copy-tiktok-ad-description",
+       "label": "TikTok · ad description · 100 characters",
+       "kind": "copy",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "TikTok",
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.platforms.tiktok.copy.ad_description",
+       "seed": null,
+       "note": "No emojis, curly braces or hash characters. Punctuation and spaces count toward the 100-character limit (paid_social.platforms.tiktok.copy_note). Not yet written."
+      },
+      {
+       "id": "paid-social-copy-tiktok-brand-name",
+       "label": "TikTok · brand / company name · 2–20 characters",
+       "kind": "copy",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "TikTok",
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.platforms.tiktok.copy.brand_name_min / brand_name_max",
+       "seed": null,
+       "note": "Minimum 2, maximum 20 characters. Same rule as the description: no emojis, curly braces or hash characters. Not yet confirmed."
+      },
+      {
+       "id": "paid-social-copy-youtube-headline",
+       "label": "YouTube · headline · 15 characters",
+       "kind": "copy",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "YouTube",
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.platforms.youtube.copy.headline; data/open-items.json > blockers 'youtube-headline'",
+       "seed": null,
+       "note": "Open blocker. Every headline written for the campaign exceeds 15 characters, and \"Strong Readers Act\" alone is 18. A YouTube-specific short headline has to be written before the package can be submitted."
+      },
+      {
+       "id": "paid-social-copy-youtube-long-headline",
+       "label": "YouTube · long headline · 90 characters",
+       "kind": "copy",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "YouTube",
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.platforms.youtube.copy.long_headline",
+       "seed": null,
+       "note": "Not yet written."
+      },
+      {
+       "id": "paid-social-copy-youtube-description",
+       "label": "YouTube · description · 70 characters",
+       "kind": "copy",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "YouTube",
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.platforms.youtube.copy.description",
+       "seed": null,
+       "note": "Not yet written."
+      },
+      {
+       "id": "paid-social-copy-youtube-cta",
+       "label": "YouTube · CTA · 10 characters",
+       "kind": "copy",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "YouTube",
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "source": "data/specs.json > paid_social.platforms.youtube.copy.cta",
+       "seed": null,
+       "note": "Not yet written. YouTube also requires the destination URL and a link to the video on OKEII's own channel."
+      }
+     ]
+    },
+    {
+     "id": "paid-social-round1-review",
+     "title": "Round 1 review package",
+     "status": "in_review",
+     "deliverableId": "paid-social-package",
+     "due": "2026-08-25",
+     "vendor": "iHeartMedia via LMR Media Mix",
+     "notes": "Round 1 is exported and with the team for review. It covers eight layouts across three ratios — 1:1, 1.91:1 and 9:16 — for four of the five scoreboards, so the type hierarchy can be judged against both light and dark boards. On approval: the \"Students Win\" board gets built into all ratios, the per-scoreboard CTA lines replace the shared line, the 1200×628 size is added across the set, and the full headline rotation is versioned out.",
+     "slots": [
+      {
+       "id": "paid-social-round1-review-sheet-pdf",
+       "label": "Round 1 review sheet · PDF",
+       "kind": "pdf",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "Internal and client review of Round 1 layouts",
+       "formats": [
+        "PDF"
+       ],
+       "maxBytes": null,
+       "required": false,
+       "source": "data/assets.json > groups[paid-social-stills-round1].items[0] (role: review sheet)",
+       "seed": "Paid Social/exports/OKEII_SRA_PaidSocial_Round1.pdf",
+       "note": "Delivered 2026-08-24. All eight Round 1 layouts with size, headline, CTA and placement called out for each."
+      },
+      {
+       "id": "paid-social-round1-contact-sheet",
+       "label": "Round 1 contact sheet · browsable layout index",
+       "kind": "doc",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "Internal and client review of Round 1 layouts",
+       "formats": [
+        "HTML"
+       ],
+       "maxBytes": null,
+       "required": false,
+       "source": "data/assets.json > groups[paid-social-stills-round1].items[1] (role: contact sheet)",
+       "seed": "Paid Social/exports/index.html",
+       "note": "Self-contained page grouping the eight layouts by ratio, with click-to-enlarge. Also records what Round 1 covers and what follows on approval."
+      },
+      {
+       "id": "paid-social-round1-video-qa-frames",
+       "label": "Video QA frames · :15 16:9 contact sheet",
+       "kind": "image",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "use": "Frame-level QA of the rendered :15",
+       "formats": [
+        "JPG"
+       ],
+       "maxBytes": null,
+       "required": false,
+       "source": "data/assets.json > groups[sra-notourkids-16x9-15s].items[1] (role: QA frames)",
+       "seed": "Video Production/Paid Social Video/SRA_16x9_15s/QA_contact_sheet.jpg",
+       "note": "Frame grabs from the rendered 16×9 :15, for checking type, timing and the anchor card without opening the video."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "web-landing",
+   "name": "Campaign Landing Page — okeii.org/StrongReadersAct",
+   "planRole": "The plan makes the OKEII website the campaign's single conversion point: Native Content exists to drive \"qualified traffic to the OKEII website/landing pages\" (SRA_Implementation_Plan.pptx slide 18) and Paid Search \"directs them to Strong Readers Act materials at the moment of highest intent\" (slide 19). Two of the campaign's primary success measures — website visits and reading resource downloads (slide 22) — can only be read off this page.",
+   "flight": "Must be live before the 2026-09-08 campaign launch and stay up through the December flight; the plan runs September through December 2026 (SRA_Implementation_Plan.pptx slides 9 and 20; data/schedule.json > launch_date).",
+   "vendors": [
+    "PB Productions",
+    "OKEII (okeii.org site owner)",
+    "LMR Media Mix (tracking)"
+   ],
+   "specStatus": "partial",
+   "specNote": "No web spec is captured: data/schedule.json > deliverables[sra-landing-page].specs_ref is null and data/specs.json has no web section. What is documented (copy/landing-page-copy.md): okeii.org runs on Wix and uses Madefor Display as its brand face; the campaign carries one destination everywhere; READ. ASK. VERIFY. is the parents' three-action frame; and no \"Parent Playbook\" references are used until the law takes effect in SY 2027-28. What is missing is the page copy itself — \"OKEII Web Edits_SRA_Implementation.docx\", written by David Downing and emailed 2026-08-24 under the subject \"SRA Implementation - Updates to Website\". It is a Gmail attachment and is not on this disk; inbox/NEEDED-FROM-EMAIL.md lists it under \"Critical\" for filing into Deployment Package/copy/. David asked to talk before the build starts, so no page layout, image dimensions or QR specification has been set. No sizes are stated below because none have been specified.",
+   "groups": [
+    {
+     "id": "sra-landing-page",
+     "title": "okeii.org/StrongReadersAct — public campaign page",
+     "status": "blocked",
+     "vendor": "PB Productions",
+     "due": "2026-09-08",
+     "deliverableId": "sra-landing-page",
+     "notes": "The campaign's hard blocker. data/schedule.json marks this deliverable critical and blocked, due 2026-09-08 — the same day as launch; data/open-items.json carries it as blocker \"landing-page-missing\" at severity critical. Every paid social ad and the campaign QR code point at this URL, and platform pre-approval cannot be submitted against a page that does not yet exist. The page copy arrived by email on 2026-08-24 and David Downing asked to talk before the build begins. Built in Wix on okeii.org, using Madefor Display. TikTok additionally requires the landing page to carry a Privacy Policy link and Terms of Use (data/specs.json > paid_social.platforms.tiktok.platform_requirements); both must be live before the paid social package goes for platform pre-approval.",
+     "copy": [
+      {
+       "label": "Destination URL — one destination for the entire campaign",
+       "text": "https://www.okeii.org/StrongReadersAct"
+      },
+      {
+       "label": "Anchor card, verbatim on every piece",
+       "text": "NOT OUR KIDS. NOT THIS STATE. NOT ANYMORE. / IMPLEMENTING THE STRONG READERS ACT / okeii.org + QR"
+      },
+      {
+       "label": "READ. ASK. VERIFY. — the parents' three-action frame",
+       "text": "READ with your kids every day · ASK your school how your child is doing in reading · VERIFY that your school is implementing the Strong Readers Act."
+      },
+      {
+       "label": "Platform and brand face",
+       "text": "okeii.org runs on Wix and uses Madefor Display as its brand face."
+      },
+      {
+       "label": "Standing direction on the call to action",
+       "text": "No \"Parent Playbook\" references until the law is in effect in school year 2027-28. The call to action is a bare URL plus a QR code."
+      }
+     ],
+     "slots": [
+      {
+       "id": "web-landing-copy-doc",
+       "label": "Page copy document · DOCX · not on disk",
+       "kind": "doc",
+       "required": true,
+       "formats": [
+        "DOCX"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null,
+       "use": "Source copy for every section of the public page.",
+       "note": "\"OKEII Web Edits_SRA_Implementation.docx\", written by David Downing and emailed 2026-08-24, subject \"SRA Implementation - Updates to Website\". It is a Gmail attachment and is not on this disk. inbox/NEEDED-FROM-EMAIL.md lists it under \"Critical\" and files it into Deployment Package/copy/. David asked to talk about the copy before the build starts, so the build is gated on that conversation, not only on the file arriving.",
+       "source": "copy/landing-page-copy.md > \"STATUS: NOT YET AVAILABLE ON DISK\"; data/schedule.json > deliverables[sra-landing-page].notes; inbox/NEEDED-FROM-EMAIL.md > \"Critical — blocks the schedule and the landing page\""
+      },
+      {
+       "id": "web-landing-hero-image",
+       "label": "Hero image · dimensions to be set with the page build",
+       "kind": "image",
+       "required": false,
+       "formats": [],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null,
+       "use": "Top of the okeii.org/StrongReadersAct page.",
+       "note": "Placeholder. No hero art has been produced and no image dimensions have been specified anywhere on disk — the Wix layout will set them. The campaign's Friday Night Lights scoreboard is the established through-line, so hero art is expected to come from that family rather than be commissioned separately.",
+       "source": "data/schedule.json > deliverables[sra-landing-page] (channel \"web\", specs_ref null — no image spec captured); HANDOFF.md §4 (scoreboard through-line)"
+      },
+      {
+       "id": "web-landing-qr-code",
+       "label": "QR code asset · resolves to okeii.org/StrongReadersAct",
+       "kind": "image",
+       "required": true,
+       "formats": [],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null,
+       "use": "The anchor card on every campaign piece — print, DOOH, social, TV.",
+       "note": "The anchor card carries \"okeii.org + QR\" on every piece and the call to action is a bare URL plus a QR code, so this asset is required campaign-wide, not only on the web page. No QR file exists anywhere in the project folder as of 2026-08-25. The code can encode the known URL, but it should not be distributed until the page it resolves to is live. No size, format or error-correction level has been specified.",
+       "source": "data/specs.json > brand.anchor_card; HANDOFF.md §4 (\"The call to action is a bare URL plus a QR code\"); copy/social-ads-copy.md > \"LOGO | OKEII (links to www.okeii.org/StrongReadersAct)\""
+      }
+     ]
+    },
+    {
+     "id": "landing-page-tracking",
+     "title": "Tracking and measurement setup",
+     "status": "blocked",
+     "vendor": "PB Productions",
+     "due": null,
+     "deliverableId": null,
+     "notes": "Blocked behind the page existing. data/open-items.json carries this as blocker \"tracking-pixel-urls\" at severity high, waiting on the landing page URL. Separately, data/specs.json records that Meta requires a verified domain with the Meta pixel placed for traffic and conversion objectives, TikTok requires a pixel for traffic or conversion campaigns, and YouTube requires a Google Ads tag — all three land on this page. No vendor deadline has been set for the URL list itself.",
+     "copy": [
+      {
+       "label": "URLs currently tagged",
+       "text": "okeii.org, /research, /resources, /about"
+      },
+      {
+       "label": "URL to be added",
+       "text": "www.okeii.org/StrongReadersAct — the Strong Readers Act page or section, once it exists."
+      }
+     ],
+     "slots": [
+      {
+       "id": "web-landing-tracking-pixel-urls",
+       "label": "Tracking pixel URL list · owed to the media buyer",
+       "kind": "copy",
+       "required": true,
+       "formats": [],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null,
+       "use": "Meta pixel, TikTok pixel and Google Ads tag placement for the paid flights.",
+       "note": "The confirmed list of URLs Lisa Ratcliff (LMR Media Mix) should tag. Requested 2026-08-13 and outstanding since 2026-08-14. Pixels currently watch okeii.org plus /research, /resources and /about; the Strong Readers Act page or section is to be added once the URL exists. Meta additionally requires the domain verified with the pixel placed for traffic and conversion objectives.",
+       "source": "data/open-items.json > blockers[tracking-pixel-urls]; copy/landing-page-copy.md > \"What is known about the page from other sources\"; data/specs.json > paid_social.platforms.meta.platform_requirements"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tv-spots",
+   "name": "TV Spots (CTV + Broadcast)",
+   "planRole": "The campaign's film library, and the production stream that feeds the campaign's two broadcast-grade video channels: CTV / Premium Streaming, which slide 13 names the primary awareness vehicle, and Broadcast Television, which flights November 4 - December 31. Eight spot concepts are approved at V2 look-board stage and carry the campaign's scoreboard through-line; no finished film has been produced yet.",
+   "flight": "Production stream — feeds CTV from the September 8 launch (data/schedule.json > launch_date; plan slide 9) and Broadcast Television November 4 – December 31 (plan slides 13 and 20).",
+   "vendors": [
+    "PB Productions, LLC",
+    "Catapult / Marketing Consulting (David Downing, creative direction)"
+   ],
+   "specStatus": "partial",
+   "specNote": "The creative is documented and on disk: eight approved V2 look boards, SRA_Spots_V2.pdf and SRA_Scripts_V2_print.pdf, plus the partner one-sheet SRA_Campaign_Briefing.pdf (data/assets.json > groups[tv-spot-look-boards]). What is NOT captured is a technical delivery spec - data/specs.json contains no television section, and no CTV platform or broadcast station has supplied frame size, codec, bit-rate, audio loudness, caption file, slate or traffic-code requirements. The three spot lengths (:60, :30, :15) are evidenced by two records in inbox/NEEDED-FROM-EMAIL.md — the filenames of David Downing's 2026-08-24 'Creative in Production' attachments - SRA_Campaign_60_TV.pdf, SRA_Campaign_30_TV.pdf, SRA_Campaign_15_TV.pdf - which are still in email and not on disk (inbox/NEEDED-FROM-EMAIL.md). Which concepts are scripted at which length is set by those three documents and is not yet on record here, so the film slots are held at campaign level rather than repeated under each concept. TV also carries no entry in data/schedule.json, so there is no vendor deadline against it.",
+   "groups": [
+    {
+     "id": "tv-spot-not-anymore",
+     "title": "Not Anymore",
+     "status": "approved",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
+     "slots": [
+      {
+       "id": "tv-not-anymore-lookboard",
+       "label": "Look board - approved V2",
+       "kind": "image",
+       "required": false,
+       "use": "Internal and client concept review",
+       "note": "Approved V2 look board for the Not Anymore concept.",
+       "seed": "SRA_Spot_Edits/Not_Anymore_Spot.jpeg",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/Not_Anymore_Spot.jpeg (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      }
+     ]
+    },
+    {
+     "id": "tv-spot-the-chorus",
+     "title": "The Chorus",
+     "status": "approved",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
+     "slots": [
+      {
+       "id": "tv-the-chorus-lookboard",
+       "label": "Look board - approved V2",
+       "kind": "image",
+       "required": false,
+       "use": "Internal and client concept review",
+       "note": "Approved V2 look board for The Chorus concept.",
+       "seed": "SRA_Spot_Edits/The_Chorus_Spot.jpeg",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/The_Chorus_Spot.jpeg (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      }
+     ]
+    },
+    {
+     "id": "tv-spot-the-kitchen-table",
+     "title": "The Kitchen Table",
+     "status": "approved",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. Three additional Kitchen Table frames are also present in SRA_Spot_Edits/ and are listed here so they are not lost. No film has been produced - see 'Finished TV films' below.",
+     "slots": [
+      {
+       "id": "tv-kitchen-table-lookboard",
+       "label": "Look board - approved V2",
+       "kind": "image",
+       "required": false,
+       "use": "Internal and client concept review",
+       "note": "Approved V2 look board for The Kitchen Table concept.",
+       "seed": "SRA_Spot_Edits/The_Kitchen_Table_Spot.jpeg",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/The_Kitchen_Table_Spot.jpeg (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      },
+      {
+       "id": "tv-kitchen-table-frame-table",
+       "label": "Additional Kitchen Table frame 1",
+       "kind": "image",
+       "required": false,
+       "use": "Concept reference",
+       "note": "Additional Kitchen Table frame found on disk alongside the look boards.",
+       "seed": "SRA_Spot_Edits/KT_reshoot_table.jpg",
+       "source": "SRA_Spot_Edits/ directory listing - KT_reshoot_table.jpg present on disk (not listed in data/assets.json)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      },
+      {
+       "id": "tv-kitchen-table-frame-lean",
+       "label": "Additional Kitchen Table frame 2",
+       "kind": "image",
+       "required": false,
+       "use": "Concept reference",
+       "note": "Additional Kitchen Table frame found on disk alongside the look boards.",
+       "seed": "SRA_Spot_Edits/KT_reshoot_lean.jpg",
+       "source": "SRA_Spot_Edits/ directory listing - KT_reshoot_lean.jpg present on disk (not listed in data/assets.json)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      },
+      {
+       "id": "tv-kitchen-table-frame-finger",
+       "label": "Additional Kitchen Table frame 3",
+       "kind": "image",
+       "required": false,
+       "use": "Concept reference",
+       "note": "Additional Kitchen Table frame found on disk alongside the look boards.",
+       "seed": "SRA_Spot_Edits/KT_reshoot_finger.jpg",
+       "source": "SRA_Spot_Edits/ directory listing - KT_reshoot_finger.jpg present on disk (not listed in data/assets.json)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      }
+     ]
+    },
+    {
+     "id": "tv-spot-the-surprise",
+     "title": "The Surprise",
+     "status": "approved",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
+     "slots": [
+      {
+       "id": "tv-the-surprise-lookboard",
+       "label": "Look board - approved V2",
+       "kind": "image",
+       "required": false,
+       "use": "Internal and client concept review",
+       "note": "Approved V2 look board for The Surprise concept.",
+       "seed": "SRA_Spot_Edits/The_Surprise_Spot.jpeg",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/The_Surprise_Spot.jpeg (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      }
+     ]
+    },
+    {
+     "id": "tv-spot-the-scoreboard",
+     "title": "The Scoreboard",
+     "status": "approved",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. This concept shares the scoreboard graphic that also carries the paid social ads. No film has been produced - see 'Finished TV films' below.",
+     "slots": [
+      {
+       "id": "tv-the-scoreboard-lookboard",
+       "label": "Look board - approved V2",
+       "kind": "image",
+       "required": false,
+       "use": "Internal and client concept review",
+       "note": "Approved V2 look board for The Scoreboard concept.",
+       "seed": "SRA_Spot_Edits/The_Scoreboard_Spot.jpeg",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/The_Scoreboard_Spot.jpeg (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      }
+     ]
+    },
+    {
+     "id": "tv-spot-the-same-team",
+     "title": "The Same Team",
+     "status": "approved",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
+     "slots": [
+      {
+       "id": "tv-the-same-team-lookboard",
+       "label": "Look board - approved V2",
+       "kind": "image",
+       "required": false,
+       "use": "Internal and client concept review",
+       "note": "Approved V2 look board for The Same Team concept.",
+       "seed": "SRA_Spot_Edits/The_Same_Team_Spot.jpeg",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/The_Same_Team_Spot.jpeg (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      }
+     ]
+    },
+    {
+     "id": "tv-spot-the-morning",
+     "title": "The Morning",
+     "status": "approved",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
+     "slots": [
+      {
+       "id": "tv-the-morning-lookboard",
+       "label": "Look board - approved V2",
+       "kind": "image",
+       "required": false,
+       "use": "Internal and client concept review",
+       "note": "Approved V2 look board for The Morning concept.",
+       "seed": "SRA_Spot_Edits/The_Morning_Spot.jpeg",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/The_Morning_Spot.jpeg (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      }
+     ]
+    },
+    {
+     "id": "tv-spot-the-comeback",
+     "title": "The Comeback",
+     "status": "approved",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
+     "slots": [
+      {
+       "id": "tv-the-comeback-lookboard",
+       "label": "Look board - approved V2",
+       "kind": "image",
+       "required": false,
+       "use": "Internal and client concept review",
+       "note": "Approved V2 look board for The Comeback concept.",
+       "seed": "SRA_Spot_Edits/The_Comeback_Spot.jpeg",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/The_Comeback_Spot.jpeg (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      }
+     ]
+    },
+    {
+     "id": "tv-spot-package-documents",
+     "title": "Spot package documents",
+     "status": "approved",
+     "deliverableId": null,
+     "due": null,
+     "notes": "The approved V2 package for the eight concepts, plus the partner one-sheet. All four are on disk in SRA_Spot_Edits/.",
+     "copy": [
+      {
+       "label": "Anchor card - runs on every piece",
+       "text": "NOT OUR KIDS. NOT THIS STATE. NOT ANYMORE. / IMPLEMENTING THE STRONG READERS ACT / okeii.org + QR"
+      }
+     ],
+     "slots": [
+      {
+       "id": "tv-package-spots-v2-pdf",
+       "label": "Spots V2 - full document (PDF)",
+       "kind": "pdf",
+       "required": false,
+       "use": "Concept review - all eight spots",
+       "note": "The complete approved V2 spot document.",
+       "seed": "SRA_Spot_Edits/SRA_Spots_V2.pdf",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/SRA_Spots_V2.pdf, role 'full V2 document' (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      },
+      {
+       "id": "tv-package-scripts-v2-pdf",
+       "label": "Scripts V2 - 4 pages (PDF)",
+       "kind": "pdf",
+       "required": false,
+       "use": "Script review and production reference",
+       "note": "Scripts only, four pages.",
+       "seed": "SRA_Spot_Edits/SRA_Scripts_V2_print.pdf",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/SRA_Scripts_V2_print.pdf, role 'scripts only, 4 pages' (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      },
+      {
+       "id": "tv-package-campaign-briefing-pdf",
+       "label": "Campaign briefing - partner one-sheet (PDF)",
+       "kind": "pdf",
+       "required": false,
+       "use": "Partner and stakeholder briefing",
+       "note": "One-sheet summary of the campaign for partners.",
+       "seed": "SRA_Spot_Edits/SRA_Campaign_Briefing.pdf",
+       "source": "data/assets.json > groups[tv-spot-look-boards].items - SRA_Spot_Edits/SRA_Campaign_Briefing.pdf, role 'partner one-sheet' (verified present on disk)",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      },
+      {
+       "id": "tv-package-spots-edits-docx",
+       "label": "Spot edits — working document",
+       "kind": "doc",
+       "required": false,
+       "use": "Internal production reference",
+       "note": "Earlier spot-edits working document found on disk alongside the V2 package; it predates SRA_Spots_V2.pdf and is not listed in data/assets.json. Not a client-facing deliverable.",
+       "source": "SRA_Spot_Edits/ directory listing — SRA_Spots_Edits.docx present on disk (not listed in data/assets.json)",
+       "seed": "SRA_Spot_Edits/SRA_Spots_Edits.docx"
+      }
+     ]
+    },
+    {
+     "id": "tv-finished-films",
+     "title": "Finished TV films",
+     "status": "not_started",
+     "deliverableId": null,
+     "due": null,
+     "notes": "No finished film exists for any of the eight concepts. The three lengths below are the only lengths on record: they are evidenced by the filenames of the TV script PDFs that are still sitting in email. Once SRA_Campaign_60_TV.pdf, SRA_Campaign_30_TV.pdf and SRA_Campaign_15_TV.pdf are dropped into Deployment Package/inbox/, the length-to-concept mapping can be filled in here. No delivery spec - frame size, codec, bit-rate, audio loudness, caption file, slate or traffic codes - has been captured from any CTV platform or broadcast station, so no technical requirements are shown.",
+     "slots": [
+      {
+       "id": "tv-film-60",
+       "label": ":60 finished film - script still in email",
+       "kind": "video",
+       "required": false,
+       "use": "CTV / premium streaming and broadcast television",
+       "note": "Script is an attachment on David Downing's 2026-08-24 'Creative in Production' email (SRA_Campaign_60_TV.pdf) and is not yet on disk. Which of the eight concepts is scripted at this length is set by that document.",
+       "seed": null,
+       "source": "inbox/NEEDED-FROM-EMAIL.md > Campaign copy documents > SRA_Campaign_60_TV.pdf (David, Aug 24, 'Creative in Production'); channel role from SRA_Implementation_Plan.pptx slide 13",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      },
+      {
+       "id": "tv-film-30",
+       "label": ":30 finished film - script still in email",
+       "kind": "video",
+       "required": false,
+       "use": "CTV / premium streaming and broadcast television",
+       "note": "Script is an attachment on David Downing's 2026-08-24 'Creative in Production' email (SRA_Campaign_30_TV.pdf) and is not yet on disk. Which of the eight concepts is scripted at this length is set by that document.",
+       "seed": null,
+       "source": "inbox/NEEDED-FROM-EMAIL.md > Campaign copy documents > SRA_Campaign_30_TV.pdf (David, Aug 24, 'Creative in Production'); channel role from SRA_Implementation_Plan.pptx slide 13",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      },
+      {
+       "id": "tv-film-15",
+       "label": ":15 finished film - script still in email",
+       "kind": "video",
+       "required": false,
+       "use": "CTV / premium streaming and broadcast television",
+       "note": "Script is an attachment on David Downing's 2026-08-24 'Creative in Production' email (SRA_Campaign_15_TV.pdf) and is not yet on disk. Which of the eight concepts is scripted at this length is set by that document.",
+       "seed": null,
+       "source": "inbox/NEEDED-FROM-EMAIL.md > Campaign copy documents > SRA_Campaign_15_TV.pdf (David, Aug 24, 'Creative in Production'); channel role from SRA_Implementation_Plan.pptx slide 13",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "formats": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ctv-streaming",
+   "name": "CTV / Premium Streaming",
+   "planRole": "Slide 13 names CTV / Premium Streaming the campaign's primary awareness vehicle, delivering premium, non-skippable video to Oklahoma families across premium streaming platforms. Slide 16 keeps it the lead video platform for the full flight, on the strength of its completion rates in the previous campaign and its premium, family-safe environments with precise audience targeting.",
+   "flight": "September 2026 through December 2026, with heaviest investment September through November 4 (plan slides 9, 13 and 20).",
+   "vendors": [
+    "LMR Media Mix (Lisa Ratcliff)"
+   ],
+   "specStatus": "not_captured",
+   "specNote": "No CTV or premium-streaming spec sheet has been captured. data/specs.json contains no CTV section, and data/schedule.json contains no CTV deliverable and no vendor deadline - the channel appears only in the approved media plan. Three things have to arrive before these slots can be built out: (1) the platform and vendor list with their delivery specs from Lisa Ratcliff at LMR Media Mix - frame size, codec, bit-rate, audio loudness, caption file and accepted spot lengths; (2) the finished films from the TV spot production stream, which do not exist yet; (3) a trafficking deadline tied to the September 8 launch. The placeholder slots below are sourced to the approved media plan, not to a vendor spec: no pixel dimensions, file-size caps, durations beyond the evidenced script lengths, or due dates have been assumed. Note also that a 16x9 :15 film exists for paid social (Video Production/Paid Social Video/SRA_16x9_15s/SRA_NotOurKids_16x9_15s.mp4); with no CTV spec on file it cannot be confirmed as CTV-deliverable.",
+   "groups": [
+    {
+     "id": "ctv-finished-spot",
+     "title": "Finished spot for CTV delivery",
+     "status": "not_started",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Placeholder only. The film itself comes from the TV spot production stream; this group tracks the CTV delivery version of it. No CTV vendor, spec sheet or trafficking deadline is on record, so no dimensions, formats, file-size caps or dates are shown. The three lengths listed are the only lengths evidenced anywhere in the package.",
+     "slots": [
+      {
+       "id": "ctv-traffic-package",
+       "label": "CTV trafficking package",
+       "kind": "video",
+       "required": true,
+       "use": "CTV / premium streaming platforms, from the September 8 launch",
+       "note": "Delivered from the finished films catalogued under TV Spots — this slot is the platform-ready encode, not a separate cut. CTV encode, caption and slate requirements are not captured; request them from LMR Media Mix with the platform list.",
+       "source": "SRA_Implementation_Plan.pptx slide 13 (CTV / Premium Streaming as the primary awareness vehicle); films from inbox/NEEDED-FROM-EMAIL.md > SRA_Campaign_60/30/15_TV.pdf",
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "broadcast-tv",
+   "name": "Broadcast Television",
+   "planRole": "Slide 13 gives Broadcast Television broad, statewide reach following the general election, using trusted local news and family programming once inventory and pricing normalize. Slides 16 and 20 make the timing deliberate: no broadcast in September or October because of heavy political advertising, inflated pricing and limited inventory, then November and December to capture improved spot inventory, lower political clutter and increased family viewing over the holidays.",
+   "flight": "November 4 - December 31, 2026 only (plan slides 13 and 20).",
+   "vendors": [
+    "LMR Media Mix (Lisa Ratcliff)"
+   ],
+   "specStatus": "not_captured",
+   "specNote": "No broadcast station or rep-firm spec sheet has been captured. data/specs.json contains no broadcast section, and data/schedule.json contains no broadcast deliverable and no vendor deadline - the channel appears only in the approved media plan. Needed before these can be built: the station and market list with traffic instructions from Lisa Ratcliff at LMR Media Mix; each station's delivery spec (accepted spot lengths, frame rate, audio loudness standard, slate format, ISCI/Ad-ID codes, delivery service); and a traffic deadline ahead of the November 4 flight start. The placeholder slots below cite the approved media plan only - no dimensions, file-size caps or dates have been assumed. One scheduling note that works in this channel's favor: because the plan deliberately keeps broadcast out of September and October (slides 16 and 20), its deadlines sit well after the September 8 launch rather than alongside it.",
+   "groups": [
+    {
+     "id": "broadcast-finished-spot",
+     "title": "Finished spot for broadcast delivery",
+     "status": "not_started",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Placeholder only. The film itself comes from the TV spot production stream; this group tracks the broadcast delivery version. The flight starts November 4 and runs to December 31, so the traffic deadline falls well after the September 8 campaign launch. No station list, delivery spec or traffic deadline is on record, so nothing technical is shown here.",
+     "slots": [
+      {
+       "id": "bcast-traffic-package",
+       "label": "Broadcast trafficking package",
+       "kind": "video",
+       "required": true,
+       "use": "Broadcast television, November 4 – December 31 (plan slide 13)",
+       "note": "Delivered from the finished films catalogued under TV Spots — this slot is the station-ready master plus its traffic paperwork, not a separate cut. Frame rate, audio loudness, slate and ISCI/Ad-ID requirements are unknown until the station list and traffic instructions arrive from LMR Media Mix.",
+       "source": "SRA_Implementation_Plan.pptx slide 13 (Broadcast Television, November 4 – December 31), slide 16 (broadcast intentionally avoided during September and October) and slide 20 (no broadcast television in the September – November 4 phase)",
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "audio",
+   "name": "Audio / Radio",
+   "planRole": "Audio runs across iHeart Radio, streaming audio, podcasts and the Total Traffic & Weather Network, reinforcing the campaign message throughout parents' daily routines — school drop-off, commuting and after-school activities. The plan positions it as the channel that pairs the statewide reach of broadcast radio with the precision targeting of streaming and podcasts to build frequency and message recall.",
+   "specStatus": "partial",
+   "specNote": "Lengths, deadlines and targeting are captured in data/specs.json > audio, transcribed from one of Lisa Ratcliff's individual vendor emails (data/specs.json > source_notes; the specific message is not dated on the record): :15 and :30, finished spots due 2026-09-01, and the alternative of submitting scripts about a week earlier so the stations produce them at no charge. What is not captured is the station-side technical delivery spec — file format, bit rate, sample rate and traffic instructions are nowhere in this package. The production copy document, Radio_Audio_15_30_Copy_Doc_FOR_PRDN.pdf, is still an email attachment (David Downing, 2026-08-24, subject 'Creative in Production') per inbox/NEEDED-FROM-EMAIL.md; the SRA_Implementation_Plan/Audio folder currently holds only a placeholder README. No pixel sizes, durations beyond the two named lengths, or file-size caps are asserted here because none are on record.",
+   "flight": "September 2026 through December 2026. The plan places Audio in the heavy-investment phase from September through November 4 and continues it through year-end (SRA_Implementation_Plan.pptx slides 9, 13 and 20). Campaign launch is 2026-09-08 per data/schedule.json > launch_date.",
+   "vendors": [
+    "LMR Media Mix (Lisa Ratcliff)",
+    "iHeart Radio",
+    "Streaming audio and podcasts",
+    "Total Traffic & Weather Network"
+   ],
+   "groups": [
+    {
+     "id": "audio-finished-spots",
+     "title": "Finished spots — :15 and :30",
+     "status": "in_production",
+     "vendor": "Local broadcast, streaming and podcast via LMR Media Mix",
+     "deliverableId": "audio-spots",
+     "due": "2026-09-01",
+     "notes": "Both lengths were approved for production on 2026-08-24. Finished spots are due to the stations by 2026-09-01, ahead of the 2026-09-08 launch. Targeting is parents on female-skewing local broadcast, with broader male/female delivery through streaming and podcasts. Technical delivery specs — file format, bit rate and traffic instructions — are not in the captured spec and should be confirmed with the stations before final export. Source: data/schedule.json > deliverables[audio-spots]; data/specs.json > audio.",
+     "copy": [
+      {
+       "label": "Destination",
+       "text": "www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "audio-spot-15",
+       "label": ":15 · finished spot",
+       "kind": "audio",
+       "required": true,
+       "source": "data/specs.json > audio.lengths[0]; data/schedule.json > deliverables[audio-spots].due",
+       "use": "Local broadcast radio, streaming audio, podcasts, Total Traffic & Weather Network",
+       "note": "Fifteen-second finished spot, greenlit by David Downing on 2026-08-24. File format and bit rate are not specified in the captured spec — confirm with the stations before export.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      },
+      {
+       "id": "audio-spot-30",
+       "label": ":30 · finished spot",
+       "kind": "audio",
+       "required": true,
+       "source": "data/specs.json > audio.lengths[1]; data/schedule.json > deliverables[audio-spots].due",
+       "use": "Local broadcast radio, streaming audio, podcasts, Total Traffic & Weather Network",
+       "note": "Thirty-second finished spot, greenlit by David Downing on 2026-08-24. File format and bit rate are not specified in the captured spec — confirm with the stations before export.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      }
+     ]
+    },
+    {
+     "id": "audio-production-scripts",
+     "title": "Production scripts — early-submission route",
+     "status": "pending",
+     "vendor": "Local broadcast stations via LMR Media Mix",
+     "deliverableId": "audio-spots",
+     "due": "2026-08-25",
+     "notes": "An alternative to producing the spots in house: submit the scripts about a week ahead of the 9/1 finished-spot deadline — roughly 2026-08-25 — and the stations produce them at no charge. Taking this route means the copy has to be final by 2026-08-25. The production copy document, Radio_Audio_15_30_Copy_Doc_FOR_PRDN.pdf, is still an email attachment (David Downing, 2026-08-24, 'Creative in Production') and has not reached the project folder; SRA_Implementation_Plan/Audio holds only a placeholder README. Source: data/specs.json > audio.alt_due and audio.note; data/schedule.json > deliverables[audio-spots].alt_due; inbox/NEEDED-FROM-EMAIL.md > Campaign copy documents.",
+     "copy": [
+      {
+       "label": "Destination named in every script",
+       "text": "www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "audio-script-15",
+       "label": ":15 script · production copy",
+       "kind": "doc",
+       "required": false,
+       "source": "data/specs.json > audio.note (scripts a week early, stations produce at no charge); inbox/NEEDED-FROM-EMAIL.md > Radio_Audio_15_30_Copy_Doc_FOR_PRDN.pdf",
+       "use": "Station-produced :15, submitted in place of a finished spot",
+       "note": "Optional route rather than a vendor requirement — either finished spots by 9/1 or scripts about a week earlier. The copy document covering both lengths is still an email attachment and is not on disk.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      },
+      {
+       "id": "audio-script-30",
+       "label": ":30 script · production copy",
+       "kind": "doc",
+       "required": false,
+       "source": "data/specs.json > audio.note (scripts a week early, stations produce at no charge); inbox/NEEDED-FROM-EMAIL.md > Radio_Audio_15_30_Copy_Doc_FOR_PRDN.pdf",
+       "use": "Station-produced :30, submitted in place of a finished spot",
+       "note": "Optional route rather than a vendor requirement — either finished spots by 9/1 or scripts about a week earlier. The copy document covering both lengths is still an email attachment and is not on disk.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "native",
+   "name": "Native Content and Digital Display",
+   "planRole": "Native content and digital display carry educational articles, contextual placements and retargeting ads that drive parents to learn more about the Strong Readers Act and take action. The plan frames this as the channel for deeper education — practical reading tips, resources and success stories — sending qualified traffic to the OKEII website and landing pages.",
+   "specStatus": "not_captured",
+   "specNote": "data/specs.json > native is marked 'SPECS NOT CAPTURED'. The Nativo spec sheet — 'Copy of Copy of SS _ Nativo Spec Sheet .xlsx - Video Specs.pdf' — is an attachment on Lisa Ratcliff's 2026-08-05 email 'OKEII- Native video and display specs' and has not reached the project folder; SRA_Implementation_Plan/Specs holds only a placeholder README, and inbox/ is empty apart from the checklist. Until that sheet lands, no pixel dimensions, aspect ratios, video durations, file-size caps or character limits can be stated for this channel. The placeholders below are drawn from the deliverable title in data/schedule.json and the media plan's description of the channel, not from any vendor specification. The Days In Class supplemental digital ads requested by OKEII are catalogued separately under their own channel (data/schedule.json > deliverables[days-in-class-supplemental]).",
+   "flight": "September 2026 through December 2026. Native is one of the digital channels the plan funds heavily from September through November 4 and continues alongside broadcast in November and December (SRA_Implementation_Plan.pptx slides 14, 18 and 20). Art is due to Nativo 2026-09-02, ahead of the 2026-09-08 launch.",
+   "vendors": [
+    "Nativo",
+    "LMR Media Mix (Lisa Ratcliff)"
+   ],
+   "groups": [
+    {
+     "id": "native-launch-set",
+     "title": "Native video, display and article — launch set",
+     "status": "not_started",
+     "vendor": "Nativo",
+     "deliverableId": "native-video-display",
+     "due": "2026-09-02",
+     "notes": "Nothing has been produced for this channel yet. The vendor deadline is 2026-09-02 per Lisa Ratcliff's schedule, ahead of the 2026-09-08 launch. Production cannot be sized until the Nativo spec sheet is in hand, so the fastest unblocking step is retrieving that attachment from Lisa's 2026-08-05 email. Source: data/schedule.json > deliverables[native-video-display]; data/specs.json > native; SRA_Implementation_Plan.pptx slides 14 and 18.",
+     "copy": [
+      {
+       "label": "Destination for every native unit",
+       "text": "www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "native-video-unit",
+       "label": "Native video · size and duration to be set by Nativo spec",
+       "kind": "video",
+       "required": true,
+       "source": "data/schedule.json > deliverables[native-video-display].title ('Native video and display'); data/specs.json > native.note (Nativo attachment 'Copy of Copy of SS _ Nativo Spec Sheet .xlsx - Video Specs.pdf', Lisa's 2026-08-05 email 'OKEII- Native video and display specs')",
+       "use": "Nativo in-feed and contextual placements",
+       "note": "Dimensions and duration are deliberately left blank. The Nativo sheet that defines them ('… - Video Specs.pdf') is still an email attachment. Do not export against assumed sizes.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      },
+      {
+       "id": "native-display-unit",
+       "label": "Native display unit · size to be set by Nativo spec",
+       "kind": "image",
+       "required": true,
+       "source": "data/schedule.json > deliverables[native-video-display].title ('Native video and display'); SRA_Implementation_Plan.pptx slide 14 ('contextual placements and retargeting ads')",
+       "use": "Contextual placements and retargeting",
+       "note": "Dimensions and file-size cap are unknown until the Nativo spec sheet arrives. No comparable display spec exists elsewhere in the package to borrow from.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      },
+      {
+       "id": "native-article",
+       "label": "Educational article · headline, body and lead image",
+       "kind": "copy",
+       "required": false,
+       "source": "SRA_Implementation_Plan.pptx slide 14 ('Educational articles, contextual placements and retargeting'); slide 18 ('practical reading tips, resources and success stories')",
+       "use": "Nativo sponsored article placement",
+       "note": "Inferred from the media plan's description of the channel rather than from a captured vendor spec. Word count, headline character limits and thumbnail size are unknown until the Nativo spec sheet arrives. Not to be confused with the Metro Family sponsored content article, which has its own spec and deadline.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dooh",
+   "name": "Digital Out-of-Home",
+   "planRole": "Digital out-of-home reinforces campaign messaging in high-traffic family environments — around schools, libraries and retail corridors. The plan uses it to maintain visibility in the community locations where families spend time, carrying simple, memorable reading messages.",
+   "specStatus": "not_captured",
+   "specNote": "data/specs.json > dooh is marked 'SPECS NOT CAPTURED'. What is on record is the network list (Lamar and Griffin), the 2026-09-03 art deadline, the 2026-09-08 live date, and the file names of three attachments on Lisa Ratcliff's 2026-08-10 email 'OKEII- DOHH specs': LDD_14x48.jpg, LDD_20x30.jpg and the Griffin spec PDF. None of the three are on disk — SRA_Implementation_Plan/Specs holds only a placeholder README, and inbox/ is empty apart from the checklist. Important reading note: 14x48 and 20x30 are the identifiers on Lamar's template files, not pixel sizes, and no source on record states what unit they are in. The pixel resolution, file format and file-size cap for each board come from the templates themselves and cannot be stated until those files arrive, so no width or height values are recorded on the slots below.",
+   "flight": "Boards go live 2026-09-08 with the campaign launch and run through the fall. The plan funds Digital OOH in the heavy-investment phase from September through November 4 and continues digital channels through December (SRA_Implementation_Plan.pptx slides 14, 18 and 20). Art is due 2026-09-03, five days before boards light.",
+   "vendors": [
+    "Lamar",
+    "Griffin",
+    "LMR Media Mix (Lisa Ratcliff)"
+   ],
+   "groups": [
+    {
+     "id": "dooh-lamar-boards",
+     "title": "Lamar digital boards",
+     "status": "not_started",
+     "vendor": "Lamar",
+     "deliverableId": "dooh",
+     "due": "2026-09-03",
+     "notes": "Two Lamar board sizes are named on the record by their template files, LDD_14x48.jpg and LDD_20x30.jpg, attached to Lisa Ratcliff's 2026-08-10 email 'OKEII- DOHH specs'. The templates carry the pixel resolution and file requirements and are not yet on disk. Art is due 2026-09-03 and boards go live 2026-09-08, so there is no float between delivery and launch. Board-specific copy has not been written — the anchor card below is the campaign-wide lockup, shown for reference. Source: data/specs.json > dooh.note and dooh.networks; data/schedule.json > deliverables[dooh]; SRA_Implementation_Plan.pptx slide 14.",
+     "copy": [
+      {
+       "label": "Campaign anchor card (carried across the campaign; board copy not yet written)",
+       "text": "NOT OUR KIDS. NOT THIS STATE. NOT ANYMORE. / IMPLEMENTING THE STRONG READERS ACT / okeii.org + QR"
+      }
+     ],
+     "slots": [
+      {
+       "id": "dooh-lamar-14x48",
+       "label": "Lamar board · LDD_14x48 template",
+       "kind": "image",
+       "required": true,
+       "source": "data/specs.json > dooh.note (template LDD_14x48.jpg); data/schedule.json > deliverables[dooh].notes; SRA_Implementation_Plan.pptx slide 14",
+       "use": "Lamar digital bulletins — school, library and retail corridors",
+       "note": "14x48 is the identifier on Lamar's template file LDD_14x48.jpg — it is not a pixel size, and the unit is not stated anywhere on the record. Pixel resolution, file format and file-size cap come from the template itself, which is an attachment on Lisa Ratcliff's 2026-08-10 email and is not yet on disk. No width or height is recorded here on purpose.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      },
+      {
+       "id": "dooh-lamar-20x30",
+       "label": "Lamar board · LDD_20x30 template",
+       "kind": "image",
+       "required": true,
+       "source": "data/specs.json > dooh.note (template LDD_20x30.jpg); data/schedule.json > deliverables[dooh].notes; SRA_Implementation_Plan.pptx slide 14",
+       "use": "Lamar digital boards — school, library and retail corridors",
+       "note": "20x30 is the identifier on Lamar's template file LDD_20x30.jpg — it is not a pixel size, and the unit is not stated anywhere on the record. Pixel resolution, file format and file-size cap come from the template itself, which is an attachment on Lisa Ratcliff's 2026-08-10 email and is not yet on disk. No width or height is recorded here on purpose.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      }
+     ]
+    },
+    {
+     "id": "dooh-griffin-boards",
+     "title": "Griffin network boards",
+     "status": "not_started",
+     "vendor": "Griffin",
+     "deliverableId": "dooh",
+     "due": "2026-09-03",
+     "notes": "Griffin is named as the second DOOH network in both data/specs.json and data/schedule.json, and its spec PDF is listed as an attachment on Lisa Ratcliff's 2026-08-10 email 'OKEII- DOHH specs'. Unlike Lamar, no board sizes are named anywhere on the record, so a single placeholder is shown until the PDF arrives and the actual board count and sizes are known. Art is due 2026-09-03; boards go live 2026-09-08. Source: data/specs.json > dooh.networks and dooh.note; data/schedule.json > deliverables[dooh].vendor; SRA_Implementation_Plan.pptx slide 14.",
+     "slots": [
+      {
+       "id": "dooh-griffin-board",
+       "label": "Griffin board · size to be set by Griffin spec sheet",
+       "kind": "image",
+       "required": true,
+       "source": "data/specs.json > dooh.networks ('Griffin') and dooh.note (Griffin spec PDF); data/schedule.json > deliverables[dooh].vendor",
+       "use": "Griffin digital out-of-home network",
+       "note": "No dimensions, format or file-size cap can be stated for this network. The Griffin spec PDF is an attachment on Lisa Ratcliff's 2026-08-10 email and is not on disk. The number of board sizes Griffin requires is also unknown — this single placeholder may need to become several.",
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "print",
+   "name": "Print",
+   "planRole": "Print runs in trusted parenting, education and community publications — Tulsa Kids, Oklahoma Kids and similar — to add credibility and reach among parents and caregivers (plan slide 15). Slide 19 positions it as extending reach among parents, educators and grandparents while supporting the campaign's longer-form educational messaging.",
+   "flight": "September through December 2026. Print is named in the heavy-investment group for the September – November 4 phase and continues through the November and December phases of the fully integrated campaign (SRA_Implementation_Plan.pptx slide 20).",
+   "specStatus": "partial",
+   "specNote": "Print specs were supplied by the publishers through Lisa Ratcliff's individual vendor emails and are captured in data/specs.json > print (metro_family and tulsa_kids). Two confirmations remain outstanding: Metro Family never specified bleed and trim for camera-ready art (data/open-items.json > awaiting_others), and the Tulsa Kids specs and deadlines sent for confirmation on 2026-08-05 have not yet been confirmed (data/open-items.json > open_commitments). Tulsa Kids' standing deadline rule is that each ad is due by the 8th of the month prior to publication.",
+   "vendors": [
+    "Metro Family (OKC)",
+    "Tulsa Kids"
+   ],
+   "groups": [
+    {
+     "id": "metro-family-septoct-spread",
+     "title": "Metro Family Sept/Oct Two-Page Spread",
+     "vendor": "Metro Family (OKC)",
+     "deliverableId": "metro-family-septoct-spread",
+     "due": "2026-08-14",
+     "status": "delivered",
+     "notes": "Shipped. V3 ran camera-ready on the 2026-08-14 deadline and David Downing approved the proof on 2026-08-18; it appears in the Sept/Oct Healthy Families issue. This is the one fully delivered piece in the campaign and the reference for what finished looks like. Spec: 15.67 × 9.96 in with a 0.75 in gutter keep-clear across the spine, CMYK/SWOP at 300 dpi, camera-ready. Metro Family never specified bleed and trim, so 15.67 × 9.96 was built as trim with 0.125 in bleed carried on its own layer — that confirmation is still open with the publisher.",
+     "copy": [],
+     "slots": [
+      {
+       "id": "print-mf-septoct-spread-mechanical",
+       "label": "Two-page spread · 15.67 × 9.96 in · camera-ready PDF",
+       "kind": "pdf",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [
+        "PDF"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "use": "Metro Family (OKC) Sept/Oct issue — Healthy Families",
+       "note": "15.67 × 9.96 in with a 0.75 in gutter; CMYK/SWOP, 300 dpi, press-ready. Bleed and trim were never specified by the publisher, so the file treats 15.67 × 9.96 as trim with 0.125 in bleed on a separate layer.",
+       "seed": "Metro Family Print/OKEII_MetroFamily_SeptOct_Spread_V3_LAYERED v4.pdf",
+       "source": "data/specs.json > print.metro_family.spread; data/assets.json > groups[metro-family-spread-v3].items[0] (final mechanical)"
+      },
+      {
+       "id": "print-mf-septoct-spread-proof",
+       "label": "Approved proof · JPG",
+       "kind": "image",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [
+        "JPG"
+       ],
+       "maxBytes": null,
+       "required": false,
+       "use": "Review copy of the delivered spread — approved 2026-08-18",
+       "note": "Flat proof of the delivered V3 spread, approved by David Downing on 2026-08-18.",
+       "seed": "Metro Family Print/OKEII_MetroFamily_Spread_V3_PACKAGE/OKEII_MetroFamily_Spread_V3_PROOF.jpg",
+       "source": "data/assets.json > groups[metro-family-spread-v3].items[1] (proof); data/schedule.json > deliverables[metro-family-septoct-spread].notes"
+      }
+     ]
+    },
+    {
+     "id": "metro-family-oct-sponsored",
+     "title": "Metro Family October Sponsored Content Article",
+     "vendor": "Metro Family (OKC)",
+     "deliverableId": "metro-family-oct-sponsored",
+     "due": "2026-09-05",
+     "status": "not_started",
+     "notes": "Runs Oct 15 – Nov 15. OKEII writes the article copy — David Downing confirmed this on 2026-08-24 and asked Lisa Ratcliff to confirm the publisher's submission deadline; that answer is still outstanding, so the 2026-09-05 date is the working deadline. Metro Family pulls the dedicated social post and the e-newsletter partner link from the article itself, so nothing extra is needed for those placements. The 2026-09-05 date is the working submission deadline on the schedule of record; the publisher has not confirmed it. Confirm before production is scheduled.",
+     "copy": [
+      {
+       "label": "Destination URL",
+       "text": "https://www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "print-mf-oct-sponsored-copy",
+       "label": "Article copy · 300–500 words + URL",
+       "kind": "copy",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Metro Family sponsored content, Oct 15 – Nov 15",
+       "note": "300–500 words plus the campaign destination URL. Written by OKEII per David Downing, 2026-08-24.",
+       "seed": null,
+       "source": "data/specs.json > print.metro_family.sponsored_content (words, also_required); data/schedule.json > deliverables[metro-family-oct-sponsored].notes"
+      },
+      {
+       "id": "print-mf-oct-sponsored-hero",
+       "label": "Horizontal hero image · high resolution",
+       "kind": "image",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Lead image on the sponsored article",
+       "note": "One horizontal high-resolution image. The publisher did not give pixel dimensions. Stock is acceptable.",
+       "seed": null,
+       "source": "data/specs.json > print.metro_family.sponsored_content.images"
+      },
+      {
+       "id": "print-mf-oct-sponsored-inarticle",
+       "label": "In-article images · 1–2",
+       "kind": "image",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Within the body of the sponsored article",
+       "note": "One to two additional images inside the article. No dimensions specified by the publisher. Stock is acceptable.",
+       "seed": null,
+       "source": "data/specs.json > print.metro_family.sponsored_content.images"
+      }
+     ]
+    },
+    {
+     "id": "metro-family-novdec-ad",
+     "title": "Metro Family Nov/Dec Full-Page Ad",
+     "vendor": "Metro Family (OKC)",
+     "deliverableId": "metro-family-novdec-ad",
+     "due": "2026-10-05",
+     "status": "not_started",
+     "notes": "Live area 7.46 × 9.96 in. It can be cut down from the delivered Sept/Oct spread by keeping the circle field, the headline and the anchor panel. Two Metro Family items land on 2026-10-05 — this ad and the Nov/Dec sponsored article — so production is planned for the week of Sept 28. Bleed and trim for camera-ready art are still unspecified by Metro Family. Metro Family has not specified bleed or trim for camera-ready art. The Sept/Oct spread was built treating the stated dimensions as trim with 0.125 in bleed on its own layer (data/specs.json > print.metro_family.spread.note) and this ad inherits that assumption — confirm both with the publisher before the mechanical is released.",
+     "copy": [
+      {
+       "label": "Anchor panel, as it ran in the Sept/Oct spread",
+       "text": "NOT OUR KIDS. NOT THIS STATE. NOT ANYMORE. / okeii.org + QR / Learn more about the Strong Readers Act. / QR caption: Scan for the Act in plain English"
+      }
+     ],
+     "slots": [
+      {
+       "id": "print-mf-novdec-fullpage",
+       "label": "Full page · 7.46 × 9.96 in live area",
+       "kind": "pdf",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [
+        "PDF"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "use": "Metro Family (OKC) Nov/Dec issue",
+       "note": "7.46 × 9.96 in live area. Bleed and trim not yet specified by the publisher. Can be cut down from the Sept/Oct spread — keep the circle field, headline and anchor panel.",
+       "seed": null,
+       "source": "data/specs.json > print.metro_family.full_page; data/schedule.json > deliverables[metro-family-novdec-ad].notes"
+      }
+     ]
+    },
+    {
+     "id": "metro-family-novdec-sponsored",
+     "title": "Metro Family Nov/Dec Sponsored Content Article",
+     "vendor": "Metro Family (OKC)",
+     "deliverableId": "metro-family-novdec-sponsored",
+     "due": "2026-10-05",
+     "status": "not_started",
+     "notes": "Runs Nov 15 – Dec 15. Same 300–500 word plus imagery format as the October article. Due the same day as the Nov/Dec full-page ad — both Metro Family items land 2026-10-05, so production is planned for the week of Sept 28. Metro Family pulls the dedicated social post and the e-newsletter partner link from the article.",
+     "copy": [
+      {
+       "label": "Destination URL",
+       "text": "https://www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "print-mf-novdec-sponsored-copy",
+       "label": "Article copy · 300–500 words + URL",
+       "kind": "copy",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Metro Family sponsored content, Nov 15 – Dec 15",
+       "note": "300–500 words plus the campaign destination URL.",
+       "seed": null,
+       "source": "data/specs.json > print.metro_family.sponsored_content (words, also_required); data/schedule.json > deliverables[metro-family-novdec-sponsored].notes"
+      },
+      {
+       "id": "print-mf-novdec-sponsored-hero",
+       "label": "Horizontal hero image · high resolution",
+       "kind": "image",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Lead image on the sponsored article",
+       "note": "One horizontal high-resolution image. No pixel dimensions specified by the publisher. Stock is acceptable.",
+       "seed": null,
+       "source": "data/specs.json > print.metro_family.sponsored_content.images"
+      },
+      {
+       "id": "print-mf-novdec-sponsored-inarticle",
+       "label": "In-article images · 1–2",
+       "kind": "image",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Within the body of the sponsored article",
+       "note": "One to two additional images inside the article. No dimensions specified by the publisher.",
+       "seed": null,
+       "source": "data/specs.json > print.metro_family.sponsored_content.images"
+      }
+     ]
+    },
+    {
+     "id": "tulsa-kids-october",
+     "title": "Tulsa Kids October Package",
+     "vendor": "Tulsa Kids",
+     "deliverableId": "tulsa-kids-october",
+     "due": "2026-09-08",
+     "status": "not_started",
+     "notes": "Full-page ad, website banner and a dedicated e-blast, plus the URLs and a preferred subject line for the e-blast. Due 2026-09-08, the same day the campaign launches, under Tulsa Kids' standing rule that each ad is due by the 8th of the month prior to publication. These specs and deadlines were sent to Philip Baker for confirmation on 2026-08-05 and have not yet been confirmed.",
+     "copy": [
+      {
+       "label": "Destination URL",
+       "text": "https://www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "print-tk-oct-fullpage",
+       "label": "Full page · 8.25 × 10.75 in + 0.125 in bleed",
+       "kind": "pdf",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [
+        "PDF"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "use": "Tulsa Kids October issue",
+       "note": "8.25 × 10.75 in with 0.125 in bleed.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.full_page_in, print.tulsa_kids.bleed_in"
+      },
+      {
+       "id": "print-tk-oct-website-banner",
+       "label": "Website banner · 1000 × 250 px",
+       "kind": "image",
+       "ratio": null,
+       "w": 1000,
+       "h": 250,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Tulsa Kids website banner placement",
+       "note": "1000 × 250 px. File format and weight limit not specified by the publisher.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.website_banner_px"
+      },
+      {
+       "id": "print-tk-oct-eblast",
+       "label": "Dedicated e-blast · approx. 600 × 1000 px",
+       "kind": "image",
+       "ratio": null,
+       "w": 600,
+       "h": 1000,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Tulsa Kids dedicated e-blast to their subscriber list",
+       "note": "Approximately 600 × 1000 px; the publisher notes the length can vary slightly.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.eblast_px, print.tulsa_kids.eblast_note"
+      },
+      {
+       "id": "print-tk-oct-urls",
+       "label": "Destination URLs for the package",
+       "kind": "copy",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Links behind the banner, the e-blast and the ad's QR",
+       "note": "The publisher requires the URLs with the package. Campaign destination is okeii.org/StrongReadersAct, which is not yet live.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.also_required; data/schedule.json > destination_url"
+      },
+      {
+       "id": "print-tk-oct-subject-line",
+       "label": "Preferred e-blast subject line",
+       "kind": "copy",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Subject line for the dedicated e-blast",
+       "note": "Requested by the publisher with the package. Not yet written.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.also_required; data/schedule.json > deliverables[tulsa-kids-october].notes"
+      }
+     ]
+    },
+    {
+     "id": "tulsa-kids-november",
+     "title": "Tulsa Kids November Package",
+     "vendor": "Tulsa Kids",
+     "deliverableId": "tulsa-kids-november",
+     "due": "2026-10-08",
+     "status": "not_started",
+     "notes": "Quarter-page ad, website tile ads and email tile ads. Due 2026-10-08 under the publisher's rule that each ad is due by the 8th of the month prior to publication. The publisher's spec sheet lists a single tile size, 300 × 250 px, covering both the website and email tiles.",
+     "copy": [
+      {
+       "label": "Destination URL",
+       "text": "https://www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "print-tk-nov-quarterpage",
+       "label": "Quarter page · 3.625 × 4.625 in",
+       "kind": "pdf",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [
+        "PDF"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "use": "Tulsa Kids November issue",
+       "note": "3.625 × 4.625 in. No bleed figure is given for the quarter page.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.quarter_page_in"
+      },
+      {
+       "id": "print-tk-nov-website-tile",
+       "label": "Website tile ad · 300 × 250 px",
+       "kind": "image",
+       "ratio": null,
+       "w": 300,
+       "h": 250,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Tulsa Kids website tile placement",
+       "note": "300 × 250 px. File format and weight limit not specified by the publisher.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.tile_ads_px; data/schedule.json > deliverables[tulsa-kids-november].notes"
+      },
+      {
+       "id": "print-tk-nov-email-tile",
+       "label": "Email tile ad · 300 × 250 px",
+       "kind": "image",
+       "ratio": null,
+       "w": 300,
+       "h": 250,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Tulsa Kids email newsletter tile placement",
+       "note": "300 × 250 px — the publisher lists one tile size for both website and email placements.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.tile_ads_px; data/schedule.json > deliverables[tulsa-kids-november].notes"
+      }
+     ]
+    },
+    {
+     "id": "tulsa-kids-december",
+     "title": "Tulsa Kids December Package",
+     "vendor": "Tulsa Kids",
+     "deliverableId": "tulsa-kids-december",
+     "due": "2026-11-08",
+     "status": "not_started",
+     "notes": "Full-page ad, a promoted social post and a website banner. Due 2026-11-08 under the publisher's rule that each ad is due by the 8th of the month prior to publication. The promoted social post is listed in the package but no size or format was supplied for it — confirm with the publisher before production.",
+     "copy": [
+      {
+       "label": "Destination URL",
+       "text": "https://www.okeii.org/StrongReadersAct"
+      }
+     ],
+     "slots": [
+      {
+       "id": "print-tk-dec-fullpage",
+       "label": "Full page · 8.25 × 10.75 in + 0.125 in bleed",
+       "kind": "pdf",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [
+        "PDF"
+       ],
+       "maxBytes": null,
+       "required": true,
+       "use": "Tulsa Kids December issue",
+       "note": "8.25 × 10.75 in with 0.125 in bleed.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.full_page_in, print.tulsa_kids.bleed_in; data/schedule.json > deliverables[tulsa-kids-december].notes"
+      },
+      {
+       "id": "print-tk-dec-promoted-social",
+       "label": "Promoted social post · size not specified",
+       "kind": "image",
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Tulsa Kids promoted post on their own social channels",
+       "note": "Listed in the December package. The publisher supplied no dimensions, format or copy length for this unit — confirm before building.",
+       "seed": null,
+       "source": "data/schedule.json > deliverables[tulsa-kids-december].notes"
+      },
+      {
+       "id": "print-tk-dec-website-banner",
+       "label": "Website banner · 1000 × 250 px",
+       "kind": "image",
+       "ratio": null,
+       "w": 1000,
+       "h": 250,
+       "formats": [],
+       "maxBytes": null,
+       "required": true,
+       "use": "Tulsa Kids website banner placement",
+       "note": "1000 × 250 px. File format and weight limit not specified by the publisher.",
+       "seed": null,
+       "source": "data/specs.json > print.tulsa_kids.website_banner_px; data/schedule.json > deliverables[tulsa-kids-december].notes"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "paid-search",
+   "name": "Paid Search (SEM)",
+   "planRole": "Paid Search targets and captures high-intent parents actively searching for reading help, literacy resources, Strong Readers Act information and school readiness, and directs them to SRA materials at the moment of highest intent (plan slides 15 and 19).",
+   "flight": "September 2026 through December 2026. The plan places Search in the heavy-investment phase running September through November 4, continues all digital channels in November, and maintains a fully integrated campaign in December (SRA_Implementation_Plan.pptx slides 9 and 20).",
+   "specStatus": "not_captured",
+   "specNote": "No paid search specs are captured in data/specs.json, and no SEM item appears in data/schedule.json. Keyword themes, ad group structure, headline and description counts, and character limits all still need to come from the search platform or from the media buyer — none of that is on file, so no pixel sizes, character caps or deadlines are stated here. This channel also depends on okeii.org/StrongReadersAct going live: it is the campaign's single destination URL and is currently tracked in the schedule as a blocked deliverable.",
+   "groups": [
+    {
+     "id": "paid-search-rsa",
+     "title": "Responsive search ads",
+     "status": "not_started",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Paid Search is in the approved media plan but has no deliverable in the production queue and no vendor specs on file, so it shows here as unproduced. It also depends on the campaign landing page existing — search ads need a live destination, and okeii.org/StrongReadersAct is tracked separately as a blocked deliverable due 2026-09-08.",
+     "slots": [
+      {
+       "id": "sem-search-ad-headlines",
+       "label": "Search ad headlines — not written",
+       "kind": "copy",
+       "required": false,
+       "use": "Responsive search ads",
+       "note": "Headline count and character limits are not captured anywhere on file. No SEM spec sheet has been supplied.",
+       "source": "SRA_Implementation_Plan.pptx slide 15 > Media Mix & Its Role In The Campaign > Paid Search (SEM)",
+       "seed": null
+      },
+      {
+       "id": "sem-search-ad-descriptions",
+       "label": "Search ad descriptions — not written",
+       "kind": "copy",
+       "required": false,
+       "use": "Responsive search ads",
+       "note": "Description count and character limits are not captured. The plan describes the channel's job but carries no creative specification.",
+       "source": "SRA_Implementation_Plan.pptx slide 19 > Why This Media Mix Works > Paid Search (SEM)",
+       "seed": null
+      },
+      {
+       "id": "sem-destination-url",
+       "label": "Destination URL — okeii.org/StrongReadersAct",
+       "kind": "copy",
+       "required": false,
+       "use": "Final URL on every search ad",
+       "note": "The campaign uses one destination everywhere. That page does not exist yet and is tracked in the schedule as a blocked deliverable, which gates this channel.",
+       "source": "data/schedule.json > destination_url; data/schedule.json > deliverables[sra-landing-page]",
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "influencer",
+   "name": "Influencer Partnerships",
+   "planRole": "Oklahoma parents, teachers and literacy advocates provide authentic demonstrations of reading-at-home practices. The plan keeps authentic creator content as an important component while focusing the investment on a smaller group of high-performing Oklahoma creators rather than a broad roster (plan slides 15 and 18).",
+   "flight": "September 2026 through December 2026. Influencers are named in the plan's September–November 4 heavy-investment phase, with all digital channels continuing through November and December (SRA_Implementation_Plan.pptx slides 9 and 20).",
+   "specStatus": "not_captured",
+   "specNote": "No influencer deliverable appears in data/schedule.json and no influencer specs are captured in data/specs.json. The creator roster has not been named, and deliverable counts, platforms, posting windows, approval flow and usage-rights terms are all still open. The two placeholders below are drawn from the plan's description of the channel — no sizes, durations or dates are asserted, because none exist on file.",
+   "groups": [
+    {
+     "id": "influencer-program",
+     "title": "Creator program documents",
+     "status": "not_started",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Nothing has been produced for this channel. The plan calls for a smaller, higher-performing group of Oklahoma creators; that group has not been identified, and no creator agreements are in place.",
+     "slots": [
+      {
+       "id": "influencer-creator-brief",
+       "label": "Creator brief — not written",
+       "kind": "doc",
+       "required": false,
+       "use": "Briefing document issued to each participating creator",
+       "note": "Would carry the campaign message, the reading-at-home demonstration ask and the single destination URL. Scope, deliverable counts, platforms and posting windows all still need to be defined.",
+       "source": "SRA_Implementation_Plan.pptx slide 15 > Media Mix & Its Role In The Campaign > Influencer Partnerships",
+       "seed": null
+      },
+      {
+       "id": "influencer-usage-rights",
+       "label": "Usage rights and disclosure terms — not drafted",
+       "kind": "doc",
+       "required": false,
+       "use": "Agreement covering how long and where OKEII may reuse creator content",
+       "note": "Term, territory, paid-amplification rights and required disclosure language have not been set. Nothing on file specifies them.",
+       "source": "SRA_Implementation_Plan.pptx slide 18 > Why This Media Mix Works > Influencer Partnerships",
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "organic-social",
+   "name": "Organic Social Media",
+   "planRole": "Organic social works in a complementary role to paid and influencer: a consistent base of engaging content on OKEII's own channels furthers the impact of the paid campaign and builds longer-term audience engagement. Short-form video represented over 90% of OKEII's views and reached well beyond subscribers, so it is the priority format (plan slides 23 and 24).",
+   "flight": "September 2026 through December 2026, running continuously alongside the paid flights. The plan calls for sustaining the increased frequency of organic content across the campaign (SRA_Implementation_Plan.pptx slides 9 and 24).",
+   "specStatus": "not_captured",
+   "specNote": "No organic social specs are captured in data/specs.json and no organic deliverable appears in data/schedule.json. The channel's own plan — \"OKEII_2026_SRA Implementation_Social Strategy.pdf\", written by Alyx at Amethyst Digital and forwarded by David Downing on 2026-08-12 — is still an email attachment and is not on this disk; inbox/NEEDED-FROM-EMAIL.md lists it for filing into \"Paid Social/\". Formats, running lengths, cadence and post counts should come from that document once it lands, which is why no dimensions or durations are stated below.",
+   "vendors": [
+    "Amethyst Digital (Alyx)"
+   ],
+   "groups": [
+    {
+     "id": "organic-social-content",
+     "title": "Organic content formats",
+     "status": "not_started",
+     "vendor": "Amethyst Digital",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Owned by Alyx at Amethyst Digital. The approved plan treats organic social as the connective layer between paid and influencer tactics. Nothing has been produced against it yet, and the strategy document that would define formats and cadence is still in email pending review.",
+     "slots": [
+      {
+       "id": "organic-short-form-video",
+       "label": "Short-form video — format specs not captured",
+       "kind": "video",
+       "required": false,
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "maxBytes": null,
+       "use": "Reels, Shorts and TikTok on OKEII's own channels",
+       "note": "The plan identifies short-form video as over 90% of OKEII's views and a driver of discovery beyond subscribers. Running lengths, aspect ratios and cadence come from the social strategy document once it is on disk.",
+       "source": "SRA_Implementation_Plan.pptx slide 23 > Organic Social Media Strategies > Shorts Are Sweet",
+       "seed": null
+      },
+      {
+       "id": "organic-news-carousel",
+       "label": "\"News-style\" carousel — sizes not captured",
+       "kind": "image",
+       "required": false,
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "maxBytes": null,
+       "use": "Instagram and Facebook feed",
+       "note": "The plan also calls for shareable graphics highlighting the importance of the Strong Readers Act, with positive-leaning messaging. Card counts and pixel sizes are not specified in any file on disk.",
+       "source": "SRA_Implementation_Plan.pptx slide 24 > Organic Social Media Strategies > Content Themes",
+       "seed": null
+      },
+      {
+       "id": "organic-ambient-reel",
+       "label": "Ambient Reel with on-screen text — specs not captured",
+       "kind": "video",
+       "required": false,
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "maxBytes": null,
+       "use": "Instagram Reels",
+       "note": "Layers OKEII b-roll and video with on-screen text, which the plan reports as a strong performer. B-roll selection has not been made and no duration is specified.",
+       "source": "SRA_Implementation_Plan.pptx slide 24 > Organic Social Media Strategies > Content Themes",
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "earned-media",
+   "name": "Earned Media",
+   "planRole": "Earned media covers the campaign's messaging platform and proactive press work: core messaging and narrative framework, message customization for policymakers, educators, parents and business leaders, media outreach and story pitching, spokesperson preparation, thought leadership and op-eds, and stakeholder engagement support. The plan lists earned media as a new tactic for this campaign (plan slides 25 through 28).",
+   "flight": "September 2026 through December 2026, alongside the paid flights (SRA_Implementation_Plan.pptx slide 9).",
+   "specStatus": "not_captured",
+   "specNote": "No earned media deliverable appears in data/schedule.json and no earned media specs are captured in data/specs.json. Plan slides 25 to 27 describe the scope in detail, but target outlets, announcement timing, spokespeople and a media list have not been set. Each placeholder below is sourced to a specific named bullet in the plan rather than to a vendor spec, and no dates are asserted.",
+   "vendors": [
+    "Scott Coppenbarger (independent)"
+   ],
+   "groups": [
+    {
+     "id": "earned-media-materials",
+     "title": "Press and messaging materials",
+     "status": "not_started",
+     "vendor": "Scott Coppenbarger",
+     "deliverableId": null,
+     "due": null,
+     "notes": "Public relations and communications are led by Scott Coppenbarger. None of the materials below have been drafted, and no press timing has been set against the 2026-09-08 campaign launch.",
+     "slots": [
+      {
+       "id": "earned-press-release",
+       "label": "Press release — not drafted",
+       "kind": "doc",
+       "required": false,
+       "use": "Proactive media outreach and story pitching",
+       "note": "No release date or announcement peg has been set.",
+       "source": "SRA_Implementation_Plan.pptx slide 25 > Earned Media Strategies > Media Relations and Earned Media Outreach > \"Press releases and media advisories\"",
+       "seed": null
+      },
+      {
+       "id": "earned-media-advisory",
+       "label": "Media advisory — not drafted",
+       "kind": "doc",
+       "required": false,
+       "use": "Advance notice for briefings and media events",
+       "note": "The plan contemplates news briefings, media education and networking events when appropriate. None are scheduled yet.",
+       "source": "SRA_Implementation_Plan.pptx slide 25 > Earned Media Strategies > Media Relations and Earned Media Outreach > \"Media events such as news briefings\"",
+       "seed": null
+      },
+      {
+       "id": "earned-op-ed",
+       "label": "Op-ed — not drafted",
+       "kind": "doc",
+       "required": false,
+       "use": "Bylined placement, with a placement strategy",
+       "note": "Byline and target publication have not been chosen. The plan pairs op-ed writing with ghostwriting for leadership commentary.",
+       "source": "SRA_Implementation_Plan.pptx slide 26 > Earned Media Strategies > Thought Leadership and Op-Ed Development > \"Op-ed writing and placement strategy\"",
+       "seed": null
+      },
+      {
+       "id": "earned-talking-points",
+       "label": "Talking points — not drafted",
+       "kind": "doc",
+       "required": false,
+       "use": "Leadership and media use, customized by audience",
+       "note": "Would track the core messaging platform — mission, priorities and key data points — and the audience-specific message customization the plan calls for.",
+       "source": "SRA_Implementation_Plan.pptx slide 25 > Earned Media Strategies > Strategic Messaging and Narrative Development > \"Talking points for leadership and media use\"",
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "days-in-class",
+   "name": "Days In Class Supplemental Digital Ads",
+   "planRole": "Not a standalone channel in the approved media plan. This set runs as supplemental digital display, which the plan describes as contextual placements and retargeting that drive parents to learn more about the Strong Readers Act and induce action (plan slides 14 and 18). It was added to the production queue by David Downing on 2026-08-24 following John Brock's interest in a days-in-class message.",
+   "flight": "Not scheduled. No vendor deadline has been set, so this set is not yet bound to the 2026-09-08 launch (data/schedule.json > deliverables[days-in-class-supplemental]).",
+   "specStatus": "not_captured",
+   "specNote": "No specs are captured for this set. The source files arrived as attachments to David Downing's 2026-08-24 email, subject \"Days In Class Supplemental Digital Ads\", and are not on this disk; inbox/NEEDED-FROM-EMAIL.md lists them for filing into a new \"Days In Class/\" folder. Sizes, formats and file-size limits will come from whichever display vendor places them. No due date exists yet — a review is proposed for Friday, 2026-08-28.",
+   "vendors": [
+    "OKEII"
+   ],
+   "groups": [
+    {
+     "id": "days-in-class-display",
+     "title": "Days In Class digital display set",
+     "status": "not_started",
+     "vendor": "OKEII",
+     "deliverableId": "days-in-class-supplemental",
+     "due": null,
+     "notes": "Added to the queue on 2026-08-24 at John Brock's interest and included in David Downing's updated production schedule. A review is proposed for Friday, 2026-08-28. No vendor deadline has been set, so this set currently sits outside the 2026-09-08 launch queue. The source material is still an email attachment, so nothing is laid out yet.",
+     "slots": [
+      {
+       "id": "days-in-class-source-files",
+       "label": "Source files — still an email attachment",
+       "kind": "doc",
+       "required": false,
+       "use": "Reference material supplied with the request",
+       "note": "Attached to David Downing's 2026-08-24 email. Needs to be dropped into inbox/ and filed to a new \"Days In Class/\" folder before layout can begin.",
+       "source": "Deployment Package/inbox/NEEDED-FROM-EMAIL.md > Campaign copy documents > \"Days In Class supplemental ads\"",
+       "seed": null
+      },
+      {
+       "id": "days-in-class-display-units",
+       "label": "Display ad units — sizes not specified",
+       "kind": "image",
+       "required": false,
+       "ratio": null,
+       "w": null,
+       "h": null,
+       "maxBytes": null,
+       "use": "Supplemental digital display placements",
+       "note": "No sizes, formats or file-size caps have been supplied by a vendor, so none are listed here. Nothing has been laid out yet.",
+       "source": "data/schedule.json > deliverables[days-in-class-supplemental] (channel: digital_display)",
+       "seed": null
+      },
+      {
+       "id": "days-in-class-copy",
+       "label": "Headline and CTA copy — not written",
+       "kind": "copy",
+       "required": false,
+       "use": "Headline and call to action for each unit",
+       "note": "Copy for the days-in-class message has not been written. Like the rest of the campaign, these would point to okeii.org/StrongReadersAct.",
+       "source": "data/schedule.json > deliverables[days-in-class-supplemental]; data/schedule.json > destination_url",
+       "seed": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "reference",
+   "name": "Reference Documents",
+   "planRole": "Not a media channel and nothing here is produced or placed. These are the source documents the rest of the campaign is built from — the enrolled bill, the approved \"Strong Reader's Act Implementation Support Plan, September 2026 through December 2026\" (SRA_Implementation_Plan.pptx slide 2), the messaging inputs, and the vendor spec deck every paid social size in this catalog is transcribed from.",
+   "flight": "Not flighted. Available for the life of the campaign.",
+   "vendors": [
+    "iHeartMedia",
+    "Catapult / Marketing Consulting",
+    "PB Productions"
+   ],
+   "specStatus": "captured",
+   "specNote": "No production spec applies to this section — these files are read, not delivered. data/assets.json warns that some paths may not resolve, so all six paths in data/assets.json > groups[reference-documents] were checked with test -f on 2026-08-25 and all six resolved; every slot below is seeded. The four campaign plan decks at the project root were checked the same way and all four resolved. No path in this section failed.",
+   "groups": [
+    {
+     "id": "reference-documents",
+     "title": "The law, the plan, the messaging",
+     "status": "reference",
+     "vendor": "",
+     "due": null,
+     "deliverableId": null,
+     "notes": "Taken from data/assets.json group \"reference-documents\". All six paths verified on disk 2026-08-25; none failed. SB 1778 passed in the 2026 legislative session; its third-grade reading requirements begin with the 2027-28 school year, which is why the campaign is about implementation rather than enforcement. data/assets.json flags this group internal_only — these documents are for the internal team and are not for client distribution.",
+     "slots": [
+      {
+       "id": "ref-sb1778-enr",
+       "label": "Senate Bill 1778, as enrolled · PDF",
+       "kind": "pdf",
+       "required": false,
+       "formats": [
+        "PDF"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "New Campaign Reading/SB1778 ENR.pdf",
+       "use": "The statutory text behind every claim the campaign makes.",
+       "note": "The bill as enrolled. Verified on disk 2026-08-25.",
+       "source": "data/assets.json > groups[reference-documents].items[0] (role: \"the bill as enrolled\")"
+      },
+      {
+       "id": "ref-bill-info",
+       "label": "Strong Readers Act bill information reference · DOCX",
+       "kind": "doc",
+       "required": false,
+       "formats": [
+        "DOCX"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "New Campaign Reading/SRA_Bill_Info_Reference.docx",
+       "use": "Plain-language reference on what the bill does.",
+       "note": "Verified on disk 2026-08-25.",
+       "source": "data/assets.json > groups[reference-documents].items[1]"
+      },
+      {
+       "id": "ref-plan-approved",
+       "label": "Implementation plan, approved · PDF",
+       "kind": "pdf",
+       "required": false,
+       "formats": [
+        "PDF"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "New Campaign Reading/SRA_Implementation_Plan_APPROVED.pdf",
+       "use": "The approved plan of record for the September–December 2026 campaign.",
+       "note": "Verified on disk 2026-08-25.",
+       "source": "data/assets.json > groups[reference-documents].items[2]"
+      },
+      {
+       "id": "ref-messaging-inputs",
+       "label": "Implementation messaging inputs · PDF",
+       "kind": "pdf",
+       "required": false,
+       "formats": [
+        "PDF"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "SRA_Implementation_Messaging_Inputs.pdf",
+       "use": "Message platform feeding copy across all channels.",
+       "note": "Verified on disk 2026-08-25.",
+       "source": "data/assets.json > groups[reference-documents].items[3]"
+      },
+      {
+       "id": "ref-iheart-social-specs",
+       "label": "Paid social creative specs · iHeartMedia deck",
+       "kind": "doc",
+       "required": false,
+       "formats": [
+        "PPTX"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "Paid Social/OKEII Social Creative Specs.PPTX",
+       "use": "The authority for every Meta, TikTok and YouTube size and copy limit in this catalog.",
+       "note": "From Kim Hallisay at iHeartMedia, forwarded by Lisa Ratcliff 2026-08-06. Every paid social specification in data/specs.json is transcribed from this deck. Verified on disk 2026-08-25.",
+       "source": "data/assets.json > groups[reference-documents].items[4]; data/specs.json > source_notes"
+      },
+      {
+       "id": "ref-paid-social-copy-doc",
+       "label": "Paid social copy document · David Downing, 8/21",
+       "kind": "pdf",
+       "required": false,
+       "formats": [
+        "PDF"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "Paid Social/david's doc.pdf",
+       "use": "The five scoreboard ads — headlines, bold CTAs and destination URL.",
+       "note": "Sent 2026-08-21 as SRA_Campaign_Social_Ads_Copy.pdf; filed on disk under the Paid Social folder. A verbatim transcription lives at copy/social-ads-copy.md. Verified on disk 2026-08-25.",
+       "source": "data/assets.json > groups[reference-documents].items[5] (role: \"David's paid social copy doc, 8/21\"); inbox/NEEDED-FROM-EMAIL.md closing note"
+      }
+     ]
+    },
+    {
+     "id": "campaign-plan-decks",
+     "title": "Campaign plan decks",
+     "status": "reference",
+     "vendor": "",
+     "due": null,
+     "deliverableId": null,
+     "notes": "The plan decks themselves, at the root of the SRA_Implementation_Plan folder. Slides 13–15 of the deck are the authoritative media mix — CTV/Premium Streaming, Broadcast Television (Nov 4 – Dec 31), Audio, Paid Social Media, Native Content and Digital Display, Digital Out-of-Home, Influencer Partnerships, Print and Paid Search — with Organic Social and Earned Media as non-paid workstreams. All four files listed were verified on disk 2026-08-25; none failed.",
+     "slots": [
+      {
+       "id": "ref-plan-deck-pdf",
+       "label": "Implementation Support Plan · PDF",
+       "kind": "pdf",
+       "required": false,
+       "formats": [
+        "PDF"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "SRA_Implementation_Plan.pdf",
+       "use": "Read-only export of the working plan deck — superseded.",
+       "note": "31-page export dated 2026-07-20, matching the working .pptx. The approved plan of record is the 29-page SRA_Implementation_Plan_APPROVED.pdf (2026-07-28) listed above — share that one. Verified on disk 2026-08-25.",
+       "source": "SRA_Implementation_Plan.pptx slide 2 (deck title \"Strong Reader's Act Implementation Support Plan, September, 2026 through December, 2026\"); verified on disk at SRA_Implementation_Plan/SRA_Implementation_Plan.pdf"
+      },
+      {
+       "id": "ref-plan-deck-pptx",
+       "label": "Implementation Support Plan · source deck",
+       "kind": "doc",
+       "required": false,
+       "formats": [
+        "PPTX"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "SRA_Implementation_Plan.pptx",
+       "use": "The editable plan deck; slides 13–15 carry the media mix and each channel's role.",
+       "note": "Verified on disk 2026-08-25.",
+       "source": "SRA_Implementation_Plan.pptx slides 13–15 (\"Media Mix & Its Role In The Campaign\"); verified on disk at SRA_Implementation_Plan/SRA_Implementation_Plan.pptx"
+      },
+      {
+       "id": "ref-plan-deck-redesigned",
+       "label": "Implementation Support Plan · redesigned deck",
+       "kind": "doc",
+       "required": false,
+       "formats": [
+        "PPTX"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "SRA_Implementation_Plan_Redesigned.pptx",
+       "use": "Alternate visual treatment of the same plan.",
+       "note": "Present at the project root alongside the original deck. Verified on disk 2026-08-25; its contents have not been reconciled against the original.",
+       "source": "verified on disk at SRA_Implementation_Plan/SRA_Implementation_Plan_Redesigned.pptx"
+      },
+      {
+       "id": "ref-tlv-presentation-print",
+       "label": "TLV Presentation V4 · print version",
+       "kind": "pdf",
+       "required": false,
+       "formats": [
+        "PDF"
+       ],
+       "w": null,
+       "h": null,
+       "ratio": null,
+       "maxBytes": null,
+       "seed": "TLV Presentation V4_ForPrint.pdf",
+       "use": "Related presentation held with the campaign materials.",
+       "note": "Present at the project root and verified on disk 2026-08-25. Not referenced by data/schedule.json, data/specs.json or data/assets.json, so its role in this campaign is not documented here.",
+       "source": "verified on disk at SRA_Implementation_Plan/TLV Presentation V4_ForPrint.pdf"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "schedule": {
+  "launch_date": "2026-09-08",
+  "media_buyer": "LMR Media Mix (Lisa Ratcliff)",
+  "deliverables": [
+   {
+    "id": "metro-family-septoct-spread",
+    "title": "Metro Family Sept/Oct two-page spread",
+    "vendor": "Metro Family (OKC)",
+    "channel": "print",
+    "due": "2026-08-14",
+    "status": "delivered",
+    "notes": "V3 ran. Proof approved by David 2026-08-18. Runs in the Healthy Families issue.",
+    "specs_ref": "print.metro_family.spread",
+    "assets_ref": [
+     "metro-family-spread-v3"
+    ]
+   },
+   {
+    "id": "paid-social-package",
+    "title": "Paid social full package for platform pre-approval",
+    "vendor": "iHeartMedia via LMR Media Mix",
+    "channel": "paid_social",
+    "due": "2026-08-25",
+    "status": "in_progress",
+    "critical": true,
+    "notes": "FB / IG / TikTok / YouTube. Display + video + headline copy per channel. Platforms need 10 business days to approve before the 9/8 launch. Five 'scoreboard' ads reusing the TV spot graphics.",
+    "specs_ref": "paid_social",
+    "assets_ref": [
+     "paid-social-stills-round1",
+     "sra-notourkids-16x9-15s"
+    ]
+   },
+   {
+    "id": "audio-spots",
+    "title": "Radio / audio :15 and :30",
+    "vendor": "Local broadcast + streaming/podcast via LMR",
+    "channel": "audio",
+    "due": "2026-09-01",
+    "alt_due": "2026-08-25",
+    "status": "in_production",
+    "notes": "Finished spots due 9/1. Alternative: submit scripts about a week earlier (~8/25) and the stations produce them at no charge. Both lengths were approved for production on 2026-08-24. Targeting parents on female-skewing local broadcast, broader male/female via streaming and podcast.",
+    "specs_ref": "audio",
+    "assets_ref": []
+   },
+   {
+    "id": "native-video-display",
+    "title": "Native video and display",
+    "vendor": "Nativo",
+    "channel": "native",
+    "due": "2026-09-02",
+    "status": "not_started",
+    "notes": "Spec sheet is the Nativo PDF attached to Lisa's 2026-08-05 email — NOT YET ON DISK.",
+    "specs_ref": "native",
+    "assets_ref": []
+   },
+   {
+    "id": "dooh",
+    "title": "Digital out-of-home — Lamar and Griffin networks",
+    "vendor": "Lamar, Griffin",
+    "channel": "dooh",
+    "due": "2026-09-03",
+    "status": "not_started",
+    "notes": "Boards go live 9/8. Templates LDD_14x48.jpg and LDD_20x30.jpg plus the Griffin spec PDF are attached to Lisa's 2026-08-10 email — NOT YET ON DISK.",
+    "specs_ref": "dooh",
+    "assets_ref": []
+   },
+   {
+    "id": "metro-family-oct-sponsored",
+    "title": "Metro Family October sponsored content article",
+    "vendor": "Metro Family (OKC)",
+    "channel": "sponsored_content",
+    "due": "2026-09-05",
+    "status": "not_started",
+    "notes": "300-500 words plus URL, one horizontal hero image and 1-2 in-article images. Runs Oct 15 - Nov 15. David confirmed on 2026-08-24 that OKEII will write it and asked Lisa to confirm the submission deadline — answer still outstanding.",
+    "specs_ref": "print.metro_family.sponsored_content",
+    "assets_ref": []
+   },
+   {
+    "id": "tulsa-kids-october",
+    "title": "Tulsa Kids October package",
+    "vendor": "Tulsa Kids",
+    "channel": "print_digital",
+    "due": "2026-09-08",
+    "status": "not_started",
+    "notes": "Full-page ad, website banner, dedicated e-blast. URLs and a preferred subject line go with the package. The specs and the submission deadline still need confirming with the publisher.",
+    "specs_ref": "print.tulsa_kids",
+    "assets_ref": []
+   },
+   {
+    "id": "campaign-launch",
+    "title": "CAMPAIGN LAUNCH — all media flights begin",
+    "vendor": "all",
+    "channel": "milestone",
+    "due": "2026-09-08",
+    "status": "pending",
+    "critical": true,
+    "notes": "Every deliverable above must clear its vendor deadline before this date.",
+    "specs_ref": null,
+    "assets_ref": []
+   },
+   {
+    "id": "metro-family-novdec-ad",
+    "title": "Metro Family Nov/Dec full-page ad",
+    "vendor": "Metro Family (OKC)",
+    "channel": "print",
+    "due": "2026-10-05",
+    "status": "not_started",
+    "notes": "7.46 x 9.96 in. Can be cut down from the Sept/Oct spread: keep the circle field, headline and anchor panel.",
+    "specs_ref": "print.metro_family.full_page",
+    "assets_ref": []
+   },
+   {
+    "id": "metro-family-novdec-sponsored",
+    "title": "Metro Family Nov/Dec sponsored content article",
+    "vendor": "Metro Family (OKC)",
+    "channel": "sponsored_content",
+    "due": "2026-10-05",
+    "status": "not_started",
+    "notes": "Runs Nov 15 - Dec 15. Lands the same day as the Nov/Dec full page — plan production for the week of Sept 28.",
+    "specs_ref": "print.metro_family.sponsored_content",
+    "assets_ref": []
+   },
+   {
+    "id": "tulsa-kids-november",
+    "title": "Tulsa Kids November package",
+    "vendor": "Tulsa Kids",
+    "channel": "print_digital",
+    "due": "2026-10-08",
+    "status": "not_started",
+    "notes": "Quarter-page ad, website tile ads, email tile ads.",
+    "specs_ref": "print.tulsa_kids",
+    "assets_ref": []
+   },
+   {
+    "id": "tulsa-kids-december",
+    "title": "Tulsa Kids December package",
+    "vendor": "Tulsa Kids",
+    "channel": "print_digital",
+    "due": "2026-11-08",
+    "status": "not_started",
+    "notes": "Full-page ad, promoted social post, website banner.",
+    "specs_ref": "print.tulsa_kids",
+    "assets_ref": []
+   },
+   {
+    "id": "sra-landing-page",
+    "title": "okeii.org/StrongReadersAct landing page",
+    "vendor": "PB Productions",
+    "channel": "web",
+    "due": "2026-09-08",
+    "status": "blocked",
+    "critical": true,
+    "notes": "Hard blocker. Every paid social ad and the tracking pixels point at this URL and it does not exist yet. David sent the page copy on 2026-08-24 ('OKEII Web Edits_SRA_Implementation.docx') and asked to talk before build starts.",
+    "specs_ref": null,
+    "assets_ref": []
+   },
+   {
+    "id": "days-in-class-supplemental",
+    "title": "Days In Class supplemental digital ads",
+    "vendor": "OKEII / John Brock request",
+    "channel": "digital_display",
+    "due": null,
+    "status": "not_started",
+    "notes": "Added by David Downing on 2026-08-24 at OKEII's interest — supplemental digital ads on the number of days in class. Included in the 8/24 updated production schedule; review proposed for Friday 2026-08-28. No vendor deadline yet.",
+    "specs_ref": null,
+    "assets_ref": []
+   }
+  ],
+  "conflicts": [
+   {
+    "issue": "Digital ad due date disagreement",
+    "detail": "Two schedules disagree on when the digital ads are due. The creative director's 8/24 note puts them at 9/1; the media buyer's own vendor emails put paid social at 8/25, native at 9/2 and DOOH at 9/3. The board follows the vendor dates, which are the ones that bind. Reconcile against the 8/24 production schedule before trusting either.",
+    "status": "unresolved"
+   },
+   {
+    "issue": "Production schedule never reconciled",
+    "detail": "David's SRA_Campaign_Assets_Prdn_Sched_Update_8-24.xlsx has not been read or checked against this queue. It lives only in email.",
+    "status": "unresolved"
+   }
+  ]
+ },
+ "openItems": {
+  "as_of": "2026-08-25",
+  "blockers": [
+   {
+    "id": "landing-page-missing",
+    "severity": "critical",
+    "title": "okeii.org/StrongReadersAct does not exist",
+    "detail": "All five paid social ads carry it as their destination URL, and Lisa needs it for tracking pixels. Nothing can be submitted for platform pre-approval pointing at a 404. David sent the page copy on 2026-08-24 and asked to talk before the build starts.",
+    "owner": "Philip",
+    "waiting_on": "A conversation with David, then the build"
+   },
+   {
+    "id": "tracking-pixel-urls",
+    "severity": "high",
+    "title": "Tracking pixel URLs owed to Lisa",
+    "detail": "Lisa Ratcliff asked on 2026-08-13 which URLs the tracking pixels should watch, and the answer is still outstanding. The pixels currently watch okeii.org plus /research, /resources and /about; the Strong Readers Act page or section has to be added once it exists.",
+    "owner": "Philip",
+    "waiting_on": "The landing page URL existing"
+   },
+   {
+    "id": "youtube-headline",
+    "severity": "high",
+    "title": "No headline fits YouTube's 15-character cap",
+    "detail": "Every one of David's five HEAD lines exceeds 15 characters. 'Strong Readers Act' alone is 18. YouTube needs its own short headline plus a 90-char long headline and a 70-char description written before the package can be submitted.",
+    "owner": "Philip / David",
+    "waiting_on": "Copy decision"
+   },
+   {
+    "id": "video-cutdowns",
+    "severity": "high",
+    "title": "Only the 16x9 video exists",
+    "detail": "SRA_NotOurKids_16x9_15s.mp4 is rendered. The 1080x1920 and 1080x1080 cutdowns required by Meta and TikTok have not been built.",
+    "owner": "Philip",
+    "waiting_on": "Production time"
+   },
+   {
+    "id": "platform-gates",
+    "severity": "medium",
+    "title": "Platform account prerequisites unverified",
+    "detail": "YouTube video must be uploaded to OKEII's own channel and the link supplied; ad account verification required. TikTok organic profile must be connected to iHeartMedia. Meta page access through Business Manager. All four channels need Restricted Ad Category compliance review — education advocacy tied to legislation may land there.",
+    "owner": "Philip / Lisa",
+    "waiting_on": "Confirmation from Lisa"
+   }
+  ],
+  "awaiting_others": [
+   {
+    "from": "Lisa Ratcliff",
+    "detail": "Metro Family October sponsored content submission deadline. David asked on 2026-08-24; no answer yet.",
+    "status": "open"
+   },
+   {
+    "from": "Metro Family",
+    "detail": "Bleed and trim for camera-ready art were never specified.",
+    "status": "open"
+   },
+   {
+    "from": "David Downing",
+    "detail": "Review of the Days In Class supplemental ads, proposed for Friday 2026-08-28.",
+    "status": "scheduled"
+   }
+  ],
+  "standing_direction": [
+   "Teachers are never the villain (Jennifer Monies, 8/19). The villain is the system that let the earlier reading laws die.",
+   "Implementation, not enforcement. The Act takes effect school year 2027-28.",
+   "No Parent Playbook references until the law is in effect. The CTA is a bare URL plus QR.",
+   "One destination everywhere: okeii.org/StrongReadersAct.",
+   "Friday Night Lights / scoreboard is the through-line across TV, the :15s and paid social.",
+   "Every invoice and every client-facing asset goes through David before it goes out."
+  ]
+ }
+}

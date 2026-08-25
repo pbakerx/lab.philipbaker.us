@@ -3,6 +3,9 @@
   "functions": {
     "api/generate.js": {
       "maxDuration": 300
+    },
+    "api/okeii.js": {
+      "maxDuration": 60
     }
   },
   "redirects": [
@@ -20,7 +23,12 @@
     { "source": "/mind-harvest/", "destination": "https://x-expert-poster.vercel.app/", "permanent": false },
     { "source": "/ai-second-brain-case-study", "destination": "/second-brain-case-study", "permanent": true },
     { "source": "/ai-second-brain-case-study/", "destination": "/second-brain-case-study/", "permanent": true },
-    { "source": "/ai-second-brain-case-study/:path+", "destination": "/second-brain-case-study/:path+", "permanent": true }
+    { "source": "/ai-second-brain-case-study/:path+", "destination": "/second-brain-case-study/:path+", "permanent": true },
+    { "source": "/okeii", "destination": "/OKEII-SRA-Deployment/", "permanent": false },
+    { "source": "/okeii/", "destination": "/OKEII-SRA-Deployment/", "permanent": false },
+    { "source": "/okeii-sra-deployment", "destination": "/OKEII-SRA-Deployment/", "permanent": false },
+    { "source": "/okeii-sra-deployment/", "destination": "/OKEII-SRA-Deployment/", "permanent": false },
+    { "source": "/okeii-sra-deployment/:path+", "destination": "/OKEII-SRA-Deployment/:path+", "permanent": false }
   ],
   "rewrites": [
     { "source": "/widget-maker/w/:id", "destination": "/api/widget?id=:id" }

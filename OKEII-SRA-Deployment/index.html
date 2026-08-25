@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OKEII · Strong Readers Act — Deployment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Every piece of creative in the Strong Readers Act implementation campaign, laid out against the schedule it has to hit — with a placeholder for everything still to be produced.">
+<!-- Unlisted client link: not on the lab index, not in sitemap.xml, and unreleased
+     creative lives here. Keep it out of search results too. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23082F7B'/><text x='16' y='23' font-family='Helvetica,Arial' font-size='17' font-weight='700' text-anchor='middle' fill='%23fff'>S</text></svg>">
+<link rel="stylesheet" href="app.css?v=1">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to the creative</a>
+
+<header class="mast">
+  <div class="mast-in">
+    <div class="mast-id">
+      <span class="eyebrow">Oklahoma Education Impact Initiative</span>
+      <h1>Strong Readers Act <span>· Implementation</span></h1>
+      <p class="mast-sub">Deployment board — every deliverable, every size, every version.</p>
+    </div>
+    <div class="mast-clock" id="clock" aria-live="polite"></div>
+  </div>
+
+  <div class="mast-bar">
+    <nav class="chips" id="filters" aria-label="Filter the board">
+      <button class="chip is-on" data-filter="all">Everything</button>
+      <button class="chip" data-filter="todo">Still to produce</button>
+      <button class="chip" data-filter="done">Produced</button>
+      <button class="chip" data-filter="flag">Needs a look</button>
+      <button class="chip" data-filter="due">Due or overdue</button>
+    </nav>
+    <div class="mast-tools">
+      <label class="search">
+        <span class="vh">Search the board</span>
+        <input type="search" id="q" placeholder="Search size, vendor, headline…" autocomplete="off" spellcheck="false">
+      </label>
+      <button class="tool" id="who" title="Who is dropping files">Sign in</button>
+      <button class="tool" id="lock" title="Unlock editing">Unlock</button>
+    </div>
+  </div>
+
+  <nav class="rail" id="rail" aria-label="Jump to a channel"></nav>
+</header>
+
+<main id="main">
+  <section class="board" id="summary" aria-label="Where the campaign stands"></section>
+  <div id="sections"></div>
+  <section class="pane" id="schedule"></section>
+  <section class="pane" id="openitems"></section>
+  <footer class="foot" id="foot"></footer>
+</main>
+
+<!-- The slot inspector. One at a time, so it lives here rather than per card. -->
+<div class="drawer-scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-labelledby="drawer-title" role="dialog" aria-modal="true">
+  <div class="drawer-head">
+    <div>
+      <p class="drawer-crumb" id="drawer-crumb"></p>
+      <h2 id="drawer-title"></h2>
+    </div>
+    <button class="tool" id="drawer-close" aria-label="Close">Close</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</aside>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<!-- A full-window drop target only appears while a file is actually over the page. -->
+<div class="dropveil" id="dropveil" hidden><p>Drop it on the placeholder it belongs to</p></div>
+
+<script src="app.js?v=1"></script>
+</body>
+</html>
