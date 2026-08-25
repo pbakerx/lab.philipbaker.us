@@ -326,6 +326,46 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     feeds → v5 `?v=` cache-bust on script URLs → v6 static first-paint CSS, engine reuses the
     gated images, display-weight art (pushed from another session). Each was a diff-checked
     zip replacement; the ads' runtime is theirs, the presentation page is theirs too.
+- **/OKEII-SRA-Deployment** — **unlisted client link** for OKEII: the deployment board for
+  the Strong Readers Act (SB 1778) implementation campaign. Every deliverable in the
+  approved media mix laid out against the schedule it has to hit, with a placeholder for
+  each size a vendor actually asked for — 15 channels, 124 placeholders. Drag a file onto a
+  placeholder and it becomes that slot's current version; the file it replaced stays in the
+  slot's history. **Not on the root index and not in `sitemap.xml`, and the page carries
+  `noindex`** — the creative on it hasn't run yet. Don't "fix" any of that.
+  - **Source of truth is the NAS**, not here: `02. Project Files/Oklahoma Education Impact
+    Initiative/SRA_Implementation_Plan/Deployment Package/site/`. Its `scripts/deploy-lab.sh`
+    mirrors `site/page/` into this folder and copies `site/api/okeii.js` + `site/lib/okeii.js`
+    to the repo root. Edit there, deploy from there — a hand-edit here forks from what the
+    build produces.
+  - `catalog.json` is **the plan** and ships with the page: channels, deliverables, and one
+    slot per vendor-specified size, each carrying the `source` it was derived from. Channels
+    whose spec sheets are still email attachments are flagged `specStatus: "not_captured"`
+    and deliberately carry **no** dimensions — don't add plausible ones, that flag is the
+    point. Rebuild it with `scripts/build-catalog.py`; the corrections applied to it, and
+    why, are in `site/build/patches.json`.
+  - `api/okeii.js` + `lib/okeii.js` are **the state**, on Vercel Blob under `okeii-sra/`:
+    `state.json` is one manifest of every slot's version history, files live at
+    `f/<slot>/<name>` with a random suffix (the store is public, so a guessable pathname
+    would be a guessable URL for unreleased creative). Writes to the manifest are
+    ETag-conditional — two people dropping at once must not silently erase each other.
+  - **Uploads over ~3 MB go multipart**, a slice at a time through `begin`/`part`/`finish`.
+    That is not premature: the campaign's :15 renders out at ~50 MB and cannot clear the
+    4.5 MB Serverless Function body limit in one request. A base64 fallback exists for the
+    slice path because raw-body handling is the one thing there that isn't ours to
+    guarantee.
+  - **Two write tiers.** Additive (dropping a new version) is open when `OKEII_REVIEW_KEY`
+    is unset and key-gated when it is set; destructive (restore, re-note, remove) **always**
+    requires the key, so an unkeyed visitor can only ever add to a slot's history, never
+    take from it. Set the key in the Vercel project env and **redeploy** — env vars are
+    snapshotted into a deployment.
+  - `.html` and `.svg` are refused on upload. Same rule as the widget gallery: nothing a
+    browser executes as a document goes into a public blob store.
+  - **The repo is public and this is a live client campaign.** `catalog.json` deliberately
+    omits `contacts.json` (mobile numbers, personal addresses) and the internal
+    open-commitments notes, and softens three schedule entries that quoted private email
+    verbatim. Those originals stay on the NAS. Keep it that way when regenerating.
+
 - **/hello** — the original example.
 
 ## The master archive (not in this repo)

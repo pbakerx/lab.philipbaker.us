@@ -5,7 +5,7 @@
       "maxDuration": 300
     },
     "api/okeii.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     }
   },
   "redirects": [

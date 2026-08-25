@@ -1030,7 +1030,7 @@
       },
       {
        "id": "paid-social-round1-contact-sheet",
-       "label": "Round 1 contact sheet · browsable layout index",
+       "label": "Round 1 contact sheet · opens from the NAS",
        "kind": "doc",
        "w": null,
        "h": null,
@@ -1042,8 +1042,8 @@
        "maxBytes": null,
        "required": false,
        "source": "data/assets.json > groups[paid-social-stills-round1].items[1] (role: contact sheet)",
-       "seed": "Paid Social/exports/index.html",
-       "note": "Self-contained page grouping the eight layouts by ratio, with click-to-enlarge. Also records what Round 1 covers and what follows on approval."
+       "seed": null,
+       "note": "Stays on the NAS at 'Paid Social/exports/index.html'. The board refuses .html and .svg uploads by design — a public blob store must not serve anything a browser executes as a document — so this one is opened locally rather than published here. The Round 1 review PDF beside it carries the same layouts."
       },
       {
        "id": "paid-social-round1-video-qa-frames",

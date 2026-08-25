@@ -738,7 +738,7 @@
         progress(0.5);
         await api("put", { ...base, data });
       } else {
-        await multipart(file, base, progress);
+        await chunked(file, base, progress);
       }
 
       progress(1);
@@ -754,19 +754,23 @@
     }
   }
 
-  async function multipart(file, base, progress) {
+  /* Slices go up one at a time and the server reassembles them. They are not
+     Blob multipart parts — Blob rejects anything under 5 MiB, which is more than
+     a Vercel function can receive in one body, so the two limits can't be
+     satisfied by the same number. Sequential rather than parallel: a stalled
+     slice should show as a stalled bar, not as three of them fighting for the
+     same uplink. */
+  async function chunked(file, base, progress) {
     const { ticket, partSize } = await api("begin", base);
     const size = partSize || 4_000_000;
     const count = Math.ceil(file.size / size);
-    const parts = [];
     let b64 = false;
 
     for (let i = 0; i < count; i++) {
       const slice = file.slice(i * size, Math.min((i + 1) * size, file.size));
-      const q = `&key=${encodeURIComponent(ticket.key)}&uploadId=${encodeURIComponent(ticket.uploadId)}` +
-                `&pathname=${encodeURIComponent(ticket.pathname)}&n=${i + 1}${b64 ? "&enc=b64" : ""}`;
+      const q = `&id=${encodeURIComponent(ticket.id)}&n=${i + 1}${b64 ? "&enc=b64" : ""}`;
       try {
-        parts.push(await sendPart(slice, q, b64));
+        await sendPart(slice, q, b64);
       } catch (err) {
         // Raw octet-stream bodies depend on how the runtime hands the request
         // back to us. If the first slice comes back empty, fall through to the
@@ -776,9 +780,9 @@
         }
         throw err;
       }
-      progress(0.05 + 0.9 * ((i + 1) / count));
+      progress(0.05 + 0.85 * ((i + 1) / count));
     }
-    return api("finish", { ...base, ticket, parts });
+    return api("finish", { ...base, ticket, parts: count });
   }
 
   async function sendPart(slice, q, b64) {
@@ -790,7 +794,7 @@
           body: await slice.arrayBuffer() });
     const data = await res.json().catch(() => ({ error: `The server answered ${res.status}.` }));
     if (!res.ok) throw Object.assign(new Error(data.error || `${res.status}`), { needsKey: data.needsKey });
-    return data.part;
+    return data;
   }
 
   const toBase64 = (blob) => new Promise((resolve, reject) => {

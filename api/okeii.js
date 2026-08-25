@@ -2,8 +2,8 @@
 //
 //   GET  ?action=state                       the manifest: every slot's version history
 //   POST ?action=put                         one-shot upload for anything under a part
-//   POST ?action=begin                       open a multipart upload (big video)
-//   POST ?action=part&…&n=<1-based>          one slice, raw bytes (or base64, ?enc=b64)
+//   POST ?action=begin                       open a sliced upload (anything over a part)
+//   POST ?action=part&id=<ticket>&n=<1-based>  one slice, raw bytes (or ?enc=b64)
 //   POST ?action=finish                      close it out and record the version
 //   POST ?action=restore                     make an older version current again
 //   POST ?action=note                        edit a version's note
@@ -15,11 +15,13 @@
 //
 // The 4.5 MB Serverless Function body limit is the reason for the begin/part/
 // finish dance — the campaign's :15 renders out at ~50 MB, so it cannot arrive
-// in one request no matter how it is encoded.
+// in one request no matter how it is encoded. See "Big files" below for why the
+// slices can't just be handed on to Blob as multipart parts.
 
-import { put, del, createMultipartUpload, uploadPart, completeMultipartUpload } from "@vercel/blob";
+import { put, del, list } from "@vercel/blob";
 import {
   FILE_PREFIX,
+  TMP_PREFIX,
   MAX_FILE_BYTES,
   PART_SIZE,
   PART_SIZE_B64,
@@ -37,6 +39,7 @@ import {
   versionId,
 } from "../lib/okeii.js";
 import { originAllowed, clientIp, rateLimiter } from "../lib/guard.js";
+import { randomUUID } from "node:crypto";
 
 const rateLimited = rateLimiter({ windowMs: 60_000, max: 240 });
 const MAX_NOTE = 400;
@@ -202,74 +205,137 @@ async function onePut(req, res) {
   return res.status(201).json({ ok: true, version });
 }
 
-// ── Multipart ──────────────────────────────────────────────────────────────
+// ── Big files ──────────────────────────────────────────────────────────────
+//
+// Two limits collide here: a Vercel Serverless Function accepts at most 4.5 MB
+// of request body, and Blob's multipart API refuses any part under 5 MiB. So the
+// browser cannot hand the server pieces that the server can pass straight
+// through as multipart parts — there is no size that satisfies both.
+//
+// What works is to land each 4 MB slice as its own short-lived blob, then have
+// finish() read them back in order as one continuous stream and hand THAT to
+// put({multipart:true}), which does its own chunking at a legal size. The bytes
+// make an extra hop inside Vercel's own network, which is cheap; the alternative
+// is hand-rolling Blob's client-token wire protocol in the browser, which is
+// version-coupled and would break silently on an SDK bump.
 
 async function begin(req, res) {
   const d = describe(req.body || {});
   if (d.error) return fail(res, 400, d.error);
 
-  const { key, uploadId } = await createMultipartUpload(d.pathname, {
-    access: "public",
-    contentType: d.type.contentType,
-    addRandomSuffix: true,
-    cacheControlMaxAge: 31536000,
-  });
-
-  // The ticket carries everything finish() needs, so no server-side session has
-  // to survive between the cold starts these requests will land on.
+  const id = randomUUID();
   return res.status(200).json({
     ok: true,
-    ticket: { key, uploadId, pathname: d.pathname, slotId: d.slotId, filename: d.filename, size: d.size },
+    ticket: { id, slotId: d.slotId, filename: d.filename, size: d.size },
     partSize: PART_SIZE,
     partSizeB64: PART_SIZE_B64,
+    parts: Math.ceil(d.size / PART_SIZE),
   });
 }
 
+const UPLOAD_ID_RE = /^[0-9a-f-]{36}$/;
+const tmpDir = (id) => `${TMP_PREFIX}${id}/`;
+// Zero-padded so the pathname sort finish() relies on is the numeric order.
+const tmpPart = (id, n) => `${tmpDir(id)}${String(n).padStart(5, "0")}`;
+
 async function part(req, res) {
-  const { key, uploadId, pathname } = req.query || {};
+  const id = String(req.query?.id || "");
   const n = Number(req.query?.n);
-  if (!key || !uploadId || !pathname) return fail(res, 400, "That upload slice is missing its ticket.");
-  if (!Number.isInteger(n) || n < 1) return fail(res, 400, "Bad part number.");
-  if (!String(pathname).startsWith(FILE_PREFIX)) return fail(res, 400, "Bad upload path.");
+  if (!UPLOAD_ID_RE.test(id)) return fail(res, 400, "That upload slice is missing its ticket.");
+  if (!Number.isInteger(n) || n < 1 || n > 4096) return fail(res, 400, "Bad part number.");
 
   const body = await rawBody(req);
   if (!body.length) return fail(res, 400, "That slice arrived empty.");
+  if (body.length > PART_SIZE + 8192) return fail(res, 413, "That slice is bigger than the agreed part size.");
 
-  const uploaded = await uploadPart(String(pathname), body, {
+  await put(tmpPart(id, n), body, {
     access: "public",
-    key: String(key),
-    uploadId: String(uploadId),
-    partNumber: n,
+    contentType: "application/octet-stream",
+    addRandomSuffix: false,
+    allowOverwrite: true,     // a retried slice must land on the same object
+    cacheControlMaxAge: 60,
   });
 
-  return res.status(200).json({ ok: true, part: { etag: uploaded.etag, partNumber: uploaded.partNumber } });
+  return res.status(200).json({ ok: true, n });
 }
 
 async function finish(req, res) {
   const t = req.body?.ticket || {};
-  const parts = Array.isArray(req.body?.parts) ? req.body.parts : null;
-  if (!t.key || !t.uploadId || !t.pathname || !parts?.length) {
-    return fail(res, 400, "That upload can't be closed out — its ticket or its parts are missing.");
-  }
-  if (!String(t.pathname).startsWith(FILE_PREFIX)) return fail(res, 400, "Bad upload path.");
+  if (!UPLOAD_ID_RE.test(String(t.id))) return fail(res, 400, "That upload can't be closed out — its ticket is missing.");
 
   const d = describe({ ...req.body, slotId: t.slotId, filename: t.filename, size: t.size });
   if (d.error) return fail(res, 400, d.error);
 
-  const ordered = parts
-    .map((p) => ({ etag: String(p.etag), partNumber: Number(p.partNumber) }))
-    .sort((a, b) => a.partNumber - b.partNumber);
+  // The slices are found by listing, never by trusting URLs the caller sent —
+  // a client-supplied URL here would be a request forgery the server performs
+  // on its own network.
+  const slices = [];
+  let cursor;
+  do {
+    const page = await list({ prefix: tmpDir(t.id), cursor, limit: 1000 });
+    slices.push(...page.blobs);
+    cursor = page.hasMore ? page.cursor : undefined;
+  } while (cursor);
 
-  const blob = await completeMultipartUpload(String(t.pathname), ordered, {
-    access: "public",
-    key: String(t.key),
-    uploadId: String(t.uploadId),
-    contentType: d.type.contentType,
+  slices.sort((a, b) => a.pathname.localeCompare(b.pathname));
+  const expected = Number(req.body?.parts);
+  if (!slices.length) return fail(res, 409, "None of that upload's slices are still in the store — start it again.");
+  if (Number.isInteger(expected) && slices.length !== expected) {
+    await scrub(slices);
+    return fail(res, 409, `That upload is missing slices — ${slices.length} of ${expected} arrived. Try it again.`);
+  }
+  const total = slices.reduce((n, b) => n + b.size, 0);
+
+  try {
+    const blob = await put(d.pathname, joined(slices), {
+      access: "public",
+      contentType: d.type.contentType,
+      addRandomSuffix: true,
+      multipart: true,          // the SDK re-chunks at a size Blob will accept
+      cacheControlMaxAge: 31536000,
+    });
+
+    let version;
+    await mutate((state) => { version = record(state, { ...d, size: total }, blob); });
+    return res.status(201).json({ ok: true, version });
+  } finally {
+    await scrub(slices);
+  }
+}
+
+// One continuous stream over the slices, pulled in order and never all held in
+// memory at once — a 50 MB render would otherwise have to fit in the function.
+function joined(slices) {
+  let i = 0;
+  let reader = null;
+  return new ReadableStream({
+    async pull(controller) {
+      for (;;) {
+        if (!reader) {
+          if (i >= slices.length) { controller.close(); return; }
+          const res = await fetch(slices[i].url, { cache: "no-store" });
+          if (!res.ok || !res.body) throw new Error(`slice ${i + 1} came back ${res.status}`);
+          i += 1;
+          reader = res.body.getReader();
+        }
+        const { done, value } = await reader.read();
+        if (done) { reader = null; continue; }
+        controller.enqueue(value);
+        return;
+      }
+    },
   });
+}
 
-  let version;
-  await mutate((state) => { version = record(state, d, blob); });
-  return res.status(201).json({ ok: true, version });
+// Best effort: an orphaned slice is billable waste, not a broken upload, so it
+// must never turn a successful assembly into a failed request.
+async function scrub(slices) {
+  if (!slices.length) return;
+  try {
+    await del(slices.map((b) => b.pathname));
+  } catch (err) {
+    console.error("[okeii] couldn't clear upload slices", err);
+  }
 }
 
 // Vercel's Node runtime hands back a Buffer for content types it doesn't parse,
