@@ -354,11 +354,13 @@ degrades to that fallback rather than breaking — check `stale` / `error` in th
     4.5 MB Serverless Function body limit in one request. A base64 fallback exists for the
     slice path because raw-body handling is the one thing there that isn't ours to
     guarantee.
-  - **Two write tiers.** Additive (dropping a new version) is open when `OKEII_REVIEW_KEY`
-    is unset and key-gated when it is set; destructive (restore, re-note, remove) **always**
-    requires the key, so an unkeyed visitor can only ever add to a slot's history, never
-    take from it. Set the key in the Vercel project env and **redeploy** — env vars are
-    snapshotted into a deployment.
+  - **Two write tiers.** Dropping a version, rolling back to an earlier one, and editing a
+    note are open when `OKEII_REVIEW_KEY` is unset and key-gated when it is set. **Deleting**
+    a version — the only action that can lose something — always requires the key, so an
+    unkeyed visitor can never take anything out of a slot's history. Rolling back is
+    deliberately NOT in the hard tier: it is reversible, and gating it behind a key nobody
+    had set would have meant the board couldn't be rolled back at all. Set the key in the
+    Vercel project env and **redeploy** — env vars are snapshotted into a deployment.
   - `.html` and `.svg` are refused on upload. Same rule as the widget gallery: nothing a
     browser executes as a document goes into a public blob store.
   - **The repo is public and this is a live client campaign.** `catalog.json` deliberately

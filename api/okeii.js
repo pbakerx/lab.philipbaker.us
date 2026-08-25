@@ -10,8 +10,9 @@
 //   POST ?action=remove                      drop a version from a slot's history
 //
 // Uploads are additive: a drop on a filled slot pushes a new current version and
-// leaves the old one in history. Only restore/note/remove change what is already
-// there, and those always require OKEII_REVIEW_KEY.
+// leaves the old one in history. Nothing here overwrites a file. The one action
+// that destroys something — remove, which deletes the blob — always requires
+// OKEII_REVIEW_KEY, whether or not the additive tier is gated.
 //
 // The 4.5 MB Serverless Function body limit is the reason for the begin/part/
 // finish dance — the campaign's :15 renders out at ~50 MB, so it cannot arrive
@@ -77,7 +78,11 @@ export default async function handler(req, res) {
     if (req.method !== "POST") return fail(res, 405, "Use GET or POST.");
     if (rateLimited(clientIp(req))) return fail(res, 429, "Too many requests in a minute — give it a moment.");
 
-    const destructive = action === "restore" || action === "note" || action === "remove";
+    // Only permanent deletion is in the hard tier. Making an older version
+    // current again changes nothing that can't be changed back, and a note is a
+    // note — gating those behind a key nobody has set would mean the board
+    // couldn't be rolled back at all.
+    const destructive = action === "remove";
     if (destructive ? !canDestroy(req) : !canWrite(req)) {
       return fail(res, 401, gateMessage(destructive), { needsKey: true });
     }
@@ -100,14 +105,10 @@ export default async function handler(req, res) {
 }
 
 function gateMessage(destructive) {
-  if (!keyConfigured()) {
-    return destructive
-      ? "Changing or removing an existing version needs the review key, and OKEII_REVIEW_KEY isn't set on this project."
-      : "Uploads are off.";
+  if (destructive && !keyConfigured()) {
+    return "Deleting a version permanently needs the review key, and OKEII_REVIEW_KEY isn't set on this project. Everything else still works — nothing on this board can be lost.";
   }
-  return destructive
-    ? "That needs the review key."
-    : "That needs the review key — use Unlock at the top of the page.";
+  return "That needs the review key — use Unlock at the top of the page.";
 }
 
 // ── Shared validation ──────────────────────────────────────────────────────

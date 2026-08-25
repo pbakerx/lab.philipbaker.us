@@ -649,10 +649,14 @@
     const acts = el("div", { class: "acts" },
       el("a", { href: v.downloadUrl || v.url, download: v.filename, text: "Download" }),
       !isCurrent && el("button", { text: "Make current", onclick: () => act("restore", { slotId: slot.id, versionId: v.id, by: store.who }, "Restored.") }),
-      el("button", { class: "danger", text: "Remove", onclick: () => {
-        if (!confirm(`Remove ${v.filename} from this slot's history? The file is deleted from the store.`)) return;
-        act("remove", { slotId: slot.id, versionId: v.id, by: store.who }, "Removed.");
-      } }));
+      // Deletion is the one thing the key always gates, so when no key is
+      // configured the button can never work — say why instead of failing.
+      GATE.keyRequired
+        ? el("button", { class: "danger", text: "Remove", onclick: () => {
+            if (!confirm(`Remove ${v.filename} from this slot's history? The file is deleted from the store.`)) return;
+            act("remove", { slotId: slot.id, versionId: v.id, by: store.who }, "Removed.");
+          } })
+        : el("span", { class: "acts-off", title: "Set OKEII_REVIEW_KEY on the project to enable deletion.", text: "No delete" }));
 
     return el("div", { class: `ver${isCurrent ? " is-current" : ""}` },
       thumb,

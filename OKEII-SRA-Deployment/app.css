@@ -351,6 +351,10 @@ h4.sub { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; colo
 }
 .ver .acts button:hover, .ver .acts a:hover { color: var(--ink); border-color: #2c4270; }
 .ver .acts .danger:hover { color: var(--late); border-color: #7a2a2a; }
+.ver .acts .acts-off {
+  font-size: 11px; padding: 4px 9px; border-radius: 6px; border: 1px dashed var(--line);
+  color: var(--ink-faint); white-space: nowrap; cursor: help;
+}
 
 /* ── schedule + open items ────────────────────────────────────────────── */
 
