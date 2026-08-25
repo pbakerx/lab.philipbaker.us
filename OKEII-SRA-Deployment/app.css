@@ -95,28 +95,59 @@ button { cursor: pointer; background: none; border: none; }
 .tool:hover { color: var(--ink); border-color: #2c4270; }
 .tool.is-on { color: var(--ok); border-color: #1f6b4c; background: #08251a; }
 
-/* ── the channel nav — the page's one control ─────────────────────────── */
+/* ── the channel list — the page's one control ───────────────────────── */
+/* A standing checklist down the left, not a row of tabs: the point is to run an
+   eye down fifteen channels and see which are done, so it has to read as a list
+   with a box beside each line. */
 
-.rail {
-  max-width: var(--wrap); margin: 0 auto; padding: 0 22px 10px;
-  display: flex; gap: 5px 4px; flex-wrap: wrap; align-items: center;
+.shell {
+  max-width: var(--wrap); margin: 0 auto; padding: 0 22px;
+  display: grid; grid-template-columns: 262px minmax(0, 1fr); gap: 30px; align-items: start;
 }
-.rail button {
-  flex: 0 0 auto; display: flex; align-items: baseline; gap: 7px;
-  font-size: 12.5px; padding: 7px 13px; border-radius: 8px;
-  color: var(--ink-dim); white-space: nowrap; border: 1px solid transparent;
+
+.side {
+  position: sticky; top: 62px; padding: 24px 0 40px;
+  max-height: calc(100vh - 62px); overflow-y: auto; scrollbar-width: thin;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.side h2 {
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-faint); font-weight: 600; padding: 0 10px 8px;
+}
+.side .sep { height: 1px; background: var(--line); margin: 8px 10px; }
+
+.side button {
+  display: grid; grid-template-columns: 16px minmax(0, 1fr) max-content;
+  gap: 10px; align-items: center; text-align: left;
+  padding: 8px 10px; border-radius: 8px; font-size: 13px; line-height: 1.3;
+  color: var(--ink-dim); border: 1px solid transparent;
   transition: color .14s, background .14s, border-color .14s;
 }
-.rail button:hover { color: var(--ink); background: #0f1c39; }
-.rail button.is-on { color: #fff; background: #16305f; border-color: #2b4e8f; }
-.rail button i { font-style: normal; font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
-.rail button.is-on i { color: var(--blue-lift); }
-.rail button.is-done i { color: var(--ok); }
-.rail .sep { flex: 0 0 auto; width: 1px; background: var(--line); margin: 5px 6px; }
+.side button:hover { color: var(--ink); background: #0f1c39; }
+.side button.is-on { color: #fff; background: #16305f; border-color: #2b4e8f; }
+.side button .name { min-width: 0; overflow-wrap: anywhere; }
+.side button .n { font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.side button.is-on .n { color: var(--blue-lift); }
+.side button.is-done .n { color: var(--ok); }
+.side button.is-done .name { color: var(--ink-faint); }
+.side button.is-on.is-done .name { color: #fff; }
+
+/* The checkbox does the work: empty, part-filled, or ticked. */
+.box {
+  width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid #35507f;
+  position: relative; overflow: hidden; flex: 0 0 auto;
+}
+.box i { position: absolute; left: 0; right: 0; bottom: 0; background: var(--blue); display: block; }
+.side button.is-done .box { border-color: var(--ok); background: var(--ok); }
+.side button.is-done .box::after {
+  content: "✓"; position: absolute; inset: 0; display: grid; place-items: center;
+  color: #06120c; font-size: 11px; font-weight: 700; line-height: 1;
+}
+.side button.is-on .box { border-color: #6f9cdd; }
 
 /* ── the board ────────────────────────────────────────────────────────── */
 
-main { max-width: var(--wrap); margin: 0 auto; padding: 26px 22px 90px; }
+main { min-width: 0; padding: 24px 0 90px; }
 
 .cat { margin: 0 0 40px; scroll-margin-top: 120px; }
 .cat-head {
@@ -146,7 +177,7 @@ main { max-width: var(--wrap); margin: 0 auto; padding: 26px 22px 90px; }
 
 /* ── slot cards ───────────────────────────────────────────────────────── */
 
-.slots { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.slots { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); }
 
 .slot {
   position: relative; display: flex; flex-direction: column; text-align: left;
@@ -261,6 +292,7 @@ main { max-width: var(--wrap); margin: 0 auto; padding: 26px 22px 90px; }
 .drawer-crumb { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--blue-lift); margin-bottom: 5px; }
 .drawer-head h2 { font-size: 17px; letter-spacing: -.015em; }
 .drawer-body { flex: 1; overflow: auto; padding: 18px 20px 40px; display: flex; flex-direction: column; gap: 20px; }
+.drawer-body > * { flex: 0 0 auto; }
 
 .stage {
   background: repeating-linear-gradient(45deg, #0a172f 0 9px, #0c1b36 9px 18px);
@@ -280,32 +312,26 @@ main { max-width: var(--wrap); margin: 0 auto; padding: 26px 22px 90px; }
 .dz b { display: block; color: var(--ink); margin-bottom: 3px; }
 .dz label { color: var(--blue-lift); text-decoration: underline; cursor: pointer; }
 
-.kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 13px; }
-.kv dt { color: var(--ink-faint); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding-top: 3px; }
-.kv dd { color: var(--ink); word-break: break-word; }
-.kv dd.mono { font-family: var(--mono); font-size: 12px; }
-
 h4.sub { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 9px; }
 
-.check { display: flex; flex-direction: column; gap: 6px; }
-.check div { display: flex; gap: 9px; align-items: baseline; font-size: 13px; }
-.check b { flex: 0 0 15px; font-size: 12px; }
-.check .pass b { color: var(--ok); }
-.check .fail b { color: var(--late); }
-.check .idk b { color: var(--ink-faint); }
-.check .fail span { color: #ffc3c3; }
-
-.prose { font-size: 13px; color: var(--ink-dim); line-height: 1.55; }
-.prose + .prose { margin-top: 9px; }
-.note-warn {
-  padding: 10px 13px; border-radius: 10px; font-size: 12.5px; line-height: 1.5;
-  background: #221a0a; border: 1px solid #6b5320; color: #f2d79a;
+/* What it has to be, and whether it is. Nothing else. */
+.spec { display: flex; flex-direction: column; gap: 1px; }
+.spec-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 11px 14px; border-radius: 9px; background: var(--panel);
+  border: 1px solid var(--line); border-left-width: 3px;
 }
-.note-warn b { color: var(--warn); }
-
-.copyset { display: grid; gap: 5px 14px; grid-template-columns: max-content 1fr; font-size: 12.5px; }
-.copyset dt { color: var(--ink-faint); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; padding-top: 2px; }
-.copyset dd { color: var(--ink); }
+.spec-row .need { font-size: 15px; font-weight: 600; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.spec-row .mark { font-size: 17px; line-height: 1; font-weight: 700; }
+.spec-row.pass { border-left-color: var(--ok); }
+.spec-row.pass .mark { color: var(--ok); }
+.spec-row.fail { border-left-color: var(--late); background: #1c0d0d; }
+.spec-row.fail .need { color: #ffd7d7; }
+.spec-row.fail .mark { color: var(--late); }
+.spec-row.unknown { border-left-color: var(--ink-faint); }
+.spec-row.unknown .mark { color: var(--ink-faint); }
+.spec-row.todo { border-left-color: var(--line); }
+.spec-row.todo .need { color: var(--ink-dim); }
 
 .vers { display: flex; flex-direction: column; gap: 8px; }
 .ver { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--panel); display: flex; gap: 12px; align-items: flex-start; }
@@ -346,10 +372,21 @@ h4.sub { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; colo
 
 .loading, .nothing { padding: 60px 0; text-align: center; color: var(--ink-faint); font-size: 14px; }
 
+/* Below the split, the list stops being a rail and becomes a plain stacked
+   index above the board — still a checklist, just full width. */
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr; gap: 0; }
+  .side {
+    position: static; max-height: none; padding: 16px 0 8px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 2px 14px;
+  }
+  .side h2, .side .sep { grid-column: 1 / -1; }
+}
+
 @media (max-width: 720px) {
   .mast-in { padding: 12px 16px 9px; }
-  .rail { padding-left: 16px; padding-right: 16px; }
-  main { padding: 20px 16px 70px; }
+  .shell { padding-left: 16px; padding-right: 16px; }
+  main { padding: 16px 0 70px; }
   .slots { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 9px; }
   .slot-media { height: 140px; padding: 12px 10px 10px; }
   .drawer { width: 100vw; }

@@ -206,7 +206,7 @@
     const wanted = hash.startsWith("c=") ? hash.slice(2) : SLOTS.has(hash) ? SLOTS.get(hash).cat.id : null;
     channel = CAT.categories.some((c) => c.id === wanted) || wanted === ALL ? wanted : CAT.categories[0].id;
 
-    renderRail();
+    renderSide();
     renderBoard();
     wireChrome();
 
@@ -243,27 +243,37 @@
     return { done, total };
   };
 
-  function renderRail() {
+  function renderSide() {
     const all = CAT.categories.reduce((acc, c) => {
       const t = tally(c);
       return { done: acc.done + t.done, total: acc.total + t.total };
     }, { done: 0, total: 0 });
 
-    mount($("#rail"),
-      tab(ALL, "Everything", all),
-      el("span", { class: "sep" }),
-      CAT.categories.map((c) => tab(c.id, c.name, tally(c))),
+    mount($("#side"),
+      el("h2", { text: "Channels" }),
+      row(ALL, "Everything", all),
+      el("div", { class: "sep" }),
+      CAT.categories.map((c) => row(c.id, c.name, tally(c))),
     );
   }
 
-  function tab(id, name, t) {
+  /* A line per channel with a box beside it. The box is the whole point — empty,
+     part-filled in proportion to what has landed, or ticked when the channel is
+     complete — so the list can be run down at a glance rather than read. */
+  function row(id, name, t) {
     const on = channel === id;
+    const done = t.total > 0 && t.done === t.total;
     return el("button", {
-      class: `${on ? "is-on " : ""}${t.done === t.total ? "is-done" : ""}`.trim() || null,
+      class: [on && "is-on", done && "is-done"].filter(Boolean).join(" ") || null,
       "data-tab": id,
       "aria-current": on ? "true" : null,
       onclick: () => setChannel(id),
-    }, name, el("i", { text: `${t.done}/${t.total}` }));
+    },
+      el("span", { class: "box", "aria-hidden": "true" },
+        !done && t.done > 0 && el("i", { style: `height:${Math.round((t.done / t.total) * 100)}%` })),
+      el("span", { class: "name", text: name }),
+      el("span", { class: "n", text: `${t.done}/${t.total}` }),
+    );
   }
 
   function setChannel(id) {
@@ -271,7 +281,7 @@
     query = "";
     $("#q").value = "";
     history.replaceState(null, "", `#c=${encodeURIComponent(id)}`);
-    renderRail();
+    renderSide();
     renderBoard();
     window.scrollTo({ top: 0, behavior: "instant" });
   }
@@ -388,7 +398,7 @@
       const size = slot.w && slot.h ? `${slot.w}×${slot.h}` : (slot.ratio || "").toUpperCase();
       return el("div", { class: `frame empty ${shape}`, style },
         (kind === "video" || kind === "audio") && el("b", { class: "glyph", text: kind === "audio" ? "♪" : "▶" }),
-        el("span", { text: size || (slot.required === false ? "Optional" : "Not produced") }));
+        el("span", { text: size || "Not produced" }));
     }
 
     const frame = el("div", { class: `frame ${shape}`, style });
@@ -427,7 +437,7 @@
 
     $("#drawer-crumb").textContent = `${cat.name} · ${group.title}`;
     $("#drawer-title").textContent = slot.label;
-    mount($("#drawer-body"), drawerBody(slot, group, cat));
+    mount($("#drawer-body"), drawerBody(slot, group));
     $("#drawer").hidden = false;
     $("#scrim").hidden = false;
     document.body.style.overflow = "hidden";
@@ -443,7 +453,12 @@
     history.replaceState(null, "", `#c=${encodeURIComponent(channel)}`);
   }
 
-  function drawerBody(slot, group, cat) {
+  /* The inspector is for a media buyer, not for us. They assume the specs were
+     followed, so the only questions worth answering are "what size is this" and
+     "does the file clear it". Everything else — the deliverable's notes, its
+     copy lockup, the channel's caveats, where the spec came from — was noise on
+     a page whose job is to say yes or no. */
+  function drawerBody(slot, group) {
     const kind = kindOf(slot);
     const v = currentOf(slot.id);
     const versions = historyOf(slot.id);
@@ -451,10 +466,7 @@
     const stage = el("div", { class: `stage${kind === "video" ? " video" : ""}` });
     if (!v) {
       stage.append(el("div", { class: "empty-stage" },
-        el("p", { text: `${KIND[kind].label} placeholder — nothing here yet.` }),
-        slot.seed
-          ? el("p", { style: "margin-top:8px;font-size:12px" }, "A file for this exists on the NAS at ", el("code", { text: slot.seed }), " — it just hasn't been published to the board.")
-          : el("p", { style: "margin-top:8px;font-size:12px", text: "Drop the file below, or on the card itself." })));
+        el("p", { text: `${KIND[kind].label} — not produced yet.` })));
     } else if (v.kind === "image") {
       stage.append(el("img", { src: v.url, alt: v.filename }));
     } else if (v.kind === "video") {
@@ -463,67 +475,50 @@
       stage.append(el("audio", { src: v.url, controls: true, style: "width:100%" }));
     } else {
       stage.append(el("div", { class: "empty-stage" },
-        el("p", { text: `${v.filename} — ${bytes(v.size)}` }),
-        el("p", { style: "margin-top:8px" }, el("a", { href: v.url, target: "_blank", rel: "noopener", text: "Open it in a new tab" }))));
+        el("p", {}, el("a", { href: v.url, target: "_blank", rel: "noopener", text: `Open ${v.filename}` }))));
     }
 
     const dz = el("div", { class: "dz" },
       el("b", { text: v ? "Drop a new version here" : "Drop the file here" }),
       el("span", {}, "or ", el("label", {}, "choose a file",
-        el("input", { type: "file", class: "vh", onchange: (e) => { const f = e.target.files?.[0]; if (f) startUpload(f, slot.id); e.target.value = ""; } }))),
-      v ? el("p", { style: "margin-top:6px;font-size:12px;color:var(--ink-faint)", text: `${versions.length} version${versions.length === 1 ? "" : "s"} on file. The one it replaces stays below.` }) : null);
+        el("input", { type: "file", class: "vh", onchange: (e) => { const f = e.target.files?.[0]; if (f) startUpload(f, slot.id); e.target.value = ""; } }))));
     dropTarget(dz, slot.id);
 
-    const spec = el("dl", { class: "kv" });
-    const add = (k, val) => { if (val !== null && val !== undefined && val !== "") spec.append(el("dt", { text: k }), el("dd", { text: String(val) })); };
-    add("Media", KIND[kind].label);
-    add("Channel", group.vendor || cat.name);
-    add("Due", group.due ? `${shortDate(group.due)} (${whenPill(group.due, group.status).text.toLowerCase()})` : "no vendor date yet");
-    add("Format", slot.w && slot.h ? `${slot.w} × ${slot.h} px${slot.ratio ? ` · ${slot.ratio}` : ""}` : slot.ratio || "");
-    add("File types", slot.formats?.length ? slot.formats.join(", ") : "");
-    add("Weight cap", slot.maxBytes ? bytes(slot.maxBytes) : "");
-    add("Runs as", slot.use || "");
-    add("Required", slot.required === false ? "Optional" : "Yes — the vendor spec asks for it");
-    if (slot.note) add("Note", slot.note);
-    if (slot.source) spec.append(el("dt", { text: "Spec from" }), el("dd", { class: "mono", text: slot.source }));
+    return [stage, dz, specLines(slot, v), versions.length && el("div", {},
+      el("h4", { class: "sub", text: `History — ${versions.length} version${versions.length === 1 ? "" : "s"}` }),
+      el("div", { class: "vers" }, versions.map((ver) => versionRow(slot, ver, ver.id === STATE.slots[slot.id]?.currentId))))];
+  }
 
-    const kids = [
-      stage,
-      dz,
-      el("div", {}, el("h4", { class: "sub", text: "What this placeholder has to be" }), spec),
-    ];
+  /* One line per requirement: what it has to be, and a tick or a cross. Nothing
+     is filled in yet, so every line reads as outstanding rather than failed. */
+  function specLines(slot, v) {
+    const rows = [];
+    const push = (need, state) => rows.push({ need, state });
 
-    if (v) {
-      const checks = specCheck(slot, v);
-      kids.push(el("div", {},
-        el("h4", { class: "sub", text: "Does the current file clear it?" }),
-        checks.length
-          ? el("div", { class: "check" }, checks.map((c) => el("div", { class: c.ok === true ? "pass" : c.ok === null ? "idk" : "fail" },
-              el("b", { text: c.ok === true ? "✓" : c.ok === false ? "✕" : c.ok === "warn" ? "!" : "?" }), el("span", { text: c.text }))))
-          : el("p", { class: "prose", text: "No measurable spec is captured for this one yet — judge it on the creative." })));
+    if (slot.w && slot.h) {
+      const got = v && v.width && v.height;
+      push(`${slot.w} × ${slot.h}`,
+        !v ? null : !got ? "unknown" : (v.width === slot.w && v.height === slot.h) ? "pass" : "fail");
+    } else if (slot.ratio) {
+      push(slot.ratio, v ? "pass" : null);
     }
 
-    if (group.notes || cat.specNote || group.copy?.length) {
-      const about = [el("h4", { class: "sub", text: "About this deliverable" })];
-      if (group.notes) about.push(el("p", { class: "prose", text: group.notes }));
-      if (group.copy?.length) {
-        about.push(el("dl", { class: "copyset", style: "margin-top:12px" },
-          group.copy.flatMap((line) => [el("dt", { text: line.label }), el("dd", { text: line.text })])));
-      }
-      if (cat.specStatus !== "captured" && cat.specNote) {
-        about.push(el("p", { class: "note-warn", style: "margin-top:12px" },
-          el("b", { text: cat.specStatus === "not_captured" ? "Specs not captured. " : "Specs partial. " }),
-          cat.specNote));
-      }
-      kids.push(el("div", {}, about));
+    if (slot.maxBytes) push(`Under ${bytes(slot.maxBytes)}`, !v ? null : v.size <= slot.maxBytes ? "pass" : "fail");
+
+    if (slot.formats?.length) {
+      const ext = v ? extOf(v.filename) : "";
+      const want = slot.formats.map((f) => f.toLowerCase().replace(/^\./, ""));
+      const ok = want.includes(ext) || (ext === "jpg" && want.includes("jpeg")) || (ext === "jpeg" && want.includes("jpg"));
+      push(slot.formats.join(" / "), !v ? null : ok ? "pass" : "fail");
     }
 
-    if (versions.length) {
-      kids.push(el("div", {},
-        el("h4", { class: "sub", text: `History — ${versions.length} version${versions.length === 1 ? "" : "s"}` }),
-        el("div", { class: "vers" }, versions.map((ver) => versionRow(slot, ver, ver.id === STATE.slots[slot.id]?.currentId)))));
-    }
-    return kids;
+    // A slot with no captured spec still needs one line, or the panel is blank.
+    if (!rows.length) push(slot.label, v ? "pass" : null);
+
+    return el("div", { class: "spec" }, rows.map(({ need, state }) =>
+      el("div", { class: `spec-row ${state || "todo"}` },
+        el("span", { class: "need", text: need }),
+        el("span", { class: "mark", text: state === "pass" ? "✓" : state === "fail" ? "✕" : state === "unknown" ? "?" : "" }))));
   }
 
   function versionRow(slot, v, isCurrent) {
@@ -570,11 +565,11 @@
   }
 
   function refreshAll() {
-    renderRail();
+    renderSide();
     renderBoard();
     if (openSlot && SLOTS.has(openSlot)) {
-      const { slot, group, cat } = SLOTS.get(openSlot);
-      mount($("#drawer-body"), drawerBody(slot, group, cat));
+      const { slot, group } = SLOTS.get(openSlot);
+      mount($("#drawer-body"), drawerBody(slot, group));
     }
   }
 
