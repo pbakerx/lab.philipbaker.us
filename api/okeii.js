@@ -5,6 +5,7 @@
 //   POST ?action=begin                       open a sliced upload (anything over a part)
 //   POST ?action=part&id=<ticket>&n=<1-based>  one slice, raw bytes (or ?enc=b64)
 //   POST ?action=finish                      close it out and record the version
+//   POST ?action=approve                     mark the current file cleared to traffic
 //   POST ?action=restore                     make an older version current again
 //   POST ?action=note                        edit a version's note
 //   POST ?action=remove                      drop a version from a slot's history
@@ -28,7 +29,6 @@ import {
   PART_SIZE_B64,
   SLOT_ID_RE,
   addVersion,
-  canDestroy,
   canWrite,
   classify,
   keyConfigured,
@@ -78,13 +78,12 @@ export default async function handler(req, res) {
     if (req.method !== "POST") return fail(res, 405, "Use GET or POST.");
     if (rateLimited(clientIp(req))) return fail(res, 429, "Too many requests in a minute — give it a moment.");
 
-    // Only permanent deletion is in the hard tier. Making an older version
-    // current again changes nothing that can't be changed back, and a note is a
-    // note — gating those behind a key nobody has set would mean the board
-    // couldn't be rolled back at all.
-    const destructive = action === "remove";
-    if (destructive ? !canDestroy(req) : !canWrite(req)) {
-      return fail(res, 401, gateMessage(destructive), { needsKey: true });
+    // Every write is in one tier: open when no review key is configured, gated
+    // when one is. Deletion used to be hard-gated on its own, which meant that
+    // with no key set nobody could take a wrong file off a slot at all — the one
+    // thing a reviewer most needs to do.
+    if (!canWrite(req)) {
+      return fail(res, 401, gateMessage(), { needsKey: true });
     }
 
     switch (action) {
@@ -92,6 +91,7 @@ export default async function handler(req, res) {
       case "begin": return await begin(req, res);
       case "part": return await part(req, res);
       case "finish": return await finish(req, res);
+      case "approve": return await approve(req, res);
       case "restore": return await restore(req, res);
       case "note": return await note(req, res);
       case "remove": return await remove(req, res);
@@ -104,10 +104,7 @@ export default async function handler(req, res) {
   }
 }
 
-function gateMessage(destructive) {
-  if (destructive && !keyConfigured()) {
-    return "Deleting a version permanently needs the review key, and OKEII_REVIEW_KEY isn't set on this project. Everything else still works — nothing on this board can be lost.";
-  }
+function gateMessage() {
   return "That needs the review key — use Unlock at the top of the page.";
 }
 
@@ -384,6 +381,31 @@ async function rawBody(req) {
 
 // ── History ────────────────────────────────────────────────────────────────
 
+/* Approval rides on the VERSION, not on the slot.
+   That is the whole trick: drop a new file and the slot falls back to "in
+   review" on its own, because the approval belongs to the file that was
+   approved — nobody has to remember to revoke it. Restore an older version that
+   was signed off and its approval comes back with it. */
+async function approve(req, res) {
+  const slotId = String(req.body?.slotId || "");
+  const id = String(req.body?.versionId || "");
+  const on = req.body?.approved !== false;
+  if (!SLOT_ID_RE.test(slotId)) return fail(res, 400, "That isn't a slot on this page.");
+
+  let out = null;
+  await mutate((state) => {
+    const slot = state.slots[slotId];
+    const hit = slot?.versions.find((v) => v.id === id);
+    if (!hit) throw conflict("That version isn't in this slot's history any more.");
+    const by = clip(req.body?.by, MAX_BY) || "Unattributed";
+    if (on) { hit.approvedAt = new Date().toISOString(); hit.approvedBy = by; }
+    else { delete hit.approvedAt; delete hit.approvedBy; }
+    out = hit;
+    pushLog(state, { slotId, versionId: id, action: on ? "approved" : "unapproved", by, filename: hit.filename });
+  });
+  return res.status(200).json({ ok: true, version: out });
+}
+
 async function restore(req, res) {
   const slotId = String(req.body?.slotId || "");
   const id = String(req.body?.versionId || "");
@@ -428,11 +450,11 @@ async function remove(req, res) {
     const slot = state.slots[slotId];
     const i = slot?.versions.findIndex((v) => v.id === id) ?? -1;
     if (i < 0) throw conflict("That version isn't in this slot's history any more.");
-    if (slot.versions.length > 1 && slot.currentId === id) {
-      throw conflict("That's the current version. Restore an earlier one first, then remove this.");
-    }
     pathname = slot.versions[i].pathname;
     const [gone] = slot.versions.splice(i, 1);
+    // Taking the current file off a slot promotes whatever it replaced, so the
+    // slot falls back to the previous round rather than emptying — and empties
+    // only when there is genuinely nothing left.
     if (!slot.versions.length) delete state.slots[slotId];
     else if (slot.currentId === id) slot.currentId = slot.versions[0].id;
     pushLog(state, { slotId, versionId: id, action: "removed", by: clip(req.body?.by, MAX_BY) || "Unattributed", filename: gone.filename });

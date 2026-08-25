@@ -176,6 +176,20 @@
     return out;
   }
 
+  /* The three states a media buyer cares about. Approval rides on the version,
+     so dropping a new file drops the slot back to "In review" by itself —
+     nothing has to remember to revoke a sign-off. */
+  const STATUS = {
+    needs:  { label: "Needs content",    cls: "needs" },
+    review: { label: "In review",        cls: "review" },
+    ready:  { label: "Ready to traffic", cls: "ready" },
+  };
+  function statusOf(slotId) {
+    const v = currentOf(slotId);
+    if (!v) return STATUS.needs;
+    return v.approvedAt ? STATUS.ready : STATUS.review;
+  }
+
   const slotVerdict = (slot, v) => {
     if (!v) return null;
     const checks = specCheck(slot, v);
@@ -237,10 +251,16 @@
 
   // ── the channel nav ──────────────────────────────────────────────────────
 
+  /* "Checked off" means cleared to traffic, not merely uploaded — so the number
+     counts approvals and the box fills with what has landed. A part-filled box
+     reading 0/33 is exactly right: the files are in, none are signed off. */
   const tally = (c) => {
-    const total = c.groups.reduce((n, g) => n + g.slots.length, 0);
-    const done = c.groups.reduce((n, g) => n + g.slots.filter((s) => currentOf(s.id)).length, 0);
-    return { done, total };
+    const slots = c.groups.flatMap((g) => g.slots);
+    return {
+      total: slots.length,
+      done: slots.filter((s) => statusOf(s.id) === STATUS.ready).length,
+      landed: slots.filter((s) => currentOf(s.id)).length,
+    };
   };
 
   function renderSide() {
@@ -267,10 +287,11 @@
       class: [on && "is-on", done && "is-done"].filter(Boolean).join(" ") || null,
       "data-tab": id,
       "aria-current": on ? "true" : null,
+      title: `${t.landed} of ${t.total} delivered · ${t.done} ready to traffic`,
       onclick: () => setChannel(id),
     },
       el("span", { class: "box", "aria-hidden": "true" },
-        !done && t.done > 0 && el("i", { style: `height:${Math.round((t.done / t.total) * 100)}%` })),
+        !done && t.landed > 0 && el("i", { style: `height:${Math.round((t.landed / t.total) * 100)}%` })),
       el("span", { class: "name", text: name }),
       el("span", { class: "n", text: `${t.done}/${t.total}` }),
     );
@@ -307,7 +328,7 @@
     return el("section", { class: "cat", id: `cat-${c.id}` },
       el("div", { class: "cat-head" },
         el("h2", { text: c.name }),
-        el("span", { class: "count", text: `${t.done} of ${t.total} delivered` }),
+        el("span", { class: "count", text: `${t.landed} of ${t.total} delivered · ${t.done} ready to traffic` }),
       ),
       groups,
     );
@@ -352,22 +373,23 @@
           el("span", { text: kind === "audio" ? "♪" : "▶" })),
     );
 
-    const foot = el("div", { class: "slot-foot" });
+    const st = statusOf(slot.id);
+    const foot = el("div", { class: "slot-foot" },
+      el("span", { class: `status ${st.cls}`, text: st.label }));
     if (v) {
-      foot.append(el("span", { class: `tag ${verdict}`, text: verdict === "ok" ? "Meets spec" : verdict === "warn" ? "Check scale" : "Off spec" }));
+      // An off-spec file can still be approved — that is the reviewer's call —
+      // but it must never stop saying so.
+      if (verdict !== "ok") foot.append(el("span", { class: `tag ${verdict}`, text: verdict === "warn" ? "Check scale" : "Off spec" }));
       if (versions.length > 1) foot.append(el("span", { class: "tag v", text: `v${versions.length}` }));
-      foot.append(el("span", { class: "tag", text: bytes(v.size) }));
-    } else {
-      foot.append(el("span", { class: "tag", text: "Placeholder" }));
-      // A seed is creative that exists on the NAS but hasn't been published
-      // here. Saying so beats an empty box that implies nothing exists.
-      if (slot.seed) foot.append(el("span", { class: "tag warn", text: "On the NAS" }));
+    } else if (slot.seed) {
+      // A seed is creative that exists on the NAS but hasn't been published here.
+      foot.append(el("span", { class: "tag warn", text: "On the NAS" }));
     }
 
     const node = el("div", {
       class: "slot", tabindex: "0", role: "button", "data-slot": slot.id,
       style: `--kind:${KIND[kind].accent}`,
-      "aria-label": `${KIND[kind].label} — ${slot.label} — ${v ? v.filename : "placeholder"}`,
+      "aria-label": `${KIND[kind].label} — ${slot.label} — ${st.label}`,
       onclick: () => openDrawer(slot.id),
       onkeydown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDrawer(slot.id); } },
     },
@@ -484,7 +506,32 @@
         el("input", { type: "file", class: "vh", onchange: (e) => { const f = e.target.files?.[0]; if (f) startUpload(f, slot.id); e.target.value = ""; } }))));
     dropTarget(dz, slot.id);
 
-    return [stage, dz, specLines(slot, v), versions.length && el("div", {},
+    const st = statusOf(slot.id);
+    const banner = el("div", { class: `banner ${st.cls}` },
+      el("span", { class: "dot" }),
+      el("b", { text: st.label }),
+      v?.approvedAt && el("small", { text: `${v.approvedBy || "Unattributed"} · ${ago(v.approvedAt)}` }));
+
+    const actions = v && el("div", { class: "acts-row" },
+      el("button", {
+        class: v.approvedAt ? "btn" : "btn go",
+        text: v.approvedAt ? "Withdraw approval" : "Approve — ready to traffic",
+        onclick: () => act("approve",
+          { slotId: slot.id, versionId: v.id, approved: !v.approvedAt, by: store.who },
+          v.approvedAt ? "Approval withdrawn." : "Approved — ready to traffic."),
+      }),
+      el("button", {
+        class: "btn danger",
+        text: "Remove this file",
+        onclick: () => {
+          const rest = versions.length - 1;
+          const after = rest ? `The slot falls back to the previous version — ${rest} left in history.` : "The slot goes back to a placeholder.";
+          if (!confirm(`Remove ${v.filename}?\n\n${after}\nThe file is deleted from the store and can't be recovered.`)) return;
+          act("remove", { slotId: slot.id, versionId: v.id, by: store.who }, "Removed.");
+        },
+      }));
+
+    return [banner, stage, actions, dz, specLines(slot, v), versions.length && el("div", {},
       el("h4", { class: "sub", text: `History — ${versions.length} version${versions.length === 1 ? "" : "s"}` }),
       el("div", { class: "vers" }, versions.map((ver) => versionRow(slot, ver, ver.id === STATE.slots[slot.id]?.currentId))))];
   }
@@ -530,14 +577,10 @@
     const acts = el("div", { class: "acts" },
       el("a", { href: v.downloadUrl || v.url, download: v.filename, text: "Download" }),
       !isCurrent && el("button", { text: "Make current", onclick: () => act("restore", { slotId: slot.id, versionId: v.id, by: store.who }, "Restored.") }),
-      // Deletion is the one thing the key always gates, so when no key is
-      // configured the button can never work — say why instead of failing.
-      GATE.keyRequired
-        ? el("button", { class: "danger", text: "Remove", onclick: () => {
-            if (!confirm(`Remove ${v.filename} from this slot's history? The file is deleted from the store.`)) return;
-            act("remove", { slotId: slot.id, versionId: v.id, by: store.who }, "Removed.");
-          } })
-        : el("span", { class: "acts-off", title: "Set OKEII_REVIEW_KEY on the project to enable deletion.", text: "No delete" }));
+      !isCurrent && el("button", { class: "danger", text: "Remove", onclick: () => {
+        if (!confirm(`Remove ${v.filename} from this slot's history? The file is deleted from the store.`)) return;
+        act("remove", { slotId: slot.id, versionId: v.id, by: store.who }, "Removed.");
+      } }));
 
     return el("div", { class: `ver${isCurrent ? " is-current" : ""}` },
       thumb,
@@ -545,6 +588,7 @@
         el("b", { text: v.filename }),
         el("small", { text: [
           isCurrent ? "Current" : null,
+          v.approvedAt ? "Approved" : null,
           v.width && v.height ? `${v.width}×${v.height}` : null,
           bytes(v.size), v.by, ago(v.uploadedAt),
         ].filter(Boolean).join(" · ") }),
@@ -600,6 +644,7 @@
       if (who === null) return;
       store.who = who.trim() || "Unattributed";
       $("#who").textContent = store.who;
+      $("#who").classList.add("is-set");
     }
     const card = CARDS.get(slotId);
     const bar = card && $(".slot-bar i", card);
@@ -740,13 +785,22 @@
       t = setTimeout(() => { query = flatten(e.target.value.trim()); renderBoard(); }, 130);
     });
 
+    // Not a login — there is nothing to log in to. It is the name that gets
+    // stamped on anything you drop or approve, so the history says who did it.
     const who = $("#who");
-    who.textContent = store.who || "Sign in";
+    const paintWho = () => {
+      who.textContent = store.who || "Add your name";
+      who.title = store.who
+        ? `Anything you drop or approve is stamped "${store.who}". Click to change it.`
+        : "Your name gets stamped on anything you drop or approve. Not a login.";
+      who.classList.toggle("is-set", Boolean(store.who));
+    };
+    paintWho();
     who.addEventListener("click", () => {
-      const v = prompt("Your name — it rides along with anything you drop.", store.who);
+      const v = prompt("Your name — it gets stamped on anything you drop or approve.\n\nThis isn't a login; nothing on this page is behind one.", store.who);
       if (v === null) return;
       store.who = v.trim();
-      who.textContent = store.who || "Sign in";
+      paintWho();
     });
 
     const lock = $("#lock");
