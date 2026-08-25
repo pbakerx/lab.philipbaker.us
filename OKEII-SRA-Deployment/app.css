@@ -283,6 +283,9 @@ main { min-width: 0; padding: 24px 0 90px; }
 .status.needs  { color: var(--ink-faint); border-color: var(--line); background: #0a142b; }
 .status.review { color: var(--warn); border-color: #7a5a1e; background: #241b09; }
 .status.ready  { color: #06120c; border-color: var(--ok); background: var(--ok); }
+/* Parked: see APPROVALS_LIVE in app.js. Grey so a stray approval can't read as
+   a cleared deliverable while sign-off is still being settled. */
+.status.ready.off { color: var(--ink-faint); border-color: var(--line); background: #0a142b; }
 
 .slot-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: #0a1730; }
 .slot-bar i { display: block; height: 100%; width: 0; background: var(--blue); transition: width .2s; }
@@ -322,6 +325,9 @@ main { min-width: 0; padding: 24px 0 90px; }
 .banner.ready  { border-left-color: var(--ok); background: #07231a; }
 .banner.ready .dot  { background: var(--ok); }
 .banner.ready b { color: var(--ok); }
+.banner.ready.off { border-left-color: var(--ink-faint); background: var(--panel); }
+.banner.ready.off .dot { background: var(--ink-faint); }
+.banner.ready.off b { color: var(--ink-dim); }
 
 .acts-row { display: flex; gap: 9px; flex-wrap: wrap; }
 .btn {
@@ -332,6 +338,8 @@ main { min-width: 0; padding: 24px 0 90px; }
 .btn:hover { color: var(--ink); border-color: #2c4270; }
 .btn.go { color: #06120c; background: var(--ok); border-color: var(--ok); }
 .btn.go:hover { color: #06120c; background: #57e6a9; border-color: #57e6a9; }
+.btn.off { color: var(--ink-faint); background: #0a142b; border-style: dashed; cursor: not-allowed; }
+.btn.off:hover { color: var(--ink-faint); border-color: var(--line); }
 .btn.danger { flex: 0 0 auto; }
 .btn.danger:hover { color: var(--late); border-color: #7a2a2a; background: #1c0d0d; }
 

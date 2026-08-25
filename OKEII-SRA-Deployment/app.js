@@ -20,6 +20,14 @@
   "use strict";
 
   const API = "/api/okeii";
+
+  /* Approvals are built and wired but parked until the sign-off process is
+     settled. While this is false the Approve button is greyed and inert, and
+     "Ready to traffic" renders in grey rather than green so a stray approval
+     can't read as a cleared deliverable. Flip it to true to turn the whole
+     thing on — nothing else has to change, and any approval already recorded
+     comes straight back. */
+  const APPROVALS_LIVE = false;
   const ONE_SHOT_MAX = 3_000_000;      // above this, the upload is sliced
   const SOON_DAYS = 7;
   const ALL = "__all";
@@ -182,7 +190,7 @@
   const STATUS = {
     needs:  { label: "Needs content",    cls: "needs" },
     review: { label: "In review",        cls: "review" },
-    ready:  { label: "Ready to traffic", cls: "ready" },
+    ready:  { label: "Ready to traffic", cls: APPROVALS_LIVE ? "ready" : "ready off" },
   };
   function statusOf(slotId) {
     const v = currentOf(slotId);
@@ -514,7 +522,9 @@
 
     const actions = v && el("div", { class: "acts-row" },
       el("button", {
-        class: v.approvedAt ? "btn" : "btn go",
+        class: APPROVALS_LIVE ? (v.approvedAt ? "btn" : "btn go") : "btn off",
+        disabled: !APPROVALS_LIVE,
+        title: APPROVALS_LIVE ? null : "Sign-off isn't switched on yet.",
         text: v.approvedAt ? "Withdraw approval" : "Approve — ready to traffic",
         onclick: () => act("approve",
           { slotId: slot.id, versionId: v.id, approved: !v.approvedAt, by: store.who },
