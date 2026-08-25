@@ -5,41 +5,8 @@
   "agency": "PB Productions, LLC",
   "launch": "2026-09-08",
   "compiled": "2026-08-25",
-  "destination": "https://www.okeii.org/StrongReadersAct",
-  "creativeDirector": "David Downing",
-  "mediaBuyer": "LMR Media Mix (Lisa Ratcliff)"
+  "destination": "https://www.okeii.org/StrongReadersAct"
  },
- "brand": {
-  "blue_cmyk": "C93 M57 Y0 K0",
-  "blue_hex": "#116DFF",
-  "navy_cmyk": "C94 M72 Y0 K52",
-  "navy_hex": "#082F7B",
-  "typeface": "Inter (OFL) used as a stand-in for the Wix Madefor Display face on okeii.org",
-  "anchor_card": "NOT OUR KIDS. NOT THIS STATE. NOT ANYMORE. / IMPLEMENTING THE STRONG READERS ACT / okeii.org + QR"
- },
- "notices": [
-  {
-   "id": "anchor-card-wording",
-   "severity": "high",
-   "title": "The anchor card reads two different ways across the campaign",
-   "detail": "The rendered :15 and the Round 1 paid social exports read \"NOT OUR KIDS. NOT OUR STATE. NOT ANYMORE.\" The Metro Family spread that has already run, David Downing's paid social copy doc and the campaign anchor card as recorded in HANDOFF.md all read \"NOT THIS STATE.\" One of the two is wrong and the delivered print piece cannot be changed. Settle the wording before the remaining paid social sizes and the video cutdowns are built, or the campaign ships two versions of its own tagline.",
-   "found": "Verified against Metro Family Print/OKEII_MetroFamily_SeptOct_Spread_V3_LAYERED v4.pdf, the :15 build script's element names, and copy/social-ads-copy.md."
-  },
-  {
-   "id": "pinterest-unspecced",
-   "severity": "medium",
-   "title": "Pinterest is in the plan and has no spec sheet",
-   "detail": "SRA_Implementation_Plan.pptx slide 14 names paid social as Meta, YouTube, TikTok and Pinterest. The iHeartMedia specs deck covers only the first three, so no Pinterest size or copy field is tracked anywhere in this package. Request Pinterest creative specs from Lisa Ratcliff before the paid social package is submitted, or confirm Pinterest is out of the buy.",
-   "found": "data/specs.json > paid_social.platforms lists meta, tiktok and youtube only."
-  },
-  {
-   "id": "tiktok-weight",
-   "severity": "high",
-   "title": "The TikTok stills are over their weight cap",
-   "detail": "TikTok caps the 1200×628 and 640×640 images at 102,400 bytes. The two 1200×628 exports on disk measure roughly 257 KB and 234 KB — two and a half times the limit. They will be rejected as they stand and have to be re-compressed before submission.",
-   "found": "data/specs.json > paid_social.stills[3] and [5]; file sizes measured on disk 2026-08-25."
-  }
- ],
  "categories": [
   {
    "id": "paid-social",
@@ -1210,16 +1177,16 @@
    "specNote": "The creative is documented and on disk: eight approved V2 look boards, SRA_Spots_V2.pdf and SRA_Scripts_V2_print.pdf, plus the partner one-sheet SRA_Campaign_Briefing.pdf (data/assets.json > groups[tv-spot-look-boards]). What is NOT captured is a technical delivery spec - data/specs.json contains no television section, and no CTV platform or broadcast station has supplied frame size, codec, bit-rate, audio loudness, caption file, slate or traffic-code requirements. The three spot lengths (:60, :30, :15) are evidenced by two records in inbox/NEEDED-FROM-EMAIL.md — the filenames of David Downing's 2026-08-24 'Creative in Production' attachments - SRA_Campaign_60_TV.pdf, SRA_Campaign_30_TV.pdf, SRA_Campaign_15_TV.pdf - which are still in email and not on disk (inbox/NEEDED-FROM-EMAIL.md). Which concepts are scripted at which length is set by those three documents and is not yet on record here, so the film slots are held at campaign level rather than repeated under each concept. TV also carries no entry in data/schedule.json, so there is no vendor deadline against it.",
    "groups": [
     {
-     "id": "tv-spot-not-anymore",
-     "title": "Not Anymore",
+     "id": "tv-spot-look-boards",
+     "title": "Look boards — eight approved concepts",
      "status": "approved",
-     "deliverableId": null,
      "due": null,
-     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
+     "deliverableId": null,
+     "notes": "The eight V2 spot concepts, approved at look-board stage, plus three additional Kitchen Table frames found on disk alongside them. Scripts are in SRA_Scripts_V2_print.pdf under Spot package documents. No film has been produced for any of them — see Finished TV films.",
      "slots": [
       {
        "id": "tv-not-anymore-lookboard",
-       "label": "Look board - approved V2",
+       "label": "Not Anymore",
        "kind": "image",
        "required": false,
        "use": "Internal and client concept review",
@@ -1231,20 +1198,10 @@
        "ratio": null,
        "maxBytes": null,
        "formats": []
-      }
-     ]
-    },
-    {
-     "id": "tv-spot-the-chorus",
-     "title": "The Chorus",
-     "status": "approved",
-     "deliverableId": null,
-     "due": null,
-     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
-     "slots": [
+      },
       {
        "id": "tv-the-chorus-lookboard",
-       "label": "Look board - approved V2",
+       "label": "The Chorus",
        "kind": "image",
        "required": false,
        "use": "Internal and client concept review",
@@ -1256,20 +1213,10 @@
        "ratio": null,
        "maxBytes": null,
        "formats": []
-      }
-     ]
-    },
-    {
-     "id": "tv-spot-the-kitchen-table",
-     "title": "The Kitchen Table",
-     "status": "approved",
-     "deliverableId": null,
-     "due": null,
-     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. Three additional Kitchen Table frames are also present in SRA_Spot_Edits/ and are listed here so they are not lost. No film has been produced - see 'Finished TV films' below.",
-     "slots": [
+      },
       {
        "id": "tv-kitchen-table-lookboard",
-       "label": "Look board - approved V2",
+       "label": "The Kitchen Table",
        "kind": "image",
        "required": false,
        "use": "Internal and client concept review",
@@ -1284,7 +1231,7 @@
       },
       {
        "id": "tv-kitchen-table-frame-table",
-       "label": "Additional Kitchen Table frame 1",
+       "label": "The Kitchen Table — extra frame 1",
        "kind": "image",
        "required": false,
        "use": "Concept reference",
@@ -1299,7 +1246,7 @@
       },
       {
        "id": "tv-kitchen-table-frame-lean",
-       "label": "Additional Kitchen Table frame 2",
+       "label": "The Kitchen Table — extra frame 2",
        "kind": "image",
        "required": false,
        "use": "Concept reference",
@@ -1314,7 +1261,7 @@
       },
       {
        "id": "tv-kitchen-table-frame-finger",
-       "label": "Additional Kitchen Table frame 3",
+       "label": "The Kitchen Table — extra frame 3",
        "kind": "image",
        "required": false,
        "use": "Concept reference",
@@ -1326,20 +1273,10 @@
        "ratio": null,
        "maxBytes": null,
        "formats": []
-      }
-     ]
-    },
-    {
-     "id": "tv-spot-the-surprise",
-     "title": "The Surprise",
-     "status": "approved",
-     "deliverableId": null,
-     "due": null,
-     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
-     "slots": [
+      },
       {
        "id": "tv-the-surprise-lookboard",
-       "label": "Look board - approved V2",
+       "label": "The Surprise",
        "kind": "image",
        "required": false,
        "use": "Internal and client concept review",
@@ -1351,20 +1288,10 @@
        "ratio": null,
        "maxBytes": null,
        "formats": []
-      }
-     ]
-    },
-    {
-     "id": "tv-spot-the-scoreboard",
-     "title": "The Scoreboard",
-     "status": "approved",
-     "deliverableId": null,
-     "due": null,
-     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. This concept shares the scoreboard graphic that also carries the paid social ads. No film has been produced - see 'Finished TV films' below.",
-     "slots": [
+      },
       {
        "id": "tv-the-scoreboard-lookboard",
-       "label": "Look board - approved V2",
+       "label": "The Scoreboard",
        "kind": "image",
        "required": false,
        "use": "Internal and client concept review",
@@ -1376,20 +1303,10 @@
        "ratio": null,
        "maxBytes": null,
        "formats": []
-      }
-     ]
-    },
-    {
-     "id": "tv-spot-the-same-team",
-     "title": "The Same Team",
-     "status": "approved",
-     "deliverableId": null,
-     "due": null,
-     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
-     "slots": [
+      },
       {
        "id": "tv-the-same-team-lookboard",
-       "label": "Look board - approved V2",
+       "label": "The Same Team",
        "kind": "image",
        "required": false,
        "use": "Internal and client concept review",
@@ -1401,20 +1318,10 @@
        "ratio": null,
        "maxBytes": null,
        "formats": []
-      }
-     ]
-    },
-    {
-     "id": "tv-spot-the-morning",
-     "title": "The Morning",
-     "status": "approved",
-     "deliverableId": null,
-     "due": null,
-     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
-     "slots": [
+      },
       {
        "id": "tv-the-morning-lookboard",
-       "label": "Look board - approved V2",
+       "label": "The Morning",
        "kind": "image",
        "required": false,
        "use": "Internal and client concept review",
@@ -1426,20 +1333,10 @@
        "ratio": null,
        "maxBytes": null,
        "formats": []
-      }
-     ]
-    },
-    {
-     "id": "tv-spot-the-comeback",
-     "title": "The Comeback",
-     "status": "approved",
-     "deliverableId": null,
-     "due": null,
-     "notes": "Look board approved at V2. Script is in SRA_Scripts_V2_print.pdf. No film has been produced - see 'Finished TV films' below.",
-     "slots": [
+      },
       {
        "id": "tv-the-comeback-lookboard",
-       "label": "Look board - approved V2",
+       "label": "The Comeback",
        "kind": "image",
        "required": false,
        "use": "Internal and client concept review",
@@ -2837,256 +2734,5 @@
     }
    ]
   }
- ],
- "schedule": {
-  "launch_date": "2026-09-08",
-  "media_buyer": "LMR Media Mix (Lisa Ratcliff)",
-  "deliverables": [
-   {
-    "id": "metro-family-septoct-spread",
-    "title": "Metro Family Sept/Oct two-page spread",
-    "vendor": "Metro Family (OKC)",
-    "channel": "print",
-    "due": "2026-08-14",
-    "status": "delivered",
-    "notes": "V3 ran. Proof approved by David 2026-08-18. Runs in the Healthy Families issue.",
-    "specs_ref": "print.metro_family.spread",
-    "assets_ref": [
-     "metro-family-spread-v3"
-    ]
-   },
-   {
-    "id": "paid-social-package",
-    "title": "Paid social full package for platform pre-approval",
-    "vendor": "iHeartMedia via LMR Media Mix",
-    "channel": "paid_social",
-    "due": "2026-08-25",
-    "status": "in_progress",
-    "critical": true,
-    "notes": "FB / IG / TikTok / YouTube. Display + video + headline copy per channel. Platforms need 10 business days to approve before the 9/8 launch. Five 'scoreboard' ads reusing the TV spot graphics.",
-    "specs_ref": "paid_social",
-    "assets_ref": [
-     "paid-social-stills-round1",
-     "sra-notourkids-16x9-15s"
-    ]
-   },
-   {
-    "id": "audio-spots",
-    "title": "Radio / audio :15 and :30",
-    "vendor": "Local broadcast + streaming/podcast via LMR",
-    "channel": "audio",
-    "due": "2026-09-01",
-    "alt_due": "2026-08-25",
-    "status": "in_production",
-    "notes": "Finished spots due 9/1. Alternative: submit scripts about a week earlier (~8/25) and the stations produce them at no charge. Both lengths were approved for production on 2026-08-24. Targeting parents on female-skewing local broadcast, broader male/female via streaming and podcast.",
-    "specs_ref": "audio",
-    "assets_ref": []
-   },
-   {
-    "id": "native-video-display",
-    "title": "Native video and display",
-    "vendor": "Nativo",
-    "channel": "native",
-    "due": "2026-09-02",
-    "status": "not_started",
-    "notes": "Spec sheet is the Nativo PDF attached to Lisa's 2026-08-05 email — NOT YET ON DISK.",
-    "specs_ref": "native",
-    "assets_ref": []
-   },
-   {
-    "id": "dooh",
-    "title": "Digital out-of-home — Lamar and Griffin networks",
-    "vendor": "Lamar, Griffin",
-    "channel": "dooh",
-    "due": "2026-09-03",
-    "status": "not_started",
-    "notes": "Boards go live 9/8. Templates LDD_14x48.jpg and LDD_20x30.jpg plus the Griffin spec PDF are attached to Lisa's 2026-08-10 email — NOT YET ON DISK.",
-    "specs_ref": "dooh",
-    "assets_ref": []
-   },
-   {
-    "id": "metro-family-oct-sponsored",
-    "title": "Metro Family October sponsored content article",
-    "vendor": "Metro Family (OKC)",
-    "channel": "sponsored_content",
-    "due": "2026-09-05",
-    "status": "not_started",
-    "notes": "300-500 words plus URL, one horizontal hero image and 1-2 in-article images. Runs Oct 15 - Nov 15. David confirmed on 2026-08-24 that OKEII will write it and asked Lisa to confirm the submission deadline — answer still outstanding.",
-    "specs_ref": "print.metro_family.sponsored_content",
-    "assets_ref": []
-   },
-   {
-    "id": "tulsa-kids-october",
-    "title": "Tulsa Kids October package",
-    "vendor": "Tulsa Kids",
-    "channel": "print_digital",
-    "due": "2026-09-08",
-    "status": "not_started",
-    "notes": "Full-page ad, website banner, dedicated e-blast. URLs and a preferred subject line go with the package. The specs and the submission deadline still need confirming with the publisher.",
-    "specs_ref": "print.tulsa_kids",
-    "assets_ref": []
-   },
-   {
-    "id": "campaign-launch",
-    "title": "CAMPAIGN LAUNCH — all media flights begin",
-    "vendor": "all",
-    "channel": "milestone",
-    "due": "2026-09-08",
-    "status": "pending",
-    "critical": true,
-    "notes": "Every deliverable above must clear its vendor deadline before this date.",
-    "specs_ref": null,
-    "assets_ref": []
-   },
-   {
-    "id": "metro-family-novdec-ad",
-    "title": "Metro Family Nov/Dec full-page ad",
-    "vendor": "Metro Family (OKC)",
-    "channel": "print",
-    "due": "2026-10-05",
-    "status": "not_started",
-    "notes": "7.46 x 9.96 in. Can be cut down from the Sept/Oct spread: keep the circle field, headline and anchor panel.",
-    "specs_ref": "print.metro_family.full_page",
-    "assets_ref": []
-   },
-   {
-    "id": "metro-family-novdec-sponsored",
-    "title": "Metro Family Nov/Dec sponsored content article",
-    "vendor": "Metro Family (OKC)",
-    "channel": "sponsored_content",
-    "due": "2026-10-05",
-    "status": "not_started",
-    "notes": "Runs Nov 15 - Dec 15. Lands the same day as the Nov/Dec full page — plan production for the week of Sept 28.",
-    "specs_ref": "print.metro_family.sponsored_content",
-    "assets_ref": []
-   },
-   {
-    "id": "tulsa-kids-november",
-    "title": "Tulsa Kids November package",
-    "vendor": "Tulsa Kids",
-    "channel": "print_digital",
-    "due": "2026-10-08",
-    "status": "not_started",
-    "notes": "Quarter-page ad, website tile ads, email tile ads.",
-    "specs_ref": "print.tulsa_kids",
-    "assets_ref": []
-   },
-   {
-    "id": "tulsa-kids-december",
-    "title": "Tulsa Kids December package",
-    "vendor": "Tulsa Kids",
-    "channel": "print_digital",
-    "due": "2026-11-08",
-    "status": "not_started",
-    "notes": "Full-page ad, promoted social post, website banner.",
-    "specs_ref": "print.tulsa_kids",
-    "assets_ref": []
-   },
-   {
-    "id": "sra-landing-page",
-    "title": "okeii.org/StrongReadersAct landing page",
-    "vendor": "PB Productions",
-    "channel": "web",
-    "due": "2026-09-08",
-    "status": "blocked",
-    "critical": true,
-    "notes": "Hard blocker. Every paid social ad and the tracking pixels point at this URL and it does not exist yet. David sent the page copy on 2026-08-24 ('OKEII Web Edits_SRA_Implementation.docx') and asked to talk before build starts.",
-    "specs_ref": null,
-    "assets_ref": []
-   },
-   {
-    "id": "days-in-class-supplemental",
-    "title": "Days In Class supplemental digital ads",
-    "vendor": "OKEII / John Brock request",
-    "channel": "digital_display",
-    "due": null,
-    "status": "not_started",
-    "notes": "Added by David Downing on 2026-08-24 at OKEII's interest — supplemental digital ads on the number of days in class. Included in the 8/24 updated production schedule; review proposed for Friday 2026-08-28. No vendor deadline yet.",
-    "specs_ref": null,
-    "assets_ref": []
-   }
-  ],
-  "conflicts": [
-   {
-    "issue": "Digital ad due date disagreement",
-    "detail": "Two schedules disagree on when the digital ads are due. The creative director's 8/24 note puts them at 9/1; the media buyer's own vendor emails put paid social at 8/25, native at 9/2 and DOOH at 9/3. The board follows the vendor dates, which are the ones that bind. Reconcile against the 8/24 production schedule before trusting either.",
-    "status": "unresolved"
-   },
-   {
-    "issue": "Production schedule never reconciled",
-    "detail": "David's SRA_Campaign_Assets_Prdn_Sched_Update_8-24.xlsx has not been read or checked against this queue. It lives only in email.",
-    "status": "unresolved"
-   }
-  ]
- },
- "openItems": {
-  "as_of": "2026-08-25",
-  "blockers": [
-   {
-    "id": "landing-page-missing",
-    "severity": "critical",
-    "title": "okeii.org/StrongReadersAct does not exist",
-    "detail": "All five paid social ads carry it as their destination URL, and Lisa needs it for tracking pixels. Nothing can be submitted for platform pre-approval pointing at a 404. David sent the page copy on 2026-08-24 and asked to talk before the build starts.",
-    "owner": "Philip",
-    "waiting_on": "A conversation with David, then the build"
-   },
-   {
-    "id": "tracking-pixel-urls",
-    "severity": "high",
-    "title": "Tracking pixel URLs owed to Lisa",
-    "detail": "Lisa Ratcliff asked on 2026-08-13 which URLs the tracking pixels should watch, and the answer is still outstanding. The pixels currently watch okeii.org plus /research, /resources and /about; the Strong Readers Act page or section has to be added once it exists.",
-    "owner": "Philip",
-    "waiting_on": "The landing page URL existing"
-   },
-   {
-    "id": "youtube-headline",
-    "severity": "high",
-    "title": "No headline fits YouTube's 15-character cap",
-    "detail": "Every one of David's five HEAD lines exceeds 15 characters. 'Strong Readers Act' alone is 18. YouTube needs its own short headline plus a 90-char long headline and a 70-char description written before the package can be submitted.",
-    "owner": "Philip / David",
-    "waiting_on": "Copy decision"
-   },
-   {
-    "id": "video-cutdowns",
-    "severity": "high",
-    "title": "Only the 16x9 video exists",
-    "detail": "SRA_NotOurKids_16x9_15s.mp4 is rendered. The 1080x1920 and 1080x1080 cutdowns required by Meta and TikTok have not been built.",
-    "owner": "Philip",
-    "waiting_on": "Production time"
-   },
-   {
-    "id": "platform-gates",
-    "severity": "medium",
-    "title": "Platform account prerequisites unverified",
-    "detail": "YouTube video must be uploaded to OKEII's own channel and the link supplied; ad account verification required. TikTok organic profile must be connected to iHeartMedia. Meta page access through Business Manager. All four channels need Restricted Ad Category compliance review — education advocacy tied to legislation may land there.",
-    "owner": "Philip / Lisa",
-    "waiting_on": "Confirmation from Lisa"
-   }
-  ],
-  "awaiting_others": [
-   {
-    "from": "Lisa Ratcliff",
-    "detail": "Metro Family October sponsored content submission deadline. David asked on 2026-08-24; no answer yet.",
-    "status": "open"
-   },
-   {
-    "from": "Metro Family",
-    "detail": "Bleed and trim for camera-ready art were never specified.",
-    "status": "open"
-   },
-   {
-    "from": "David Downing",
-    "detail": "Review of the Days In Class supplemental ads, proposed for Friday 2026-08-28.",
-    "status": "scheduled"
-   }
-  ],
-  "standing_direction": [
-   "Teachers are never the villain (Jennifer Monies, 8/19). The villain is the system that let the earlier reading laws die.",
-   "Implementation, not enforcement. The Act takes effect school year 2027-28.",
-   "No Parent Playbook references until the law is in effect. The CTA is a bare URL plus QR.",
-   "One destination everywhere: okeii.org/StrongReadersAct.",
-   "Friday Night Lights / scoreboard is the through-line across TV, the :15s and paid social.",
-   "Every invoice and every client-facing asset goes through David before it goes out."
-  ]
- }
+ ]
 }
