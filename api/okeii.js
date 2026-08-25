@@ -112,6 +112,21 @@ function gateMessage(destructive) {
 
 // ── Shared validation ──────────────────────────────────────────────────────
 
+/* Dragging the same file onto the same placeholder twice is a slip, not a new
+   round, and a history full of identical entries makes the real revisions hard
+   to find. Identity is the file's SHA-256, so this catches a re-drop under a
+   different name and lets a genuine re-export through. Scoped to the slot's
+   CURRENT version: putting last week's file back deliberately is a restore, and
+   that still works. */
+async function duplicate(d) {
+  if (!d.meta?.sha || d.allowDuplicate) return null;
+  const { state } = await readState();
+  const slot = state.slots[d.slotId];
+  if (!slot?.versions.length) return null;
+  const current = slot.versions.find((v) => v.id === slot.currentId) || slot.versions[0];
+  return current?.sha === d.meta.sha ? current : null;
+}
+
 function describe(body) {
   const slotId = String(body?.slotId || "");
   if (!SLOT_ID_RE.test(slotId)) return { error: "That isn't a slot on this page." };
@@ -126,6 +141,9 @@ function describe(body) {
     };
   }
 
+  const sha = String(body?.sha || "");
+  if (sha && !/^[a-f0-9]{64}$/.test(sha)) return { error: "That file's checksum didn't look like one." };
+
   const size = Number(body?.size);
   if (!Number.isFinite(size) || size <= 0) return { error: "That file looks empty." };
   if (size > MAX_FILE_BYTES) {
@@ -138,7 +156,9 @@ function describe(body) {
     size,
     type,
     pathname: `${FILE_PREFIX}${slotId}/${safeName(filename)}`,
+    allowDuplicate: body?.allowDuplicate === true,
     meta: {
+      sha: sha || null,
       by: clip(body?.by, MAX_BY) || "Unattributed",
       note: clip(body?.note, MAX_NOTE),
       width: posInt(body?.width),
@@ -185,6 +205,8 @@ function record(state, d, blob, extra = {}) {
 async function onePut(req, res) {
   const d = describe(req.body || {});
   if (d.error) return fail(res, 400, d.error);
+  const dup = await duplicate(d);
+  if (dup) return res.status(200).json({ ok: true, already: true, version: dup });
 
   const raw = String(req.body?.data || "");
   if (!raw) return fail(res, 400, "No file data came through.");
@@ -222,6 +244,10 @@ async function onePut(req, res) {
 async function begin(req, res) {
   const d = describe(req.body || {});
   if (d.error) return fail(res, 400, d.error);
+  // Checked here rather than at finish, so a 50 MB re-drop never leaves the
+  // browser at all.
+  const dup = await duplicate(d);
+  if (dup) return res.status(200).json({ ok: true, already: true, version: dup });
 
   const id = randomUUID();
   return res.status(200).json({

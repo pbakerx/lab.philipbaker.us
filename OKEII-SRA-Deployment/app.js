@@ -731,20 +731,24 @@
     try {
       progress(0.02);
       const dims = await probe(file);
-      const base = { slotId, filename: file.name, size: file.size, by: store.who, note, ...dims };
+      const sha = await checksum(file);
+      const base = { slotId, filename: file.name, size: file.size, by: store.who, note, sha, ...dims };
 
+      let out;
       if (file.size <= ONE_SHOT_MAX) {
         const data = await toBase64(file);
         progress(0.5);
-        await api("put", { ...base, data });
+        out = await api("put", { ...base, data });
       } else {
-        await chunked(file, base, progress);
+        out = await chunked(file, base, progress);
       }
 
       progress(1);
       await pullState();
       refreshAll();
-      toast(`${file.name} is on the board.`, "good");
+      toast(out?.already
+        ? `${file.name} is already the current version here — nothing changed.`
+        : `${file.name} is on the board.`, "good");
     } catch (err) {
       if (err.needsKey) unlockPrompt(err.message);
       else toast(err.message || "That upload didn't go through.", "bad");
@@ -761,7 +765,9 @@
      slice should show as a stalled bar, not as three of them fighting for the
      same uplink. */
   async function chunked(file, base, progress) {
-    const { ticket, partSize } = await api("begin", base);
+    const opened = await api("begin", base);
+    if (opened.already) return opened;      // same bytes already current — nothing to send
+    const { ticket, partSize } = opened;
     const size = partSize || 4_000_000;
     const count = Math.ceil(file.size / size);
     let b64 = false;
@@ -795,6 +801,20 @@
     const data = await res.json().catch(() => ({ error: `The server answered ${res.status}.` }));
     if (!res.ok) throw Object.assign(new Error(data.error || `${res.status}`), { needsKey: data.needsKey });
     return data;
+  }
+
+  /* Identity for the duplicate check. Capped because this reads the whole file
+     into memory — WebCrypto has no streaming digest — and past the cap a
+     duplicate drop is cheaper to just accept than to guard against. */
+  const SHA_MAX = 64 * 1024 * 1024;
+  async function checksum(file) {
+    if (file.size > SHA_MAX || !crypto?.subtle) return null;
+    try {
+      const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+      return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    } catch {
+      return null;                          // not available over plain http
+    }
   }
 
   const toBase64 = (blob) => new Promise((resolve, reject) => {
