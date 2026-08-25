@@ -21,6 +21,11 @@
 
   const API = "/api/okeii";
 
+  /* The catalog is stamped with this script's own ?v=, not a number typed in
+     twice. Stamping them separately is how a viewer ends up holding today's
+     code against a cached copy of yesterday's plan. */
+  const V = (document.currentScript?.src.match(/[?&]v=([^&]+)/) || [, "1"])[1];
+
   /* Approvals are built and wired but parked until the sign-off process is
      settled. While this is false the Approve button is greyed and inert, and
      "Ready to traffic" renders in grey rather than green so a stray approval
@@ -43,6 +48,7 @@
   let STATE = { slots: {}, log: [] };
   let GATE = { keyRequired: false, unlocked: false, offline: false };
   let channel = null;                  // category id, or ALL
+  let sideOpen = false;                // narrow screens: is the channel list expanded
   let query = "";
   let openSlot = null;
 
@@ -211,7 +217,7 @@
   async function boot() {
     mount($("#sections"), el("p", { class: "loading", text: "Loading the board…" }));
     const [cat, live] = await Promise.all([
-      fetch("catalog.json?v=2").then((r) => r.json()),
+      fetch(`catalog.json?v=${V}`).then((r) => r.json()),
       pullState().catch(() => null),
     ]);
     CAT = cat;
@@ -277,11 +283,25 @@
       return { done: acc.done + t.done, total: acc.total + t.total };
     }, { done: 0, total: 0 });
 
+    const here = channel === ALL
+      ? { name: "Everything", t: all }
+      : (() => { const c = CAT.categories.find((x) => x.id === channel); return { name: c.name, t: tally(c) }; })();
+
     mount($("#side"),
-      el("h2", { text: "Channels" }),
-      row(ALL, "Everything", all),
-      el("div", { class: "sep" }),
-      CAT.categories.map((c) => row(c.id, c.name, tally(c))),
+      // Narrow screens only: the full list is taller than a phone screen, so it
+      // collapses behind the channel you are actually looking at. Without this
+      // you land on a wall of channel names and have to scroll a whole screen
+      // before any creative appears.
+      el("button", { class: "side-toggle", "aria-expanded": String(sideOpen),
+        onclick: () => { sideOpen = !sideOpen; renderSide(); } },
+        el("span", { class: "name", text: here.name }),
+        el("span", { class: "n", text: `${here.t.done}/${here.t.total}` }),
+        el("span", { class: "chev", text: sideOpen ? "▲" : "▼" })),
+      el("div", { class: `side-list${sideOpen ? " open" : ""}` },
+        el("h2", { text: "Channels" }),
+        row(ALL, "Everything", all),
+        el("div", { class: "sep" }),
+        CAT.categories.map((c) => row(c.id, c.name, tally(c)))),
     );
   }
 
@@ -307,6 +327,7 @@
 
   function setChannel(id) {
     channel = id;
+    sideOpen = false;                  // picking one is done with the list
     query = "";
     $("#q").value = "";
     history.replaceState(null, "", `#c=${encodeURIComponent(id)}`);
@@ -402,6 +423,9 @@
       onkeydown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDrawer(slot.id); } },
     },
       media,
+      // A div with role=button reads as a picture unless it says otherwise, and
+      // a hover-only cue says nothing at all on a phone. This is always visible.
+      el("span", { class: "open-cue", "aria-hidden": "true", text: "⤢" }),
       el("div", { class: "slot-body" },
         el("span", { class: "slot-label", text: slot.label }),
         foot,

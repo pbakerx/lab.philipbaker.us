@@ -111,6 +111,10 @@ button { cursor: pointer; background: none; border: none; }
   max-height: calc(100vh - 62px); overflow-y: auto; scrollbar-width: thin;
   display: flex; flex-direction: column; gap: 2px;
 }
+.side-list { display: flex; flex-direction: column; gap: 2px; }
+/* Qualified past `.side button`, which is more specific than a bare class and
+   would otherwise impose the list row's grid on this button too. */
+.side button.side-toggle { display: none; }
 .side h2 {
   font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
   color: var(--ink-faint); font-weight: 600; padding: 0 10px 8px;
@@ -185,6 +189,20 @@ main { min-width: 0; padding: 24px 0 90px; }
   background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
   overflow: hidden; transition: border-color .16s, transform .16s, box-shadow .16s;
   border-top: 2px solid var(--kind, var(--line));
+  cursor: pointer;   /* it opens; nothing else on the card said so */
+}
+
+/* The affordance is always drawn, not hover-only — a touch device never hovers,
+   and the whole complaint was that the board looked like a dead end. */
+.open-cue {
+  position: absolute; top: 8px; right: 8px; z-index: 3;
+  width: 22px; height: 22px; border-radius: 6px;
+  display: grid; place-items: center; font-size: 11px; line-height: 1;
+  background: #050b18cc; border: 1px solid var(--line); color: var(--ink-faint);
+  transition: color .14s, border-color .14s, background .14s;
+}
+.slot:hover .open-cue, .slot:focus-visible .open-cue {
+  color: #fff; border-color: var(--kind); background: #050b18;
 }
 .slot:hover { border-color: #2f4a80; border-top-color: var(--kind); transform: translateY(-2px); box-shadow: 0 10px 26px #0006; }
 .slot.is-over { border-color: var(--blue); box-shadow: 0 0 0 2px #116dff55, 0 12px 30px #0008; transform: translateY(-2px); }
@@ -420,13 +438,24 @@ h4.sub { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; colo
 
 /* Below the split, the list stops being a rail and becomes a plain stacked
    index above the board — still a checklist, just full width. */
+/* Below the split there is no room for a column beside the board, and stacking
+   fifteen channels put the first placeholder a full screen down — you landed on
+   a list of names and never saw the creative. So the list collapses to the
+   channel you are on, and opens on a tap. */
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; gap: 0; }
-  .side {
-    position: static; max-height: none; padding: 16px 0 8px;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 2px 14px;
+  .side { position: static; max-height: none; padding: 14px 0 4px; display: block; }
+  .side button.side-toggle {
+    display: flex; width: 100%; align-items: center; gap: 10px;
+    padding: 11px 14px; border-radius: 10px; font-size: 14px; font-weight: 600;
+    background: var(--panel); border: 1px solid var(--line); color: var(--ink);
   }
-  .side h2, .side .sep { grid-column: 1 / -1; }
+  .side button.side-toggle .name { flex: 1; text-align: left; overflow-wrap: normal; }
+  .side button.side-toggle .n { font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .side button.side-toggle .chev { font-size: 9px; color: var(--ink-faint); }
+  .side-list { display: none; margin-top: 6px; }
+  .side-list.open { display: block; }
+  .side-list h2 { padding-top: 6px; }
 }
 
 @media (max-width: 720px) {
