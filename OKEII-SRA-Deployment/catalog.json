@@ -1734,7 +1734,7 @@
    "copyNote": "HAVE 8/21 (sheet column G, \"Copy to PB on 8/21\")",
    "owner": "DD/PB",
    "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval — platforms will not approve a dead destination URL.",
-   "conflict": "Scoreboard wording: David's 8/26 digital display copy retitles scoreboard 1 from \"OK: 50TH IN PUBLIC EDUCATION\" to \"OK: 47TH OF 50 IN READING\", the same line as scoreboard 5. The Set 2 artwork delivered 8/26 still reads 50TH. Settle which is right before these go for platform pre-approval — as it stands two of the five message sets would carry the same scoreboard.",
+   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.  Scoreboard wording: David's 8/26 digital display copy retitles scoreboard 1 from \"OK: 50TH IN PUBLIC EDUCATION\" to \"OK: 47TH OF 50 IN READING\", the same line as scoreboard 5. The Set 2 artwork delivered 8/26 still reads 50TH. Settle which is right before these go for platform pre-approval — as it stands two of the five message sets would carry the same scoreboard.",
    "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
   },
   "ps-teachers-win": {
@@ -1748,7 +1748,7 @@
    "copyNote": "HAVE 8/21 (sheet column G)",
    "owner": "DD/PB",
    "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs sheet column F / 8/26 schedule Aug 28. Aug 28 binds as the delivery date. The 10-business-day platform approval window stated in specs.json is not met by any of the three — see the note on the package as a whole.",
+   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
    "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
   },
   "ps-students-win": {
@@ -1762,7 +1762,7 @@
    "copyNote": "HAVE 8/21 (sheet column G)",
    "owner": "DD/PB",
    "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs sheet column F / 8/26 schedule Aug 28. Aug 28 binds. The 10-business-day platform approval window is not met by any of the three.",
+   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
    "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
   },
   "ps-parents-win": {
@@ -1776,7 +1776,7 @@
    "copyNote": "HAVE 8/21 (sheet column G)",
    "owner": "DD/PB",
    "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs sheet column F / 8/26 schedule Aug 28. Aug 28 binds. The 10-business-day platform approval window is not met by any of the three.",
+   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
    "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
   },
   "ps-47th-reading": {
@@ -1790,7 +1790,7 @@
    "copyNote": "HAVE 8/21 (sheet column G)",
    "owner": "DD/PB",
    "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval. Scoreboard wording changed 8/25 — any export still carrying the earlier figure needs re-export before submission.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs sheet column F / 8/26 schedule Aug 28. Aug 28 binds. The 10-business-day platform approval window is not met by any of the three.",
+   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
    "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
   },
   "paid-social-video-15": {
@@ -1804,7 +1804,7 @@
    "copyNote": "HAVE 8/21 for the spot itself; the YouTube copy set is still to be written",
    "owner": "DD/PB",
    "blocker": "YouTube requires its own short headline — the cap is 15 characters and \"Strong Readers Act\" alone is 18 — plus a 90-character long headline and a 70-character description. All three sizes now render, and each still needs a check against the 8/25 direction that every :15 carries the reading message only, and against the revised scoreboard wording. Landing page must be live before submission.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs sheet column F / 8/26 schedule Aug 28. Aug 28 binds. Separately, specs.json requires 10 business days of platform approval before the Sept 8 launch; Aug 28 leaves six.",
+   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
    "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
   },
   "days-in-class-display": {
