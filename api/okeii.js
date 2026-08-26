@@ -6,6 +6,8 @@
 //   POST ?action=part&id=<ticket>&n=<1-based>  one slice, raw bytes (or ?enc=b64)
 //   POST ?action=finish                      close it out and record the version
 //   POST ?action=approve                     mark the current file cleared to traffic
+//   POST ?action=addnote                     add a note to a slot's thread
+//   POST ?action=delnote                     remove a note from a slot's thread
 //   POST ?action=restore                     make an older version current again
 //   POST ?action=note                        edit a version's note
 //   POST ?action=remove                      drop a version from a slot's history
@@ -92,6 +94,8 @@ export default async function handler(req, res) {
       case "part": return await part(req, res);
       case "finish": return await finish(req, res);
       case "approve": return await approve(req, res);
+      case "addnote": return await addNote(req, res);
+      case "delnote": return await delNote(req, res);
       case "restore": return await restore(req, res);
       case "note": return await note(req, res);
       case "remove": return await remove(req, res);
@@ -380,6 +384,55 @@ async function rawBody(req) {
 }
 
 // ── History ────────────────────────────────────────────────────────────────
+
+/* Notes hang off the SLOT, not off a version.
+   A note is a conversation about the deliverable — "make the logo bigger", "Lisa needs
+   this Thursday" — and it has to survive the next file being dropped on the slot. Anyone
+   who can write can add one; everyone sees who wrote it. */
+const MAX_NOTE_TEXT = 1200;
+const MAX_NOTES = 200;
+
+async function addNote(req, res) {
+  const slotId = String(req.body?.slotId || "");
+  const text = clip(req.body?.text, MAX_NOTE_TEXT);
+  if (!SLOT_ID_RE.test(slotId)) return fail(res, 400, "That isn't a slot on this page.");
+  if (!text) return fail(res, 400, "A note needs something in it.");
+
+  let note = null;
+  await mutate((state) => {
+    // A note can be left on an empty placeholder — that is half the point, so the
+    // slot record is created here rather than only on upload.
+    const slot = (state.slots[slotId] ||= { currentId: null, versions: [] });
+    slot.notes = Array.isArray(slot.notes) ? slot.notes : [];
+    if (slot.notes.length >= MAX_NOTES) throw conflict("That slot has as many notes as it can hold.");
+    note = {
+      id: versionId(),
+      text,
+      by: clip(req.body?.by, MAX_BY) || "Unattributed",
+      at: new Date().toISOString(),
+    };
+    slot.notes.unshift(note);
+    pushLog(state, { slotId, action: "noted", by: note.by, filename: text.slice(0, 60) });
+  });
+  return res.status(201).json({ ok: true, note });
+}
+
+async function delNote(req, res) {
+  const slotId = String(req.body?.slotId || "");
+  const id = String(req.body?.noteId || "");
+  if (!SLOT_ID_RE.test(slotId)) return fail(res, 400, "That isn't a slot on this page.");
+
+  await mutate((state) => {
+    const slot = state.slots[slotId];
+    const i = slot?.notes ? slot.notes.findIndex((n) => n.id === id) : -1;
+    if (i < 0) throw conflict("That note isn't there any more.");
+    const [gone] = slot.notes.splice(i, 1);
+    // An empty placeholder that only ever held a note leaves nothing behind.
+    if (!slot.versions.length && !slot.notes.length) delete state.slots[slotId];
+    pushLog(state, { slotId, action: "unnoted", by: clip(req.body?.by, MAX_BY) || "Unattributed", filename: gone.text.slice(0, 60) });
+  });
+  return res.status(200).json({ ok: true });
+}
 
 /* Approval rides on the VERSION, not on the slot.
    That is the whole trick: drop a new file and the slot falls back to "in

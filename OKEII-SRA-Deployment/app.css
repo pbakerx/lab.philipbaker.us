@@ -66,6 +66,20 @@ button { cursor: pointer; background: none; border: none; }
 .skip { position: absolute; left: -999px; top: 8px; z-index: 90; background: var(--blue); color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; }
 .skip:focus { left: 12px; }
 
+/* ── the skinny brand row ─────────────────────────────────────────────── */
+
+.topbar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 22px; height: 40px;
+  background: #040914; border-bottom: 1px solid var(--line);
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint);
+}
+.topbar-logo { height: 17px; width: auto; display: block; }
+.topbar-sep { width: 1px; height: 16px; background: var(--line); }
+.topbar-client { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.topbar-right b { color: var(--ink-dim); font-weight: 600; letter-spacing: .06em; }
+
 /* ── masthead ─────────────────────────────────────────────────────────── */
 
 .mast {
@@ -96,61 +110,127 @@ button { cursor: pointer; background: none; border: none; }
 .tool.is-on { color: var(--ok); border-color: #1f6b4c; background: #08251a; }
 .tool.is-set { color: var(--ink); }
 
-/* ── the channel list — the page's one control ───────────────────────── */
-/* A standing checklist down the left, not a row of tabs: the point is to run an
-   eye down fifteen channels and see which are done, so it has to read as a list
-   with a box beside each line. */
+/* ── who's looking ────────────────────────────────────────────────────── */
+
+.gate {
+  position: fixed; inset: 0; z-index: 95; display: grid; place-items: center;
+  background: radial-gradient(900px 600px at 50% 0%, #10254c 0%, #040914 70%);
+  padding: 24px;
+}
+.gate-card { width: min(560px, 100%); text-align: center; }
+.gate-logo { height: 34px; width: auto; margin: 0 auto 26px; display: block; }
+.gate-eyebrow { font-size: 10px; letter-spacing: .24em; text-transform: uppercase; color: var(--blue-lift); }
+.gate h1 { font-size: 27px; letter-spacing: -.02em; margin: 8px 0 6px; font-weight: 650; }
+.gate-sub { font-size: 13.5px; color: var(--ink-dim); margin-bottom: 24px; }
+.gate-people { display: grid; gap: 8px; }
+.gate-people button {
+  display: flex; align-items: center; gap: 13px; width: 100%; text-align: left;
+  padding: 13px 16px; border-radius: 11px;
+  background: var(--panel); border: 1px solid var(--line); color: var(--ink);
+  transition: border-color .14s, background .14s, transform .14s;
+}
+.gate-people button:hover { border-color: #3a5fa8; background: #12224a; transform: translateY(-1px); }
+.gate-people .ini {
+  flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 12px; font-weight: 700;
+  background: #16305f; color: #cfe0ff; border: 1px solid #2b4e8f;
+}
+.gate-people .nm { font-size: 14.5px; font-weight: 600; }
+.gate-people .ro { font-size: 12px; color: var(--ink-faint); }
+.gate-people .who-else { justify-content: center; color: var(--ink-faint); font-size: 13px; padding: 10px; }
+.gate-people .who-else:hover { color: var(--ink); }
+
+/* ── the schedule rail ────────────────────────────────────────────────── */
+/* The left column is the schedule, not a menu. A channel heading switches the
+   board; the deliverables under it carry the two dates that matter and open a
+   drawer for the rest. Brief on the surface, everything one tap down. */
 
 .shell {
   max-width: var(--wrap); margin: 0 auto; padding: 0 22px;
-  display: grid; grid-template-columns: 262px minmax(0, 1fr); gap: 30px; align-items: start;
+  display: grid; grid-template-columns: 296px minmax(0, 1fr); gap: 30px; align-items: start;
 }
 
 .side {
-  position: sticky; top: 62px; padding: 24px 0 40px;
+  position: sticky; top: 62px; padding: 20px 0 40px;
   max-height: calc(100vh - 62px); overflow-y: auto; scrollbar-width: thin;
-  display: flex; flex-direction: column; gap: 2px;
 }
-.side-list { display: flex; flex-direction: column; gap: 2px; }
-/* Qualified past `.side button`, which is more specific than a bare class and
-   would otherwise impose the list row's grid on this button too. */
-.side button.side-toggle { display: none; }
+.side::-webkit-scrollbar { width: 7px; }
+.side::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
 .side h2 {
   font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
-  color: var(--ink-faint); font-weight: 600; padding: 0 10px 8px;
+  color: var(--ink-faint); font-weight: 600; padding: 0 10px 9px;
 }
-.side .sep { height: 1px; background: var(--line); margin: 8px 10px; }
+.side-list { display: flex; flex-direction: column; gap: 3px; }
+.side button.side-toggle { display: none; }
 
-.side button {
+/* a channel */
+.chan { border-radius: 10px; }
+.chan.is-on { background: #0b162e; outline: 1px solid #22406f; }
+.chan-head {
   display: grid; grid-template-columns: 16px minmax(0, 1fr) max-content;
-  gap: 10px; align-items: center; text-align: left;
-  padding: 8px 10px; border-radius: 8px; font-size: 13px; line-height: 1.3;
+  gap: 10px; align-items: center; text-align: left; width: 100%;
+  padding: 9px 10px; border-radius: 10px; font-size: 13px; line-height: 1.3;
   color: var(--ink-dim); border: 1px solid transparent;
-  transition: color .14s, background .14s, border-color .14s;
+  transition: color .14s, background .14s;
 }
-.side button:hover { color: var(--ink); background: #0f1c39; }
-.side button.is-on { color: #fff; background: #16305f; border-color: #2b4e8f; }
-.side button .name { min-width: 0; overflow-wrap: anywhere; }
-.side button .n { font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
-.side button.is-on .n { color: var(--blue-lift); }
-.side button.is-done .n { color: var(--ok); }
-.side button.is-done .name { color: var(--ink-faint); }
-.side button.is-on.is-done .name { color: #fff; }
+.chan-head:hover { color: var(--ink); background: #0f1c39; }
+.chan.is-on .chan-head { color: #fff; }
+.chan-head .name { min-width: 0; font-weight: 600; }
+.chan-head .n { font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.chan.is-on .chan-head .n { color: var(--blue-lift); }
+.chan-head.is-done .n { color: var(--ok); }
 
-/* The checkbox does the work: empty, part-filled, or ticked. */
 .box {
   width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid #35507f;
   position: relative; overflow: hidden; flex: 0 0 auto;
 }
 .box i { position: absolute; left: 0; right: 0; bottom: 0; background: var(--blue); display: block; }
-.side button.is-done .box { border-color: var(--ok); background: var(--ok); }
-.side button.is-done .box::after {
+.chan-head.is-done .box { border-color: var(--ok); background: var(--ok); }
+.chan-head.is-done .box::after {
   content: "✓"; position: absolute; inset: 0; display: grid; place-items: center;
   color: #06120c; font-size: 11px; font-weight: 700; line-height: 1;
 }
-.side button.is-on .box { border-color: #6f9cdd; }
 
-/* ── the board ────────────────────────────────────────────────────────── */
+/* the deliverables under it */
+.chan-jobs { padding: 2px 8px 8px; display: flex; flex-direction: column; gap: 2px; }
+.job { border-radius: 8px; }
+.job-head {
+  display: grid; grid-template-columns: 5px minmax(0, 1fr) max-content;
+  gap: 8px; align-items: baseline; width: 100%; text-align: left;
+  padding: 7px 8px; border-radius: 8px; color: var(--ink-dim);
+  transition: background .14s, color .14s;
+}
+.job-head:hover { background: #101f3d; color: var(--ink); }
+.job-head .pip { width: 5px; height: 5px; border-radius: 50%; align-self: center; background: var(--ink-faint); }
+.job-head.s-delivered .pip { background: var(--ok); }
+.job-head.s-blocked   .pip { background: var(--late); }
+.job-head.s-in_review .pip, .job-head.s-in_progress .pip { background: var(--warn); }
+.job-head .jt { font-size: 12px; line-height: 1.35; min-width: 0; }
+.job-head .jd { font-size: 10.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.job-head .jd.late { color: var(--late); }
+.job-head .jd.soon { color: var(--warn); }
+
+/* the sliding drawer under a deliverable */
+.job-more {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .22s ease;
+}
+.job.open .job-more { grid-template-rows: 1fr; }
+.job-more > div { overflow: hidden; }
+.job-facts {
+  margin: 2px 8px 6px 21px; padding: 9px 11px; border-radius: 8px;
+  background: #08122a; border: 1px solid var(--line-soft);
+  display: grid; grid-template-columns: max-content 1fr; gap: 4px 10px; font-size: 11.5px;
+}
+.job-facts dt { color: var(--ink-faint); letter-spacing: .06em; text-transform: uppercase; font-size: 9.5px; padding-top: 2px; }
+.job-facts dd { color: var(--ink-dim); }
+.job-facts dd.warn { color: var(--warn); }
+.job-facts dd.late { color: var(--late); }
+.job-facts .blocker { grid-column: 1 / -1; margin-top: 3px; padding-top: 6px; border-top: 1px solid var(--line-soft); color: #f2d79a; }
+
+@media (prefers-reduced-motion: reduce) { .job-more { transition: none; } }
+
+/* ── the board ─/* ── the board ────────────────────────────────────────────────────────── */
 
 main { min-width: 0; padding: 24px 0 90px; }
 
@@ -320,6 +400,18 @@ main { min-width: 0; padding: 24px 0 90px; }
   display: flex; gap: 16px; align-items: flex-start; justify-content: space-between;
   padding: 18px 20px 14px; border-bottom: 1px solid var(--line);
 }
+.drawer-id { min-width: 0; }
+.drawer-nav { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+.stepper {
+  width: 30px; height: 30px; border-radius: 8px; font-size: 17px; line-height: 1;
+  border: 1px solid var(--line); background: #0a142b; color: var(--ink-dim);
+}
+.stepper:hover:not(:disabled) { color: var(--ink); border-color: #2c4270; }
+.stepper:disabled { opacity: .3; cursor: default; }
+.stepper-count {
+  font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums;
+  min-width: 42px; text-align: center;
+}
 .drawer-crumb { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--blue-lift); margin-bottom: 5px; }
 .drawer-head h2 { font-size: 17px; letter-spacing: -.015em; }
 .drawer-body { flex: 1; overflow: auto; padding: 18px 20px 40px; display: flex; flex-direction: column; gap: 20px; }
@@ -382,6 +474,49 @@ main { min-width: 0; padding: 24px 0 90px; }
 h4.sub { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 9px; }
 
 /* What it has to be, and whether it is. Nothing else. */
+/* The two dates a media buyer holds in their head, side by side. */
+.dates { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.date-card {
+  padding: 11px 13px; border-radius: 10px; background: var(--panel);
+  border: 1px solid var(--line); border-left-width: 3px;
+}
+.date-card h5 { font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; }
+.date-card b { display: block; font-size: 16px; letter-spacing: -.01em; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.date-card small { display: block; font-size: 11px; color: var(--ink-faint); margin-top: 3px; line-height: 1.35; }
+.date-card.pub { border-left-color: var(--blue); }
+.date-card.pub b { color: var(--blue-lift); }
+.date-card.air { border-left-color: #8fa3c4; }
+.date-card.late { border-left-color: var(--late); }
+.date-card.late b { color: var(--late); }
+.date-card.soon { border-left-color: var(--warn); }
+.date-card.soon b { color: var(--warn); }
+.date-card.none b { color: var(--ink-faint); font-size: 14px; }
+
+/* notes */
+.notes { display: flex; flex-direction: column; gap: 8px; }
+.note-new { display: flex; gap: 8px; align-items: flex-start; }
+.note-new textarea {
+  flex: 1; min-height: 62px; resize: vertical; padding: 10px 12px; border-radius: 9px;
+  background: #0a142b; border: 1px solid var(--line); color: var(--ink);
+  font: 13px/1.45 var(--sans);
+}
+.note-new textarea::placeholder { color: var(--ink-faint); }
+.note-new button {
+  flex: 0 0 auto; padding: 10px 15px; border-radius: 9px; font-size: 13px; font-weight: 600;
+  border: 1px solid #1f4a8c; background: #12274d; color: var(--blue-lift);
+}
+.note-new button:hover { color: #fff; background: var(--blue); border-color: var(--blue); }
+.note {
+  padding: 10px 12px; border-radius: 9px; background: var(--panel);
+  border: 1px solid var(--line); border-left: 3px solid #2b4e8f;
+}
+.note-by { display: flex; align-items: baseline; gap: 8px; font-size: 11px; color: var(--ink-faint); }
+.note-by b { color: var(--blue-lift); font-size: 12px; font-weight: 600; }
+.note-by .x { margin-left: auto; color: var(--ink-faint); font-size: 15px; line-height: 1; padding: 0 2px; }
+.note-by .x:hover { color: var(--late); }
+.note p { font-size: 13px; color: var(--ink); margin-top: 5px; white-space: pre-wrap; line-height: 1.45; }
+.notes-none { font-size: 12.5px; color: var(--ink-faint); }
+
 .spec { display: flex; flex-direction: column; gap: 1px; }
 .spec-row {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -445,6 +580,7 @@ h4.sub { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; colo
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; gap: 0; }
   .side { position: static; max-height: none; padding: 14px 0 4px; display: block; }
+  .dates { grid-template-columns: 1fr; }
   .side button.side-toggle {
     display: flex; width: 100%; align-items: center; gap: 10px;
     padding: 11px 14px; border-radius: 10px; font-size: 14px; font-weight: 600;

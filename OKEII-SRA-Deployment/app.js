@@ -26,6 +26,25 @@
      code against a cached copy of yesterday's plan. */
   const V = (document.currentScript?.src.match(/[?&]v=([^&]+)/) || [, "1"])[1];
 
+  /* One viewer kept getting an old copy of the board — the HTML is what pins
+     every other asset's ?v=, so a stale index.html freezes the whole page at
+     whatever build it was cached with, and no amount of reloading the assets
+     helps. build.txt is fetched no-store on every load and holds the id of what
+     is actually deployed; if it disagrees with the id baked into this script,
+     the page reloads itself once, past the cache. The sessionStorage guard is
+     what stops that becoming a loop when a CDN edge is briefly behind. */
+  async function checkBuild() {
+    try {
+      const res = await fetch(`build.txt?t=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) return;
+      const live = (await res.text()).trim();
+      if (!live || live === V) return;
+      if (store.build === live) return;        // already tried for this build
+      store.build = live;
+      location.reload(true);
+    } catch { /* offline is not a reason to fight the cache */ }
+  }
+
   /* Approvals are built and wired but parked until the sign-off process is
      settled. While this is false the Approve button is greyed and inert, and
      "Ready to traffic" renders in grey rather than green so a stray approval
@@ -37,11 +56,24 @@
   const SOON_DAYS = 7;
   const ALL = "__all";
 
+  /* Everyone gets the same link, so the board asks once who is looking and
+     stamps every note and every drop with the answer. Not a login — see the
+     gate copy. */
+  const PEOPLE = [
+    { id: "philip", name: "Philip Baker",       role: "PB Productions — creative & production" },
+    { id: "david",  name: "David Downing",      role: "Catapult — creative director" },
+    { id: "lisa",   name: "Lisa Ratcliff",      role: "LMR Media Mix — media buying" },
+    { id: "alyx",   name: "Alyx",               role: "Amethyst Digital — organic social" },
+    { id: "scott",  name: "Scott Coppenbarger", role: "Public relations" },
+  ];
+
   const store = {
     get key()  { try { return localStorage.getItem("okeii.key") || ""; } catch { return ""; } },
     set key(v) { try { v ? localStorage.setItem("okeii.key", v) : localStorage.removeItem("okeii.key"); } catch {} },
     get who()  { try { return localStorage.getItem("okeii.who") || ""; } catch { return ""; } },
     set who(v) { try { v ? localStorage.setItem("okeii.who", v) : localStorage.removeItem("okeii.who"); } catch {} },
+    get build()  { try { return sessionStorage.getItem("okeii.build") || ""; } catch { return ""; } },
+    set build(v) { try { sessionStorage.setItem("okeii.build", v); } catch {} },
   };
 
   let CAT = null;
@@ -91,6 +123,8 @@
   const daysUntil = (iso) => { const d = day(iso); return d ? Math.round((d - today()) / 86400000) : null; };
   const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const shortDate = (iso) => { const d = day(iso); return d ? `${MONTHS[d.getMonth()]} ${d.getDate()}` : "TBD"; };
+  const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const longDate = (iso) => { const d = day(iso); return d ? `${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()}` : "TBD"; };
 
   function whenPill(iso, status) {
     if (status === "delivered" || status === "approved") return { cls: "ok", text: "Delivered" };
@@ -215,6 +249,44 @@
   // ── boot ─────────────────────────────────────────────────────────────────
 
   async function boot() {
+    checkBuild();                       // fire and forget; reloads if we're stale
+    if (!store.who) { showGate(); return; }
+    paintTopbar();
+    await load();
+  }
+
+  function showGate() {
+    const gate = $("#gate");
+    mount($("#gate-people"),
+      PEOPLE.map((p) => el("button", { onclick: () => pick(p.name) },
+        el("span", { class: "ini", text: p.name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase() }),
+        el("span", {}, el("span", { class: "nm", text: p.name }), el("br"), el("span", { class: "ro", text: p.role })))),
+      el("button", { class: "who-else", text: "Someone else…", onclick: () => {
+        const v = prompt("Your name — it gets stamped on anything you drop, approve or note.");
+        if (v && v.trim()) pick(v.trim());
+      } }),
+    );
+    gate.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+
+  async function pick(name) {
+    store.who = name;
+    $("#gate").hidden = true;
+    document.body.style.overflow = "";
+    paintTopbar();
+    await load();
+  }
+
+  function paintTopbar() {
+    mount($("#topbar-right"),
+      el("span", {}, "Viewing as "), el("b", { text: store.who || "—" }),
+      el("button", { class: "tool", style: "padding:3px 9px;font-size:10px", text: "switch",
+        onclick: () => { store.who = ""; location.reload(); } }),
+    );
+  }
+
+  async function load() {
     mount($("#sections"), el("p", { class: "loading", text: "Loading the board…" }));
     const [cat, live] = await Promise.all([
       fetch(`catalog.json?v=${V}`).then((r) => r.json()),
@@ -277,42 +349,56 @@
     };
   };
 
+  /* The left column is the schedule. A channel heading switches the board — that
+     is the bit everyone liked and it stays — and under it sit that channel's
+     deliverables with the two dates that actually get argued about: when Lisa
+     needs it, and when it runs. Everything else is one tap down, in a drawer,
+     so the surface stays scannable. */
+
+  const sched = (key) => (CAT.schedule && CAT.schedule[key]) || null;
+
+  // A channel's own date is the soonest unmet one under it.
+  function channelDue(c) {
+    let best = null;
+    for (const g of c.groups) {
+      const e = sched(g.id);
+      if (!e || !e.dueToPub || e.status === "delivered") continue;
+      if (!best || e.dueToPub < best) best = e.dueToPub;
+    }
+    return best;
+  }
+
   function renderSide() {
-    const all = CAT.categories.reduce((acc, c) => {
+    const all = CAT.categories.reduce((a, c) => {
       const t = tally(c);
-      return { done: acc.done + t.done, total: acc.total + t.total };
-    }, { done: 0, total: 0 });
+      return { done: a.done + t.done, total: a.total + t.total, landed: a.landed + t.landed };
+    }, { done: 0, total: 0, landed: 0 });
 
     const here = channel === ALL
       ? { name: "Everything", t: all }
       : (() => { const c = CAT.categories.find((x) => x.id === channel); return { name: c.name, t: tally(c) }; })();
 
     mount($("#side"),
-      // Narrow screens only: the full list is taller than a phone screen, so it
-      // collapses behind the channel you are actually looking at. Without this
-      // you land on a wall of channel names and have to scroll a whole screen
-      // before any creative appears.
       el("button", { class: "side-toggle", "aria-expanded": String(sideOpen),
         onclick: () => { sideOpen = !sideOpen; renderSide(); } },
         el("span", { class: "name", text: here.name }),
         el("span", { class: "n", text: `${here.t.done}/${here.t.total}` }),
         el("span", { class: "chev", text: sideOpen ? "▲" : "▼" })),
       el("div", { class: `side-list${sideOpen ? " open" : ""}` },
-        el("h2", { text: "Channels" }),
-        row(ALL, "Everything", all),
-        el("div", { class: "sep" }),
-        CAT.categories.map((c) => row(c.id, c.name, tally(c)))),
+        el("h2", { text: "Schedule" }),
+        channelRow(ALL, "Everything", all, null),
+        CAT.categories.map((c) => channelRow(c.id, c.name, tally(c), c)),
+      ),
     );
   }
 
-  /* A line per channel with a box beside it. The box is the whole point — empty,
-     part-filled in proportion to what has landed, or ticked when the channel is
-     complete — so the list can be run down at a glance rather than read. */
-  function row(id, name, t) {
+  function channelRow(id, name, t, cat) {
     const on = channel === id;
     const done = t.total > 0 && t.done === t.total;
-    return el("button", {
-      class: [on && "is-on", done && "is-done"].filter(Boolean).join(" ") || null,
+    const due = cat ? channelDue(cat) : null;
+
+    const head = el("button", {
+      class: `chan-head${done ? " is-done" : ""}`,
       "data-tab": id,
       "aria-current": on ? "true" : null,
       title: `${t.landed} of ${t.total} delivered · ${t.done} ready to traffic`,
@@ -323,7 +409,59 @@
       el("span", { class: "name", text: name }),
       el("span", { class: "n", text: `${t.done}/${t.total}` }),
     );
+
+    // Only the channel you are looking at unfolds its deliverables — fifteen
+    // channels' worth open at once is the wall of text this replaced.
+    const jobs = on && cat
+      ? el("div", { class: "chan-jobs" }, cat.groups.map((g) => jobRow(g)))
+      : null;
+
+    return el("div", { class: `chan${on ? " is-on" : ""}` }, head, jobs);
   }
+
+  function jobRow(g) {
+    const e = sched(g.id) || {};
+    const due = e.dueToPub || g.due || null;
+    const n = due ? daysUntil(due) : null;
+    const urgency = e.status === "delivered" ? "" : n === null ? "" : n < 0 ? " late" : n <= SOON_DAYS ? " soon" : "";
+    const st = e.status || g.status || "not_started";
+
+    const wrap = el("div", { class: "job" });
+    const facts = el("dl", { class: "job-facts" });
+    const add = (k, v, cls) => { if (v) facts.append(el("dt", { text: k }), el("dd", { class: cls || null, text: v })); };
+    add("Due to pub", due ? `${shortDate(due)}${n !== null && st !== "delivered" ? (n < 0 ? ` · ${Math.abs(n)}d late` : n === 0 ? " · today" : ` · in ${n}d`) : ""}` : "not set",
+        urgency.trim() || null);
+    if (e.dueNote) add("", e.dueNote);
+    add("Air date", e.airNote || (e.airDate ? shortDate(e.airDate) + (e.airEnd ? ` – ${shortDate(e.airEnd)}` : "") : "not set"));
+    add("Status", STATUS_WORD[st] || st);
+    if (e.copyNote) add("Copy", e.copyNote, e.copyStatus === "need" ? "warn" : null);
+    if (e.owner) add("Owner", e.owner);
+    if (e.blocker) facts.append(el("dd", { class: "blocker", text: e.blocker }));
+    if (e.conflict) facts.append(el("dd", { class: "blocker", text: e.conflict }));
+
+    wrap.append(
+      el("button", {
+        class: `job-head s-${st}`,
+        "aria-expanded": "false",
+        onclick: (ev) => {
+          const open = wrap.classList.toggle("open");
+          ev.currentTarget.setAttribute("aria-expanded", String(open));
+        },
+      },
+        el("span", { class: "pip" }),
+        el("span", { class: "jt", text: g.title }),
+        el("span", { class: `jd${urgency}`, text: due ? shortDate(due) : "—" }),
+      ),
+      el("div", { class: "job-more" }, el("div", {}, facts)),
+    );
+    return wrap;
+  }
+
+  const STATUS_WORD = {
+    delivered: "Delivered", in_review: "In review", in_progress: "In production",
+    not_started: "Not started", blocked: "Blocked", pending: "Pending", approved: "Approved",
+    reference: "Reference",
+  };
 
   function setChannel(id) {
     channel = id;
@@ -483,6 +621,22 @@
   // its copy, the spec's provenance, the channel's caveats, the version history
   // — is here, one click from the placeholder it belongs to.
 
+  // Siblings = the other placeholders in the same deliverable, in board order.
+  // Stepping through a message's four sizes is the commonest way this gets
+  // reviewed, so it is two arrow keys rather than close-scan-open each time.
+  function siblings(slotId) {
+    const g = SLOTS.get(slotId)?.group;
+    return g ? g.slots.map((s) => s.id) : [slotId];
+  }
+
+  function step(delta) {
+    if (!openSlot) return;
+    const list = siblings(openSlot);
+    const i = list.indexOf(openSlot);
+    const next = list[i + delta];
+    if (next) openDrawer(next);
+  }
+
   function openDrawer(slotId) {
     const entry = SLOTS.get(slotId);
     if (!entry) return;
@@ -491,6 +645,12 @@
 
     $("#drawer-crumb").textContent = `${cat.name} · ${group.title}`;
     $("#drawer-title").textContent = slot.label;
+
+    const list = siblings(slotId), i = list.indexOf(slotId);
+    $("#drawer-prev").disabled = i <= 0;
+    $("#drawer-next").disabled = i >= list.length - 1;
+    $("#drawer-count").textContent = `${i + 1} / ${list.length}`;
+
     mount($("#drawer-body"), drawerBody(slot, group));
     $("#drawer").hidden = false;
     $("#scrim").hidden = false;
@@ -565,9 +725,75 @@
         },
       }));
 
-    return [banner, stage, actions, dz, specLines(slot, v), versions.length && el("div", {},
+    return [banner, stage, actions, dz, dateCards(slot, group), specLines(slot, v),
+            noteBlock(slot), versions.length && el("div", {},
       el("h4", { class: "sub", text: `History — ${versions.length} version${versions.length === 1 ? "" : "s"}` }),
       el("div", { class: "vers" }, versions.map((ver) => versionRow(slot, ver, ver.id === STATE.slots[slot.id]?.currentId))))];
+  }
+
+  /* The two dates, side by side and never conflated: the day it has to be in
+     Lisa's hands, and the day it starts running. */
+  function dateCards(slot, group) {
+    const e = sched(group.id) || {};
+    const due = e.dueToPub || group.due || null;
+    const n = due ? daysUntil(due) : null;
+    const delivered = (e.status || group.status) === "delivered";
+    const cls = delivered || n === null ? "" : n < 0 ? " late" : n <= SOON_DAYS ? " soon" : "";
+
+    const pub = el("div", { class: `date-card pub${cls}${due ? "" : " none"}` },
+      el("h5", { text: "Due to pub" }),
+      el("b", { text: due ? longDate(due) : "Not set" }),
+      el("small", { text: due
+        ? (delivered ? "Delivered."
+            : n < 0 ? `${Math.abs(n)} day${Math.abs(n) === 1 ? "" : "s"} past`
+            : n === 0 ? "Today" : `In ${n} day${n === 1 ? "" : "s"}`)
+          + (e.dueNote ? ` · ${e.dueNote}` : "")
+        : (e.dueNote || "No vendor date on record yet.") }));
+
+    const air = el("div", { class: `date-card air${e.airDate || e.airNote ? "" : " none"}` },
+      el("h5", { text: "Air date" }),
+      el("b", { text: e.airDate ? longDate(e.airDate) : (e.airNote ? e.airNote : "Not set") }),
+      el("small", { text: e.airDate
+        ? (e.airEnd ? `Through ${longDate(e.airEnd)}` : "") + (e.airNote ? `${e.airEnd ? " · " : ""}${e.airNote}` : "")
+        : "When this runs isn't on the record yet." }));
+
+    return el("div", {}, el("h4", { class: "sub", text: "Dates" }), el("div", { class: "dates" }, pub, air));
+  }
+
+  /* Anyone can leave a note, and everyone sees who left it. Notes hang off the
+     placeholder rather than off a file, so they survive the next version being
+     dropped on it — which is the point, because most of them are about what the
+     next version should be. */
+  function noteBlock(slot) {
+    const notes = STATE.slots[slot.id]?.notes || [];
+    const box = el("textarea", { placeholder: `Add a note as ${store.who || "…"}`, rows: "2" });
+
+    const send = () => {
+      const text = box.value.trim();
+      if (!text) return;
+      box.value = "";
+      act("addnote", { slotId: slot.id, text, by: store.who }, "Note added.");
+    };
+    box.addEventListener("keydown", (e) => {
+      // ⌘/Ctrl-Enter sends; plain Enter keeps making paragraphs.
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); send(); }
+    });
+
+    return el("div", {},
+      el("h4", { class: "sub", text: `Notes${notes.length ? ` — ${notes.length}` : ""}` }),
+      el("div", { class: "notes" },
+        el("div", { class: "note-new" }, box, el("button", { text: "Post", onclick: send })),
+        notes.length
+          ? notes.map((nt) => el("div", { class: "note" },
+              el("div", { class: "note-by" },
+                el("b", { text: nt.by }), el("span", { text: ago(nt.at) }),
+                el("button", { class: "x", title: "Remove this note", text: "×",
+                  onclick: () => {
+                    if (!confirm("Remove this note?")) return;
+                    act("delnote", { slotId: slot.id, noteId: nt.id, by: store.who }, "Note removed.");
+                  } })),
+              el("p", { text: nt.text })))
+          : el("p", { class: "notes-none", text: "Nothing noted yet." })));
   }
 
   /* One line per requirement: what it has to be, and a tick or a cross. Nothing
@@ -823,7 +1049,7 @@
     // stamped on anything you drop or approve, so the history says who did it.
     const who = $("#who");
     const paintWho = () => {
-      who.textContent = store.who || "Add your name";
+      who.textContent = store.who || "Who's looking";
       who.title = store.who
         ? `Anything you drop or approve is stamped "${store.who}". Click to change it.`
         : "Your name gets stamped on anything you drop or approve. Not a login.";
@@ -847,9 +1073,16 @@
 
     $("#drawer-close").addEventListener("click", closeDrawer);
     $("#scrim").addEventListener("click", closeDrawer);
+    $("#drawer-prev").addEventListener("click", () => step(-1));
+    $("#drawer-next").addEventListener("click", () => step(1));
     document.addEventListener("keydown", (e) => {
+      const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName || "");
       if (e.key === "Escape" && openSlot) closeDrawer();
-      if (e.key === "/" && document.activeElement !== $("#q")) { e.preventDefault(); $("#q").focus(); }
+      if (e.key === "/" && !typing) { e.preventDefault(); $("#q").focus(); }
+      if (openSlot && !typing) {
+        if (e.key === "ArrowLeft")  { e.preventDefault(); step(-1); }
+        if (e.key === "ArrowRight") { e.preventDefault(); step(1); }
+      }
     });
 
     // A full-window veil while a file is in flight over the page, so it is

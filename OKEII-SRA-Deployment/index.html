@@ -4,16 +4,35 @@
 <meta charset="utf-8">
 <title>OKEII · Strong Readers Act — Deployment</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Every piece of creative in the Strong Readers Act implementation campaign, one placeholder per deliverable, browsable by channel.">
+<meta name="description" content="Every piece of creative in the Strong Readers Act implementation campaign, against the schedule it has to hit.">
 <!-- Unlisted client link: not on the lab index, not in sitemap.xml, and unreleased
      creative lives here. Keep it out of search results too. -->
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23082F7B'/><text x='16' y='23' font-family='Helvetica,Arial' font-size='17' font-weight='700' text-anchor='middle' fill='%23fff'>S</text></svg>">
-<link rel="stylesheet" href="app.css?v=6">
+<link rel="stylesheet" href="app.css?v=fe306cadcb">
 </head>
 <body>
 
 <a class="skip" href="#main">Skip to the creative</a>
+
+<!-- Who's looking. Everyone gets the same link, so the board asks once and
+     remembers; every note and every drop is stamped with the answer. -->
+<div class="gate" id="gate" hidden>
+  <div class="gate-card">
+    <img class="gate-logo" src="img/catapult.png?v=fe306cadcb" alt="Catapult Creative Communications">
+    <p class="gate-eyebrow">OKEII · Strong Readers Act</p>
+    <h1>Who's looking?</h1>
+    <p class="gate-sub">So notes and uploads carry a name. Nothing is locked — this is just attribution.</p>
+    <div class="gate-people" id="gate-people"></div>
+  </div>
+</div>
+
+<div class="topbar">
+  <img class="topbar-logo" src="img/catapult.png?v=fe306cadcb" alt="Catapult Creative Communications">
+  <span class="topbar-sep"></span>
+  <span class="topbar-client">Oklahoma Education Impact Initiative</span>
+  <span class="topbar-right" id="topbar-right"></span>
+</div>
 
 <header class="mast">
   <div class="mast-in">
@@ -23,14 +42,14 @@
         <span class="vh">Search every channel</span>
         <input type="search" id="q" placeholder="Search all channels…" autocomplete="off" spellcheck="false">
       </label>
-      <button class="tool" id="who">Add your name</button>
+      <button class="tool" id="who">Who's looking</button>
       <button class="tool" id="lock" title="Unlock editing">Unlock</button>
     </div>
   </div>
 </header>
 
 <div class="shell">
-  <nav class="side" id="side" aria-label="Channels"></nav>
+  <nav class="side" id="side" aria-label="Schedule and channels"></nav>
   <main id="main">
     <div id="sections"></div>
   </main>
@@ -41,11 +60,16 @@
 <div class="drawer-scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" hidden aria-labelledby="drawer-title" role="dialog" aria-modal="true">
   <div class="drawer-head">
-    <div>
+    <div class="drawer-id">
       <p class="drawer-crumb" id="drawer-crumb"></p>
       <h2 id="drawer-title"></h2>
     </div>
-    <button class="tool" id="drawer-close" aria-label="Close">Close</button>
+    <div class="drawer-nav">
+      <button class="stepper" id="drawer-prev" aria-label="Previous in this deliverable" title="Previous  ←">‹</button>
+      <span class="stepper-count" id="drawer-count"></span>
+      <button class="stepper" id="drawer-next" aria-label="Next in this deliverable" title="Next  →">›</button>
+      <button class="tool" id="drawer-close" aria-label="Close">Close</button>
+    </div>
   </div>
   <div class="drawer-body" id="drawer-body"></div>
 </aside>
@@ -53,6 +77,6 @@
 <div class="toasts" id="toasts" aria-live="polite"></div>
 <div class="dropveil" id="dropveil" hidden><p>Drop it on the placeholder it belongs to</p></div>
 
-<script src="app.js?v=6"></script>
+<script src="app.js?v=fe306cadcb"></script>
 </body>
 </html>
