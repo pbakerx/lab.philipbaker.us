@@ -413,7 +413,10 @@
     if (!cat) return { due: null, urg: "" };
     const waiting = (CAT.pending || []).filter((p) => p.channel === cat.id);
     const dues = cat.groups.map((g) => sched(g.id)).concat(waiting)
-      .filter((e) => e && e.dueToPub && e.status !== "delivered")
+      // An alternate route is a road not taken, not a deadline. Audio's Aug 25
+      // is 9/1 backed off a week, and only applies if we send scripts instead
+      // of finished spots — it must not headline the channel.
+      .filter((e) => e && e.dueToPub && e.status !== "delivered" && !e.alternate)
       .map((e) => e.dueToPub).sort();
     const due = dues[0] || null;
     const n = due ? daysUntil(due) : null;

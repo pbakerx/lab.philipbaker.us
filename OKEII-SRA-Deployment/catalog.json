@@ -1543,7 +1543,7 @@
   },
   "audio-finished-spots": {
    "dueToPub": "2026-09-01",
-   "dueNote": "All four sources agree on Sept 1 — no date disagreement here.",
+   "dueNote": "Lisa Ratcliff, \"OKEII- audio specs\", 5 Aug 2026: \"Please provide spot by 9/1.\" This is the date that binds — all four sources agree on Sept 1.",
    "airDate": "2026-09-08",
    "airEnd": null,
    "airNote": "From launch, Sept 8 — the plan carries audio across the full September-December campaign and states no end day.",
@@ -1557,7 +1557,7 @@
   },
   "audio-production-scripts": {
    "dueToPub": "2026-08-25",
-   "dueNote": "An optional route rather than a vendor requirement: stations will produce the spots at no charge if scripts reach them about a week early. That window has now passed, so the finished-spot route at Sept 1 is the one in play.",
+   "dueNote": "An alternate route, not a deadline anyone set. Lisa Ratcliff (\"OKEII- audio specs\", 5 Aug 2026): \"Please provide spot by 9/1 or if providing just the script/s for production I will need a week earlier to give station time to produce.\" Aug 25 is that week, backed off 9/1 — and it applies only if we send scripts instead of finished spots. We are producing the spots, so Sept 1 is the date that binds.",
    "airDate": "2026-09-08",
    "airEnd": null,
    "airNote": "From launch, Sept 8 — same flight as the finished audio spots. No end day is stated.",
@@ -1567,7 +1567,8 @@
    "owner": "DD/PB",
    "blocker": "",
    "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
+   "source": "Email — lisa ratcliff <ratcliff@lmrmediamix.com>, \"OKEII- audio specs\", 5 Aug 2026 (re-sent 26 Aug 2026). No production schedule carries an Aug 25 audio date.",
+   "alternate": true
   },
   "dooh-lamar-boards": {
    "dueToPub": "2026-09-03",
