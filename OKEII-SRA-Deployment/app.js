@@ -385,7 +385,7 @@
         el("span", { class: "n", text: `${APPROVALS_LIVE ? here.t.done : here.t.landed}/${here.t.total}` }),
         el("span", { class: "chev", text: sideOpen ? "▲" : "▼" })),
       el("div", { class: `side-list${sideOpen ? " open" : ""}` },
-        el("h2", { text: "Schedule" }),
+        el("h2", { text: "Schedule · due to pub" }),
         channelRow(ALL, "Everything", all, null),
         CAT.categories.map((c) => channelRow(c.id, c.name, tally(c), c)),
       ),
@@ -407,20 +407,37 @@
                 "in_review", "approved", "delivered", "reference"];
   const worst = (list) => list.slice().sort((a, b) => RANK.indexOf(a) - RANK.indexOf(b))[0] || "not_started";
 
+  // The channel's headline date: the next one still owed. Shared by the closed
+  // row and the open body so the two can't disagree.
+  function nextDue(cat) {
+    if (!cat) return { due: null, urg: "" };
+    const waiting = (CAT.pending || []).filter((p) => p.channel === cat.id);
+    const dues = cat.groups.map((g) => sched(g.id)).concat(waiting)
+      .filter((e) => e && e.dueToPub && e.status !== "delivered")
+      .map((e) => e.dueToPub).sort();
+    const due = dues[0] || null;
+    const n = due ? daysUntil(due) : null;
+    return { due, urg: n === null ? "" : n < 0 ? " late" : n <= SOON_DAYS ? " soon" : "" };
+  }
+
   function channelRow(id, name, t, cat) {
     const on = channel === id;
     const done = t.total > 0 && (APPROVALS_LIVE ? t.done : t.landed) === t.total;
+    const { due, urg } = nextDue(cat);
 
     const head = el("button", {
       class: `chan-head${done ? " is-done" : ""}`,
       "data-tab": id,
       "aria-current": on ? "true" : null,
-      title: `${t.landed} of ${t.total} delivered · ${t.done} ready to traffic`,
+      title: `${due ? `Due to pub ${longDate(due)} · ` : ""}`
+           + `${t.landed} of ${t.total} delivered · ${t.done} ready to traffic`,
       onclick: () => setChannel(id),
     },
       el("span", { class: "box", "aria-hidden": "true" },
         !done && t.landed > 0 && el("i", { style: `height:${Math.round((t.landed / t.total) * 100)}%` })),
-      el("span", { class: "name", text: name }),
+      el("span", { class: "lab" },
+        el("span", { class: "name", text: name }),
+        due && el("span", { class: `due${urg}`, text: shortDate(due) })),
       // Sign-off is parked, so counting approvals would read 0/43 next to a body
       // that says 40 of 40 landed. Count what's in hand until approvals go live.
       el("span", { class: "n", text: `${APPROVALS_LIVE ? t.done : t.landed}/${t.total}` }),
@@ -431,22 +448,10 @@
 
   function chanBody(cat) {
     const waiting = (CAT.pending || []).filter((p) => p.channel === cat.id);
-
-    // One date per channel: the next one still owed.
-    const dues = cat.groups.map((g) => sched(g.id)).concat(waiting)
-      .filter((e) => e && e.dueToPub && e.status !== "delivered")
-      .map((e) => e.dueToPub).sort();
-    const due = dues[0] || null;
-    const n = due ? daysUntil(due) : null;
-    const urg = n === null ? "" : n < 0 ? " late" : n <= SOON_DAYS ? " soon" : "";
-
     const lines = ROLL_UP_BY_KIND.has(cat.id) ? byKind(cat) : byDeliverable(cat);
     waiting.forEach((p) => lines.push({ label: p.title, note: "", status: p.status, pending: true }));
 
     return el("div", { class: "chan-body" },
-      el("div", { class: "chan-due" },
-        el("span", { class: "k", text: "Due to pub" }),
-        el("span", { class: `v${urg}`, text: due ? shortDate(due) : "—" })),
       el("div", { class: "chan-jobs" },
         el("div", { class: "jobs-k", text: "Deliverables" }),
         lines.map((L) => el("div", { class: `job-line${L.pending ? " is-pending" : ""}` },

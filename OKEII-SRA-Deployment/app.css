@@ -175,7 +175,20 @@ button { cursor: pointer; background: none; border: none; }
 }
 .chan-head:hover { color: var(--ink); background: #0f1c39; }
 .chan.is-on .chan-head { color: #fff; }
+.chan-head .lab { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .chan-head .name { min-width: 0; font-weight: 600; }
+
+/* On the row itself, so it is readable with the section closed. */
+.chan-head .due {
+  font-size: 10px; font-weight: 600; letter-spacing: .05em;
+  color: var(--ink-faint); font-variant-numeric: tabular-nums;
+}
+.chan-head .due.soon { color: var(--warn); }
+.chan-head .due.late { color: var(--late); }
+.chan.is-on .chan-head .due { color: var(--ink-dim); }
+.chan.is-on .chan-head .due.soon { color: var(--warn); }
+.chan.is-on .chan-head .due.late { color: var(--late); }
+
 .chan-head .n { font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 .chan.is-on .chan-head .n { color: var(--blue-lift); }
 .chan-head.is-done .n { color: var(--ok); }
@@ -192,18 +205,9 @@ button { cursor: pointer; background: none; border: none; }
 }
 
 /* what sits under the open channel */
-.chan-body { padding: 2px 10px 10px 10px; }
+.chan-body { padding: 0 10px 10px 10px; }
 
-.chan-due {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
-  padding: 7px 9px; border-radius: 7px; background: #08122a; border: 1px solid var(--line-soft);
-}
-.chan-due .k { font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
-.chan-due .v { font-size: 13px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
-.chan-due .v.soon { color: var(--warn); }
-.chan-due .v.late { color: var(--late); }
-
-.chan-jobs { margin-top: 9px; }
+.chan-jobs { margin-top: 2px; }
 .jobs-k {
   font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
   color: var(--ink-faint); padding: 0 2px 5px;
