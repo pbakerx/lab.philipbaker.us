@@ -191,47 +191,44 @@ button { cursor: pointer; background: none; border: none; }
   color: #06120c; font-size: 11px; font-weight: 700; line-height: 1;
 }
 
-/* the deliverables under it */
-.chan-jobs { padding: 2px 8px 8px; display: flex; flex-direction: column; gap: 2px; }
-.job { border-radius: 8px; }
-.job-head {
-  display: grid; grid-template-columns: 5px minmax(0, 1fr) max-content;
-  gap: 8px; align-items: baseline; width: 100%; text-align: left;
-  padding: 7px 8px; border-radius: 8px; color: var(--ink-dim);
-  transition: background .14s, color .14s;
-}
-.job-head:hover { background: #101f3d; color: var(--ink); }
-.job-head .pip { width: 5px; height: 5px; border-radius: 50%; align-self: center; background: var(--ink-faint); }
-.job-head.s-delivered .pip { background: var(--ok); }
-.job-head.s-blocked   .pip { background: var(--late); }
-.job-head.s-in_review .pip, .job-head.s-in_progress .pip { background: var(--warn); }
-.job-head .jt { font-size: 12px; line-height: 1.35; min-width: 0; }
-.job-head .jd { font-size: 10.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.job-head .jd.late { color: var(--late); }
-.job-head .jd.soon { color: var(--warn); }
-/* On the schedule, not yet on the board. */
-.job-head.is-pending .jt { color: var(--ink-faint); font-style: italic; }
-.job-head.is-pending .pip { background: transparent; border: 1px dashed #4a648f; }
+/* what sits under the open channel */
+.chan-body { padding: 2px 10px 10px 10px; }
 
-/* the sliding drawer under a deliverable */
-.job-more {
-  display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows .22s ease;
+.chan-due {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  padding: 7px 9px; border-radius: 7px; background: #08122a; border: 1px solid var(--line-soft);
 }
-.job.open .job-more { grid-template-rows: 1fr; }
-.job-more > div { overflow: hidden; }
-.job-facts {
-  margin: 2px 8px 6px 21px; padding: 9px 11px; border-radius: 8px;
-  background: #08122a; border: 1px solid var(--line-soft);
-  display: grid; grid-template-columns: max-content 1fr; gap: 4px 10px; font-size: 11.5px;
-}
-.job-facts dt { color: var(--ink-faint); letter-spacing: .06em; text-transform: uppercase; font-size: 9.5px; padding-top: 2px; }
-.job-facts dd { color: var(--ink-dim); }
-.job-facts dd.warn { color: var(--warn); }
-.job-facts dd.late { color: var(--late); }
-.job-facts .blocker { grid-column: 1 / -1; margin-top: 3px; padding-top: 6px; border-top: 1px solid var(--line-soft); color: #f2d79a; }
+.chan-due .k { font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
+.chan-due .v { font-size: 13px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.chan-due .v.soon { color: var(--warn); }
+.chan-due .v.late { color: var(--late); }
 
-@media (prefers-reduced-motion: reduce) { .job-more { transition: none; } }
+.chan-jobs { margin-top: 9px; }
+.jobs-k {
+  font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-faint); padding: 0 2px 5px;
+}
+.job-line {
+  display: flex; align-items: baseline; gap: 7px;
+  padding: 5px 2px; font-size: 12px; line-height: 1.35;
+  border-top: 1px solid var(--line-soft);
+}
+.job-line:first-of-type { border-top: 0; }
+.job-line .jl { flex: 1 1 auto; min-width: 0; color: var(--ink); }
+/* Count and status hold their own columns, so the list scans down the right
+   edge instead of ragging with the label lengths. */
+.job-line .jn {
+  flex: 0 0 auto; min-width: 32px; text-align: right; color: var(--ink-faint);
+  font-size: 10.5px; font-variant-numeric: tabular-nums;
+}
+.job-line .js {
+  flex: 0 0 auto; min-width: 74px; text-align: right; white-space: nowrap;
+  font-size: 10px; font-weight: 600; letter-spacing: .04em; color: var(--ink-faint);
+}
+.job-line .js.s-delivered, .job-line .js.s-approved { color: var(--ok); }
+.job-line .js.s-in_review, .job-line .js.s-in_progress, .job-line .js.s-in_production { color: var(--warn); }
+.job-line .js.s-blocked { color: var(--late); }
+.job-line.is-pending .jl { color: var(--ink-faint); font-style: italic; }
 
 /* ── the board ─/* ── the board ────────────────────────────────────────────────────────── */
 

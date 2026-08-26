@@ -392,10 +392,24 @@
     );
   }
 
+  /* Some channels are one deliverable wearing five hats. Paid social is five
+     message sets of the same four sizes, and a media buyer does not care which
+     message — they care that the statics are in review and the video is in
+     review. Those roll up by media kind. Everywhere else the deliverables are
+     genuinely different things and keep their own names. */
+  const ROLL_UP_BY_KIND = new Set(["paid-social"]);
+
+  const KIND_LABEL = { image: "Static ads", video: "Video ads", audio: "Audio spots",
+                       pdf: "Print files", doc: "Documents", copy: "Copy" };
+
+  // Worst-first, so a channel never reads better than its weakest deliverable.
+  const RANK = ["blocked", "not_started", "pending", "in_progress", "in_production",
+                "in_review", "approved", "delivered", "reference"];
+  const worst = (list) => list.slice().sort((a, b) => RANK.indexOf(a) - RANK.indexOf(b))[0] || "not_started";
+
   function channelRow(id, name, t, cat) {
     const on = channel === id;
-    const done = t.total > 0 && t.done === t.total;
-    const due = cat ? channelDue(cat) : null;
+    const done = t.total > 0 && (APPROVALS_LIVE ? t.done : t.landed) === t.total;
 
     const head = el("button", {
       class: `chan-head${done ? " is-done" : ""}`,
@@ -407,69 +421,76 @@
       el("span", { class: "box", "aria-hidden": "true" },
         !done && t.landed > 0 && el("i", { style: `height:${Math.round((t.landed / t.total) * 100)}%` })),
       el("span", { class: "name", text: name }),
-      el("span", { class: "n", text: `${t.done}/${t.total}` }),
+      // Sign-off is parked, so counting approvals would read 0/43 next to a body
+      // that says 40 of 40 landed. Count what's in hand until approvals go live.
+      el("span", { class: "n", text: `${APPROVALS_LIVE ? t.done : t.landed}/${t.total}` }),
     );
 
-    // Only the channel you are looking at unfolds its deliverables — fifteen
-    // channels' worth open at once is the wall of text this replaced.
-    // The pending rows are deliverables the schedule carries but the board has
-    // no placeholders for yet; hiding them would make a channel look finished.
-    const waiting = on && cat ? (CAT.pending || []).filter((p) => p.channel === cat.id) : [];
-    const jobs = on && cat
-      ? el("div", { class: "chan-jobs" },
-          cat.groups.map((g) => jobRow(g)),
-          waiting.map((p) => jobRow({ id: p.key, title: p.title, status: p.status }, p)))
-      : null;
-
-    return el("div", { class: `chan${on ? " is-on" : ""}` }, head, jobs);
+    return el("div", { class: `chan${on ? " is-on" : ""}` }, head, on && cat ? chanBody(cat) : null);
   }
 
-  function jobRow(g, pendingEntry) {
-    const e = pendingEntry || sched(g.id) || {};
-    const due = e.dueToPub || g.due || null;
+  function chanBody(cat) {
+    const waiting = (CAT.pending || []).filter((p) => p.channel === cat.id);
+
+    // One date per channel: the next one still owed.
+    const dues = cat.groups.map((g) => sched(g.id)).concat(waiting)
+      .filter((e) => e && e.dueToPub && e.status !== "delivered")
+      .map((e) => e.dueToPub).sort();
+    const due = dues[0] || null;
     const n = due ? daysUntil(due) : null;
-    const urgency = e.status === "delivered" ? "" : n === null ? "" : n < 0 ? " late" : n <= SOON_DAYS ? " soon" : "";
-    const st = e.status || g.status || "not_started";
+    const urg = n === null ? "" : n < 0 ? " late" : n <= SOON_DAYS ? " soon" : "";
 
-    const wrap = el("div", { class: "job" });
-    const facts = el("dl", { class: "job-facts" });
-    const add = (k, v, cls) => { if (v) facts.append(el("dt", { text: k }), el("dd", { class: cls || null, text: v })); };
-    add("Due to pub", due ? `${shortDate(due)}${n !== null && st !== "delivered" ? (n < 0 ? ` · ${Math.abs(n)}d late` : n === 0 ? " · today" : ` · in ${n}d`) : ""}` : "not set",
-        urgency.trim() || null);
-    if (e.dueNote) add("", e.dueNote);
-    add("Air date", e.airNote || (e.airDate ? shortDate(e.airDate) + (e.airEnd ? ` – ${shortDate(e.airEnd)}` : "") : "not set"));
-    add("Status", STATUS_WORD[st] || st);
-    if (e.copyNote) add("Copy", e.copyNote, e.copyStatus === "need" ? "warn" : null);
-    if (e.owner) add("Owner", e.owner);
-    if (e.blocker) facts.append(el("dd", { class: "blocker", text: e.blocker }));
-    if (e.conflict) facts.append(el("dd", { class: "blocker", text: e.conflict }));
+    const lines = ROLL_UP_BY_KIND.has(cat.id) ? byKind(cat) : byDeliverable(cat);
+    waiting.forEach((p) => lines.push({ label: p.title, note: "", status: p.status, pending: true }));
 
-    if (pendingEntry) {
-      facts.append(el("dd", { class: "blocker",
-        text: "On the schedule; no placeholders built on the board yet." }));
-    }
-
-    wrap.append(
-      el("button", {
-        class: `job-head s-${st}${pendingEntry ? " is-pending" : ""}`,
-        "aria-expanded": "false",
-        onclick: (ev) => {
-          const open = wrap.classList.toggle("open");
-          ev.currentTarget.setAttribute("aria-expanded", String(open));
-        },
-      },
-        el("span", { class: "pip" }),
-        el("span", { class: "jt", text: g.title }),
-        el("span", { class: `jd${urgency}`, text: due ? shortDate(due) : "—" }),
-      ),
-      el("div", { class: "job-more" }, el("div", {}, facts)),
+    return el("div", { class: "chan-body" },
+      el("div", { class: "chan-due" },
+        el("span", { class: "k", text: "Due to pub" }),
+        el("span", { class: `v${urg}`, text: due ? shortDate(due) : "—" })),
+      el("div", { class: "chan-jobs" },
+        el("div", { class: "jobs-k", text: "Deliverables" }),
+        lines.map((L) => el("div", { class: `job-line${L.pending ? " is-pending" : ""}` },
+          el("span", { class: "jl", text: L.label }),
+          L.note && el("span", { class: "jn", text: L.note }),
+          el("span", { class: `js s-${L.status}`, text: STATUS_WORD[L.status] || L.status }),
+        ))),
     );
-    return wrap;
+  }
+
+  function byKind(cat) {
+    const buckets = new Map();
+    for (const g of cat.groups) {
+      const st = (sched(g.id) || {}).status || g.status || "not_started";
+      for (const s of g.slots) {
+        const k = KIND_LABEL[s.kind] ? s.kind : "doc";
+        const b = buckets.get(k) || { n: 0, done: 0, st: [] };
+        b.n += 1;
+        if (currentOf(s.id)) b.done += 1;
+        b.st.push(st);
+        buckets.set(k, b);
+      }
+    }
+    return [...buckets].map(([k, b]) => ({
+      label: KIND_LABEL[k], note: `${b.done}/${b.n}`, status: worst(b.st),
+    }));
+  }
+
+  function byDeliverable(cat) {
+    return cat.groups.map((g) => {
+      const e = sched(g.id) || {};
+      const filled = g.slots.filter((s) => currentOf(s.id)).length;
+      return {
+        label: g.title.replace(/^Message — /, ""),
+        note: `${filled}/${g.slots.length}`,
+        status: e.status || g.status || "not_started",
+      };
+    });
   }
 
   const STATUS_WORD = {
-    delivered: "Delivered", in_review: "In review", in_progress: "In production",
-    not_started: "Not started", blocked: "Blocked", pending: "Pending", approved: "Approved",
+    delivered: "Delivered", in_review: "In review", approved: "Approved",
+    in_progress: "In production", in_production: "In production",
+    not_started: "Not started", blocked: "Blocked", pending: "Pending",
     reference: "Reference",
   };
 
@@ -735,8 +756,8 @@
         },
       }));
 
-    return [banner, stage, actions, dz, dateCards(slot, group), specLines(slot, v),
-            noteBlock(slot), versions.length && el("div", {},
+    return [banner, stage, actions, noteBlock(slot), dz, dateCards(slot, group), specLines(slot, v),
+            versions.length && el("div", {},
       el("h4", { class: "sub", text: `History — ${versions.length} version${versions.length === 1 ? "" : "s"}` }),
       el("div", { class: "vers" }, versions.map((ver) => versionRow(slot, ver, ver.id === STATE.slots[slot.id]?.currentId))))];
   }
@@ -750,24 +771,21 @@
     const delivered = (e.status || group.status) === "delivered";
     const cls = delivered || n === null ? "" : n < 0 ? " late" : n <= SOON_DAYS ? " soon" : "";
 
+    const when = !due ? "" : delivered ? "Delivered"
+      : n < 0 ? `${Math.abs(n)} day${Math.abs(n) === 1 ? "" : "s"} past`
+      : n === 0 ? "Today" : `In ${n} day${n === 1 ? "" : "s"}`;
+
     const pub = el("div", { class: `date-card pub${cls}${due ? "" : " none"}` },
       el("h5", { text: "Due to pub" }),
       el("b", { text: due ? longDate(due) : "Not set" }),
-      el("small", { text: due
-        ? (delivered ? "Delivered."
-            : n < 0 ? `${Math.abs(n)} day${Math.abs(n) === 1 ? "" : "s"} past`
-            : n === 0 ? "Today" : `In ${n} day${n === 1 ? "" : "s"}`)
-          + (e.dueNote ? ` · ${e.dueNote}` : "")
-        : (e.dueNote || "No vendor date on record yet.") }));
+      el("small", { text: when }));
 
     const air = el("div", { class: `date-card air${e.airDate || e.airNote ? "" : " none"}` },
       el("h5", { text: "Air date" }),
       el("b", { text: e.airDate ? longDate(e.airDate) : (e.airNote ? e.airNote : "Not set") }),
-      el("small", { text: e.airDate
-        ? (e.airEnd ? `Through ${longDate(e.airEnd)}` : "") + (e.airNote ? `${e.airEnd ? " · " : ""}${e.airNote}` : "")
-        : "When this runs isn't on the record yet." }));
+      el("small", { text: e.airEnd ? `Through ${longDate(e.airEnd)}` : "" }));
 
-    return el("div", {}, el("h4", { class: "sub", text: "Dates" }), el("div", { class: "dates" }, pub, air));
+    return el("div", {}, el("div", { class: "dates" }, pub, air));
   }
 
   /* Anyone can leave a note, and everyone sees who left it. Notes hang off the
