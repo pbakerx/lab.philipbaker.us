@@ -382,7 +382,7 @@
       el("button", { class: "side-toggle", "aria-expanded": String(sideOpen),
         onclick: () => { sideOpen = !sideOpen; renderSide(); } },
         el("span", { class: "name", text: here.name }),
-        el("span", { class: "n", text: `${here.t.done}/${here.t.total}` }),
+        el("span", { class: "n", text: `${APPROVALS_LIVE ? here.t.done : here.t.landed}/${here.t.total}` }),
         el("span", { class: "chev", text: sideOpen ? "▲" : "▼" })),
       el("div", { class: `side-list${sideOpen ? " open" : ""}` },
         el("h2", { text: "Schedule" }),
