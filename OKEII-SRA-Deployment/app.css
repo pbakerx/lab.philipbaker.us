@@ -167,7 +167,7 @@ button { cursor: pointer; background: none; border: none; }
 .chan { border-radius: 10px; }
 .chan.is-on { background: #0b162e; outline: 1px solid #22406f; }
 .chan-head {
-  display: grid; grid-template-columns: 16px minmax(0, 1fr) max-content;
+  display: grid; grid-template-columns: minmax(0, 1fr) max-content;
   gap: 10px; align-items: center; text-align: left; width: 100%;
   padding: 9px 10px; border-radius: 10px; font-size: 13px; line-height: 1.3;
   color: var(--ink-dim); border: 1px solid transparent;
@@ -192,20 +192,6 @@ button { cursor: pointer; background: none; border: none; }
 .chan-head .n { font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 .chan.is-on .chan-head .n { color: var(--blue-lift); }
 .chan-head.is-done .n { color: var(--ok); }
-
-.box {
-  width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid #35507f;
-  position: relative; overflow: hidden; flex: 0 0 auto;
-}
-.box i { position: absolute; left: 0; right: 0; bottom: 0; background: var(--blue); display: block; }
-.chan-head.is-done .box { border-color: var(--ok); background: var(--ok); }
-.chan-head.is-done .box::after {
-  content: "✓"; position: absolute; inset: 0; display: grid; place-items: center;
-  color: #06120c; font-size: 11px; font-weight: 700; line-height: 1;
-}
-
-/* what sits under the open channel */
-.chan-body { padding: 0 10px 10px 10px; }
 
 .chan-jobs { margin-top: 2px; }
 .jobs-k {

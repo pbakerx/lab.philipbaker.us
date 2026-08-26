@@ -129,7 +129,7 @@
   function whenPill(iso, status) {
     if (status === "delivered" || status === "approved") return { cls: "ok", text: "Delivered" };
     if (status === "reference") return { cls: "mute", text: "Reference" };
-    if (status === "blocked") return { cls: "late", text: "Blocked" };
+    if (status === "blocked") return null;   // the reason lives in the detail panel
     if (!iso) return { cls: "mute", text: "No date yet" };
     const n = daysUntil(iso);
     if (n < 0) return { cls: "late", text: `${Math.abs(n)} day${Math.abs(n) === 1 ? "" : "s"} overdue` };
@@ -436,8 +436,6 @@
            + `${t.landed} of ${t.total} delivered · ${t.done} ready to traffic`,
       onclick: () => setChannel(id),
     },
-      el("span", { class: "box", "aria-hidden": "true" },
-        !done && t.landed > 0 && el("i", { style: `height:${Math.round((t.landed / t.total) * 100)}%` })),
       el("span", { class: "lab" },
         el("span", { class: "name", text: name }),
         due && el("span", { class: `due${urg}`, text: shortDate(due) })),
@@ -498,7 +496,7 @@
   const STATUS_WORD = {
     delivered: "Delivered", in_review: "In review", approved: "Approved",
     in_progress: "In production", in_production: "In production",
-    not_started: "Not started", blocked: "Blocked", pending: "Pending",
+    not_started: "Not started", blocked: "Not started", pending: "Pending",
     reference: "Reference",
   };
 
@@ -547,7 +545,7 @@
     return el("div", { class: "grp", id: `grp-${g.id}` },
       el("div", { class: "grp-head" },
         el("h3", { text: g.title }),
-        el("span", { class: `pill ${w.cls}`, text: w.text }),
+        w && el("span", { class: `pill ${w.cls}`, text: w.text }),
       ),
       el("div", { class: "slots" }, slots.map((s) => card(s, g, c))),
     );
