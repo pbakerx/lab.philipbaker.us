@@ -4,7 +4,7 @@
   "client": "Oklahoma Education Impact Initiative (OKEII)",
   "agency": "PB Productions, LLC",
   "launch": "2026-09-08",
-  "compiled": "2026-08-25",
+  "compiled": "2026-08-26",
   "destination": "https://www.okeii.org/StrongReadersAct"
  },
  "categories": [
@@ -13,14 +13,14 @@
    "name": "Paid Social Media",
    "groups": [
     {
-     "id": "paid-social-ok50",
-     "title": "Scoreboard — \"OK: 50th in Public Education\"",
-     "status": "in_review",
+     "id": "ps-ok50",
+     "title": "Message — \"OK: 50th in Public Education\"",
      "due": "2026-08-25",
+     "status": "in_review",
      "slots": [
       {
-       "id": "paid-social-ok50-still-1080x565",
-       "label": "1.91:1 · 1080×565",
+       "id": "ps-ok50-1080x565-new-gameplan",
+       "label": "1080×565 · New Gameplan",
        "kind": "image",
        "w": 1080,
        "h": 565,
@@ -31,12 +31,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": "Paid Social/exports/New Ads PBV-05.png",
-       "note": "Round 1 export, headline \"Not Our Kids. Not Our State. Not Anymore.\" A second 1080×565 layout on this same board carries \"Know The Plan. Show Up. Execute.\" Verified 1080×565."
+       "seed": null,
+       "note": "Headline: \"New Gameplan: The Strong Readers Act.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       },
       {
-       "id": "paid-social-ok50-still-1080x1080",
-       "label": "1:1 · 1080×1080",
+       "id": "ps-ok50-1080x565-mississippi",
+       "label": "1080×565 · Mississippi Did It",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": null,
+       "note": "Headline: \"Mississippi Did It. We Can Too.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-ok50-1080x1080-new-gameplan",
+       "label": "1080×1080 · New Gameplan",
        "kind": "image",
        "w": 1080,
        "h": 1080,
@@ -47,12 +63,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": "Paid Social/exports/New Ads PBV-01.png",
-       "note": "Round 1 export, headline \"New Gameplan: The Strong Readers Act.\" Verified 1080×1080."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-01.png",
+       "note": "Headline: \"New Gameplan: The Strong Readers Act.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-ok50-still-1080x1920",
-       "label": "9:16 · 1080×1920",
+       "id": "ps-ok50-1080x1080-mississippi",
+       "label": "1080×1080 · Mississippi Did It",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-12.png",
+       "note": "Headline: \"Mississippi Did It. We Can Too.\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-ok50-1080x1920-new-gameplan",
+       "label": "1080×1920 · New Gameplan",
        "kind": "image",
        "w": 1080,
        "h": 1920,
@@ -63,12 +95,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": "Paid Social/exports/New Ads PBV-07.png",
-       "note": "Round 1 export, headline \"Not Our Kids. Not Our State. Not Anymore.\" Verified 1080×1920. Keep the top and bottom bands clear of text and logos per Meta safe zones."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-05.png",
+       "note": "Headline: \"New Gameplan: The Strong Readers Act.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-ok50-still-1200x628",
-       "label": "1.91:1 · 1200×628 · TikTok",
+       "id": "ps-ok50-1080x1920-mississippi",
+       "label": "1080×1920 · Mississippi Did It",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-18.png",
+       "note": "Headline: \"Mississippi Did It. We Can Too.\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-ok50-1200x628-new-gameplan",
+       "label": "1200×628 · New Gameplan",
        "kind": "image",
        "w": 1200,
        "h": 628,
@@ -80,20 +128,37 @@
         "PNG"
        ],
        "maxBytes": 102400,
-       "seed": "Paid Social/exports/1200x628/1200x628_A_NotOurKids.jpg",
-       "note": "TikTok caps this file at 102,400 bytes (100 KB). The current export measures 256,935 bytes and must be re-compressed before submission. Same crop as the 1080×565 layout at a larger scale (data/specs.json > paid_social.stills_note)."
+       "seed": null,
+       "note": "Headline: \"New Gameplan: The Strong Readers Act.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-ok50-1200x628-mississippi",
+       "label": "1200×628 · Mississippi Did It",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "seed": null,
+       "note": "Headline: \"Mississippi Did It. We Can Too.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       }
      ]
     },
     {
-     "id": "paid-social-teachers-win",
-     "title": "Scoreboard — \"Teachers Win\"",
-     "status": "in_review",
+     "id": "ps-teachers-win",
+     "title": "Message — \"Teachers Win\"",
      "due": "2026-08-25",
+     "status": "in_review",
      "slots": [
       {
-       "id": "paid-social-teachers-win-still-1080x565",
-       "label": "1.91:1 · 1080×565",
+       "id": "ps-teachers-win-1080x565-reading-coaches",
+       "label": "1080×565 · Reading Coaches",
        "kind": "image",
        "w": 1080,
        "h": 565,
@@ -105,11 +170,27 @@
        ],
        "maxBytes": null,
        "seed": null,
-       "note": "Not yet built."
+       "note": "Headline: \"With More Reading Coaches.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       },
       {
-       "id": "paid-social-teachers-win-still-1080x1080",
-       "label": "1:1 · 1080×1080",
+       "id": "ps-teachers-win-1080x565-right-training",
+       "label": "1080×565 · Right Training",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": null,
+       "note": "Headline: \"The Right Training To Win.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-teachers-win-1080x1080-reading-coaches",
+       "label": "1080×1080 · Reading Coaches",
        "kind": "image",
        "w": 1080,
        "h": 1080,
@@ -120,12 +201,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": "Paid Social/exports/New Ads PBV-02.png",
-       "note": "Round 1 export, headline \"The Right Training To Win.\" Verified 1080×1080."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-02.png",
+       "note": "Headline: \"With More Reading Coaches.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-teachers-win-still-1080x1920",
-       "label": "9:16 · 1080×1920",
+       "id": "ps-teachers-win-1080x1080-right-training",
+       "label": "1080×1080 · Right Training",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-14.png",
+       "note": "Headline: \"The Right Training To Win.\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-teachers-win-1080x1920-reading-coaches",
+       "label": "1080×1920 · Reading Coaches",
        "kind": "image",
        "w": 1080,
        "h": 1920,
@@ -136,12 +233,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": null,
-       "note": "Not yet built."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-10.png",
+       "note": "Headline: \"With More Reading Coaches.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-teachers-win-still-1200x628",
-       "label": "1.91:1 · 1200×628 · TikTok",
+       "id": "ps-teachers-win-1080x1920-right-training",
+       "label": "1080×1920 · Right Training",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-20.png",
+       "note": "Headline: \"The Right Training To Win.\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-teachers-win-1200x628-reading-coaches",
+       "label": "1200×628 · Reading Coaches",
        "kind": "image",
        "w": 1200,
        "h": 628,
@@ -154,19 +267,36 @@
        ],
        "maxBytes": 102400,
        "seed": null,
-       "note": "Not yet built. TikTok caps this file at 102,400 bytes (100 KB). Same crop as the 1080×565 layout at a larger scale."
+       "note": "Headline: \"With More Reading Coaches.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-teachers-win-1200x628-right-training",
+       "label": "1200×628 · Right Training",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "seed": null,
+       "note": "Headline: \"The Right Training To Win.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       }
      ]
     },
     {
-     "id": "paid-social-students-win",
-     "title": "Scoreboard — \"Students Win\"",
-     "status": "not_started",
+     "id": "ps-students-win",
+     "title": "Message — \"Students Win\"",
      "due": "2026-08-25",
+     "status": "in_review",
      "slots": [
       {
-       "id": "paid-social-students-win-still-1080x565",
-       "label": "1.91:1 · 1080×565",
+       "id": "ps-students-win-1080x565-individual-support",
+       "label": "1080×565 · Individual Support",
        "kind": "image",
        "w": 1080,
        "h": 565,
@@ -178,11 +308,27 @@
        ],
        "maxBytes": null,
        "seed": null,
-       "note": "Not yet built."
+       "note": "Headline: \"Individual Support.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       },
       {
-       "id": "paid-social-students-win-still-1080x1080",
-       "label": "1:1 · 1080×1080",
+       "id": "ps-students-win-1080x565-read-at-home",
+       "label": "1080×565 · Read-at-Home",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": null,
+       "note": "Headline: \"Read-at-Home Gameplans.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-students-win-1080x1080-individual-support",
+       "label": "1080×1080 · Individual Support",
        "kind": "image",
        "w": 1080,
        "h": 1080,
@@ -193,12 +339,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": null,
-       "note": "Not yet built. Scoreboard graphic for this board still to be produced."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-08.png",
+       "note": "Headline: \"Individual Support.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-students-win-still-1080x1920",
-       "label": "9:16 · 1080×1920",
+       "id": "ps-students-win-1080x1080-read-at-home",
+       "label": "1080×1080 · Read-at-Home",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-15.png",
+       "note": "Headline: \"Read-at-Home Gameplans.\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-students-win-1080x1920-individual-support",
+       "label": "1080×1920 · Individual Support",
        "kind": "image",
        "w": 1080,
        "h": 1920,
@@ -209,12 +371,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": null,
-       "note": "Not yet built."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-16.png",
+       "note": "Headline: \"Individual Support.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-students-win-still-1200x628",
-       "label": "1.91:1 · 1200×628 · TikTok",
+       "id": "ps-students-win-1080x1920-read-at-home",
+       "label": "1080×1920 · Read-at-Home",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-21.png",
+       "note": "Headline: \"Read-at-Home Gameplans.\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-students-win-1200x628-individual-support",
+       "label": "1200×628 · Individual Support",
        "kind": "image",
        "w": 1200,
        "h": 628,
@@ -227,19 +405,36 @@
        ],
        "maxBytes": 102400,
        "seed": null,
-       "note": "Not yet built. TikTok caps this file at 102,400 bytes (100 KB)."
+       "note": "Headline: \"Individual Support.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-students-win-1200x628-read-at-home",
+       "label": "1200×628 · Read-at-Home",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "seed": null,
+       "note": "Headline: \"Read-at-Home Gameplans.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       }
      ]
     },
     {
-     "id": "paid-social-parents-win",
-     "title": "Scoreboard — \"Parents Win\"",
-     "status": "in_review",
+     "id": "ps-parents-win",
+     "title": "Message — \"Parents Win\"",
      "due": "2026-08-25",
+     "status": "in_review",
      "slots": [
       {
-       "id": "paid-social-parents-win-still-1080x565",
-       "label": "1.91:1 · 1080×565",
+       "id": "ps-parents-win-1080x565-read-at-home",
+       "label": "1080×565 · Read-at-Home",
        "kind": "image",
        "w": 1080,
        "h": 565,
@@ -251,11 +446,27 @@
        ],
        "maxBytes": null,
        "seed": null,
-       "note": "Not yet built."
+       "note": "Headline: \"Read-at-Home Gameplans.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       },
       {
-       "id": "paid-social-parents-win-still-1080x1080",
-       "label": "1:1 · 1080×1080",
+       "id": "ps-parents-win-1080x565-part-of-the-team",
+       "label": "1080×565 · Part of the Team",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": null,
+       "note": "Headline: \"New Gameplan. (Parents are part of the team)\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-parents-win-1080x1080-read-at-home",
+       "label": "1080×1080 · Read-at-Home",
        "kind": "image",
        "w": 1080,
        "h": 1080,
@@ -266,12 +477,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": "Paid Social/exports/New Ads PBV-04.png",
-       "note": "Round 1 export, headline \"Read-at-Home Gameplans.\" Verified 1080×1080."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-04.png",
+       "note": "Headline: \"Read-at-Home Gameplans.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-parents-win-still-1080x1920",
-       "label": "9:16 · 1080×1920",
+       "id": "ps-parents-win-1080x1080-part-of-the-team",
+       "label": "1080×1080 · Part of the Team",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-13.png",
+       "note": "Headline: \"New Gameplan. (Parents are part of the team)\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-parents-win-1080x1920-read-at-home",
+       "label": "1080×1920 · Read-at-Home",
        "kind": "image",
        "w": 1080,
        "h": 1920,
@@ -282,12 +509,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": null,
-       "note": "Not yet built."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-09.png",
+       "note": "Headline: \"Read-at-Home Gameplans.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-parents-win-still-1200x628",
-       "label": "1.91:1 · 1200×628 · TikTok",
+       "id": "ps-parents-win-1080x1920-part-of-the-team",
+       "label": "1080×1920 · Part of the Team",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-19.png",
+       "note": "Headline: \"New Gameplan. (Parents are part of the team)\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-parents-win-1200x628-read-at-home",
+       "label": "1200×628 · Read-at-Home",
        "kind": "image",
        "w": 1200,
        "h": 628,
@@ -300,19 +543,36 @@
        ],
        "maxBytes": 102400,
        "seed": null,
-       "note": "Not yet built. TikTok caps this file at 102,400 bytes (100 KB). Same crop as the 1080×565 layout at a larger scale."
+       "note": "Headline: \"Read-at-Home Gameplans.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-parents-win-1200x628-part-of-the-team",
+       "label": "1200×628 · Part of the Team",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "seed": null,
+       "note": "Headline: \"New Gameplan. (Parents are part of the team)\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       }
      ]
     },
     {
-     "id": "paid-social-47th-reading",
-     "title": "Scoreboard — \"47th of 50 in Reading\"",
-     "status": "in_review",
+     "id": "ps-47th-reading",
+     "title": "Message — \"47th of 50 in Reading\"",
      "due": "2026-08-25",
+     "status": "in_review",
      "slots": [
       {
-       "id": "paid-social-47th-reading-still-1080x565",
-       "label": "1.91:1 · 1080×565",
+       "id": "ps-47th-reading-1080x565-not-anymore",
+       "label": "1080×565 · Not Anymore",
        "kind": "image",
        "w": 1080,
        "h": 565,
@@ -324,11 +584,27 @@
        ],
        "maxBytes": null,
        "seed": null,
-       "note": "Not yet built."
+       "note": "Headline: \"Not Our Kids. Not Our State. Not Anymore.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       },
       {
-       "id": "paid-social-47th-reading-still-1080x1080",
-       "label": "1:1 · 1080×1080",
+       "id": "ps-47th-reading-1080x565-know-the-plan",
+       "label": "1080×565 · Know the Plan",
+       "kind": "image",
+       "w": 1080,
+       "h": 565,
+       "ratio": "1.91:1",
+       "use": "Meta link / landscape",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": null,
+       "note": "Headline: \"Know The Plan. Show Up. Execute.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-47th-reading-1080x1080-not-anymore",
+       "label": "1080×1080 · Not Anymore",
        "kind": "image",
        "w": 1080,
        "h": 1080,
@@ -339,12 +615,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": "Paid Social/exports/New Ads PBV-03.png",
-       "note": "Round 1 export, headline as set reads \"Not Our Kids. Not Our State. Not Anymore.\" Verified 1080×1080."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-03.png",
+       "note": "Headline: \"Not Our Kids. Not Our State. Not Anymore.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-47th-reading-still-1080x1920",
-       "label": "9:16 · 1080×1920",
+       "id": "ps-47th-reading-1080x1080-know-the-plan",
+       "label": "1080×1080 · Know the Plan",
+       "kind": "image",
+       "w": 1080,
+       "h": 1080,
+       "ratio": "1:1",
+       "use": "FB/IG feed, Explore, In-Stream",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-11.png",
+       "note": "Headline: \"Know The Plan. Show Up. Execute.\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-47th-reading-1080x1920-not-anymore",
+       "label": "1080×1920 · Not Anymore",
        "kind": "image",
        "w": 1080,
        "h": 1920,
@@ -355,12 +647,28 @@
         "PNG"
        ],
        "maxBytes": null,
-       "seed": "Paid Social/exports/New Ads PBV-08.png",
-       "note": "Round 1 export, headline as set reads \"Not Our Kids. Not Our State. Not Anymore.\" Verified 1080×1920. Keep the top and bottom bands clear of text and logos per Meta safe zones."
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-06.png",
+       "note": "Headline: \"Not Our Kids. Not Our State. Not Anymore.\". Approved layout, delivered for review."
       },
       {
-       "id": "paid-social-47th-reading-still-1200x628",
-       "label": "1.91:1 · 1200×628 · TikTok",
+       "id": "ps-47th-reading-1080x1920-know-the-plan",
+       "label": "1080×1920 · Know the Plan",
+       "kind": "image",
+       "w": 1080,
+       "h": 1920,
+       "ratio": "9:16",
+       "use": "FB/IG Stories and Reels, Audience Network",
+       "formats": [
+        "JPG",
+        "PNG"
+       ],
+       "maxBytes": null,
+       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-17.png",
+       "note": "Headline: \"Know The Plan. Show Up. Execute.\". Approved layout, delivered for review."
+      },
+      {
+       "id": "ps-47th-reading-1200x628-not-anymore",
+       "label": "1200×628 · Not Anymore",
        "kind": "image",
        "w": 1200,
        "h": 628,
@@ -373,7 +681,24 @@
        ],
        "maxBytes": 102400,
        "seed": null,
-       "note": "Not yet built as a deliverable file. TikTok caps this file at 102,400 bytes (100 KB)."
+       "note": "Headline: \"Not Our Kids. Not Our State. Not Anymore.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
+      },
+      {
+       "id": "ps-47th-reading-1200x628-know-the-plan",
+       "label": "1200×628 · Know the Plan",
+       "kind": "image",
+       "w": 1200,
+       "h": 628,
+       "ratio": "1.91:1",
+       "use": "TikTok image",
+       "formats": [
+        "JPG",
+        "JPEG",
+        "PNG"
+       ],
+       "maxBytes": 102400,
+       "seed": null,
+       "note": "Headline: \"Know The Plan. Show Up. Execute.\". Not built yet — follow the approved 1080×1080 and 1080×1920 layouts for this version."
       }
      ]
     },
@@ -428,7 +753,7 @@
         "MOV"
        ],
        "maxBytes": 4294967296,
-       "seed": "Video Production/Paid Social Video/SRA_16x9_15s/SRA_NotOurKids_16x9_15s.mp4",
+       "seed": null,
        "note": "Rendered (V3) and review-ready. At :15 this falls inside YouTube's non-skippable in-stream window of 6 to 15 seconds. Cap shown is Meta's 4 GB, the tighter of the two platforms for this size; YouTube's own ceiling is far higher. Before the YouTube buy can run, the file has to be uploaded to OKEII's own YouTube channel and the link supplied."
       }
      ]
