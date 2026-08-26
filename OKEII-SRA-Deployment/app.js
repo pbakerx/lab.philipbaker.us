@@ -412,15 +412,20 @@
 
     // Only the channel you are looking at unfolds its deliverables — fifteen
     // channels' worth open at once is the wall of text this replaced.
+    // The pending rows are deliverables the schedule carries but the board has
+    // no placeholders for yet; hiding them would make a channel look finished.
+    const waiting = on && cat ? (CAT.pending || []).filter((p) => p.channel === cat.id) : [];
     const jobs = on && cat
-      ? el("div", { class: "chan-jobs" }, cat.groups.map((g) => jobRow(g)))
+      ? el("div", { class: "chan-jobs" },
+          cat.groups.map((g) => jobRow(g)),
+          waiting.map((p) => jobRow({ id: p.key, title: p.title, status: p.status }, p)))
       : null;
 
     return el("div", { class: `chan${on ? " is-on" : ""}` }, head, jobs);
   }
 
-  function jobRow(g) {
-    const e = sched(g.id) || {};
+  function jobRow(g, pendingEntry) {
+    const e = pendingEntry || sched(g.id) || {};
     const due = e.dueToPub || g.due || null;
     const n = due ? daysUntil(due) : null;
     const urgency = e.status === "delivered" ? "" : n === null ? "" : n < 0 ? " late" : n <= SOON_DAYS ? " soon" : "";
@@ -439,9 +444,14 @@
     if (e.blocker) facts.append(el("dd", { class: "blocker", text: e.blocker }));
     if (e.conflict) facts.append(el("dd", { class: "blocker", text: e.conflict }));
 
+    if (pendingEntry) {
+      facts.append(el("dd", { class: "blocker",
+        text: "On the schedule; no placeholders built on the board yet." }));
+    }
+
     wrap.append(
       el("button", {
-        class: `job-head s-${st}`,
+        class: `job-head s-${st}${pendingEntry ? " is-pending" : ""}`,
         "aria-expanded": "false",
         onclick: (ev) => {
           const open = wrap.classList.toggle("open");

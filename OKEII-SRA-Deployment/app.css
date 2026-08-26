@@ -209,6 +209,9 @@ button { cursor: pointer; background: none; border: none; }
 .job-head .jd { font-size: 10.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .job-head .jd.late { color: var(--late); }
 .job-head .jd.soon { color: var(--warn); }
+/* On the schedule, not yet on the board. */
+.job-head.is-pending .jt { color: var(--ink-faint); font-style: italic; }
+.job-head.is-pending .pip { background: transparent; border: 1px dashed #4a648f; }
 
 /* the sliding drawer under a deliverable */
 .job-more {
