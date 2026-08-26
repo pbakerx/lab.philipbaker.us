@@ -1582,7 +1582,7 @@
    "owner": "DD/PB",
    "blocker": "Board copy not yet written. Lamar supplied layout templates (LDD_14x48.jpg, LDD_20x30.jpg) instead of a written spec sheet, and they have not been opened — live area and pixel dimensions are unknown until they are, which gates layout.",
    "conflict": "Production sheet col B gives Sept 1; the media buyer's vendor date, recorded in col F and in schedule.json, is Sept 3. Sept 3 binds: it is the vendor deadline and the media buyer owns the buy. Sept 1 remains the internal art-due date.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
+   "source": "Email — lisa ratcliff <ratcliff@lmrmediamix.com>, \"OKEII- DOOH specs\", 10 Aug 2026 · data/schedule.json > deliverables[dooh]. The 8/26 production sheet does not carry this date."
   },
   "dooh-griffin-boards": {
    "dueToPub": "2026-09-03",
@@ -1596,7 +1596,7 @@
    "owner": "DD/PB",
    "blocker": "Board copy not yet written, and Griffin's format constrains what the copy can be: 7-8 elements maximum and thick type only. Delivery spec is 1092x308 px, 72 dpi, under 1 MB, JPEG or PNG, sent to billboard-traffic@griffin.news 48 hours ahead of the live date.",
    "conflict": "Production sheet col B gives Sept 1; the media buyer's vendor date, recorded in col F and in schedule.json, is Sept 3. Sept 3 binds: it is the vendor deadline and the media buyer owns the buy. Sept 1 remains the internal art-due date.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
+   "source": "Email — lisa ratcliff <ratcliff@lmrmediamix.com>, \"OKEII- DOOH specs\", 10 Aug 2026 · data/schedule.json > deliverables[dooh]. The 8/26 production sheet does not carry this date."
   },
   "metro-family-septoct-spread": {
    "dueToPub": "2026-08-18",
@@ -1624,7 +1624,7 @@
    "owner": "DD",
    "blocker": "Article copy (300–500 words), the destination URL and the images. The publisher's written confirmation of the submission deadline is also still outstanding.",
    "conflict": "Due date: the 8/26 production sheet leaves column B as \"??\". Column F of the same sheet and schedule.json both carry the media buyer's vendor date of Sept 5. Sept 5 binds — it is the only stated date, and the media buyer owns the publisher relationship.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
+   "source": "Metro Family (OKC) vendor terms · data/schedule.json > deliverables[metro-family-oct-sponsored]. The 8/26 production sheet does not carry this date."
   },
   "metro-family-novdec-ad": {
    "dueToPub": "2026-10-05",
