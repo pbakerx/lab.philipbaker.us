@@ -190,6 +190,12 @@ img, video { max-width: 100%; display: block; }
 .viewer-bar .size {
   flex: 0 0 auto; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;
 }
+/* Says so when the art is not at 1:1, so nobody judges legibility off a
+   downscaled preview. */
+.viewer-bar .fit {
+  flex: 0 0 auto; font-size: 10px; font-style: normal; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-faint);
+}
 .viewer-bar .count {
   font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; min-width: 54px; text-align: right;
 }
@@ -202,12 +208,18 @@ img, video { max-width: 100%; display: block; }
 .viewer-bar > button:hover { color: #fff; border-color: var(--blue); background: var(--panel); }
 .viewer-bar > button.close { width: auto; padding: 0 13px; font-size: 12.5px; }
 
+/* Flex, not grid. Under `display:grid; place-items:center` the single implicit
+   row is content-sized, so max-height:100% on the media was circular and never
+   constrained it -- a 1080x1920 ad ran off the bottom with nothing to scroll.
+   A flex container has a definite height, so the percentage resolves. overflow
+   stays auto as a backstop for a viewport too short for even the fitted art. */
 #viewer-body {
-  flex: 1 1 auto; min-height: 0; display: grid; place-items: center; padding: 22px;
+  flex: 1 1 auto; min-height: 0; overflow: auto;
+  display: flex; align-items: center; justify-content: center; padding: 22px;
 }
 #viewer-body img, #viewer-body video {
   max-width: 100%; max-height: 100%; width: auto; height: auto;
-  object-fit: contain; border-radius: 4px;
+  margin: auto; flex: 0 1 auto; object-fit: contain; border-radius: 4px;
 }
 .empty-lg { color: var(--ink-faint); font-size: 13px; letter-spacing: .08em; }
 

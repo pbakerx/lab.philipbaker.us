@@ -41,6 +41,7 @@
   let category = null;    // selected category id
   let open = null;        // { catId, msgId, idx, rev } while the viewer is up
   let sideOpen = false;   // mobile nav
+  let scaleWatch = null;  // recomputes the viewer's fit percentage on resize
 
   // ── build check ──────────────────────────────────────────────────────────
   // index.html pins every asset's ?v=, so a cached index.html freezes the whole
@@ -160,9 +161,11 @@
   // ── the viewer ───────────────────────────────────────────────────────────
   function openViewer(catId, msgId, idx) {
     open = { catId, msgId, idx, rev: null };
-    renderViewer();
+    // Unhide first: rendering into a display:none panel measures every element
+    // at zero width, which silently defeated the fit-percentage check.
     $("#viewer").hidden = false;
     document.body.classList.add("locked");
+    renderViewer();
   }
   function closeViewer() {
     open = null;
@@ -209,6 +212,22 @@
       : null);
     fill($("#viewer-count"), `${open.idx + 1} / ${msg.items.length}`);
     fill($("#viewer-body"), media);
+
+    // Report the scale once the media knows its own size. Anything under 99%
+    // is a downscale worth saying out loud; a 300x50 banner that fits at 1:1
+    // says nothing.
+    const showScale = () => {
+      const nat = media.naturalWidth || media.videoWidth || 0;
+      const shown = media.getBoundingClientRect().width;
+      if (!nat || !shown) return fill($("#viewer-fit"));
+      const pct = Math.round((shown / nat) * 100);
+      fill($("#viewer-fit"), pct < 99 ? `fit to window · ${pct}%` : "actual size");
+    };
+    fill($("#viewer-fit"));
+    if (media.tagName === "IMG") media.complete ? showScale() : media.addEventListener("load", showScale, { once: true });
+    else if (media.tagName === "VIDEO") media.addEventListener("loadedmetadata", showScale, { once: true });
+    // The fit changes with the window, so the percentage has to follow it.
+    scaleWatch = showScale;
   }
 
   // ── boot ─────────────────────────────────────────────────────────────────
@@ -225,6 +244,7 @@
     const want = location.hash.slice(1);
     category = CAT.categories.some((c) => c.id === want) ? want : CAT.categories[0].id;
 
+    window.addEventListener("resize", () => { if (open && scaleWatch) scaleWatch(); });
     $("#viewer-close").addEventListener("click", closeViewer);
     $("#viewer-prev").addEventListener("click", () => step(-1));
     $("#viewer-next").addEventListener("click", () => step(1));
