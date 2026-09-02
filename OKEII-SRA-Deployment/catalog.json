@@ -1248,8 +1248,8 @@
        "w": 728,
        "h": 90,
        "kind": "image",
-       "src": null,
-       "archived": true
+       "src": "Digital Ads/728x90 Exports/Digital 728x90-01.png",
+       "archived": null
       },
       {
        "id": "digital-tagline-320x50-image",
@@ -1257,8 +1257,8 @@
        "w": 320,
        "h": 50,
        "kind": "image",
-       "src": null,
-       "archived": true
+       "src": "Digital Ads/320x50 Exports/Digital 320x50.png",
+       "archived": null
       },
       {
        "id": "digital-tagline-300x50-image",
@@ -1266,8 +1266,8 @@
        "w": 300,
        "h": 50,
        "kind": "image",
-       "src": null,
-       "archived": true
+       "src": "Digital Ads/320x50 Exports/Digital 300x50.png",
+       "archived": null
       }
      ]
     }
