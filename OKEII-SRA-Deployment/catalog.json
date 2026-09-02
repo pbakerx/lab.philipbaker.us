@@ -1,1995 +1,1237 @@
 {
  "meta": {
-  "campaign": "OKEII — Strong Readers Act (SB 1778) Implementation",
-  "client": "Oklahoma Education Impact Initiative (OKEII)",
-  "agency": "PB Productions, LLC",
-  "launch": "2026-09-08",
-  "compiled": "2026-08-26",
-  "destination": "https://www.okeii.org/StrongReadersAct"
+  "campaign": "Strong Readers Act",
+  "client": "Oklahoma Education Impact Initiative",
+  "agency": "Catapult",
+  "total": 136,
+  "delivered": 126
  },
  "categories": [
   {
-   "id": "paid-social",
-   "name": "Paid Social Media",
-   "groups": [
+   "id": "paid-social-static",
+   "name": "Paid Social — Static",
+   "messages": [
     {
-     "id": "ps-ok50",
-     "title": "Message — \"OK: 50th in Public Education\"",
-     "due": "2026-08-25",
-     "status": "in_review",
-     "slots": [
+     "id": "paid-social-static-ok50",
+     "name": "50th in Education",
+     "items": [
       {
-       "id": "ps-ok50-1080x565-new-gameplan",
-       "label": "1080×565 · New Gameplan",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -16.png",
-       "note": "Headline: \"New Gameplan: The Strong Readers Act.\". Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-ok50-1080x565-mississippi",
-       "label": "1080×565 · Mississippi Did It",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -12.png",
-       "note": "Headline: \"Mississippi Did It. Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-ok50-1080x1080-new-gameplan",
-       "label": "1080×1080 · New Gameplan",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-01.png",
-       "note": "Headline: \"New Gameplan: The Strong Readers Act.\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-ok50-1080x1080-mississippi",
-       "label": "1080×1080 · Mississippi Did It",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-12.png",
-       "note": "Headline: \"Mississippi Did It. We Can Too.\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-ok50-1080x1920-new-gameplan",
-       "label": "1080×1920 · New Gameplan",
-       "kind": "image",
+       "id": "paid-social-static-ok50-1080x1920-image",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-05.png",
-       "note": "Headline: \"New Gameplan: The Strong Readers Act.\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-01.png"
       },
       {
-       "id": "ps-ok50-1080x1920-mississippi",
-       "label": "1080×1920 · Mississippi Did It",
-       "kind": "image",
+       "id": "paid-social-static-ok50-1080x1920-image-2",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-18.png",
-       "note": "Headline: \"Mississippi Did It. We Can Too.\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-08.png"
       },
       {
-       "id": "ps-ok50-1200x628-new-gameplan",
-       "label": "1200×628 · New Gameplan",
+       "id": "paid-social-static-ok50-1080x1080-image",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
-       "w": 1200,
-       "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -01.png",
-       "note": "Headline: \"New Gameplan: The Strong Readers Act.\". Delivered for review — Set 2 export."
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-01.png"
       },
       {
-       "id": "ps-ok50-1200x628-mississippi",
-       "label": "1200×628 · Mississippi Did It",
+       "id": "paid-social-static-ok50-1080x1080-image-2",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-08.png"
+      },
+      {
+       "id": "paid-social-static-ok50-1200x628-image",
+       "size": "1200×628",
        "w": 1200,
        "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -06.png",
-       "note": "Headline: \"Mississippi Did It. Delivered for review — Set 2 export."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-01.png"
+      },
+      {
+       "id": "paid-social-static-ok50-1200x628-image-2",
+       "size": "1200×628",
+       "w": 1200,
+       "h": 628,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-06.png"
+      },
+      {
+       "id": "paid-social-static-ok50-1080x565-image",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-02.png"
+      },
+      {
+       "id": "paid-social-static-ok50-1080x565-image-2",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-06.png"
       }
      ]
     },
     {
-     "id": "ps-teachers-win",
-     "title": "Message — \"Teachers Win\"",
-     "due": "2026-08-25",
-     "status": "in_review",
-     "slots": [
+     "id": "paid-social-static-47th",
+     "name": "47th in Reading",
+     "items": [
       {
-       "id": "ps-teachers-win-1080x565-reading-coaches",
-       "label": "1080×565 · Reading Coaches",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -17.png",
-       "note": "Headline: \"With More Reading Coaches.\". Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-teachers-win-1080x565-right-training",
-       "label": "1080×565 · Right Training",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -14.png",
-       "note": "Headline: \"The Right Training To Win.\". Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-teachers-win-1080x1080-reading-coaches",
-       "label": "1080×1080 · Reading Coaches",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-02.png",
-       "note": "Headline: \"With More Reading Coaches.\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-teachers-win-1080x1080-right-training",
-       "label": "1080×1080 · Right Training",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-14.png",
-       "note": "Headline: \"The Right Training To Win.\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-teachers-win-1080x1920-reading-coaches",
-       "label": "1080×1920 · Reading Coaches",
-       "kind": "image",
+       "id": "paid-social-static-47th-1080x1920-image",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-10.png",
-       "note": "Headline: \"With More Reading Coaches.\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-02.png"
       },
       {
-       "id": "ps-teachers-win-1080x1920-right-training",
-       "label": "1080×1920 · Right Training",
-       "kind": "image",
+       "id": "paid-social-static-47th-1080x1920-image-2",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-20.png",
-       "note": "Headline: \"The Right Training To Win.\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-07.png"
       },
       {
-       "id": "ps-teachers-win-1200x628-reading-coaches",
-       "label": "1200×628 · Reading Coaches",
+       "id": "paid-social-static-47th-1080x1080-image",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
-       "w": 1200,
-       "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -02.png",
-       "note": "Headline: \"With More Reading Coaches.\". Delivered for review — Set 2 export."
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-03.png"
       },
       {
-       "id": "ps-teachers-win-1200x628-right-training",
-       "label": "1200×628 · Right Training",
+       "id": "paid-social-static-47th-1080x1080-image-2",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-07.png"
+      },
+      {
+       "id": "paid-social-static-47th-1200x628-image",
+       "size": "1200×628",
        "w": 1200,
        "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -08.png",
-       "note": "Headline: \"The Right Training To Win.\". Delivered for review — Set 2 export."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-03.png"
+      },
+      {
+       "id": "paid-social-static-47th-1200x628-image-2",
+       "size": "1200×628",
+       "w": 1200,
+       "h": 628,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-05.png"
+      },
+      {
+       "id": "paid-social-static-47th-1080x565-image",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-01.png"
+      },
+      {
+       "id": "paid-social-static-47th-1080x565-image-2",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-08.png"
       }
      ]
     },
     {
-     "id": "ps-students-win",
-     "title": "Message — \"Students Win\"",
-     "due": "2026-08-25",
-     "status": "in_review",
-     "slots": [
+     "id": "paid-social-static-parents",
+     "name": "Parents Win",
+     "items": [
       {
-       "id": "ps-students-win-1080x565-individual-support",
-       "label": "1080×565 · Individual Support",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -20.png",
-       "note": "Headline: \"Individual Support.\". Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-students-win-1080x565-read-at-home",
-       "label": "1080×565 · Read-at-Home",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -15.png",
-       "note": "Headline: \"Read-at-Home Gameplans.\". Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-students-win-1080x1080-individual-support",
-       "label": "1080×1080 · Individual Support",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-08.png",
-       "note": "Headline: \"Individual Support.\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-students-win-1080x1080-read-at-home",
-       "label": "1080×1080 · Read-at-Home",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-15.png",
-       "note": "Headline: \"Read-at-Home Gameplans.\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-students-win-1080x1920-individual-support",
-       "label": "1080×1920 · Individual Support",
-       "kind": "image",
+       "id": "paid-social-static-parents-1080x1920-image",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-16.png",
-       "note": "Headline: \"Individual Support.\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-04.png"
       },
       {
-       "id": "ps-students-win-1080x1920-read-at-home",
-       "label": "1080×1920 · Read-at-Home",
-       "kind": "image",
+       "id": "paid-social-static-parents-1080x1920-image-2",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-21.png",
-       "note": "Headline: \"Read-at-Home Gameplans.\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-09.png"
       },
       {
-       "id": "ps-students-win-1200x628-individual-support",
-       "label": "1200×628 · Individual Support",
+       "id": "paid-social-static-parents-1080x1080-image",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
-       "w": 1200,
-       "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -10.png",
-       "note": "Headline: \"Individual Support.\". Delivered for review — Set 2 export."
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-04.png"
       },
       {
-       "id": "ps-students-win-1200x628-read-at-home",
-       "label": "1200×628 · Read-at-Home",
+       "id": "paid-social-static-parents-1080x1080-image-2",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-09.png"
+      },
+      {
+       "id": "paid-social-static-parents-1200x628-image",
+       "size": "1200×628",
        "w": 1200,
        "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -09.png",
-       "note": "Headline: \"Read-at-Home Gameplans.\". Delivered for review — Set 2 export."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-04.png"
+      },
+      {
+       "id": "paid-social-static-parents-1200x628-image-2",
+       "size": "1200×628",
+       "w": 1200,
+       "h": 628,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-07.png"
+      },
+      {
+       "id": "paid-social-static-parents-1080x565-image",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-03.png"
+      },
+      {
+       "id": "paid-social-static-parents-1080x565-image-2",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-09.png"
       }
      ]
     },
     {
-     "id": "ps-parents-win",
-     "title": "Message — \"Parents Win\"",
-     "due": "2026-08-25",
-     "status": "in_review",
-     "slots": [
+     "id": "paid-social-static-teachers",
+     "name": "Teachers Win",
+     "items": [
       {
-       "id": "ps-parents-win-1080x565-read-at-home",
-       "label": "1080×565 · Read-at-Home",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -19.png",
-       "note": "Headline: \"Read-at-Home Gameplans.\". Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-parents-win-1080x565-part-of-the-team",
-       "label": "1080×565 · Part of the Team",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -13.png",
-       "note": "Headline: \"New Gameplan. Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-parents-win-1080x1080-read-at-home",
-       "label": "1080×1080 · Read-at-Home",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-04.png",
-       "note": "Headline: \"Read-at-Home Gameplans.\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-parents-win-1080x1080-part-of-the-team",
-       "label": "1080×1080 · Part of the Team",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-13.png",
-       "note": "Headline: \"New Gameplan. (Parents are part of the team)\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-parents-win-1080x1920-read-at-home",
-       "label": "1080×1920 · Read-at-Home",
-       "kind": "image",
+       "id": "paid-social-static-teachers-1080x1920-image",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-09.png",
-       "note": "Headline: \"Read-at-Home Gameplans.\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-05.png"
       },
       {
-       "id": "ps-parents-win-1080x1920-part-of-the-team",
-       "label": "1080×1920 · Part of the Team",
-       "kind": "image",
+       "id": "paid-social-static-teachers-1080x1920-image-2",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-19.png",
-       "note": "Headline: \"New Gameplan. (Parents are part of the team)\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-10.png"
       },
       {
-       "id": "ps-parents-win-1200x628-read-at-home",
-       "label": "1200×628 · Read-at-Home",
+       "id": "paid-social-static-teachers-1080x1080-image",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
-       "w": 1200,
-       "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -04.png",
-       "note": "Headline: \"Read-at-Home Gameplans.\". Delivered for review — Set 2 export."
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-02.png"
       },
       {
-       "id": "ps-parents-win-1200x628-part-of-the-team",
-       "label": "1200×628 · Part of the Team",
+       "id": "paid-social-static-teachers-1080x1080-image-2",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-10.png"
+      },
+      {
+       "id": "paid-social-static-teachers-1200x628-image",
+       "size": "1200×628",
        "w": 1200,
        "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -07.png",
-       "note": "Headline: \"New Gameplan. Delivered for review — Set 2 export."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-02.png"
+      },
+      {
+       "id": "paid-social-static-teachers-1200x628-image-2",
+       "size": "1200×628",
+       "w": 1200,
+       "h": 628,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-08.png"
+      },
+      {
+       "id": "paid-social-static-teachers-1080x565-image",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-04.png"
+      },
+      {
+       "id": "paid-social-static-teachers-1080x565-image-2",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-07.png"
       }
      ]
     },
     {
-     "id": "ps-47th-reading",
-     "title": "Message — \"47th of 50 in Reading\"",
-     "due": "2026-08-25",
-     "status": "in_review",
-     "slots": [
+     "id": "paid-social-static-students",
+     "name": "Students Win",
+     "items": [
       {
-       "id": "ps-47th-reading-1080x565-not-anymore",
-       "label": "1080×565 · Not Anymore",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -18.png",
-       "note": "Headline: \"Not Our Kids. Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-47th-reading-1080x565-know-the-plan",
-       "label": "1080×565 · Know the Plan",
-       "kind": "image",
-       "w": 1080,
-       "h": 565,
-       "ratio": "1.91:1",
-       "use": "Meta link / landscape",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -11.png",
-       "note": "Headline: \"Know The Plan. Delivered for review — Set 2 export."
-      },
-      {
-       "id": "ps-47th-reading-1080x1080-not-anymore",
-       "label": "1080×1080 · Not Anymore",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-03.png",
-       "note": "Headline: \"Not Our Kids. Not Our State. Not Anymore.\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-47th-reading-1080x1080-know-the-plan",
-       "label": "1080×1080 · Know the Plan",
-       "kind": "image",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "FB/IG feed, Explore, In-Stream",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-11.png",
-       "note": "Headline: \"Know The Plan. Show Up. Execute.\". Approved layout, delivered for review."
-      },
-      {
-       "id": "ps-47th-reading-1080x1920-not-anymore",
-       "label": "1080×1920 · Not Anymore",
-       "kind": "image",
+       "id": "paid-social-static-students-1080x1920-image",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-06.png",
-       "note": "Headline: \"Not Our Kids. Not Our State. Not Anymore.\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-06.png"
       },
       {
-       "id": "ps-47th-reading-1080x1920-know-the-plan",
-       "label": "1080×1920 · Know the Plan",
-       "kind": "image",
+       "id": "paid-social-static-students-1080x1920-image-2",
+       "size": "1080×1920",
        "w": 1080,
        "h": 1920,
-       "ratio": "9:16",
-       "use": "FB/IG Stories and Reels, Audience Network",
-       "formats": [
-        "JPG",
-        "PNG"
-       ],
-       "maxBytes": null,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /New Ads PBV-17.png",
-       "note": "Headline: \"Know The Plan. Show Up. Execute.\". Approved layout, delivered for review."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Soical 1080x1920-11.png"
       },
       {
-       "id": "ps-47th-reading-1200x628-not-anymore",
-       "label": "1200×628 · Not Anymore",
+       "id": "paid-social-static-students-1080x1080-image",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
-       "w": 1200,
-       "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -03.png",
-       "note": "Headline: \"Not Our Kids. Delivered for review — Set 2 export."
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-06.png"
       },
       {
-       "id": "ps-47th-reading-1200x628-know-the-plan",
-       "label": "1200×628 · Know the Plan",
+       "id": "paid-social-static-students-1080x1080-image-2",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "image",
+       "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-11.png"
+      },
+      {
+       "id": "paid-social-static-students-1200x628-image",
+       "size": "1200×628",
        "w": 1200,
        "h": 628,
-       "ratio": "1.91:1",
-       "use": "TikTok image",
-       "formats": [
-        "JPG",
-        "JPEG",
-        "PNG"
-       ],
-       "maxBytes": 102400,
-       "seed": "Paid Social/exports/For review 1080x1080 and 1080x1920 /set 2/Paid Social Set 2 -05.png",
-       "note": "Headline: \"Know The Plan. Delivered for review — Set 2 export."
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-09.png"
+      },
+      {
+       "id": "paid-social-static-students-1200x628-image-2",
+       "size": "1200×628",
+       "w": 1200,
+       "h": 628,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-10.png"
+      },
+      {
+       "id": "paid-social-static-students-1080x565-image",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-05.png"
+      },
+      {
+       "id": "paid-social-static-students-1080x565-image-2",
+       "size": "1080×565",
+       "w": 1080,
+       "h": 565,
+       "kind": "image",
+       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-10.png"
       }
      ]
-    },
+    }
+   ]
+  },
+  {
+   "id": "paid-social-video",
+   "name": "Paid Social — Video",
+   "messages": [
     {
-     "id": "paid-social-video-15",
-     "title": "Paid social video — \"Not Our Kids\" :15",
-     "status": "in_progress",
-     "due": "2026-08-25",
-     "slots": [
+     "id": "paid-social-video-ok50",
+     "name": "50th in Education",
+     "items": [
       {
-       "id": "paid-social-video-15-1080x1920",
-       "label": "9:16 · 1080×1920 · :15",
-       "kind": "video",
-       "w": 1080,
-       "h": 1920,
-       "ratio": "9:16",
-       "use": "Meta Stories/Reels, TikTok",
-       "formats": [
-        "MP4"
-       ],
-       "maxBytes": 524288000,
-       "seed": null,
-       "note": "Not yet built. This is the vertical cutdown required by both Meta Stories/Reels and TikTok, and is an open blocker on the 8/25 package (data/open-items.json > blockers 'video-cutdowns'). Meta accepts MP4, MOV or GIF; TikTok accepts MPEG-2 or MPEG-4, so a single MP4 satisfies both. TikTok crops device edges, so key elements must stay centred. The iHeart deck lists TikTok at 540×960; 1080×1920 is the same ratio at 2x and is accepted."
-      },
-      {
-       "id": "paid-social-video-15-1080x1080",
-       "label": "1:1 · 1080×1080 · :15",
-       "kind": "video",
-       "w": 1080,
-       "h": 1080,
-       "ratio": "1:1",
-       "use": "Meta feed",
-       "formats": [
-        "MP4",
-        "MOV",
-        "GIF"
-       ],
-       "maxBytes": 4294967296,
-       "seed": null,
-       "note": "Not yet built. Required for the Meta feed placement and an open blocker on the 8/25 package (data/open-items.json > blockers 'video-cutdowns')."
-      },
-      {
-       "id": "paid-social-video-15-1920x1080",
-       "label": "16:9 · 1920×1080 · :15",
-       "kind": "video",
+       "id": "paid-social-video-ok50-1920x1080-video",
+       "size": "1920×1080",
        "w": 1920,
        "h": 1080,
-       "ratio": "16:9",
-       "use": "FB Search Results, YouTube",
-       "formats": [
-        "MP4",
-        "MOV"
-       ],
-       "maxBytes": 4294967296,
-       "seed": null,
-       "note": "Rendered (V3) and review-ready. At :15 this falls inside YouTube's non-skippable in-stream window of 6 to 15 seconds. Cap shown is Meta's 4 GB, the tighter of the two platforms for this size; YouTube's own ceiling is far higher. Before the YouTube buy can run, the file has to be uploaded to OKEII's own YouTube channel and the link supplied."
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "web-landing",
-   "name": "Campaign Landing Page — okeii.org/StrongReadersAct",
-   "groups": [
-    {
-     "id": "sra-landing-page",
-     "title": "okeii.org/StrongReadersAct — public campaign page",
-     "status": "blocked",
-     "due": "2026-09-08",
-     "slots": [
-      {
-       "id": "web-landing-hero-image",
-       "label": "Hero image · dimensions to be set with the page build",
-       "kind": "image",
-       "formats": [],
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null,
-       "use": "Top of the okeii.org/StrongReadersAct page.",
-       "note": "Placeholder. No hero art has been produced and no image dimensions have been specified anywhere on disk — the Wix layout will set them. The campaign's Friday Night Lights scoreboard is the established through-line, so hero art is expected to come from that family rather than be commissioned separately."
+       "kind": "video",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social Master - 50th in Education -15 16x9_1.mp4"
       },
       {
-       "id": "web-landing-qr-code",
-       "label": "QR code asset · resolves to okeii.org/StrongReadersAct",
-       "kind": "image",
-       "formats": [],
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null,
-       "use": "The anchor card on every campaign piece — print, DOOH, social, TV.",
-       "note": "The anchor card carries \"okeii.org + QR\" on every piece and the call to action is a bare URL plus a QR code, so this asset is required campaign-wide, not only on the web page. No QR file exists anywhere in the project folder as of 2026-08-25. The code can encode the known URL, but it should not be distributed until the page it resolves to is live. No size, format or error-correction level has been specified."
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "tv-spots",
-   "name": "TV Spots (CTV + Broadcast)",
-   "groups": [
-    {
-     "id": "tv-finished-films",
-     "title": "Finished films",
-     "status": "not_started",
-     "due": null,
-     "slots": [
-      {
-       "id": "tv-film-60",
-       "label": ":60",
+       "id": "paid-social-video-ok50-1080x1920-video",
+       "size": "1080×1920",
+       "w": 1080,
+       "h": 1920,
        "kind": "video",
-       "use": "CTV / premium streaming and broadcast television",
-       "note": "Script is an attachment on David Downing's 2026-08-24 'Creative in Production' email (SRA_Campaign_60_TV.pdf) and is not yet on disk. Which of the eight concepts is scripted at this length is set by that document.",
-       "seed": null,
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "formats": []
+       "src": null
       },
       {
-       "id": "tv-film-30",
-       "label": ":30",
+       "id": "paid-social-video-ok50-1080x1080-video",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
        "kind": "video",
-       "use": "CTV / premium streaming and broadcast television",
-       "note": "Script is an attachment on David Downing's 2026-08-24 'Creative in Production' email (SRA_Campaign_30_TV.pdf) and is not yet on disk. Which of the eight concepts is scripted at this length is set by that document.",
-       "seed": null,
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "formats": []
-      },
-      {
-       "id": "tv-film-15",
-       "label": ":15",
-       "kind": "video",
-       "use": "CTV / premium streaming and broadcast television",
-       "note": "Script is an attachment on David Downing's 2026-08-24 'Creative in Production' email (SRA_Campaign_15_TV.pdf) and is not yet on disk. Which of the eight concepts is scripted at this length is set by that document.",
-       "seed": null,
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "formats": []
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "ctv-streaming",
-   "name": "CTV / Premium Streaming",
-   "groups": [
-    {
-     "id": "ctv-finished-spot",
-     "title": "Finished spot for CTV delivery",
-     "status": "not_started",
-     "due": null,
-     "slots": [
-      {
-       "id": "ctv-traffic-package",
-       "label": "CTV trafficking package",
-       "kind": "video",
-       "use": "CTV / premium streaming platforms, from the September 8 launch",
-       "note": "Delivered from the finished films catalogued under TV Spots — this slot is the platform-ready encode, not a separate cut. CTV encode, caption and slate requirements are not captured; request them from LMR Media Mix with the platform list.",
-       "seed": null
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "broadcast-tv",
-   "name": "Broadcast Television",
-   "groups": [
-    {
-     "id": "broadcast-finished-spot",
-     "title": "Finished spot for broadcast delivery",
-     "status": "not_started",
-     "due": null,
-     "slots": [
-      {
-       "id": "bcast-traffic-package",
-       "label": "Broadcast trafficking package",
-       "kind": "video",
-       "use": "Broadcast television, November 4 – December 31 (plan slide 13)",
-       "note": "Delivered from the finished films catalogued under TV Spots — this slot is the station-ready master plus its traffic paperwork, not a separate cut. Frame rate, audio loudness, slate and ISCI/Ad-ID requirements are unknown until the station list and traffic instructions arrive from LMR Media Mix.",
-       "seed": null
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "audio",
-   "name": "Audio / Radio",
-   "groups": [
-    {
-     "id": "audio-finished-spots",
-     "title": "Finished spots — :15 and :30",
-     "status": "in_production",
-     "due": "2026-09-01",
-     "slots": [
-      {
-       "id": "audio-spot-15",
-       "label": ":15",
-       "kind": "audio",
-       "use": "Local broadcast radio, streaming audio, podcasts, Total Traffic & Weather Network",
-       "note": "Fifteen-second finished spot, greenlit by David Downing on 2026-08-24. File format and bit rate are not specified in the captured spec — confirm with the stations before export.",
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null
-      },
-      {
-       "id": "audio-spot-30",
-       "label": ":30",
-       "kind": "audio",
-       "use": "Local broadcast radio, streaming audio, podcasts, Total Traffic & Weather Network",
-       "note": "Thirty-second finished spot, greenlit by David Downing on 2026-08-24. File format and bit rate are not specified in the captured spec — confirm with the stations before export.",
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null
+       "src": null
       }
      ]
     },
     {
-     "id": "audio-production-scripts",
-     "title": "Production scripts — early-submission route",
-     "status": "pending",
-     "due": "2026-08-25",
-     "slots": [
+     "id": "paid-social-video-47th",
+     "name": "47th in Reading",
+     "items": [
       {
-       "id": "audio-script-15",
-       "label": ":15 script",
-       "kind": "doc",
-       "use": "Station-produced :15, submitted in place of a finished spot",
-       "note": "Optional route rather than a vendor requirement — either finished spots by 9/1 or scripts about a week earlier. The copy document covering both lengths is still an email attachment and is not on disk.",
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null
-      },
-      {
-       "id": "audio-script-30",
-       "label": ":30 script",
-       "kind": "doc",
-       "use": "Station-produced :30, submitted in place of a finished spot",
-       "note": "Optional route rather than a vendor requirement — either finished spots by 9/1 or scripts about a week earlier. The copy document covering both lengths is still an email attachment and is not on disk.",
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "native",
-   "name": "Native Content and Digital Display",
-   "groups": [
-    {
-     "id": "native-launch-set",
-     "title": "Native video, display and article — launch set",
-     "status": "not_started",
-     "due": "2026-09-02",
-     "slots": [
-      {
-       "id": "native-video-unit",
-       "label": "Native video · size and duration to be set by Nativo spec",
+       "id": "paid-social-video-47th-1920x1080-video",
+       "size": "1920×1080",
+       "w": 1920,
+       "h": 1080,
        "kind": "video",
-       "use": "Nativo in-feed and contextual placements",
-       "note": "Dimensions and duration are deliberately left blank. The Nativo sheet that defines them ('… - Video Specs.pdf') is still an email attachment. Do not export against assumed sizes.",
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 43rd in Reading -15 16x9.mp4"
       },
       {
-       "id": "native-display-unit",
-       "label": "Native display unit · size to be set by Nativo spec",
-       "kind": "image",
-       "use": "Contextual placements and retargeting",
-       "note": "Dimensions and file-size cap are unknown until the Nativo spec sheet arrives. No comparable display spec exists elsewhere in the package to borrow from.",
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null
+       "id": "paid-social-video-47th-1080x1920-video",
+       "size": "1080×1920",
+       "w": 1080,
+       "h": 1920,
+       "kind": "video",
+       "src": null
+      },
+      {
+       "id": "paid-social-video-47th-1080x1080-video",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
+       "kind": "video",
+       "src": null
+      }
+     ]
+    },
+    {
+     "id": "paid-social-video-parents",
+     "name": "Parents Win",
+     "items": [
+      {
+       "id": "paid-social-video-parents-1920x1080-video",
+       "size": "1920×1080",
+       "w": 1920,
+       "h": 1080,
+       "kind": "video",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 16x9.mp4"
+      },
+      {
+       "id": "paid-social-video-parents-1080x1920-video",
+       "size": "1080×1920",
+       "w": 1080,
+       "h": 1920,
+       "kind": "video",
+       "src": null
+      },
+      {
+       "id": "paid-social-video-parents-1080x1080-video",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
+       "kind": "video",
+       "src": null
+      }
+     ]
+    },
+    {
+     "id": "paid-social-video-teachers",
+     "name": "Teachers Win",
+     "items": [
+      {
+       "id": "paid-social-video-teachers-1920x1080-video",
+       "size": "1920×1080",
+       "w": 1920,
+       "h": 1080,
+       "kind": "video",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 16x9.mp4"
+      },
+      {
+       "id": "paid-social-video-teachers-1080x1920-video",
+       "size": "1080×1920",
+       "w": 1080,
+       "h": 1920,
+       "kind": "video",
+       "src": null
+      },
+      {
+       "id": "paid-social-video-teachers-1080x1080-video",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
+       "kind": "video",
+       "src": null
+      }
+     ]
+    },
+    {
+     "id": "paid-social-video-students",
+     "name": "Students Win",
+     "items": [
+      {
+       "id": "paid-social-video-students-1920x1080-video",
+       "size": "1920×1080",
+       "w": 1920,
+       "h": 1080,
+       "kind": "video",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 16x9_1.mp4"
+      },
+      {
+       "id": "paid-social-video-students-1080x1920-video",
+       "size": "1080×1920",
+       "w": 1080,
+       "h": 1920,
+       "kind": "video",
+       "src": null
+      },
+      {
+       "id": "paid-social-video-students-1080x1080-video",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
+       "kind": "video",
+       "src": null
       }
      ]
     }
    ]
   },
   {
-   "id": "dooh",
-   "name": "Digital Out-of-Home",
-   "groups": [
+   "id": "digital",
+   "name": "Digital",
+   "messages": [
     {
-     "id": "dooh-lamar-boards",
-     "title": "Lamar digital boards",
-     "status": "not_started",
-     "due": "2026-09-03",
-     "slots": [
+     "id": "digital-ok50",
+     "name": "50th in Education",
+     "items": [
       {
-       "id": "dooh-lamar-14x48",
-       "label": "Lamar board · LDD_14x48 template",
+       "id": "digital-ok50-768x1024-image",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
        "kind": "image",
-       "use": "Lamar digital bulletins — school, library and retail corridors",
-       "note": "14x48 is the identifier on Lamar's template file LDD_14x48.jpg — it is not a pixel size, and the unit is not stated anywhere on the record. Pixel resolution, file format and file-size cap come from the template itself, which is an attachment on Lisa Ratcliff's 2026-08-10 email and is not yet on disk. No width or height is recorded here on purpose.",
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-02.png"
       },
       {
-       "id": "dooh-lamar-20x30",
-       "label": "Lamar board · LDD_20x30 template",
+       "id": "digital-ok50-768x1024-image-2",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
        "kind": "image",
-       "use": "Lamar digital boards — school, library and retail corridors",
-       "note": "20x30 is the identifier on Lamar's template file LDD_20x30.jpg — it is not a pixel size, and the unit is not stated anywhere on the record. Pixel resolution, file format and file-size cap come from the template itself, which is an attachment on Lisa Ratcliff's 2026-08-10 email and is not yet on disk. No width or height is recorded here on purpose.",
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null
-      }
-     ]
-    },
-    {
-     "id": "dooh-griffin-boards",
-     "title": "Griffin network boards",
-     "status": "not_started",
-     "due": "2026-09-03",
-     "slots": [
-      {
-       "id": "dooh-griffin-board",
-       "label": "Griffin board · size to be set by Griffin spec sheet",
-       "kind": "image",
-       "use": "Griffin digital out-of-home network",
-       "note": "No dimensions, format or file-size cap can be stated for this network. The Griffin spec PDF is an attachment on Lisa Ratcliff's 2026-08-10 email and is not on disk. The number of board sizes Griffin requires is also unknown — this single placeholder may need to become several.",
-       "w": null,
-       "h": null,
-       "ratio": null,
-       "maxBytes": null,
-       "seed": null
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "print",
-   "name": "Print",
-   "groups": [
-    {
-     "id": "metro-family-septoct-spread",
-     "title": "Metro Family Sept/Oct Two-Page Spread",
-     "due": "2026-08-14",
-     "status": "delivered",
-     "slots": [
-      {
-       "id": "print-mf-septoct-spread-mechanical",
-       "label": "Two-page spread · 15.67 × 9.96 in · camera-ready PDF",
-       "kind": "pdf",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [
-        "PDF"
-       ],
-       "maxBytes": null,
-       "use": "Metro Family (OKC) Sept/Oct issue — Healthy Families",
-       "note": "15.67 × 9.96 in with a 0.75 in gutter; CMYK/SWOP, 300 dpi, press-ready. Bleed and trim were never specified by the publisher, so the file treats 15.67 × 9.96 as trim with 0.125 in bleed on a separate layer.",
-       "seed": "Metro Family Print/OKEII_MetroFamily_SeptOct_Spread_V3_LAYERED v4.pdf"
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-07.png"
       },
       {
-       "id": "print-mf-septoct-spread-proof",
-       "label": "Approved proof · JPG",
+       "id": "digital-ok50-1024x768-image",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
        "kind": "image",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [
-        "JPG"
-       ],
-       "maxBytes": null,
-       "use": "Review copy of the delivered spread — approved 2026-08-18",
-       "note": "Flat proof of the delivered V3 spread, approved by David Downing on 2026-08-18.",
-       "seed": "Metro Family Print/OKEII_MetroFamily_Spread_V3_PACKAGE/OKEII_MetroFamily_Spread_V3_PROOF.jpg"
-      }
-     ]
-    },
-    {
-     "id": "metro-family-oct-sponsored",
-     "title": "Metro Family October Sponsored Content Article",
-     "due": "2026-09-05",
-     "status": "not_started",
-     "slots": [
-      {
-       "id": "print-mf-oct-sponsored-hero",
-       "label": "Horizontal hero image · high resolution",
-       "kind": "image",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Lead image on the sponsored article",
-       "note": "One horizontal high-resolution image. The publisher did not give pixel dimensions. Stock is acceptable.",
-       "seed": null
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-02.png"
       },
       {
-       "id": "print-mf-oct-sponsored-inarticle",
-       "label": "In-article images · 1–2",
+       "id": "digital-ok50-1024x768-image-2",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
        "kind": "image",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Within the body of the sponsored article",
-       "note": "One to two additional images inside the article. No dimensions specified by the publisher. Stock is acceptable.",
-       "seed": null
-      }
-     ]
-    },
-    {
-     "id": "metro-family-novdec-ad",
-     "title": "Metro Family Nov/Dec Full-Page Ad",
-     "due": "2026-10-05",
-     "status": "not_started",
-     "slots": [
-      {
-       "id": "print-mf-novdec-fullpage",
-       "label": "Full page · 7.46 × 9.96 in live area",
-       "kind": "pdf",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [
-        "PDF"
-       ],
-       "maxBytes": null,
-       "use": "Metro Family (OKC) Nov/Dec issue",
-       "note": "7.46 × 9.96 in live area. Bleed and trim not yet specified by the publisher. Can be cut down from the Sept/Oct spread — keep the circle field, headline and anchor panel.",
-       "seed": null
-      }
-     ]
-    },
-    {
-     "id": "metro-family-novdec-sponsored",
-     "title": "Metro Family Nov/Dec Sponsored Content Article",
-     "due": "2026-10-05",
-     "status": "not_started",
-     "slots": [
-      {
-       "id": "print-mf-novdec-sponsored-hero",
-       "label": "Horizontal hero image · high resolution",
-       "kind": "image",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Lead image on the sponsored article",
-       "note": "One horizontal high-resolution image. No pixel dimensions specified by the publisher. Stock is acceptable.",
-       "seed": null
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-06.png"
       },
       {
-       "id": "print-mf-novdec-sponsored-inarticle",
-       "label": "In-article images · 1–2",
+       "id": "digital-ok50-300x600-image",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
        "kind": "image",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Within the body of the sponsored article",
-       "note": "One to two additional images inside the article. No dimensions specified by the publisher.",
-       "seed": null
-      }
-     ]
-    },
-    {
-     "id": "tulsa-kids-october",
-     "title": "Tulsa Kids October Package",
-     "due": "2026-09-08",
-     "status": "not_started",
-     "slots": [
-      {
-       "id": "print-tk-oct-fullpage",
-       "label": "Full page · 8.25 × 10.75 in + 0.125 in bleed",
-       "kind": "pdf",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [
-        "PDF"
-       ],
-       "maxBytes": null,
-       "use": "Tulsa Kids October issue",
-       "note": "8.25 × 10.75 in with 0.125 in bleed.",
-       "seed": null
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-02.png"
       },
       {
-       "id": "print-tk-oct-website-banner",
-       "label": "Website banner · 1000 × 250 px",
+       "id": "digital-ok50-300x600-image-2",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
        "kind": "image",
-       "ratio": null,
-       "w": 1000,
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-07.png"
+      },
+      {
+       "id": "digital-ok50-320x480-image",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-02.png"
+      },
+      {
+       "id": "digital-ok50-320x480-image-2",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-07.png"
+      },
+      {
+       "id": "digital-ok50-480x320-image",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-02.png"
+      },
+      {
+       "id": "digital-ok50-480x320-image-2",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-06.png"
+      },
+      {
+       "id": "digital-ok50-160x600-image",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-02.png"
+      },
+      {
+       "id": "digital-ok50-160x600-image-2",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-07.png"
+      },
+      {
+       "id": "digital-ok50-300x250-image",
+       "size": "300×250",
+       "w": 300,
        "h": 250,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Tulsa Kids website banner placement",
-       "note": "1000 × 250 px. File format and weight limit not specified by the publisher.",
-       "seed": null
+       "kind": "image",
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-01.png"
       },
       {
-       "id": "print-tk-oct-eblast",
-       "label": "Dedicated e-blast · approx. 600 × 1000 px",
+       "id": "digital-ok50-300x250-image-2",
+       "size": "300×250",
+       "w": 300,
+       "h": 250,
        "kind": "image",
-       "ratio": null,
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-07.png"
+      }
+     ]
+    },
+    {
+     "id": "digital-47th",
+     "name": "47th in Reading",
+     "items": [
+      {
+       "id": "digital-47th-768x1024-image",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
+       "kind": "image",
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-01.png"
+      },
+      {
+       "id": "digital-47th-768x1024-image-2",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
+       "kind": "image",
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-06.png"
+      },
+      {
+       "id": "digital-47th-1024x768-image",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
+       "kind": "image",
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-01.png"
+      },
+      {
+       "id": "digital-47th-1024x768-image-2",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
+       "kind": "image",
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-08.png"
+      },
+      {
+       "id": "digital-47th-300x600-image",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-01.png"
+      },
+      {
+       "id": "digital-47th-300x600-image-2",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-06.png"
+      },
+      {
+       "id": "digital-47th-320x480-image",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-01.png"
+      },
+      {
+       "id": "digital-47th-320x480-image-2",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-06.png"
+      },
+      {
+       "id": "digital-47th-480x320-image",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-01.png"
+      },
+      {
+       "id": "digital-47th-480x320-image-2",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-08.png"
+      },
+      {
+       "id": "digital-47th-160x600-image",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-01.png"
+      },
+      {
+       "id": "digital-47th-160x600-image-2",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-06.png"
+      },
+      {
+       "id": "digital-47th-300x250-image",
+       "size": "300×250",
+       "w": 300,
+       "h": 250,
+       "kind": "image",
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-03.png"
+      },
+      {
+       "id": "digital-47th-300x250-image-2",
+       "size": "300×250",
+       "w": 300,
+       "h": 250,
+       "kind": "image",
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-06.png"
+      }
+     ]
+    },
+    {
+     "id": "digital-parents",
+     "name": "Parents Win",
+     "items": [
+      {
+       "id": "digital-parents-768x1024-image",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
+       "kind": "image",
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-03.png"
+      },
+      {
+       "id": "digital-parents-768x1024-image-2",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
+       "kind": "image",
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-08.png"
+      },
+      {
+       "id": "digital-parents-1024x768-image",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
+       "kind": "image",
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-03.png"
+      },
+      {
+       "id": "digital-parents-1024x768-image-2",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
+       "kind": "image",
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-09.png"
+      },
+      {
+       "id": "digital-parents-300x600-image",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-03.png"
+      },
+      {
+       "id": "digital-parents-300x600-image-2",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-08.png"
+      },
+      {
+       "id": "digital-parents-320x480-image",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-03.png"
+      },
+      {
+       "id": "digital-parents-320x480-image-2",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-08.png"
+      },
+      {
+       "id": "digital-parents-480x320-image",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-03.png"
+      },
+      {
+       "id": "digital-parents-480x320-image-2",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-09.png"
+      },
+      {
+       "id": "digital-parents-160x600-image",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-03.png"
+      },
+      {
+       "id": "digital-parents-160x600-image-2",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-08.png"
+      },
+      {
+       "id": "digital-parents-300x250-image",
+       "size": "300×250",
+       "w": 300,
+       "h": 250,
+       "kind": "image",
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-04.png"
+      },
+      {
+       "id": "digital-parents-300x250-image-2",
+       "size": "300×250",
+       "w": 300,
+       "h": 250,
+       "kind": "image",
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-08.png"
+      }
+     ]
+    },
+    {
+     "id": "digital-teachers",
+     "name": "Teachers Win",
+     "items": [
+      {
+       "id": "digital-teachers-768x1024-image",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
+       "kind": "image",
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-04.png"
+      },
+      {
+       "id": "digital-teachers-768x1024-image-2",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
+       "kind": "image",
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-09.png"
+      },
+      {
+       "id": "digital-teachers-1024x768-image",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
+       "kind": "image",
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-04.png"
+      },
+      {
+       "id": "digital-teachers-1024x768-image-2",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
+       "kind": "image",
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-07.png"
+      },
+      {
+       "id": "digital-teachers-300x600-image",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-04.png"
+      },
+      {
+       "id": "digital-teachers-300x600-image-2",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-09.png"
+      },
+      {
+       "id": "digital-teachers-320x480-image",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-04.png"
+      },
+      {
+       "id": "digital-teachers-320x480-image-2",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-09.png"
+      },
+      {
+       "id": "digital-teachers-480x320-image",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-04.png"
+      },
+      {
+       "id": "digital-teachers-480x320-image-2",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-07.png"
+      },
+      {
+       "id": "digital-teachers-160x600-image",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-04.png"
+      },
+      {
+       "id": "digital-teachers-160x600-image-2",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-09.png"
+      },
+      {
+       "id": "digital-teachers-300x250-image",
+       "size": "300×250",
+       "w": 300,
+       "h": 250,
+       "kind": "image",
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-02.png"
+      },
+      {
+       "id": "digital-teachers-300x250-image-2",
+       "size": "300×250",
+       "w": 300,
+       "h": 250,
+       "kind": "image",
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-09.png"
+      }
+     ]
+    },
+    {
+     "id": "digital-students",
+     "name": "Students Win",
+     "items": [
+      {
+       "id": "digital-students-768x1024-image",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
+       "kind": "image",
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-05.png"
+      },
+      {
+       "id": "digital-students-768x1024-image-2",
+       "size": "768×1024",
+       "w": 768,
+       "h": 1024,
+       "kind": "image",
+       "src": "Digital Ads/768x1024 exports/Digital 768x1024-10.png"
+      },
+      {
+       "id": "digital-students-1024x768-image",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
+       "kind": "image",
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-05.png"
+      },
+      {
+       "id": "digital-students-1024x768-image-2",
+       "size": "1024×768",
+       "w": 1024,
+       "h": 768,
+       "kind": "image",
+       "src": "Digital Ads/1024x768 Exports/Digital 1024x768-10.png"
+      },
+      {
+       "id": "digital-students-300x600-image",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-05.png"
+      },
+      {
+       "id": "digital-students-300x600-image-2",
+       "size": "300×600",
+       "w": 300,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/300x600 Exports/Digital 300x600-10.png"
+      },
+      {
+       "id": "digital-students-320x480-image",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-05.png"
+      },
+      {
+       "id": "digital-students-320x480-image-2",
+       "size": "320×480",
+       "w": 320,
+       "h": 480,
+       "kind": "image",
+       "src": "Digital Ads/320x480 Exports/Digital 320x480-10.png"
+      },
+      {
+       "id": "digital-students-480x320-image",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-05.png"
+      },
+      {
+       "id": "digital-students-480x320-image-2",
+       "size": "480×320",
+       "w": 480,
+       "h": 320,
+       "kind": "image",
+       "src": "Digital Ads/480x320 Exports/Digital 480x320-10.png"
+      },
+      {
+       "id": "digital-students-160x600-image",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-05.png"
+      },
+      {
+       "id": "digital-students-160x600-image-2",
+       "size": "160×600",
+       "w": 160,
+       "h": 600,
+       "kind": "image",
+       "src": "Digital Ads/160X600 Exports/Digital 160x600-10.png"
+      },
+      {
+       "id": "digital-students-300x250-image",
+       "size": "300×250",
+       "w": 300,
+       "h": 250,
+       "kind": "image",
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-05.png"
+      },
+      {
+       "id": "digital-students-300x250-image-2",
+       "size": "300×250",
+       "w": 300,
+       "h": 250,
+       "kind": "image",
+       "src": "Digital Ads/300x250 Exports/Digital 300x250-10.png"
+      }
+     ]
+    },
+    {
+     "id": "digital-tagline",
+     "name": "Know What It Says",
+     "items": [
+      {
+       "id": "digital-tagline-728x90-image",
+       "size": "728×90",
+       "w": 728,
+       "h": 90,
+       "kind": "image",
+       "src": "Digital Ads/728x90 Exports/Digital 728x90.png"
+      },
+      {
+       "id": "digital-tagline-320x50-image",
+       "size": "320×50",
+       "w": 320,
+       "h": 50,
+       "kind": "image",
+       "src": "Digital Ads/320x50 Exports/Digital 320x50.png"
+      },
+      {
+       "id": "digital-tagline-300x50-image",
+       "size": "300×50",
+       "w": 300,
+       "h": 50,
+       "kind": "image",
+       "src": "Digital Ads/300x50 Export/Digital 300x50-03.png"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "outdoor",
+   "name": "Outdoor",
+   "messages": [
+    {
+     "id": "outdoor-tagline",
+     "name": "Know What It Says",
+     "items": [
+      {
+       "id": "outdoor-tagline-1600x400-image",
+       "size": "1600×400",
+       "w": 1600,
+       "h": 400,
+       "kind": "image",
+       "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-02.png"
+      },
+      {
+       "id": "outdoor-tagline-1000x625-image",
+       "size": "1000×625",
+       "w": 1000,
+       "h": 625,
+       "kind": "image",
+       "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-05.png"
+      },
+      {
+       "id": "outdoor-tagline-1400x400-image",
+       "size": "1400×400",
+       "w": 1400,
+       "h": 400,
+       "kind": "image",
+       "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-01.png"
+      },
+      {
+       "id": "outdoor-tagline-840x400-image",
+       "size": "840×400",
+       "w": 840,
+       "h": 400,
+       "kind": "image",
+       "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-03.png"
+      },
+      {
+       "id": "outdoor-tagline-600x384-image",
+       "size": "600×384",
        "w": 600,
-       "h": 1000,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Tulsa Kids dedicated e-blast to their subscriber list",
-       "note": "Approximately 600 × 1000 px; the publisher notes the length can vary slightly.",
-       "seed": null
-      }
-     ]
-    },
-    {
-     "id": "tulsa-kids-november",
-     "title": "Tulsa Kids November Package",
-     "due": "2026-10-08",
-     "status": "not_started",
-     "slots": [
-      {
-       "id": "print-tk-nov-quarterpage",
-       "label": "Quarter page · 3.625 × 4.625 in",
-       "kind": "pdf",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [
-        "PDF"
-       ],
-       "maxBytes": null,
-       "use": "Tulsa Kids November issue",
-       "note": "3.625 × 4.625 in. No bleed figure is given for the quarter page.",
-       "seed": null
-      },
-      {
-       "id": "print-tk-nov-website-tile",
-       "label": "Website tile ad · 300 × 250 px",
+       "h": 384,
        "kind": "image",
-       "ratio": null,
-       "w": 300,
-       "h": 250,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Tulsa Kids website tile placement",
-       "note": "300 × 250 px. File format and weight limit not specified by the publisher.",
-       "seed": null
-      },
-      {
-       "id": "print-tk-nov-email-tile",
-       "label": "Email tile ad · 300 × 250 px",
-       "kind": "image",
-       "ratio": null,
-       "w": 300,
-       "h": 250,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Tulsa Kids email newsletter tile placement",
-       "note": "300 × 250 px — the publisher lists one tile size for both website and email placements.",
-       "seed": null
-      }
-     ]
-    },
-    {
-     "id": "tulsa-kids-december",
-     "title": "Tulsa Kids December Package",
-     "due": "2026-11-08",
-     "status": "not_started",
-     "slots": [
-      {
-       "id": "print-tk-dec-fullpage",
-       "label": "Full page · 8.25 × 10.75 in + 0.125 in bleed",
-       "kind": "pdf",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [
-        "PDF"
-       ],
-       "maxBytes": null,
-       "use": "Tulsa Kids December issue",
-       "note": "8.25 × 10.75 in with 0.125 in bleed.",
-       "seed": null
-      },
-      {
-       "id": "print-tk-dec-promoted-social",
-       "label": "Promoted social post · size not specified",
-       "kind": "image",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Tulsa Kids promoted post on their own social channels",
-       "note": "Listed in the December package. The publisher supplied no dimensions, format or copy length for this unit — confirm before building.",
-       "seed": null
-      },
-      {
-       "id": "print-tk-dec-website-banner",
-       "label": "Website banner · 1000 × 250 px",
-       "kind": "image",
-       "ratio": null,
-       "w": 1000,
-       "h": 250,
-       "formats": [],
-       "maxBytes": null,
-       "use": "Tulsa Kids website banner placement",
-       "note": "1000 × 250 px. File format and weight limit not specified by the publisher.",
-       "seed": null
+       "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-04.png"
       }
      ]
     }
    ]
   },
   {
-   "id": "influencer",
-   "name": "Influencer Partnerships",
-   "groups": [
+   "id": "tv",
+   "name": "TV",
+   "messages": [
     {
-     "id": "influencer-program",
-     "title": "Creator program documents",
-     "status": "not_started",
-     "due": null,
-     "slots": [
+     "id": "tv-ok50",
+     "name": "50th in Education",
+     "items": [
       {
-       "id": "influencer-creator-brief",
-       "label": "Creator brief — not written",
-       "kind": "doc",
-       "use": "Briefing document issued to each participating creator",
-       "note": "Would carry the campaign message, the reading-at-home demonstration ask and the single destination URL. Scope, deliverable counts, platforms and posting windows all still need to be defined.",
-       "seed": null
-      },
-      {
-       "id": "influencer-usage-rights",
-       "label": "Usage rights and disclosure terms — not drafted",
-       "kind": "doc",
-       "use": "Agreement covering how long and where OKEII may reuse creator content",
-       "note": "Term, territory, paid-amplification rights and required disclosure language have not been set. Nothing on file specifies them.",
-       "seed": null
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "organic-social",
-   "name": "Organic Social Media",
-   "groups": [
-    {
-     "id": "organic-social-content",
-     "title": "Organic content formats",
-     "status": "not_started",
-     "due": null,
-     "slots": [
-      {
-       "id": "organic-short-form-video",
-       "label": "Short-form video — format specs not captured",
+       "id": "tv-ok50-1080x1920-video",
+       "size": "1080×1920",
+       "w": 1080,
+       "h": 1920,
        "kind": "video",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "maxBytes": null,
-       "use": "Reels, Shorts and TikTok on OKEII's own channels",
-       "note": "The plan identifies short-form video as over 90% of OKEII's views and a driver of discovery beyond subscribers. Running lengths, aspect ratios and cadence come from the social strategy document once it is on disk.",
-       "seed": null
+       "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 VERTICAL MASTER .mp4"
       },
       {
-       "id": "organic-news-carousel",
-       "label": "\"News-style\" carousel — sizes not captured",
-       "kind": "image",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "maxBytes": null,
-       "use": "Instagram and Facebook feed",
-       "note": "The plan also calls for shareable graphics highlighting the importance of the Strong Readers Act, with positive-leaning messaging. Card counts and pixel sizes are not specified in any file on disk.",
-       "seed": null
-      },
-      {
-       "id": "organic-ambient-reel",
-       "label": "Ambient Reel with on-screen text — specs not captured",
+       "id": "tv-ok50-1920x1080-video",
+       "size": "1920×1080",
+       "w": 1920,
+       "h": 1080,
        "kind": "video",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "maxBytes": null,
-       "use": "Instagram Reels",
-       "note": "Layers OKEII b-roll and video with on-screen text, which the plan reports as a strong performer. B-roll selection has not been made and no duration is specified.",
-       "seed": null
+       "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared 30 Master 16x9.mp4"
+      },
+      {
+       "id": "tv-ok50-1080x1080-video",
+       "size": "1080×1080",
+       "w": 1080,
+       "h": 1080,
+       "kind": "video",
+       "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 MASTER SQUARE.mp4"
       }
      ]
     }
    ]
-  },
-  {
-   "id": "earned-media",
-   "name": "Earned Media",
-   "groups": [
-    {
-     "id": "earned-media-materials",
-     "title": "Press and messaging materials",
-     "status": "not_started",
-     "due": null,
-     "slots": [
-      {
-       "id": "earned-press-release",
-       "label": "Press release — not drafted",
-       "kind": "doc",
-       "use": "Proactive media outreach and story pitching",
-       "note": "No release date or announcement peg has been set.",
-       "seed": null
-      },
-      {
-       "id": "earned-media-advisory",
-       "label": "Media advisory — not drafted",
-       "kind": "doc",
-       "use": "Advance notice for briefings and media events",
-       "note": "The plan contemplates news briefings, media education and networking events when appropriate. None are scheduled yet.",
-       "seed": null
-      },
-      {
-       "id": "earned-op-ed",
-       "label": "Op-ed — not drafted",
-       "kind": "doc",
-       "use": "Bylined placement, with a placement strategy",
-       "note": "Byline and target publication have not been chosen. The plan pairs op-ed writing with ghostwriting for leadership commentary.",
-       "seed": null
-      },
-      {
-       "id": "earned-talking-points",
-       "label": "Talking points — not drafted",
-       "kind": "doc",
-       "use": "Leadership and media use, customized by audience",
-       "note": "Would track the core messaging platform — mission, priorities and key data points — and the audience-specific message customization the plan calls for.",
-       "seed": null
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "days-in-class",
-   "name": "Days In Class Supplemental Digital Ads",
-   "groups": [
-    {
-     "id": "days-in-class-display",
-     "title": "Days In Class digital display set",
-     "status": "not_started",
-     "due": null,
-     "slots": [
-      {
-       "id": "days-in-class-display-units",
-       "label": "Display ad units — sizes not specified",
-       "kind": "image",
-       "ratio": null,
-       "w": null,
-       "h": null,
-       "maxBytes": null,
-       "use": "Supplemental digital display placements",
-       "note": "No sizes, formats or file-size caps have been supplied by a vendor, so none are listed here. Nothing has been laid out yet.",
-       "seed": null
-      }
-     ]
-    }
-   ]
-  }
- ],
- "schedule": {
-  "tv-finished-films": {
-   "dueToPub": "2026-09-01",
-   "dueNote": "One date on the production sheet covering all three lengths. It has to clear before the Sept 8 launch because CTV carries the campaign from day one, even though the broadcast flight does not begin until Nov 4.",
-   "airDate": "2026-09-08",
-   "airEnd": null,
-   "airNote": "CTV / premium streaming from the Sept 8 launch; the same films run on broadcast television Nov 4 - Dec 31",
-   "status": "not_started",
-   "copyStatus": "partial",
-   "copyNote": "HAVE 8/20 (:60, :30) — revised :15 outstanding",
-   "owner": "DD/PB",
-   "blocker": "Revised :15 script — per the 8/25 creative direction, every :15 in the campaign carries the reading message only. Broadcast delivery specs still to come from the media buyer.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "ctv-finished-spot": {
-   "dueToPub": "2026-09-01",
-   "dueNote": "No separate date exists for the platform-ready encode; it inherits Sept 1 from the TV/CTV row of the production sheet. This is the launch-critical half of that row.",
-   "airDate": "2026-09-08",
-   "airEnd": null,
-   "airNote": "From launch, Sept 8 — the plan names CTV / premium streaming the primary awareness vehicle and carries it through December. No end day is stated, so none is recorded.",
-   "status": "not_started",
-   "copyStatus": "partial",
-   "copyNote": "HAVE 8/20 (:60, :30) — revised :15 outstanding",
-   "owner": "DD/PB",
-   "blocker": "CTV encode, caption and slate requirements are not on record — request them from the media buyer along with the platform list.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "broadcast-finished-spot": {
-   "dueToPub": "2026-09-01",
-   "dueNote": "Sept 1 is the only production date on record for the TV row. Station traffic deadlines for the Nov 4 flight have not been issued, so this date may be restated once the station list arrives.",
-   "airDate": "2026-11-04",
-   "airEnd": "2026-12-31",
-   "airNote": "Nov 4 - Dec 31 only",
-   "status": "not_started",
-   "copyStatus": "partial",
-   "copyNote": "HAVE 8/20 (:60, :30) — revised :15 outstanding",
-   "owner": "DD/PB",
-   "blocker": "Broadcast delivery specs — frame rate, audio loudness, slate, ISCI/Ad-ID — plus the station list and traffic instructions from the media buyer.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "audio-finished-spots": {
-   "dueToPub": "2026-09-01",
-   "dueNote": "Lisa Ratcliff, \"OKEII- audio specs\", 5 Aug 2026: \"Please provide spot by 9/1.\" This is the date that binds — all four sources agree on Sept 1.",
-   "airDate": "2026-09-08",
-   "airEnd": null,
-   "airNote": "From launch, Sept 8 — the plan carries audio across the full September-December campaign and states no end day.",
-   "status": "in_production",
-   "copyStatus": "have",
-   "copyNote": "HAVE — REV 8/26 (supersedes the 8/24 version)",
-   "owner": "DD/PB",
-   "blocker": "The script currently spells \"FORTY-SEVENETH\" — correct before the recording session. File format and bit rate for station delivery are not on record; confirm with the stations before export.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "audio-production-scripts": {
-   "dueToPub": "2026-08-25",
-   "dueNote": "An alternate route, not a deadline anyone set. Lisa Ratcliff (\"OKEII- audio specs\", 5 Aug 2026): \"Please provide spot by 9/1 or if providing just the script/s for production I will need a week earlier to give station time to produce.\" Aug 25 is that week, backed off 9/1 — and it applies only if we send scripts instead of finished spots. We are producing the spots, so Sept 1 is the date that binds.",
-   "airDate": "2026-09-08",
-   "airEnd": null,
-   "airNote": "From launch, Sept 8 — same flight as the finished audio spots. No end day is stated.",
-   "status": "pending",
-   "copyStatus": "have",
-   "copyNote": "HAVE — REV 8/26 copy covers both lengths",
-   "owner": "DD/PB",
-   "blocker": "",
-   "conflict": "",
-   "source": "Email — lisa ratcliff <ratcliff@lmrmediamix.com>, \"OKEII- audio specs\", 5 Aug 2026 (re-sent 26 Aug 2026). No production schedule carries an Aug 25 audio date.",
-   "alternate": true
-  },
-  "dooh-lamar-boards": {
-   "dueToPub": "2026-09-03",
-   "dueNote": "Sept 3 is the vendor deadline. The production sheet's Sept 1 stands as the internal art-due date, two days ahead of it.",
-   "airDate": "2026-09-08",
-   "airEnd": null,
-   "airNote": "Boards go live at launch, Sept 8. No end date is stated for the OOH flight.",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — board copy",
-   "owner": "DD/PB",
-   "blocker": "Board copy not yet written. Lamar supplied layout templates (LDD_14x48.jpg, LDD_20x30.jpg) instead of a written spec sheet, and they have not been opened — live area and pixel dimensions are unknown until they are, which gates layout.",
-   "conflict": "Production sheet col B gives Sept 1; the media buyer's vendor date, recorded in col F and in schedule.json, is Sept 3. Sept 3 binds: it is the vendor deadline and the media buyer owns the buy. Sept 1 remains the internal art-due date.",
-   "source": "Email — lisa ratcliff <ratcliff@lmrmediamix.com>, \"OKEII- DOOH specs\", 10 Aug 2026 · data/schedule.json > deliverables[dooh]. The 8/26 production sheet does not carry this date."
-  },
-  "dooh-griffin-boards": {
-   "dueToPub": "2026-09-03",
-   "dueNote": "Sept 3 is the vendor deadline; the production sheet's Sept 1 is the internal art-due date. Griffin also requires artwork 48 hours ahead of the live date, which a Sept 3 delivery satisfies for a Sept 8 start.",
-   "airDate": "2026-09-08",
-   "airEnd": null,
-   "airNote": "Boards go live at launch, Sept 8. No end date is stated for the OOH flight.",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — board copy",
-   "owner": "DD/PB",
-   "blocker": "Board copy not yet written, and Griffin's format constrains what the copy can be: 7-8 elements maximum and thick type only. Delivery spec is 1092x308 px, 72 dpi, under 1 MB, JPEG or PNG, sent to billboard-traffic@griffin.news 48 hours ahead of the live date.",
-   "conflict": "Production sheet col B gives Sept 1; the media buyer's vendor date, recorded in col F and in schedule.json, is Sept 3. Sept 3 binds: it is the vendor deadline and the media buyer owns the buy. Sept 1 remains the internal art-due date.",
-   "source": "Email — lisa ratcliff <ratcliff@lmrmediamix.com>, \"OKEII- DOOH specs\", 10 Aug 2026 · data/schedule.json > deliverables[dooh]. The 8/26 production sheet does not carry this date."
-  },
-  "metro-family-septoct-spread": {
-   "dueToPub": "2026-08-18",
-   "dueNote": "Press-ready files delivered and the V3 proof approved. Nothing outstanding. 15.67 x 9.96 in with a 0.75 in gutter, CMYK/SWOP, 300 dpi.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "Sept/Oct issue — the \"Healthy Families\" issue. No on-sale date is stated anywhere.",
-   "status": "delivered",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/12 (V3)",
-   "owner": "PB",
-   "blocker": "",
-   "conflict": "Due date: the 8/26 production sheet gives Aug 18 (col B serial 46252); schedule.json gives Aug 14. Aug 18 binds as the more current record, and it matches the recorded proof-approval date. The point is moot — the piece is delivered.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "metro-family-oct-sponsored": {
-   "dueToPub": "2026-09-05",
-   "dueNote": "the media buyer's vendor date. 300–500 words plus the destination URL, one horizontal high-resolution hero image and 1–2 in-article images. Metro Family pulls the dedicated social post and the e-newsletter partner link from the article, so no extra assets are needed for those.",
-   "airDate": "2026-10-15",
-   "airEnd": "2026-11-15",
-   "airNote": "Runs Oct 15 – Nov 15",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — the article itself has not been written",
-   "owner": "DD",
-   "blocker": "Article copy (300–500 words), the destination URL and the images. The publisher's written confirmation of the submission deadline is also still outstanding.",
-   "conflict": "Due date: the 8/26 production sheet leaves column B as \"??\". Column F of the same sheet and schedule.json both carry the media buyer's vendor date of Sept 5. Sept 5 binds — it is the only stated date, and the media buyer owns the publisher relationship.",
-   "source": "Metro Family (OKC) vendor terms · data/schedule.json > deliverables[metro-family-oct-sponsored]. The 8/26 production sheet does not carry this date."
-  },
-  "metro-family-novdec-ad": {
-   "dueToPub": "2026-10-05",
-   "dueNote": "7.46 x 9.96 in live area; bleed and trim not yet specified by the publisher. Can be cut down from the Sept/Oct spread — keep the circle field, headline and anchor panel. Lands the same day as the Nov/Dec sponsored article, so plan production for the week of Sept 28.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "Nov/Dec issue. No on-sale date is stated in any source.",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — Nov/Dec page ad copy",
-   "owner": "PB",
-   "blocker": "Nov/Dec page ad copy.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "metro-family-novdec-sponsored": {
-   "dueToPub": "2026-10-05",
-   "dueNote": "300–500 words plus URL, one horizontal hero image and 1–2 in-article images. Lands the same day as the Nov/Dec full page.",
-   "airDate": "2026-11-15",
-   "airEnd": "2026-12-15",
-   "airNote": "Runs Nov 15 – Dec 15",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — no article copy exists; this piece is not tracked on the 8/26 production sheet",
-   "owner": "DD",
-   "blocker": "Article copy, the destination URL and the images.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "tulsa-kids-october": {
-   "dueToPub": "2026-09-08",
-   "dueNote": "Consistent with the publisher's rule that each ad is due by the 8th of the month prior to publication. Units: full page 8.25 x 10.75 in + 0.125 in bleed; website banner 1000 x 250 px; tile ads 300 x 250 px; dedicated e-blast approx. 600 x 1000 px. Note this falls on campaign launch day itself.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "October issue. The publisher's on-sale date is not stated in any source. The plan deck names Tulsa Kids as a print vehicle (slide 15) and places Print in the September – November 4 phase (slide 20), but dates no issue.",
-   "status": "not_started",
-   "copyStatus": "partial",
-   "copyNote": "Page ad, web banner and tile ads adapt from the Sept/Oct spread. E-blast copy NEED.",
-   "owner": "PB",
-   "blocker": "E-blast copy, subject line and destination URLs — all three are required together.",
-   "conflict": "Unit list: the 8/26 sheet lists four October units (page ad, web banner, tile ads, e-blast). catalog.json's tulsa-kids-october group carries three slots (full page, website banner, e-blast) with no tile slot. The sheet is the more current record and 300 x 250 is a documented Tulsa Kids size in specs.json, so treat the tile ads as in scope and add the missing slot to the board.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "tulsa-kids-november": {
-   "dueToPub": "2026-10-08",
-   "dueNote": "Consistent with the publisher's rule that each ad is due by the 8th of the month prior to publication. Units: quarter page 3.625 x 4.625 in (no bleed figure given); web banner; tile ads 300 x 250 px; e-blast.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "November issue. No on-sale date is stated in any source.",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — all November units",
-   "owner": "DD/PB",
-   "blocker": "All November copy: page ad, web banner, tile ads, plus the e-blast copy and subject line.",
-   "conflict": "Unit list: the 8/26 sheet lists page ad (3.625 x 4.625 in — a quarter page), web banner, tile ads and an e-blast. catalog.json's tulsa-kids-november group carries quarter page, website tile 300 x 250 and email tile 300 x 250. A web banner and an e-blast appear on the sheet but not on the board, and the board's email tile does not appear on the sheet. The November unit list should be confirmed with the publisher before anything is built; the dates themselves agree across all three sources.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "tulsa-kids-december": {
-   "dueToPub": "2026-11-08",
-   "dueNote": "Consistent with the publisher's rule that each ad is due by the 8th of the month prior to publication. Units per the sheet: full page 8.25 x 10.75 in + 0.125 in bleed; web banner 1000 x 250 px; tile ads 300 x 250 px; e-blast.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "December issue. No on-sale date is stated in any source. The plan deck describes December as a fully integrated month with added emphasis on family viewing and reading at home over winter break (slide 20), but dates no print issue.",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — all December units",
-   "owner": "DD/PB",
-   "blocker": "All December copy, including the e-blast copy and subject line.",
-   "conflict": "Unit list: the 8/26 sheet lists page ad, web banner, tile ads and an e-blast (sheet row 20 reads \"Dec. page sad\" — a typo for page ad). catalog.json and schedule.json both describe the December package instead as full page, promoted social post and website banner, and the promoted social post has no dimensions, format or copy length on record anywhere. The dates agree across all three sources; the unit list needs confirming with the publisher.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "sra-landing-page": {
-   "dueToPub": "2026-09-01",
-   "dueNote": "This is a live date, not a file handoff — the page has to be up and resolving. Copy has been in hand since 8/24; new content goes above the box links already on the page.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "The page has no flight of its own. It has to be live BEFORE the September 8 launch: platforms will not pre-approve paid social pointing at a URL that does not resolve, and the tracking pixels cannot be placed on a page that does not exist. September 1 is the working target; September 8 is the outside limit, and it leaves no margin.",
-   "status": "blocked",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/24 — landing page copy delivered to PB",
-   "owner": "DD/PB",
-   "blocker": "The page does not exist yet, which holds up paid social pre-approval, the digital display call to action, the radio tag and the tracking pixels. Sign-off on the copy is needed before the build starts, and one copy point is unsettled: the eyebrow reads 47th in reading while the body reads 50th in public education.",
-   "conflict": "Due date: the 8/26 production sheet and schedule.json both give Sept 1; catalog.json currently shows Sept 8. Sept 1 binds — the pre-approval and pixel dependencies need a live URL ahead of launch, and Sept 8 is launch day itself.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "organic-social-content": {
-   "dueToPub": "2026-09-01",
-   "dueNote": "The 8/26 sheet carries a Sept 1 date but marks the row \"n/a — Alyx\" — it sits outside the production schedule and is tracked here for launch readiness only.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "No dated content calendar exists in any source. The plan deck places organic social inside the overall campaign window of September through December 2026 (slide 9, slide 28) without naming start or end dates for it, so no flight dates can be given.",
-   "status": "not_started",
-   "copyStatus": "n/a",
-   "copyNote": "n/a — Alyx",
-   "owner": "Alyx",
-   "blocker": "",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "ps-ok50": {
-   "dueToPub": "2026-08-28",
-   "dueNote": "Aug 28 is the working delivery date carried in column F of the 8/26 production sheet and adopted by the 8/26 schedule file. Column B of the same sheet reads Aug 27. The Aug 25 date still on the board is the original package date and has passed.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December. The plan deck places paid social in the heavy-investment phase from September to Nov 4, continues all digital channels in November, and maintains a fully integrated campaign in December. The deck states months, not days; Sept 8 is the campaign launch date.",
-   "status": "in_review",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/21 (sheet column G, \"Copy to PB on 8/21\")",
-   "owner": "DD/PB",
-   "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval — platforms will not approve a dead destination URL.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.  Scoreboard wording: David's 8/26 digital display copy retitles scoreboard 1 from \"OK: 50TH IN PUBLIC EDUCATION\" to \"OK: 47TH OF 50 IN READING\", the same line as scoreboard 5. The Set 2 artwork delivered 8/26 still reads 50TH. Settle which is right before these go for platform pre-approval — as it stands two of the five message sets would carry the same scoreboard.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "ps-teachers-win": {
-   "dueToPub": "2026-08-28",
-   "dueNote": "Aug 28 is the working delivery date carried in column F of the 8/26 production sheet and adopted by the 8/26 schedule file. Column B of the same sheet reads Aug 27. The Aug 25 date still on the board is the original package date and has passed.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December, per the plan deck's phase strategy (September–Nov 4 heavy investment, all digital channels continuing through November and December).",
-   "status": "in_review",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/21 (sheet column G)",
-   "owner": "DD/PB",
-   "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "ps-students-win": {
-   "dueToPub": "2026-08-28",
-   "dueNote": "Aug 28 is the working delivery date carried in column F of the 8/26 production sheet and adopted by the 8/26 schedule file. Column B of the same sheet reads Aug 27. The Aug 25 date still on the board has passed.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December, per the plan deck's phase strategy.",
-   "status": "in_review",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/21 (sheet column G)",
-   "owner": "DD/PB",
-   "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "ps-parents-win": {
-   "dueToPub": "2026-08-28",
-   "dueNote": "Aug 28 is the working delivery date carried in column F of the 8/26 production sheet and adopted by the 8/26 schedule file. Column B of the same sheet reads Aug 27. The Aug 25 date still on the board has passed.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December, per the plan deck's phase strategy.",
-   "status": "in_review",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/21 (sheet column G)",
-   "owner": "DD/PB",
-   "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "ps-47th-reading": {
-   "dueToPub": "2026-08-28",
-   "dueNote": "Aug 28 is the working delivery date carried in column F of the 8/26 production sheet and adopted by the 8/26 schedule file. Column B of the same sheet reads Aug 27. The Aug 25 date still on the board has passed.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December, per the plan deck's phase strategy.",
-   "status": "in_review",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/21 (sheet column G)",
-   "owner": "DD/PB",
-   "blocker": "okeii.org/StrongReadersAct must be live before the package can be submitted for platform pre-approval. Scoreboard wording changed 8/25 — any export still carrying the earlier figure needs re-export before submission.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "paid-social-video-15": {
-   "dueToPub": "2026-08-28",
-   "dueNote": "Delivers with the rest of the September pre-approval package. Aug 28 is the working delivery date on the 8/26 sheet (column F) and in the 8/26 schedule; column B of the sheet reads Aug 27.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December, per the plan deck's phase strategy. YouTube placement cannot start until the file is uploaded to OKEII's own YouTube channel and the link supplied.",
-   "status": "in_progress",
-   "copyStatus": "partial",
-   "copyNote": "HAVE 8/21 for the spot itself; the YouTube copy set is still to be written",
-   "owner": "DD/PB",
-   "blocker": "YouTube requires its own short headline — the cap is 15 characters and \"Strong Readers Act\" alone is 18 — plus a 90-character long headline and a 70-character description. All three sizes now render, and each still needs a check against the 8/25 direction that every :15 carries the reading message only, and against the revised scoreboard wording. Landing page must be live before submission.",
-   "conflict": "Board Aug 25 (lapsed) vs sheet column B Aug 27 vs the working date and 8/26 schedule Aug 28. Aug 28 binds. Separately, none of the three meets the stated platform lead time: specs.json requires 10 business days of approval before the Sept 8 launch, which puts the last qualifying delivery at Aug 24. Aug 28 leaves six. Confirm the real approval window with the platforms.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "days-in-class-display": {
-   "dueToPub": "2026-08-28",
-   "dueNote": "Column B of the supplemental block reads 46262 = Aug 28. The board group carries no date at all.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "No flight window stated anywhere. The plan deck does not reference the Days In Class supplemental set, and neither the production sheet nor the schedule file gives a run date. Not inferred from the due date.",
-   "status": "not_started",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/24 (sheet column D, \"Copy to PB on 8/24\"; message: \"Days In Class\")",
-   "owner": "DD/PB",
-   "blocker": "Ad sizes have not been specified — it is not yet settled whether this is the same set as the main digital display build or a different cut.",
-   "conflict": "The board group days-in-class-display carries due = null. The 8/26 production sheet gives Aug 28 and the 8/26 schedule file gives Aug 28. Aug 28 binds; the board simply has no date recorded.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  },
-  "native-launch-set": {
-   "dueToPub": "2026-09-02",
-   "dueNote": "All three sources agree on Sept 2 — the production sheet, the 8/26 schedule file and the board.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December, per the plan deck's phase strategy for Native and digital.",
-   "status": "not_started",
-   "copyStatus": "partial",
-   "copyNote": "Display HAVE 8/26 · video copy NEED",
-   "owner": "DD/PB",
-   "blocker": "Display copy is in hand (8/26). Nativo still needs video copy — headline 60–90 characters ×3–5 and preview text around 120 — plus a 1×1 and a click tracker.",
-   "conflict": "Served by the digital display set: the 8/26 schedule file records that the same 8-size display build feeds Native Display on 9/2. The board's native-display-unit slot still records the size as unknown, while specs.json > native is marked CAPTURED 2026-08-26. The captured spec binds; the board slot is stale.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan"
-  }
- },
- "pending": [
-  {
-   "dueToPub": null,
-   "dueNote": "The production sheet date. It is largely moot for the copy itself, which went to the media buyer on 8/26; these are live announcer reads, so there is nothing to produce.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "Not stated. The plan lists Total Traffic & Weather Network inside the Audio mix but gives no flight window, and the media buyer recorded on 8/26 that there is no TTWN schedule for this campaign. Whether it runs is an open question.",
-   "status": "pending",
-   "copyStatus": "have",
-   "copyNote": "Sent to the media buyer 8/26 (:10 + :15)",
-   "owner": "DD",
-   "blocker": "Confirmation of whether TTWN is on the media buy, and reconciliation of the lengths — the production sheet lists :30s, while the copy sent on 8/26 is :10 and :15.",
-   "conflict": "The plan deck names Total Traffic & Weather Network as part of the Audio mix (slide 13). The media buyer recorded on 2026-08-26 that there is no TTWN schedule for this campaign. Unresolved — treat as an open question, not a cancellation. On dates: the sheet gives Sept 1 for \":30s\"; schedule.json carries no due date at all, on the grounds that the buy is unconfirmed.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan",
-   "key": "ttwn-announcer-copy",
-   "title": "TTWN live announcer copy — :10 and :15",
-   "channel": "audio"
-  },
-  {
-   "dueToPub": "2026-09-01",
-   "dueNote": "Served by the campaign digital display set rather than built separately — the sheet reads \"Use digital display ads below for this.\" That display set is itself due Aug 28.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "October run. No start or end date for the October digital flight appears in the plan deck or in any vendor note. The plan deck places Print in the September – November 4 phase (slide 20) without dating individual placements.",
-   "status": "not_started",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/26 (display set)",
-   "owner": "PB",
-   "blocker": "Metro Family digital ad sizes still to be confirmed with the publisher.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan",
-   "key": "metro-family-oct-digital",
-   "title": "Metro Family digital ads — October",
-   "channel": "print"
-  },
-  {
-   "dueToPub": "2026-10-05",
-   "dueNote": "Served by the same campaign digital display set as the October flight.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "Nov/Dec run. No flight dates for this placement appear in the plan deck or any vendor note.",
-   "status": "not_started",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/26 (display set)",
-   "owner": "PB",
-   "blocker": "",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan",
-   "key": "metro-family-novdec-digital",
-   "title": "Metro Family digital ads — Nov/Dec",
-   "channel": "print"
-  },
-  {
-   "dueToPub": "2026-09-01",
-   "dueNote": "Sept 1 per the 8/26 sheet and schedule.json. Separate from the Tulsa Kids dedicated e-blast (approx. 600 x 1000 px), which rides the Tulsa Kids October package and is due Sept 8.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "No send dates exist. Nothing in the plan deck or the vendor notes states when these deploy, how many there are, or to which lists — so no air date can be given.",
-   "status": "blocked",
-   "copyStatus": "need",
-   "copyNote": "NEED — copy and subject line not written",
-   "owner": "DD/PB",
-   "blocker": "The full scope is open: copy, subject line, dimensions, which list it goes to, and who writes it.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan",
-   "key": "eblasts",
-   "title": "eBlasts — all required assets",
-   "channel": "print"
-  },
-  {
-   "dueToPub": "2026-09-02",
-   "dueNote": "All three sources agree on Sept 2 — the production sheet, the 8/26 schedule file and the board.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December. The plan deck lists Native Content and Digital Display in the media mix and puts Native in the September–Nov 4 heavy-investment phase, with all digital channels continuing through November and December.",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — Nativo headline set and preview text not yet written",
-   "owner": "DD/PB",
-   "blocker": "Nativo headline set (1 required, 3–5 recommended, 60–90 characters each) and a preview text of roughly 120 characters still to be written. A 1x1 impression tag and click tracker are required for billing and are to be supplied through the media buy.",
-   "conflict": "Sizes: the board's native slots still record dimensions and duration as unknown, noting the Nativo spec sheet is an email attachment, and specs.json > source_notes still says native specs are not captured. But specs.json > native is marked CAPTURED 2026-08-26 and carries the full spec (16:9 1920x1080 recommended or 4:3 1024x768; MP4/MOV/WebM; :15–:30; 24–60fps, 30 recommended; 2 mbps; no Apple ProRes; 800x600 preview image). The captured spec binds — it is dated 8/26 and the 8/26 schedule confirms the specs were captured that day. The board slots and the source_notes line are stale.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan",
-   "key": "native-video-ads",
-   "title": "Native video ads — Nativo in-feed",
-   "channel": "native"
-  },
-  {
-   "dueToPub": "2026-09-02",
-   "dueNote": "All three sources agree on Sept 2 — the production sheet, the 8/26 schedule file and the board.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December, per the plan deck's phase strategy for Native and digital.",
-   "status": "not_started",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/26 (sheet column D, \"Copy to PB on 8/26\"; message: \"Scoreboard\")",
-   "owner": "DD/PB",
-   "blocker": "A 1x1 impression tag and click tracker are required and are to be supplied through the media buy. The unit size for the native display placement is not yet fixed on the board.",
-   "conflict": "Served by the digital display set: the 8/26 schedule file records that the same 8-size display build feeds Native Display on 9/2. The board's native-display-unit slot still records the size as unknown, while specs.json > native is marked CAPTURED 2026-08-26. The captured spec binds; the board slot is stale.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan",
-   "key": "native-display-ads",
-   "title": "Native display ads — Nativo",
-   "channel": "native"
-  },
-  {
-   "dueToPub": "2026-08-28",
-   "dueNote": "Aug 28 is a build date, not a vendor deadline. The 8/26 production sheet carries no standalone row for the display set — it appears only as the fill for the Metro Family digital rows (\"Use digital display ads below for this\"). Aug 28 binds because it is the earliest of the dates the set has to satisfy; the first vendor-facing date it feeds is Metro Family digital ads for October on Sept 1, then Native Display on Sept 2.",
-   "airDate": "2026-09-08",
-   "airEnd": "2026-12-31",
-   "airNote": "Runs from the Sept 8 launch through December. The plan deck folds digital display into \"Native Content and Digital Display\" in the media mix and keeps digital channels running through November and December. The same set separately fills the Metro Family October and Nov/Dec digital placements, whose issue windows sit on the print schedule rather than in the deck.",
-   "status": "not_started",
-   "copyStatus": "have",
-   "copyNote": "HAVE 8/26 — SRA_Implementation_Digital_Display_COPY_FOR_LAYOUT.pdf, transcribed at copy/digital-display-copy.md",
-   "owner": "PB",
-   "blocker": "Metro Family's own digital ad sizes have not yet been supplied, so it is not confirmed that the 8-size set covers that placement. Direction on record is to cut copy or lay out only the shortest headline for the smallest sizes.",
-   "conflict": "The 8/26 schedule file sets Aug 28 for the set. The 8/26 production sheet has no row of its own for it and dates its uses at Sept 1 (Metro Family digital, October) and Oct 5 (Metro Family digital, Nov/Dec); Native Display is Sept 2. Aug 28 binds as the build date, ahead of every use. Sizes are 320x50, 300x250, 728x90, 160x600, 300x600, 320x480, 768x1024 and 1024x768 — 8 sizes x 5 scoreboards, up to 40 units if every headline runs in every size.",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan",
-   "key": "digital-display-ads",
-   "title": "Digital display ad set — 8 sizes x 5 scoreboards",
-   "channel": "native"
-  },
-  {
-   "dueToPub": "2026-08-28",
-   "dueNote": "Column B of this row is a repeat mark, inheriting 46262 = Aug 28 from the Native Display row directly above it in the supplemental block.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "No flight window stated. The plan deck does not reference the Days In Class supplemental set. Not inferred from the due date.",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — copy not yet written (sheet column G)",
-   "owner": "DD/PB",
-   "blocker": "Ad sizes have not been specified — it is not yet settled whether the main paid social size set applies.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan",
-   "key": "days-in-class-paid-social",
-   "title": "Days In Class — paid social ads (supplemental)",
-   "channel": "days-in-class"
-  },
-  {
-   "dueToPub": null,
-   "dueNote": "The production sheet records the due date as \"TBD\" and the 8/26 schedule file repeats that. There is no date to publish.",
-   "airDate": null,
-   "airEnd": null,
-   "airNote": "No flight window stated. The plan deck does not reference the Days In Class supplemental set.",
-   "status": "not_started",
-   "copyStatus": "need",
-   "copyNote": "NEED — copy not yet written (sheet column G)",
-   "owner": "DD/PB",
-   "blocker": "Due date and ad sizes both still to be set.",
-   "conflict": "",
-   "source": "SRA_Prdn_Sched_PB_WORKING_8-26.xlsx · data/schedule.json · the approved media plan",
-   "key": "days-in-class-native-video",
-   "title": "Days In Class — native video ads (supplemental)",
-   "channel": "days-in-class"
   }
  ]
 }
