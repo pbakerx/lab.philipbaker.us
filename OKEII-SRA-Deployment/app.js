@@ -202,7 +202,8 @@
     // Every cut stays reachable -- a buyer looking at RV2 can check what RV1 said.
     fill($("#viewer-revs"), slot && slot.versions.length > 1
       ? slot.versions.slice().reverse().map((v) => el("button", {
-          class: `rev-chip${v.id === f.id ? " is-on" : ""}`,
+          class: `rev-chip${v.id === f.id ? " is-on" : ""}`
+               + (v.id === f.id && v.id !== slot.current.id ? " is-old" : ""),
           onclick: () => { open.rev = v.id; renderViewer(); },
         }, el("b", { text: `RV${revOf(slot, v)}` }), revDate(v) && el("i", { text: revDate(v) })))
       : null);

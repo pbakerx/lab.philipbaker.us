@@ -154,7 +154,7 @@ img, video { max-width: 100%; display: block; }
 .tile .rev {
   position: absolute; top: 6px; right: 6px;
   padding: 2px 6px; border-radius: 4px;
-  background: rgba(255,197,49,.92); color: #1a1204;
+  background: rgba(214,45,45,.95); color: #fff;
   font-size: 9.5px; font-weight: 700; letter-spacing: .06em;
 }
 
@@ -182,7 +182,10 @@ img, video { max-width: 100%; display: block; }
 .rev-chip b { font-weight: 700; letter-spacing: .05em; }
 .rev-chip i { font-style: normal; font-size: 10px; opacity: .8; }
 .rev-chip:hover { color: var(--ink); border-color: var(--blue); }
-.rev-chip.is-on { color: #1a1204; background: var(--gold); border-color: var(--gold); }
+/* The cut you are looking at. Red for the newest, so a revised asset reads as
+   changed at a glance; an older cut you have paged back to stays neutral. */
+.rev-chip.is-on { color: #fff; background: #d62d2d; border-color: #d62d2d; }
+.rev-chip.is-on.is-old { color: #1a1204; background: var(--ink-dim); border-color: var(--ink-dim); }
 
 .viewer-bar .size {
   flex: 0 0 auto; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;

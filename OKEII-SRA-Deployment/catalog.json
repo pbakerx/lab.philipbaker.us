@@ -4,7 +4,7 @@
   "client": "Oklahoma Education Impact Initiative",
   "agency": "Catapult",
   "total": 138,
-  "delivered": 134
+  "delivered": 138
  },
  "categories": [
   {
@@ -417,7 +417,7 @@
        "w": 1920,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social Master - 50th in Education -15 16x9_1.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 50th in Education -15 16x9.mp4",
        "archived": null
       },
       {
@@ -426,7 +426,7 @@
        "w": 1080,
        "h": 1920,
        "kind": "video",
-       "src": null,
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 50th in Education -15 VERTICAL.mp4",
        "archived": null
       },
       {
@@ -435,7 +435,7 @@
        "w": 1080,
        "h": 1080,
        "kind": "video",
-       "src": null,
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 50th in Education -15 SQUARE.mp4",
        "archived": null
       }
      ]
@@ -450,7 +450,7 @@
        "w": 1920,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 43rd in Reading -15 16x9.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 43rd in Reading -15 16x9_1.mp4",
        "archived": null
       },
       {
@@ -459,7 +459,7 @@
        "w": 1080,
        "h": 1920,
        "kind": "video",
-       "src": null,
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 43rd in Reading -15 VERTICAL.mp4",
        "archived": null
       },
       {
@@ -468,7 +468,7 @@
        "w": 1080,
        "h": 1080,
        "kind": "video",
-       "src": null,
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 43rd in Reading -15 SQUARE_1.mp4",
        "archived": null
       }
      ]
@@ -483,7 +483,7 @@
        "w": 1920,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 16x9.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 16x9_2.mp4",
        "archived": null
       },
       {
@@ -492,7 +492,7 @@
        "w": 1080,
        "h": 1920,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 VERTICAL.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 VERTICAL_1.mp4",
        "archived": null
       },
       {
@@ -501,7 +501,7 @@
        "w": 1080,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 SQUARE.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 SQUARE_1.mp4",
        "archived": null
       }
      ]
@@ -516,7 +516,7 @@
        "w": 1920,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 16x9.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 16x9_2.mp4",
        "archived": null
       },
       {
@@ -525,7 +525,7 @@
        "w": 1080,
        "h": 1920,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 VERTICAL.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 VERTICAL_1.mp4",
        "archived": null
       },
       {
@@ -534,7 +534,7 @@
        "w": 1080,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 SQUARE.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 SQUARE_1.mp4",
        "archived": null
       }
      ]
@@ -549,7 +549,7 @@
        "w": 1920,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 16x9_1.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 16x9_2.mp4",
        "archived": null
       },
       {
@@ -558,7 +558,7 @@
        "w": 1080,
        "h": 1920,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 square_1.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 vertical.mp4",
        "archived": null
       },
       {
@@ -567,7 +567,7 @@
        "w": 1080,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 square.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 Square_2.mp4",
        "archived": null
       }
      ]
