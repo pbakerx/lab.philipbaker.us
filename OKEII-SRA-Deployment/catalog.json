@@ -75,8 +75,8 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": null,
-       "archived": true
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-02.png",
+       "archived": null
       },
       {
        "id": "paid-social-static-ok50-1080x565-image-2",
@@ -84,7 +84,7 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-06.png",
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-06.png",
        "archived": null
       }
      ]
@@ -153,8 +153,8 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": null,
-       "archived": true
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-01.png",
+       "archived": null
       },
       {
        "id": "paid-social-static-47th-1080x565-image-2",
@@ -162,7 +162,7 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-08.png",
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-08.png",
        "archived": null
       }
      ]
@@ -231,8 +231,8 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": null,
-       "archived": true
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-03.png",
+       "archived": null
       },
       {
        "id": "paid-social-static-parents-1080x565-image-2",
@@ -240,7 +240,7 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-09.png",
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-09.png",
        "archived": null
       }
      ]
@@ -309,7 +309,7 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-04.png",
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-04.png",
        "archived": null
       },
       {
@@ -318,7 +318,7 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-07.png",
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-07.png",
        "archived": null
       }
      ]
@@ -387,7 +387,7 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-05.png",
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-05.png",
        "archived": null
       },
       {
@@ -396,7 +396,7 @@
        "w": 1080,
        "h": 565,
        "kind": "image",
-       "src": "Paid Social/Paid Social 1080x656 Exports/Paid Social 1080x565-10.png",
+       "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-10.png",
        "archived": null
       }
      ]
@@ -450,7 +450,7 @@
        "w": 1920,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 43rd in Reading -15 16x9_1.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 47th in Reading -15 16x9.mp4",
        "archived": null
       },
       {
@@ -459,7 +459,7 @@
        "w": 1080,
        "h": 1920,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 43rd in Reading -15 VERTICAL.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 47th in Reading -15 VERTICAL.mp4",
        "archived": null
       },
       {
@@ -468,7 +468,7 @@
        "w": 1080,
        "h": 1080,
        "kind": "video",
-       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 43rd in Reading -15 SQUARE_1.mp4",
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - 47th in Reading -15 SQUARE.mp4",
        "archived": null
       }
      ]
