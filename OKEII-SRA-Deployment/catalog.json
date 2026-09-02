@@ -3,8 +3,8 @@
   "campaign": "Strong Readers Act",
   "client": "Oklahoma Education Impact Initiative",
   "agency": "Catapult",
-  "total": 136,
-  "delivered": 126
+  "total": 138,
+  "delivered": 128
  },
  "categories": [
   {
@@ -1202,11 +1202,11 @@
    "name": "TV",
    "messages": [
     {
-     "id": "tv-ok50",
-     "name": "50th in Education",
+     "id": "tv-scoreboard-30",
+     "name": "ScoreBoard :30",
      "items": [
       {
-       "id": "tv-ok50-1920x1080-video",
+       "id": "tv-scoreboard-30-1920x1080-video",
        "size": "1920×1080",
        "w": 1920,
        "h": 1080,
@@ -1214,7 +1214,7 @@
        "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared 30 Master 16x9.mp4"
       },
       {
-       "id": "tv-ok50-1080x1920-video",
+       "id": "tv-scoreboard-30-1080x1920-video",
        "size": "1080×1920",
        "w": 1080,
        "h": 1920,
@@ -1222,12 +1222,40 @@
        "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 VERTICAL MASTER .mp4"
       },
       {
-       "id": "tv-ok50-1080x1080-video",
+       "id": "tv-scoreboard-30-1080x1080-video",
        "size": "1080×1080",
        "w": 1080,
        "h": 1080,
        "kind": "video",
        "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 MASTER SQUARE.mp4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "radio",
+   "name": "Radio",
+   "messages": [
+    {
+     "id": "radio-scoreboard",
+     "name": "ScoreBoard",
+     "items": [
+      {
+       "id": "radio-scoreboard-15-audio",
+       "size": ":15",
+       "w": 0,
+       "h": 0,
+       "kind": "audio",
+       "src": "Video Production/Offline Renders/MASTERS/Radio ScoreBoard -15 v2.mp3"
+      },
+      {
+       "id": "radio-scoreboard-30-audio",
+       "size": ":30",
+       "w": 0,
+       "h": 0,
+       "kind": "audio",
+       "src": "Video Production/Offline Renders/MASTERS/Radio ScoreBoard -30 v2.mp3"
       }
      ]
     }

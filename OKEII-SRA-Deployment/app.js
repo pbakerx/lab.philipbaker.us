@@ -115,17 +115,20 @@
   // ── the grid ─────────────────────────────────────────────────────────────
   function tile(cat, msg, item, idx) {
     const f = fileOf(item.id);
-    const inner = f
-      ? (f.kind === "video"
-          ? el("video", { src: f.url, muted: "", playsinline: "", preload: "metadata", loop: "" })
-          : el("img", { src: f.url, alt: "", loading: "lazy" }))
-      : el("span", { class: "empty", text: "To come" });
+    const inner = !f
+      ? el("span", { class: "empty", text: "To come" })
+      : f.kind === "video"
+        ? el("video", { src: f.url, muted: "", playsinline: "", preload: "metadata", loop: "" })
+        : f.kind === "audio"
+          ? el("span", { class: "audio-mark", text: item.size })
+          : el("img", { src: f.url, alt: "", loading: "lazy" });
 
     return el("button", {
-      class: `tile${f ? "" : " is-empty"}${f?.kind === "video" ? " is-video" : ""}`,
+      class: `tile${f ? "" : " is-empty"}${f ? ` is-${f.kind}` : ""}`,
       onclick: () => openViewer(cat.id, msg.id, idx),
     },
-      el("span", { class: "frame" }, inner, f?.kind === "video" && el("span", { class: "play" })),
+      el("span", { class: "frame" }, inner,
+        (f?.kind === "video" || f?.kind === "audio") && el("span", { class: "play" })),
       el("span", { class: "size", text: item.size }));
   }
 
@@ -164,11 +167,15 @@
     const item = msg.items[open.idx];
     const f = fileOf(item.id);
 
-    const media = f
-      ? (f.kind === "video"
-          ? el("video", { src: f.url, controls: "", autoplay: "", playsinline: "", loop: "" })
-          : el("img", { src: f.url, alt: "" }))
-      : el("div", { class: "empty-lg", text: "To come" });
+    const media = !f
+      ? el("div", { class: "empty-lg", text: "To come" })
+      : f.kind === "video"
+        ? el("video", { src: f.url, controls: "", autoplay: "", playsinline: "", loop: "" })
+        : f.kind === "audio"
+          ? el("div", { class: "audio-player" },
+              el("div", { class: "audio-len", text: item.size }),
+              el("audio", { src: f.url, controls: "", autoplay: "" }))
+          : el("img", { src: f.url, alt: "" });
 
     fill($("#viewer-crumb"), `${cat.name} · ${msg.name}`);
     fill($("#viewer-size"), item.size);

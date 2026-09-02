@@ -133,6 +133,22 @@ img, video { max-width: 100%; display: block; }
   border-bottom: 6.5px solid transparent;
 }
 
+/* Radio has nothing to show, so the tile carries the length as its own mark. */
+.tile.is-audio .frame { background: #071023; }
+.tile .audio-mark {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 30px; font-weight: 700; letter-spacing: .02em;
+  color: var(--line); font-variant-numeric: tabular-nums;
+}
+.tile.is-audio .play { background: rgba(6,11,26,.5); }
+
+.audio-player { display: grid; gap: 18px; justify-items: center; width: min(560px, 88vw); }
+.audio-len {
+  font-size: 46px; font-weight: 700; color: var(--gold);
+  font-variant-numeric: tabular-nums; letter-spacing: .01em;
+}
+.audio-player audio { width: 100%; }
+
 /* ── viewer ───────────────────────────────────────────────────────────── */
 #viewer {
   position: fixed; inset: 0; z-index: 90; display: flex; flex-direction: column;
