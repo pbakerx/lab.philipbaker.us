@@ -149,6 +149,15 @@ img, video { max-width: 100%; display: block; }
 }
 .audio-player audio { width: 100%; }
 
+/* A corner mark, so a revised asset is obvious in the grid without adding a
+   second line of text under every tile that was never revised. */
+.tile .rev {
+  position: absolute; top: 6px; right: 6px;
+  padding: 2px 6px; border-radius: 4px;
+  background: rgba(255,197,49,.92); color: #1a1204;
+  font-size: 9.5px; font-weight: 700; letter-spacing: .06em;
+}
+
 /* ── viewer ───────────────────────────────────────────────────────────── */
 #viewer {
   position: fixed; inset: 0; z-index: 90; display: flex; flex-direction: column;
@@ -158,21 +167,37 @@ img, video { max-width: 100%; display: block; }
   display: flex; align-items: center; gap: 14px;
   padding: 13px 20px; border-bottom: 1px solid var(--line-soft); flex: 0 0 auto;
 }
+/* The crumb is the only thing here that may shrink; everything to its right is
+   a control and must keep its full width. */
 .viewer-bar .crumb {
+  flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-faint);
 }
+.viewer-bar .revs { display: flex; flex: 0 0 auto; gap: 6px; margin-left: auto; }
+.rev-chip {
+  display: flex; flex: 0 0 auto; align-items: baseline; gap: 6px; white-space: nowrap;
+  padding: 4px 9px; border-radius: 6px; border: 1px solid var(--line);
+  color: var(--ink-faint); font-size: 11px; line-height: 1;
+}
+.rev-chip b { font-weight: 700; letter-spacing: .05em; }
+.rev-chip i { font-style: normal; font-size: 10px; opacity: .8; }
+.rev-chip:hover { color: var(--ink); border-color: var(--blue); }
+.rev-chip.is-on { color: #1a1204; background: var(--gold); border-color: var(--gold); }
+
 .viewer-bar .size {
-  font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; margin-left: auto;
+  flex: 0 0 auto; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums;
 }
 .viewer-bar .count {
   font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; min-width: 54px; text-align: right;
 }
-.viewer-bar button {
-  width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--line);
+/* Direct children only. The revision chips are buttons too, nested inside
+   #viewer-revs, and this square-icon rule was squashing them to 30px. */
+.viewer-bar > button {
+  flex: 0 0 auto; width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--line);
   color: var(--ink-dim); font-size: 14px; line-height: 1;
 }
-.viewer-bar button:hover { color: #fff; border-color: var(--blue); background: var(--panel); }
-.viewer-bar .close { width: auto; padding: 0 13px; font-size: 12.5px; }
+.viewer-bar > button:hover { color: #fff; border-color: var(--blue); background: var(--panel); }
+.viewer-bar > button.close { width: auto; padding: 0 13px; font-size: 12.5px; }
 
 #viewer-body {
   flex: 1 1 auto; min-height: 0; display: grid; place-items: center; padding: 22px;

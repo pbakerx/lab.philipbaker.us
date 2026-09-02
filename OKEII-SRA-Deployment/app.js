@@ -37,9 +37,9 @@
   const fill = (n, ...kids) => { n.replaceChildren(); mount(n, kids); return n; };
 
   let CAT = null;         // the catalog
-  let FILES = {};         // id -> current file {url, kind, filename}
+  let FILES = {};         // id -> { current, versions } -- versions newest first
   let category = null;    // selected category id
-  let open = null;        // { catId, msgId, idx } while the viewer is up
+  let open = null;        // { catId, msgId, idx, rev } while the viewer is up
   let sideOpen = false;   // mobile nav
 
   // ── build check ──────────────────────────────────────────────────────────
@@ -71,12 +71,24 @@
     FILES = {};
     const slots = st?.state?.slots || {};
     for (const [id, s] of Object.entries(slots)) {
-      const cur = (s.versions || []).find((v) => v.id === s.currentId) || (s.versions || [])[0];
-      if (cur) FILES[id] = cur;
+      const versions = s.versions || [];
+      const cur = versions.find((v) => v.id === s.currentId) || versions[0];
+      if (cur) FILES[id] = { current: cur, versions };
     }
   }
 
-  const fileOf = (id) => FILES[id] || null;
+  const slotOf = (id) => FILES[id] || null;
+  const fileOf = (id) => FILES[id]?.current || null;
+
+  // Revisions are numbered from the oldest upload, so the first drop is RV1 and
+  // whatever supersedes it is RV2. versions[] arrives newest-first.
+  const revOf = (slot, v) => slot.versions.length - slot.versions.indexOf(v);
+  const revDate = (v) => {
+    const d = v.uploadedAt ? new Date(v.uploadedAt) : null;
+    return d && !isNaN(d) ? `${MONTHS[d.getMonth()]} ${d.getDate()}` : "";
+  };
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const count = (c) => c.messages.reduce((a, m) => a + m.items.length, 0);
   const have = (c) => c.messages.reduce((a, m) => a + m.items.filter((i) => fileOf(i.id)).length, 0);
 
@@ -123,12 +135,16 @@
           ? el("span", { class: "audio-mark", text: item.size })
           : el("img", { src: f.url, alt: "", loading: "lazy" });
 
+    const slot = slotOf(item.id);
+    const revised = slot && slot.versions.length > 1;
+
     return el("button", {
       class: `tile${f ? "" : " is-empty"}${f ? ` is-${f.kind}` : ""}`,
       onclick: () => openViewer(cat.id, msg.id, idx),
     },
       el("span", { class: "frame" }, inner,
-        (f?.kind === "video" || f?.kind === "audio") && el("span", { class: "play" })),
+        (f?.kind === "video" || f?.kind === "audio") && el("span", { class: "play" }),
+        revised && el("span", { class: "rev", text: `RV${revOf(slot, f)}` })),
       el("span", { class: "size", text: item.size }));
   }
 
@@ -143,7 +159,7 @@
 
   // ── the viewer ───────────────────────────────────────────────────────────
   function openViewer(catId, msgId, idx) {
-    open = { catId, msgId, idx };
+    open = { catId, msgId, idx, rev: null };
     renderViewer();
     $("#viewer").hidden = false;
     document.body.classList.add("locked");
@@ -158,6 +174,7 @@
     if (!open) return;
     const m = CAT.categories.find((c) => c.id === open.catId).messages.find((x) => x.id === open.msgId);
     open.idx = (open.idx + d + m.items.length) % m.items.length;
+    open.rev = null;                   // a new asset starts on its current cut
     renderViewer();
   }
 
@@ -165,7 +182,10 @@
     const cat = CAT.categories.find((c) => c.id === open.catId);
     const msg = cat.messages.find((m) => m.id === open.msgId);
     const item = msg.items[open.idx];
-    const f = fileOf(item.id);
+    const slot = slotOf(item.id);
+    // open.rev pins a specific version while the viewer is up; null means current.
+    const f = !slot ? null
+      : (open.rev && slot.versions.find((v) => v.id === open.rev)) || slot.current;
 
     const media = !f
       ? el("div", { class: "empty-lg", text: "To come" })
@@ -179,6 +199,13 @@
 
     fill($("#viewer-crumb"), `${cat.name} · ${msg.name}`);
     fill($("#viewer-size"), item.size);
+    // Every cut stays reachable -- a buyer looking at RV2 can check what RV1 said.
+    fill($("#viewer-revs"), slot && slot.versions.length > 1
+      ? slot.versions.slice().reverse().map((v) => el("button", {
+          class: `rev-chip${v.id === f.id ? " is-on" : ""}`,
+          onclick: () => { open.rev = v.id; renderViewer(); },
+        }, el("b", { text: `RV${revOf(slot, v)}` }), revDate(v) && el("i", { text: revDate(v) })))
+      : null);
     fill($("#viewer-count"), `${open.idx + 1} / ${msg.items.length}`);
     fill($("#viewer-body"), media);
   }
