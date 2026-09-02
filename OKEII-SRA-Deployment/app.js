@@ -62,7 +62,10 @@
   async function load() {
     const [cat, st] = await Promise.all([
       fetch(`catalog.json?v=${V}`).then((r) => r.json()),
-      fetch("api/okeii?action=state").then((r) => r.json()).catch(() => null),
+      // Root-absolute on purpose. The page is served from /OKEII-SRA-Deployment/,
+      // so a relative "api/okeii" resolves under that folder and 404s -- the
+      // function lives at the site root.
+      fetch("/api/okeii?action=state").then((r) => r.json()).catch(() => null),
     ]);
     CAT = cat;
     FILES = {};
