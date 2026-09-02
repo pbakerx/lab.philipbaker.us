@@ -4,7 +4,7 @@
   "client": "Oklahoma Education Impact Initiative",
   "agency": "Catapult",
   "total": 138,
-  "delivered": 128
+  "delivered": 134
  },
  "categories": [
   {
@@ -445,7 +445,7 @@
        "w": 1080,
        "h": 1920,
        "kind": "video",
-       "src": null
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 VERTICAL.mp4"
       },
       {
        "id": "paid-social-video-parents-1080x1080-video",
@@ -453,7 +453,7 @@
        "w": 1080,
        "h": 1080,
        "kind": "video",
-       "src": null
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 SQUARE.mp4"
       }
      ]
     },
@@ -475,7 +475,7 @@
        "w": 1080,
        "h": 1920,
        "kind": "video",
-       "src": null
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 VERTICAL.mp4"
       },
       {
        "id": "paid-social-video-teachers-1080x1080-video",
@@ -483,7 +483,7 @@
        "w": 1080,
        "h": 1080,
        "kind": "video",
-       "src": null
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 SQUARE.mp4"
       }
      ]
     },
@@ -505,7 +505,7 @@
        "w": 1080,
        "h": 1920,
        "kind": "video",
-       "src": null
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 square_1.mp4"
       },
       {
        "id": "paid-social-video-students-1080x1080-video",
@@ -513,7 +513,7 @@
        "w": 1080,
        "h": 1080,
        "kind": "video",
-       "src": null
+       "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 square.mp4"
       }
      ]
     }
