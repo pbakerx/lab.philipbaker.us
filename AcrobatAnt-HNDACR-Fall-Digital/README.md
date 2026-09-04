@@ -1,19 +1,22 @@
-# Honda Acura Fall Digital — lab package, round-aware (Version 2)
+# Honda Acura Fall Digital — lab package, round-aware (Version 3)
 
 Client-facing presentation of the Fall 2026 seasonal display work, built for
-lab.philipbaker.us. The page shows the **current round** of the 12 ads on the stage,
-with a prominent **Compare** button that puts the **same ad from any earlier round**
-next to it — side by side for the vertical sizes, stacked for the horizontals — same
-dealer, one timeline driving both in lockstep. A **Client notes** drawer holds the
+lab.philipbaker.us. The page shows the **current round** of the ads on the stage (36
+since Version 3: 2 brands × 6 sizes × A / B / retargeting static), with a prominent
+**Compare** button that puts the **same ad from any earlier round** next to it — side
+by side for the vertical sizes, stacked for the horizontals — same dealer, one timeline
+driving both in lockstep. An ad that no earlier round holds is marked **new** (in the
+size chips and where the Compare button would be). A **Client notes** drawer holds the
 round's feedback **word for word**, each note with what changed and a "show me" that
 parks both ads on the moment it is about; the masthead link opens the whole document.
 
 ```
 index.html        the presentation (single file, no build step, no external deps)
-rounds.json       every round, oldest first — written by Scripts/build_lab_package.py
-rounds/rvN/ads/   12 self-contained ads per round (template.html + index.html + runtime + art)
+rounds.json       every round, oldest first, each with its ad list — written by Scripts/build_lab_package.py
+rounds/rvN/ads/   the round's self-contained ads (template.html + index.html + runtime + art);
+                  rv0 and rv1 hold the original 12, rv2 onward all 36
 rounds/rvN/feedback.json   the client's notes for that round, verbatim (optional)
-boards/*.jpg      6 storyboard pages (brand × size)
+boards/*.jpg      12 storyboard pages (brand × size)
 dealers.js        the production dealer feeds (687 Honda / 189 Acura)
 ```
 

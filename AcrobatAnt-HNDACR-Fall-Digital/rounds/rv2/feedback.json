@@ -1,0 +1,72 @@
+{
+ "title": "Client notes on Version 2",
+ "date": "2026-09-03",
+ "source": "The agency's notes on the Version 2 package, as relayed by Philip (2026-09-03) — each note below is reproduced word for word as given. Addressed in Version 3.",
+ "statuses": {
+  "done": "Done in this version",
+  "partial": "Done, with a caveat noted",
+  "flagged": "Needs a decision — please read the note"
+ },
+ "sections": [
+  {
+   "heading": "Honda · Creative B · 160x600",
+   "unit": "HND_160x600_B",
+   "notes": [
+    {
+     "text": "Since the vehicle image is moving less, can you adjust the position so the car is closer to the center of the frame?",
+     "response": "Done: the drive's start and end points both moved 17px toward the centre of the frame, with the travel between them unchanged, so the car holds the middle of the window through the move.",
+     "status": "done",
+     "at": 1.5
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative A · 728x90",
+   "unit": "ACR_728x90_A",
+   "notes": [
+    {
+     "text": "Still see leaves near the top left corner of the car.",
+     "response": "Those leaves were part of the licensed photograph itself (flagged in round 1). The plate is retouched at the source and the unit regenerated — the swirl off the car's rear quarter is gone.",
+     "status": "done",
+     "at": 0.5
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative A · 320x50",
+   "unit": "ACR_320x50_A",
+   "notes": [
+    {
+     "text": "Too much of a gap of no leaves falling between headline and CTA text, please have leaves falling there as well.",
+     "response": "Done: the leaf system was re-dialled — more leaves, a faster and steadier fall, and a continuous feed rather than one drop at a time — so leaves keep falling through the dealer frame and into the CTA frame instead of running dry after the headline.",
+     "status": "done",
+     "at": 4.0
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative B · 728x90",
+   "unit": "ACR_728x90_B",
+   "notes": [
+    {
+     "text": "Please remove duplicate vehicle, we are still seeing a second vehicle in the first frame.",
+     "response": "Done. This was a rendering fault, not a second image: on Retina (2×) displays the car's foreground layer — the one that lets the speed lines pass behind the car — was drawn at twice its size for a moment at the start, which read as a second vehicle. The player now sizes that layer correctly on every display. The frame-1 art itself has one vehicle.",
+     "status": "done",
+     "at": 0.3
+    }
+   ]
+  },
+  {
+   "heading": "Acura · Creative B · 320x50",
+   "unit": "ACR_320x50_B",
+   "notes": [
+    {
+     "text": "Could we adjust the motion lines here? We attached what we did for the text/motion lines on the social side - could you recreate a similar look?",
+     "response": "Recreated on the social look: the lines re-dialled (field, weight and angle); they leave by a quick right-to-left wipe that fades as it crosses (0.75–1.05 s) rather than lingering through the frame change, return with the CTA at full strength, and wipe off again the moment the button lands (6.2 s).",
+     "status": "done",
+     "at": 0.9
+    }
+   ]
+  }
+ ]
+}

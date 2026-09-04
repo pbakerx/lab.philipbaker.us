@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HND_300x250_A</title>
+<meta name="ad.size" content="width=300,height=250">
+<script>var clickTag = "https://automobiles.honda.com/tools/dealership-locator";</script>
+<style>
+  /* The page carries the unit's ground and the root its SIZE in static CSS:
+     the browser can paint the document while the runtime scripts are still
+     downloading (parser-blocking, end of body), and without these a black
+     unit opened as a white page for that whole window on a cold cache.
+     The JS sizing in ad-player.js stays as a harmless no-op. */
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  /* No border on the ad root: with box-sizing:border-box a 1px rule turns a
+     728x90 slot into a 726x88 canvas, shifts every element 1px in, and draws a
+     hairline over art meant to bleed off the edge. The Review Deck outlines the
+     ad on its own frame instead. */
+  #ad {
+    position: relative; overflow: hidden; background: #ffffff;
+    width: 300px; height: 250px;
+  }
+  #ad, #ad * { box-sizing: border-box; }
+  #ad img { user-select: none; -webkit-user-select: none; }
+  @font-face {
+    font-family: 'HondaRound';
+    src: url('fonts/AvenirNextRoundedStd-Medium.ttf') format('truetype');
+    font-display: block;
+  }
+</style>
+</head>
+<body>
+<div id="ad" data-dealer-id="206506"></div>
+<script>const AD = {
+ "unit": "HND_300x250_A",
+ "w": 300,
+ "h": 250,
+ "brand": "HND",
+ "bg": "#ffffff",
+ "clickUrl": "https://automobiles.honda.com/tools/dealership-locator",
+ "dur": 9.0,
+ "els": [
+  {
+   "id": "logo",
+   "type": "img",
+   "src": "images/logo.png",
+   "box": [
+    18,
+    212,
+    97,
+    24
+   ],
+   "z": 30,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "cta",
+   "type": "rect",
+   "box": [
+    141,
+    208,
+    140,
+    32
+   ],
+   "z": 30,
+   "css": {
+    "background": "#0077c0",
+    "borderRadius": "16.0px"
+   },
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "ctatext",
+   "type": "img",
+   "src": "images/cta_text.png",
+   "box": [
+    155.0,
+    217.6,
+    112.0,
+    12.8
+   ],
+   "z": 31,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "f1canvas",
+   "type": "canvas",
+   "box": [
+    7,
+    6,
+    286,
+    192
+   ],
+   "z": 10,
+   "radius": 7,
+   "anim": {
+    "type": "out",
+    "dur": 0.004166666666666667
+   },
+   "relTo": "driveEnd",
+   "lead": 0.0
+  },
+  {
+   "id": "leafcanvas",
+   "type": "canvas",
+   "box": [
+    0,
+    0,
+    300,
+    250
+   ],
+   "z": 18
+  },
+  {
+   "id": "headline",
+   "type": "text",
+   "box": [
+    31.0,
+    149.0,
+    238.0,
+    36.0
+   ],
+   "z": 21,
+   "html": "<div style=\"font:16px/1.2 'HondaRound', Helvetica, Arial, sans-serif; color:#ffffff; text-align:center; white-space:nowrap;\">More places to be, more reasons<br>for expert service this fall.</div>",
+   "css": {
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "anim": {
+    "type": "upFade",
+    "at": 0.1,
+    "dist": 8,
+    "dur": 0.5,
+    "also": [
+     {
+      "type": "out",
+      "at": 4.4
+     }
+    ]
+   }
+  },
+  {
+   "id": "tech",
+   "type": "img",
+   "src": "images/tech.png",
+   "box": [
+    7,
+    6,
+    286,
+    168
+   ],
+   "z": 8,
+   "fit": "cover",
+   "clip": true,
+   "radius": 7,
+   "anim": {
+    "type": "move",
+    "at": 3.5,
+    "dur": 4.5,
+    "to": [
+     15.0,
+     -11.0
+    ],
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "s0": 1,
+    "s1": 1.067,
+    "ease": "cubic-bezier(0.000,0,1.000,1)"
+   },
+   "relTo": "driveEnd",
+   "lead": 0.0,
+   "imgPose": {
+    "dx": 0.0,
+    "dy": -50.0,
+    "scale": 1.04,
+    "rot": 0.0
+   },
+   "natural": [
+    576,
+    384
+   ]
+  },
+  {
+   "id": "passport_top",
+   "type": "img",
+   "src": "images/passport_top.png",
+   "box": [
+    -195.2,
+    -119.9,
+    220.4,
+    152.8
+   ],
+   "z": 20,
+   "fit": "fill",
+   "rot": -41.0,
+   "shadow": "-2px 3px 4px rgba(0,0,0,0.45)",
+   "anim": {
+    "type": "move",
+    "at": 0.2,
+    "dur": 1.7,
+    "to": [
+     58.0,
+     67.0
+    ],
+    "rot0": -41.0,
+    "rot1": -26.5,
+    "s0": 1,
+    "s1": 0.96,
+    "ease": "cubic-bezier(0.400,0,0.200,1)",
+    "also": [
+     {
+      "type": "fade",
+      "at": 0.0,
+      "dur": 0.7
+     },
+     {
+      "type": "move",
+      "at": 3.7,
+      "dur": 2.6,
+      "from": [
+       58.0,
+       67.0
+      ],
+      "to": [
+       348.0,
+       340.0
+      ],
+      "rot0": -26.5,
+      "rot1": -4.0,
+      "s0": 0.96,
+      "s1": 2.53,
+      "fill": "forwards",
+      "ease": "cubic-bezier(0.400,0,0.200,1)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "passport_m",
+   "type": "img",
+   "src": "images/passport_m.png",
+   "box": [
+    -181.8,
+    -434.2,
+    372.7,
+    258.3
+   ],
+   "z": 18,
+   "fit": "fill",
+   "rot": 70.26,
+   "shadow": "-2px 3px 4px rgba(0,0,0,0.45)",
+   "anim": {
+    "type": "move",
+    "at": 0.2,
+    "dur": 1.35,
+    "to": [
+     100.0,
+     147.0
+    ],
+    "rot0": 70.26,
+    "rot1": 108.0,
+    "s0": 1,
+    "s1": 1.0,
+    "ease": "cubic-bezier(0.350,0,0.200,1)",
+    "also": [
+     {
+      "type": "move",
+      "at": 3.8,
+      "dur": 1.95,
+      "from": [
+       100.0,
+       147.0
+      ],
+      "to": [
+       104.0,
+       21.0
+      ],
+      "rot0": 108.0,
+      "rot1": 20.5,
+      "s0": 1.0,
+      "s1": 1.0,
+      "fill": "forwards",
+      "ease": "cubic-bezier(0.400,0,0.200,1)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "passport_r",
+   "type": "img",
+   "src": "images/passport_r.png",
+   "box": [
+    274.3,
+    -124.3,
+    276.5,
+    191.7
+   ],
+   "z": 19,
+   "fit": "fill",
+   "rot": 46.0,
+   "shadow": "-2px 3px 4px rgba(0,0,0,0.45)",
+   "anim": {
+    "type": "move",
+    "at": 0.1,
+    "dur": 1.0,
+    "to": [
+     -116.0,
+     26.0
+    ],
+    "rot0": 46.0,
+    "rot1": 26.53,
+    "s0": 1,
+    "s1": 1.0,
+    "ease": "cubic-bezier(0.400,0,0.200,1)",
+    "also": [
+     {
+      "type": "out",
+      "at": 4.6,
+      "dur": 0.3
+     },
+     {
+      "type": "move",
+      "at": 3.5,
+      "dur": 1.0,
+      "from": [
+       -116.0,
+       26.0
+      ],
+      "to": [
+       51.0,
+       26.0
+      ],
+      "rot0": 26.53,
+      "rot1": -29.0,
+      "s0": 1.0,
+      "s1": 1.0,
+      "fill": "forwards",
+      "ease": "cubic-bezier(0.400,0,0.200,1)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "dealer",
+   "type": "text",
+   "box": [
+    58.0,
+    144.0,
+    185.0,
+    55.0
+   ],
+   "z": 22,
+   "html": "<span>Visit the experts at Norm Reeves Honda Superstore Huntington Beach.</span>",
+   "css": {
+    "font": "16px/1.2 'HondaRound', Helvetica, Arial, sans-serif",
+    "color": "#00324e",
+    "textAlign": "center",
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "anim": {
+    "type": "upFade",
+    "at": 4.9,
+    "dist": 8,
+    "dur": 0.5
+   },
+   "autoFit": 11
+  }
+ ],
+ "engine": {
+  "canvas": "f1canvas",
+  "leafCanvas": "leafcanvas",
+  "taperAt": 4.6,
+  "sceneSources": {
+   "honda": "images/vehicle.png",
+   "acura": "images/vehicle.png",
+   "custom": "images/vehicle.png"
+  },
+  "stopAt": 5.8,
+  "taperRel": true
+ }
+};</script>
+<script src="leaf-engine.js?v=3389ade0e6"></script>
+<script src="ad-player.js?v=3389ade0e6"></script>
+</body>
+</html>

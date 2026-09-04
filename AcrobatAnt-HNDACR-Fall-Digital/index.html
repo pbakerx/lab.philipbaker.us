@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Honda Acura Fall Digital</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Honda + Acura Fall 2026 seasonal HTML5 display — the current round, every earlier round beside it, and the client's notes word for word.">
+<meta name="description" content="Honda + Acura Fall 2026 seasonal HTML5 display — the current version, every earlier version beside it, and the client's notes word for word.">
 <style>
   :root {
     --ink: #f1f5f9;
@@ -18,6 +18,10 @@
     --sans: -apple-system, "Helvetica Neue", Arial, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  /* hidden means hidden: an element's own display rule (inline-flex, flex, block)
+     would otherwise beat the browser's [hidden] rule and paint it anyway — the
+     "new" badge and the empty compare pair both did */
+  [hidden] { display: none !important; }
   html { background: var(--ground); }
   body {
     background: var(--ground); color: var(--ink);
@@ -40,6 +44,9 @@
     margin-top: 4px; font-size: 11px; letter-spacing: .12em;
     text-transform: uppercase; color: var(--ink-dim);
   }
+  /* the subhead's two facts that matter — which version, and that it is the
+     full set — in the page's contrast colour */
+  .version em.hi { font-style: normal; font-weight: 600; color: var(--accent); }
   .rule {
     width: 36px; height: 1px; background: var(--accent);
     margin: 14px auto 0; opacity: .8;
@@ -78,17 +85,20 @@
   /* ---------- pickers ---------- */
   .pickers { padding: 8px 0 2px; }
   .group { display: flex; align-items: baseline; justify-content: center;
-           gap: 14px; flex-wrap: wrap; padding: 4px 0; }
+           gap: 14px; flex-wrap: nowrap; padding: 4px 0; }
+  /* a fixed name column: Acura's longer creative names used to push its chips
+     onto a second line, so the two brands read differently */
   .group-name {
-    font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--ink-faint); min-width: 148px; text-align: right;
+    font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-faint); width: 252px; flex: 0 0 252px; text-align: right;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .chips { display: flex; gap: 8px; }
+  .chips { display: flex; gap: 8px; flex-wrap: nowrap; }
   .chip {
     background: none; cursor: pointer; color: var(--ink-dim);
     border: 1px solid var(--line); border-radius: 999px;
     font: 12.5px/1 var(--sans); letter-spacing: .04em;
-    padding: 8px 14px; transition: all .2s;
+    padding: 8px 10px; transition: all .2s; white-space: nowrap;
   }
   .chip:hover { border-color: var(--ink-faint); color: var(--ink); }
   .chip[aria-selected="true"] {
@@ -103,6 +113,10 @@
     padding-bottom: 10px; flex-wrap: wrap;
   }
   .unit-name { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); }
+  /* per-ad status: new this version / revised this version / carried forward unchanged */
+  .unit-status { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }
+  .unit-status.revised, .unit-status.new { color: var(--accent); }
+  .unit-status .why { text-transform: none; letter-spacing: .02em; color: var(--ink-faint); }
   .stage {
     display: flex; justify-content: center;
   }
@@ -212,7 +226,46 @@
   }
   .compare-cta:hover { filter: brightness(1.08); }
   .compare-cta[aria-pressed="true"] { background: transparent; color: var(--accent); box-shadow: none; }
+  /* compound: the button and its "+" share one pill; the "+" opens the round menu */
+  .cmp-compound { position: relative; display: inline-flex; align-items: stretch; }
+  .cmp-compound .compare-cta { border-radius: 999px 0 0 999px; padding-right: 20px; }
+  .cmp-compound .compare-more {
+    cursor: pointer; background: var(--accent); color: var(--ground);
+    border: 1px solid var(--accent); border-left: 1px solid rgba(30,41,59,.35); border-radius: 0 999px 999px 0;
+    font: 600 17px/1 var(--sans); padding: 0 16px 0 13px; transition: all .2s;
+    box-shadow: 0 6px 18px rgba(217,185,108,.25);
+  }
+  .cmp-compound .compare-more:hover { filter: brightness(1.08); }
+  .cmp-compound[data-on="true"] .compare-more { background: transparent; color: var(--accent); border-left-color: var(--accent); box-shadow: none; }
+  .cmp-compound .compare-more[aria-expanded="true"] { background: var(--ink); color: var(--ground); }
+  .cmp-menu {
+    position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); z-index: 40;
+    min-width: 250px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 6px; box-shadow: 0 14px 34px rgba(0,0,0,.35);
+  }
+  .cmp-menu[hidden] { display: none; }
+  .cmp-item {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 14px; width: 100%;
+    background: none; border: 0; cursor: pointer; color: var(--ink-dim); text-align: left;
+    font: 13px/1.3 var(--sans); letter-spacing: .04em; padding: 10px 12px; border-radius: 8px;
+  }
+  .cmp-item:hover { background: var(--ground); color: var(--ink); }
+  .cmp-item[aria-checked="true"] { color: var(--ink); }
+  .cmp-item[aria-checked="true"]::before { content: "\2022"; color: var(--accent); margin-right: 8px; }
+  .cmp-item .d { font-size: 11px; color: var(--ink-faint); letter-spacing: .06em; }
+  .cmp-item.close { border-top: 1px solid var(--line); border-radius: 0 0 8px 8px; margin-top: 4px; color: var(--accent); }
+  .cmp-menu-head { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-faint); padding: 6px 12px 4px; }
   .compare-row { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 6px 0 16px; flex-wrap: wrap; }
+  /* an ad with no earlier round: say so where the Compare button would be */
+  .new-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1px solid var(--accent); border-radius: 999px; color: var(--accent);
+    font: 600 12px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; padding: 12px 22px;
+  }
+  .new-badge small { font-weight: 400; letter-spacing: .06em; text-transform: none; color: var(--ink-dim); }
+  .chip sup.new { font-size: 8px; letter-spacing: .12em; text-transform: uppercase; margin-left: 5px; color: var(--accent); vertical-align: 2px; }
+  .chip[aria-selected="true"] sup.new { color: var(--ground); }
+  
 
   .round-line { margin-top: 4px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-dim); }
   .masthead-links { margin-top: 10px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
@@ -307,10 +360,13 @@
     .drawer-body { padding: 12px 14px 18px; }
     .note q { font-size: 15px; }
   }
+  @media (max-width: 760px) {
+    .group { flex-direction: column; align-items: center; gap: 8px; }
+    .group-name { text-align: center; width: auto; flex: 0 0 auto; }
+    .chips { flex-wrap: wrap; justify-content: center; }
+  }
   @media (max-width: 560px) {
     header { padding-top: 38px; }
-    .group { flex-direction: column; align-items: center; gap: 8px; }
-    .group-name { text-align: center; min-width: 0; }
     .slot { padding: 10px; }
   }
 </style>
@@ -335,16 +391,20 @@
   <section class="stage-outer">
     <div class="stage-meta">
       <span class="unit-name" id="unitName"></span>
+      <span class="unit-status" id="unitStatus"></span>
     </div>
     <div class="compare-row">
-      <button class="compare-cta" id="compareBtn" aria-pressed="false">&#8646;&nbsp; Compare with Round 0</button>
-      <label id="roundPickWrap2" style="display:none">against <select id="roundPick2" aria-label="Earlier round"></select></label>
+      <div class="cmp-compound" id="cmpCompound" data-on="false">
+        <button class="compare-cta" id="compareBtn" aria-pressed="false">&#8646;&nbsp; Compare with Round 0</button><button class="compare-more" id="compareMore" aria-haspopup="menu" aria-expanded="false" aria-controls="cmpMenu" title="choose the version">+</button>
+        <div class="cmp-menu" id="cmpMenu" role="menu" hidden></div>
+      </div>
+      <span class="new-badge" id="newBadge" hidden>New in this version <small>· no earlier version to compare</small></span>
     </div>
     <div class="stage" id="stageRow">
-      <div class="pair"><div class="pair-label" id="mainLabel" hidden><b>This round</b></div>
+      <div class="pair"><div class="pair-label" id="mainLabel" hidden><b>This version</b></div>
         <div class="slot"><div class="fit" id="fit"><iframe id="adFrame" scrolling="no" title="Ad preview"></iframe></div></div></div>
-      <div class="pair" id="cmpPair" hidden><div class="pair-label" id="cmpLabel">Round 0 &middot; as presented</div>
-        <div class="slot"><div class="fit" id="cmpFit2"><iframe id="cmpFrame2" scrolling="no" title="Earlier round"></iframe></div></div></div>
+      <div class="pair" id="cmpPair" hidden><div class="pair-label" id="cmpLabel">Version 1 &middot; as presented</div>
+        <div class="slot"><div class="fit" id="cmpFit2"><iframe id="cmpFrame2" scrolling="no" title="Earlier version"></iframe></div></div></div>
     </div>
     <div class="timeline">
       <input type="range" id="scrub" min="0" max="9000" step="50" value="0" aria-label="Timeline">
@@ -355,7 +415,7 @@
       <button class="ctl" id="seeBoard">See Storyboard</button>
       <button class="ctl handle" id="drawerHandle" aria-expanded="false" aria-controls="drawer">Client notes<span class="n" id="handleNotes"></span></button>
     </div>
-    <aside class="drawer" id="drawer" aria-hidden="true" aria-label="Compare rounds and client notes"><div class="drawer-inner">
+    <aside class="drawer" id="drawer" aria-hidden="true" aria-label="Client notes"><div class="drawer-inner">
       <div class="drawer-bar">
       <span class="dtab" aria-selected="true" style="cursor:default">Client notes &middot; this ad</span>
         <div class="right">
@@ -396,15 +456,20 @@ const SIZES = [
   { key: '728x90',  w: 728, h: 90,  label: '728 × 90'  },
   { key: '160x600', w: 160, h: 600, label: '160 × 600' },
   { key: '320x50',  w: 320, h: 50,  label: '320 × 50'  },
+  { key: '300x600', w: 300, h: 600, label: '300 × 600' },
+  { key: '300x250', w: 300, h: 250, label: '300 × 250' },
+  { key: '300x50',  w: 300, h: 50,  label: '300 × 50'  },
 ];
 const CREATIVES = {
   HND: [
     { key: 'A', name: 'Creative A — Passport' },
     { key: 'B', name: 'Creative B — Fall Rush' },
+    { key: 'RT', name: 'Retargeting — static' },
   ],
   ACR: [
     { key: 'A', name: 'Creative A — Precision Service' },
     { key: 'B', name: 'Creative B — Breeze Through Fall' },
+    { key: 'RT', name: 'Retargeting — static' },
   ],
 };
 const CLICK_URL = {
@@ -430,18 +495,13 @@ for (const b of ['HND', 'ACR']) {
 let ROUNDS = [], current = null, compareKey = null, feedback = {};
 async function loadRounds() {
   try { ROUNDS = await (await fetch('rounds.json?v=bfcb407450', { cache: 'no-store' })).json(); } catch (e) { ROUNDS = []; }
-  if (!ROUNDS.length) ROUNDS = [{ key: 'rv1', label: 'Round 1', title: '' }];
+  if (!ROUNDS.length) ROUNDS = [{ key: 'rv1', label: 'Version 2', title: '' }];
   current = ROUNDS[ROUNDS.length - 1];
   const earlier = ROUNDS.slice(0, -1);
   compareKey = earlier.length ? earlier[earlier.length - 1].key : null;
-  document.getElementById('versionLine').textContent = current.title || current.label;
-  const pick = document.getElementById('roundPick2');
-  pick.innerHTML = earlier.map(r => `<option value="${r.key}">${r.label} · ${r.title || ''}</option>`).join('');
-  if (compareKey) pick.value = compareKey;
-  document.getElementById('roundPickWrap2').style.display = earlier.length > 1 ? '' : 'none';
-  const hasEarlier = !!compareKey;
-  document.getElementById('compareBtn').style.display = hasEarlier ? '' : 'none';
-  if (hasEarlier) document.getElementById('compareBtn').innerHTML = `&#8646;&nbsp; Compare with ${roundOf(compareKey).label}`;
+  document.getElementById('versionLine').innerHTML = esc((current.title || current.label) + (current.date ? ` · ${fmtDate(current.date)}` : ''))
+    .replace(/^(Version \d+)/, '<em class="hi">$1</em>').replace(/(the full set)/i, '<em class="hi">$1</em>');
+  document.getElementById('cmpCompound').style.display = compareKey ? '' : 'none';
   for (const r of ROUNDS) {
     if (!r.hasFeedback) continue;
     try { feedback[r.key] = await (await fetch(`rounds/${r.key}/feedback.json`, { cache: 'no-store' })).json(); } catch (e) {}
@@ -449,6 +509,56 @@ async function loadRounds() {
   document.getElementById('fullDoc').style.display = feedback[current.key] ? '' : 'none';
 }
 function roundOf(key) { return ROUNDS.find(r => r.key === key) || {}; }
+/* rounds.json carries each round's ad list. An ad that no earlier round holds is
+   NEW this version: no Compare, a badge instead. (A round without a list is
+   assumed to hold everything — the pre-round-2 manifests.) */
+function roundsWith(id) { return ROUNDS.slice(0, -1).filter(r => !r.units || r.units.includes(id)); }
+/* "new" means a SIZE no earlier round presented (the round-2 build-out), not
+   merely an ad missing from the earlier packages — the retargeting statics of
+   the original sizes existed all along, and a badge on them read as if they
+   were fresh work (Philip). Those simply have nothing to compare against. */
+function isNew(id) {
+  if (ROUNDS.length < 2) return false;
+  const size = id.split('_')[1];
+  return !ROUNDS.slice(0, -1).some(r => !r.units || r.units.some(u => u.split('_')[1] === size));
+}
+/* dates bound to rounds: round.json "date" (YYYY-MM-DD) shown small as M/D/YY */
+function fmtDate(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '');
+  return m ? `${+m[2]}/${+m[3]}/${m[1].slice(2)}` : (iso || '');
+}
+function roundName(r) { return `${r.label || ''}${r.date ? ' · ' + fmtDate(r.date) : ''}`; }
+/* the compound control: one pill — "Compare with Round N · date" toggles the
+   comparison with that round; its "+" opens the menu of every earlier round
+   that holds this ad (and Close, while comparing) */
+function renderCompareRow() {
+  const id = unitId(), nw = isNew(id), have = roundsWith(id);
+  if (compareKey && !have.some(r => r.key === compareKey)) compareKey = have.length ? have[have.length - 1].key : null;
+  if (!compareKey && have.length) compareKey = have[have.length - 1].key;
+  const r = roundOf(compareKey), on = !!state.compare;
+  const wrap = document.getElementById('cmpCompound');
+  wrap.style.display = (nw || !compareKey) ? 'none' : '';
+  wrap.dataset.on = on ? 'true' : 'false';
+  const btn = document.getElementById('compareBtn');
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.innerHTML = on ? `&#8646;&nbsp; Comparing with ${esc(roundName(r))}` : `&#8646;&nbsp; Compare with ${esc(roundName(r))}`;
+  const menu = document.getElementById('cmpMenu');
+  menu.innerHTML = `<div class="cmp-menu-head">Compare this ad with</div>` + have.map(x => `
+    <button class="cmp-item" role="menuitemradio" data-key="${x.key}" aria-checked="${x.key === compareKey}">
+      <span>${esc(x.label)}<span class="d"> &middot; ${esc(fmtDate(x.date) || x.title || '')}</span></span><span class="d">${esc(x.deployed && !x.date ? x.deployed : '')}</span></button>`).join('')
+    + (on ? `<button class="cmp-item close" role="menuitem" data-close="1">&#10005;&nbsp; Close comparison</button>` : '');
+  menu.querySelectorAll('.cmp-item').forEach(b => b.addEventListener('click', () => {
+    closeCmpMenu();
+    if (b.dataset.close) { setCompare(false); return; }
+    compareKey = b.dataset.key;
+    if (state.compare) loadAd(); else setCompare(true);
+  }));
+  document.getElementById('newBadge').hidden = !nw;
+}
+function closeCmpMenu() {
+  document.getElementById('cmpMenu').hidden = true;
+  document.getElementById('compareMore').setAttribute('aria-expanded', 'false');
+}
 
 const dealerSel = document.getElementById('dealerSel');
 function renderDealers() {
@@ -488,7 +598,7 @@ function renderPickers() {
       <span class="group-name">${c.name}</span>
       <span class="chips">${SIZES.map(s => `
         <button class="chip" data-creative="${c.key}" data-size="${s.key}"
-          aria-selected="${state.creative === c.key && state.size === s.key}">${s.label}</button>`).join('')}
+          aria-selected="${state.creative === c.key && state.size === s.key}">${s.label}${isNew(`${state.brand}_${s.key}_${c.key}`) ? '<sup class="new">new</sup>' : ''}</button>`).join('')}
       </span>
     </div>`).join('');
   pickersEl.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => {
@@ -572,6 +682,12 @@ async function loadAd() {
   scrub.value = 0;
   frame.style.opacity = '0';
   cmpFrame.style.opacity = '0';
+  if (isNew(id) && state.compare) {                    // a new ad has nothing to compare against
+    state.compare = false;
+    document.getElementById('cmpPair').hidden = true;
+    document.getElementById('mainLabel').hidden = true;
+  }
+  renderCompareRow();                                  // picks a round that HAS this ad, or none
   const html = await unitHtml(id, current.key);      // fetch BEFORE touching the stage —
   let cmpHtml = null;
   if (compareKey && state.compare) cmpHtml = await unitHtml(id, compareKey).catch(() => null);
@@ -580,8 +696,23 @@ async function loadAd() {
   if (cmpHtml) cmpFrame.srcdoc = cmpHtml;              // both start together: lockstep from 0
   else cmpFrame.removeAttribute('srcdoc');
   unitName.textContent = id.replace(/_/g, ' · ');
+  renderUnitStatus();
   renderCompareMeta();
   renderNotes();
+}
+/* the ad's standing in this version, from rounds.json: new size, revised
+   (bytes or a runtime fix the assembler was told about), or carried forward
+   unchanged from the previous version that held it */
+function renderUnitStatus() {
+  const id = unitId(), el = document.getElementById('unitStatus');
+  const have = roundsWith(id), prev = have.length ? have[have.length - 1] : null;
+  const changed = (current.changed || []).includes(id), why = (current.changeNotes || {})[id];
+  let cls = '', html = '';
+  if (isNew(id)) { cls = 'new'; html = `New in ${esc(current.label)}`; }
+  else if (!prev) { html = `First presented in ${esc(current.label)}`; }
+  else if (changed) { cls = 'revised'; html = `Revised in ${esc(current.label)}` + (why ? ` <span class="why">· ${esc(why)}</span>` : ''); }
+  else { html = `Unchanged from ${esc(roundName(prev))}`; }
+  el.className = 'unit-status ' + cls; el.innerHTML = html;
 }
 
 function boardSrc() { return `boards/${state.brand.toLowerCase()}_${state.size}.jpg`; }
@@ -608,27 +739,26 @@ document.getElementById('drawerHandle').addEventListener('click', () => setDrawe
 document.getElementById('drawerClose').addEventListener('click', () => setDrawer(false));
 state.compare = false;
 function setCompare(on) {
+  if (on && isNew(unitId())) return;
   state.compare = on;
-  const btn = document.getElementById('compareBtn');
-  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  btn.innerHTML = on ? '&#10005;&nbsp; Close comparison'
-                     : `&#8646;&nbsp; Compare with ${roundOf(compareKey).label || 'Round 0'}`;
   document.getElementById('cmpPair').hidden = !on;
   document.getElementById('mainLabel').hidden = !on;
-  loadAd();   // reload both so they run in lockstep from 0
+  loadAd();   // reload both so they run in lockstep from 0 (and redraws the pill)
 }
-document.getElementById('compareBtn').addEventListener('click', () => setCompare(!state.compare));
-document.getElementById('roundPick2').addEventListener('change', (e) => {
-  compareKey = e.target.value;
-  renderCompareMeta();
-  if (state.compare) loadAd(); else setCompare(false);
+document.getElementById('compareBtn').addEventListener('click', () => { closeCmpMenu(); setCompare(!state.compare); });
+document.getElementById('compareMore').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const menu = document.getElementById('cmpMenu'), open = menu.hidden;
+  menu.hidden = !open;
+  document.getElementById('compareMore').setAttribute('aria-expanded', open ? 'true' : 'false');
 });
+document.addEventListener('click', (e) => { if (!e.target.closest('#cmpCompound')) closeCmpMenu(); });
 
 function renderCompareMeta() {
   const r = roundOf(compareKey);
-  document.getElementById('cmpLabel').textContent = compareKey ? `${r.label} · as presented${r.deployed ? ' ' + r.deployed : ''}` : '';
-  if (!state.compare) document.getElementById('compareBtn').innerHTML = `&#8646;&nbsp; Compare with ${r.label || 'Round 0'}`;
+  document.getElementById('cmpLabel').textContent = compareKey ? `${roundName(r)} · as presented` : '';
 }
+document.getElementById('mainLabel').innerHTML = '<b>This version</b>';
 
 /* notes for the current unit: the client's sentences exactly as written (serif,
    quoted), our response beneath, a mark for its status, and "show me" where a
@@ -647,15 +777,15 @@ function renderNotes() {
   const fb = feedback[current.key];
   const head = document.getElementById('notesHead'), list = document.getElementById('notesList');
   const handleN = document.getElementById('handleNotes');
-  if (!fb) { head.textContent = ''; list.innerHTML = '<div class="notes-empty">No client notes on this round.</div>'; handleN.textContent = ''; return; }
+  if (!fb) { head.textContent = ''; list.innerHTML = '<div class="notes-empty">No client notes on this version.</div>'; handleN.textContent = ''; return; }
   const id = unitId();
   const mine = fb.sections.filter(s => s.unit === id);
   const global = fb.sections.filter(s => !s.unit);
   const n = mine.reduce((a, s) => a + s.notes.length, 0);
   handleN.textContent = n ? `· ${n} note${n === 1 ? '' : 's'}` : '';
-  head.innerHTML = `<b>${esc(fb.title)}</b> · ${esc(fb.date)} · ${n} note${n === 1 ? '' : 's'} on this ad · word for word`;
+  head.innerHTML = `<b>${esc(fb.title)}</b> · ${esc(fmtDate(fb.date))} · ${n} note${n === 1 ? '' : 's'} on this ad · word for word`;
   list.innerHTML = [...mine, ...global].map(s => `<div class="note-group"><h3>${esc(s.heading)}</h3>${s.notes.map(x => noteHtml(x, fb)).join('')}</div>`).join('')
-    || '<div class="notes-empty">No notes on this ad this round.</div>';
+    || '<div class="notes-empty">No notes on this ad in this version.</div>';
   list.querySelectorAll('.show').forEach(b => b.addEventListener('click', () => {
     const t = Math.round(+b.dataset.at * 1000);
     seekBoth(t);
@@ -684,7 +814,7 @@ document.getElementById('seeBoard').addEventListener('click', () => {
 document.getElementById('fullDoc').addEventListener('click', () => {
   const fb = feedback[current.key];
   if (!fb) return;
-  docBody.innerHTML = `<h2>${esc(fb.title)}</h2><div class="src">${esc(fb.date)} · ${esc(fb.source || '')}</div>`
+  docBody.innerHTML = `<h2>${esc(fb.title)}</h2><div class="src">${esc(fmtDate(fb.date))} · ${esc(fb.source || '')}</div>`
     + fb.sections.map(s => `<div class="doc-sec" id="doc-${esc(s.unit || 'global')}"><h3>${s.unit
         ? `<a href="#" data-unit="${esc(s.unit)}" title="open this ad">${esc(s.heading)}</a>` : esc(s.heading)}</h3>${s.notes.map(x => noteHtml(x, fb)).join('')}</div>`).join('');
   docBody.querySelectorAll('h3 a').forEach(a => a.addEventListener('click', (ev) => {
@@ -705,11 +835,12 @@ document.getElementById('fullDoc').addEventListener('click', () => {
 function closeModal() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
 document.getElementById('modalClose').addEventListener('click', closeModal);
 modalScroll.addEventListener('click', e => { if (e.target === modalScroll) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (modal.classList.contains('open')) closeModal(); else if (drawerOpen()) setDrawer(false); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeCmpMenu(); if (modal.classList.contains('open')) closeModal(); else if (drawerOpen()) setDrawer(false); } });
 boardImg.addEventListener('click', () => boardImg.classList.toggle('zoomed'));
 
 (async () => {
   await loadRounds();
+  document.getElementById('mainLabel').innerHTML = `<b>${esc(current.label || 'This version')}</b>${current.date ? ' &middot; ' + esc(fmtDate(current.date)) : ''}`;
   renderDealers();
   renderPickers();
   loadAd();

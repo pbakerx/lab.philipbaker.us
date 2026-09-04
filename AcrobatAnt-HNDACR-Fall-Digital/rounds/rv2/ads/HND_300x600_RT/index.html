@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HND_300x600_RT</title>
+<meta name="ad.size" content="width=300,height=600">
+<script>var clickTag = "https://automobiles.honda.com/tools/dealership-locator";</script>
+<style>
+  /* The page carries the unit's ground and the root its SIZE in static CSS:
+     the browser can paint the document while the runtime scripts are still
+     downloading (parser-blocking, end of body), and without these a black
+     unit opened as a white page for that whole window on a cold cache.
+     The JS sizing in ad-player.js stays as a harmless no-op. */
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  /* No border on the ad root: with box-sizing:border-box a 1px rule turns a
+     728x90 slot into a 726x88 canvas, shifts every element 1px in, and draws a
+     hairline over art meant to bleed off the edge. The Review Deck outlines the
+     ad on its own frame instead. */
+  #ad {
+    position: relative; overflow: hidden; background: #ffffff;
+    width: 300px; height: 600px;
+  }
+  #ad, #ad * { box-sizing: border-box; }
+  #ad img { user-select: none; -webkit-user-select: none; }
+  @font-face {
+    font-family: 'HondaRound';
+    src: url('fonts/AvenirNextRoundedStd-Medium.ttf') format('truetype');
+    font-display: block;
+  }
+</style>
+</head>
+<body>
+<div id="ad" data-dealer-id="206506"></div>
+<script>const AD = {
+ "unit": "HND_300x600_RT",
+ "w": 300,
+ "h": 600,
+ "brand": "HND",
+ "bg": "#ffffff",
+ "clickUrl": "https://automobiles.honda.com/tools/dealership-locator",
+ "dur": 9.0,
+ "els": [
+  {
+   "id": "img",
+   "type": "img",
+   "src": "images/rt.png",
+   "box": [
+    0,
+    0,
+    300,
+    600
+   ],
+   "z": 5,
+   "fit": "cover",
+   "clip": true,
+   "anim": {
+    "type": "none"
+   },
+   "natural": [
+    300,
+    600
+   ]
+  },
+  {
+   "id": "copy",
+   "type": "text",
+   "box": [
+    45,
+    435,
+    212,
+    55
+   ],
+   "z": 20,
+   "html": "<span>Get expert service from Norm Reeves Honda Superstore Huntington Beach this fall.</span>",
+   "css": {
+    "font": "16px/1.2 'HondaRound', Helvetica, Arial, sans-serif",
+    "color": "#ffffff",
+    "textAlign": "center",
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "autoFit": 11,
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "logo",
+   "type": "img",
+   "src": "images/logo.png",
+   "box": [
+    86,
+    27,
+    129,
+    33
+   ],
+   "z": 30,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "cta",
+   "type": "rect",
+   "box": [
+    49,
+    532,
+    202,
+    42
+   ],
+   "z": 30,
+   "css": {
+    "background": "#0077c0",
+    "borderRadius": "21.0px"
+   },
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "ctatext",
+   "type": "img",
+   "src": "images/cta_text.png",
+   "box": [
+    69.2,
+    544.6,
+    161.60000000000002,
+    16.8
+   ],
+   "z": 31,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  }
+ ],
+ "engine": null
+};</script>
+<script src="leaf-engine.js?v=3389ade0e6"></script>
+<script src="ad-player.js?v=3389ade0e6"></script>
+</body>
+</html>

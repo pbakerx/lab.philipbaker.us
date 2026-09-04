@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HND_160x600_B</title>
+<meta name="ad.size" content="width=160,height=600">
+<script>var clickTag = "{{CLICK_URL}}";</script>
+<style>
+  /* The page carries the unit's ground and the root its SIZE in static CSS:
+     the browser can paint the document while the runtime scripts are still
+     downloading (parser-blocking, end of body), and without these a black
+     unit opened as a white page for that whole window on a cold cache.
+     The JS sizing in ad-player.js stays as a harmless no-op. */
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  /* No border on the ad root: with box-sizing:border-box a 1px rule turns a
+     728x90 slot into a 726x88 canvas, shifts every element 1px in, and draws a
+     hairline over art meant to bleed off the edge. The Review Deck outlines the
+     ad on its own frame instead. */
+  #ad {
+    position: relative; overflow: hidden; background: #ffffff;
+    width: 160px; height: 600px;
+  }
+  #ad, #ad * { box-sizing: border-box; }
+  #ad img { user-select: none; -webkit-user-select: none; }
+  @font-face {
+    font-family: 'HondaRound';
+    src: url('fonts/AvenirNextRoundedStd-Medium.ttf') format('truetype');
+    font-display: block;
+  }
+</style>
+</head>
+<body>
+<div id="ad" data-dealer-id="{{DEALER_ID}}"></div>
+<script>const AD = {
+ "unit": "HND_160x600_B",
+ "w": 160,
+ "h": 600,
+ "brand": "HND",
+ "bg": "#ffffff",
+ "clickUrl": "https://automobiles.honda.com/tools/dealership-locator",
+ "dur": 9.0,
+ "els": [
+  {
+   "id": "logo",
+   "type": "img",
+   "src": "images/logo.png",
+   "box": [
+    16,
+    31,
+    129,
+    33
+   ],
+   "z": 30,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "cta",
+   "type": "rect",
+   "box": [
+    8,
+    536,
+    142,
+    34
+   ],
+   "z": 30,
+   "css": {
+    "background": "#0077c0",
+    "borderRadius": "17.0px"
+   },
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "ctatext",
+   "type": "img",
+   "src": "images/cta_text.png",
+   "box": [
+    22.2,
+    546.2,
+    113.6,
+    13.6
+   ],
+   "z": 31,
+   "fit": "contain",
+   "anim": {
+    "type": "none"
+   }
+  },
+  {
+   "id": "f1canvas",
+   "type": "canvas",
+   "box": [
+    5,
+    83,
+    150,
+    433
+   ],
+   "z": 10,
+   "radius": 7,
+   "anim": {
+    "type": "slideOutLeft",
+    "dur": 0.45,
+    "soft": 18
+   },
+   "relTo": "driveEnd",
+   "lead": 0.0
+  },
+  {
+   "id": "leafcanvas",
+   "type": "canvas",
+   "box": [
+    0,
+    0,
+    160,
+    600
+   ],
+   "z": 18
+  },
+  {
+   "id": "headline",
+   "type": "text",
+   "box": [
+    15.5,
+    427.0,
+    129.0,
+    53.0
+   ],
+   "z": 21,
+   "html": "<div style=\"font:16px/1.2 'HondaRound', Helvetica, Arial, sans-serif; color:#ffffff; text-align:center; white-space:nowrap;\">Expert service to<br>keep pace with<br>the fall rush.</div>",
+   "css": {
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "anim": {
+    "type": "upFade",
+    "at": 0.0,
+    "dist": 8,
+    "dur": 0.6,
+    "also": [
+     {
+      "type": "out",
+      "at": 3.5
+     }
+    ]
+   }
+  },
+  {
+   "id": "tech",
+   "type": "img",
+   "src": "images/tech.png",
+   "box": [
+    5,
+    83,
+    150,
+    433
+   ],
+   "z": 8,
+   "fit": "cover",
+   "clip": true,
+   "radius": 7,
+   "anim": {
+    "type": "move",
+    "at": 3.5,
+    "dur": 5.65,
+    "to": [
+     -21.0,
+     15.0
+    ],
+    "rot0": 0.0,
+    "rot1": 0.0,
+    "s0": 1,
+    "s1": 1.09,
+    "ease": "cubic-bezier(0.000,0,1.000,1)",
+    "also": [
+     {
+      "type": "fade",
+      "at": 3.5,
+      "dur": 0.6
+     }
+    ]
+   },
+   "relTo": "driveEnd",
+   "lead": 1.0,
+   "imgPose": {
+    "dx": -93.0,
+    "dy": 0.0,
+    "scale": 1.0,
+    "rot": 0.0
+   },
+   "natural": [
+    576,
+    384
+   ]
+  },
+  {
+   "id": "dealer",
+   "type": "text",
+   "box": [
+    13,
+    420,
+    132,
+    74
+   ],
+   "z": 22,
+   "html": "<span>Visit the experts at {{DEALER_NAME}}.</span>",
+   "css": {
+    "font": "16px/1.2 'HondaRound', Helvetica, Arial, sans-serif",
+    "color": "#ffffff",
+    "textAlign": "center",
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center"
+   },
+   "anim": {
+    "type": "upFade",
+    "dist": 8,
+    "dur": 0.5
+   },
+   "autoFit": 11,
+   "relTo": "driveEnd",
+   "lead": -0.5
+  },
+  {
+   "id": "techscrim",
+   "type": "rect",
+   "box": [
+    5,
+    83,
+    150,
+    433
+   ],
+   "z": 9,
+   "css": {
+    "background": "linear-gradient(to bottom, rgba(0,0,0,0) 58%, rgba(0,0,0,0.55) 80%, rgba(0,0,0,0.85) 100%)",
+    "borderRadius": "7px"
+   },
+   "anim": {
+    "type": "none"
+   }
+  }
+ ],
+ "engine": {
+  "canvas": "f1canvas",
+  "leafCanvas": "leafcanvas",
+  "taperAt": 4.6,
+  "sceneSources": {
+   "honda": "images/vehicle.png",
+   "acura": "images/vehicle.png",
+   "custom": "images/vehicle.png"
+  },
+  "stopAt": 5.8
+ }
+};</script>
+<script src="leaf-engine.js?v=3389ade0e6"></script>
+<script src="ad-player.js?v=3389ade0e6"></script>
+</body>
+</html>
