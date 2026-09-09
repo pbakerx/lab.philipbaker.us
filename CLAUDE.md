@@ -75,6 +75,16 @@ this repo. It has to run server-side: philipbaker.us sends no CORS headers on it
 If philipbaker.us ever stops server-rendering that nav, or renames `.drawer-nav`, the sync
 degrades to that fallback rather than breaking — check `stale` / `error` in the response.
 
+**Vercel Web Analytics** (added Sep 9 2026): every page-level HTML file carries
+`<script defer src="/_vercel/insights/script.js"></script>` just before `</head>`
+(not `widget-maker/frame.html`, which is an embedded iframe, and not the individual ad
+creatives). The script is served by Vercel only once Web Analytics is switched on for the
+`lab` project in the dashboard (Project → Analytics → Enable); until then it 404s
+harmlessly. New pages must include the tag, and a re-dropped zip package
+(`AcrobatAnt-HNDACR-Fall-Digital`, `OKEII-SRA-Deployment`) will need it re-added to its
+`index.html`. Page views are per path, so the dashboard answers "did anyone open
+/honda-acura" — the question that was unanswerable before this was added.
+
 ## Projects
 
 - **/widget-maker** — creative sandbox: type a wish ("a bunch of red balls bouncing
