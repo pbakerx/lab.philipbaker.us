@@ -93,6 +93,16 @@ this repo. It has to run server-side: philipbaker.us sends no CORS headers on it
 If philipbaker.us ever stops server-rendering that nav, or renames `.drawer-nav`, the sync
 degrades to that fallback rather than breaking — check `stale` / `error` in the response.
 
+**Verifying a nav change** (learned Sep 18 2026, when AechTech and Catapult Creative joined
+the menu): the nav lives in `app/components/Menu.tsx` on the **`main`** branch of
+`pbakerx/philipbaker` — not `redesign`, whose Menu is the brand engine's shared one. The
+apex 308s to `www.philipbaker.us`, so probe with `curl -L`; without it you poll an empty
+redirect body and conclude the deploy failed. Then `/api/menu` here is `s-maxage=600` with
+stale-while-revalidate: the first request past ten minutes still returns the OLD list
+(`x-vercel-cache: STALE`) and triggers the refresh — ask again 20 seconds later. Read the
+cache headers off the GET itself; a separate HEAD is cached separately and misleads. Keep
+`FALLBACK.links` in `api/menu.js` in step by hand.
+
 **Vercel Web Analytics** (added Sep 9 2026): every page-level HTML file carries
 `<script defer src="/_vercel/insights/script.js"></script>` just before `</head>`
 (not `widget-maker/frame.html`, which is an embedded iframe, and not the individual ad
