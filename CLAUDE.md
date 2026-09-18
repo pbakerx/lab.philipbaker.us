@@ -22,6 +22,24 @@ Two launch configs: `lab-static` (python http.server, layout only) and `lab-verc
 (`vercel dev`, the one that actually runs `api/menu.js` so the real hamburger mounts). The
 Browser pane doesn't fire `loading="lazy"`, and it blanks out on very tall pages — render
 proof shots with `Google Chrome --headless --window-size=W,H --screenshot=…` instead.
+(`--headless=new` writes the screenshot and then never exits: background it, wait for the
+file, `pkill` it by its `--user-data-dir`.)
+
+**On the Mac mini neither launch config starts** (found Sep 18 2026). It has no Node, so
+`lab-vercel` is out — and `npx vercel --prod` with it, so from that Mac a deploy is a push.
+And a process started by the preview tool is refused *every* read on the NAS volume, not
+just `os.getcwd()`: a zero-dependency server script placed in this repo — at the root or in
+`.claude/` — dies with "can't open file … Operation not permitted". What works: `rsync` the
+folders under test to the session scratchpad and add a **temporary** launch entry that runs a
+scratchpad server script over that mirror (`/usr/bin/python3 -I <script> <mirror> <port>`),
+then `git checkout -- .claude/launch.json`. Have that script pass GET `/api/menu` through to
+production and the real hamburger mounts; proxy nothing else under `/api/` (generate spends
+money, the rest write shared state). Re-`rsync` after every edit — it is a copy.
+A hidden pane reports `document.hidden === true` and throttles frames between tool calls;
+anything that pauses when hidden needs that shimmed for the test. Its synthetic key events
+carry an empty `e.code` (and an empty `key` for Space), and never trigger the browser's native
+"Enter/Space clicks the focused button". When the pane is *displayed*, Philip can click in it
+too — unexplained input is probably him, not a bug. Test in a background tab.
 
 Mostly static — `/api/*.js` are Vercel Node serverless functions (see /widget-maker). The
 root `package.json` exists only so Vercel installs their deps; there is no build step, and
@@ -377,6 +395,44 @@ harmlessly. New pages must include the tag, and a re-dropped zip package
     omits `contacts.json` (mobile numbers, personal addresses) and the internal
     open-commitments notes, and softens three schedule entries that quoted private email
     verbatim. Those originals stay on the NAS. Keep it that way when regenerating.
+
+- **/missile-command** — one-file tribute to the 1980 arcade game (Sep 18 2026). Canvas, no
+  assets, no build. Philip made it phone-only; the desktop layer was added on top, and on a
+  phone it must stay exactly as he made it (same wording, same rotate gate).
+  - **The desktop controls are the cabinet's.** The mouse is the trackball: a click (or
+    Space) fires using AUTO or the locked base. `1 2 3` / `A S D` are the three fire buttons —
+    each launches from its own base at the pointer. The asymmetry is deliberate: the on-screen
+    ALPHA/DELTA/OMEGA buttons *lock* a base, the keys *fire* from one. Keys match `e.code`
+    first (physical position, so the row works on any layout) and fall back to the character,
+    because on-screen keyboards and remote desktops send an empty `code`. Auto-repeat is
+    ignored so a held key can't empty a base. P/Esc pause, M sound, F fullscreen — fullscreen
+    on START is phones only.
+  - **Only a phone or tablet held upright is gated.** `isMobile()` (touch points + UA) picks
+    the wording and the gate; a desktop window of any shape plays, letterboxed. The old
+    desktop gate carried a COPY ALL HTML button — gone with the gate, it had no way to appear.
+  - Pointer position is tracked on `window` (`pointermove` *and* `pointerdown`), not the
+    canvas: a panel covers the canvas between waves, and automated or remote clicks can land
+    without a move.
+  - Panels hand focus to their `.primary` button as they open (a MutationObserver on
+    `#menu`) **and blur it as they close** — not every browser blurs a button that just went
+    `display:none`, and Space on a hidden, still-focused WAVE button would skip a wave.
+    Don't hand-roll Enter on a focused button either: a browser that failed to suppress the
+    native activation would fire WAVE twice. Typed initials come first in the key handler,
+    because A, S, D, P, M and F are letters too.
+  - **Shared chrome.** The hamburger's stock spot (`top:26px; right:28px`) is the PAUSE
+    button here, so the page seats it in the HUD (`#hud` reserves the room with
+    padding-right) and lets the drawer scroll — its content outgrows a phone held sideways,
+    more so as philipbaker.us adds links. The game's `button` and `p` rules are scoped with
+    `:where(#app)`: zero specificity, so the cascade inside the game is unchanged, but they
+    stop restyling the menu's own buttons. A click anywhere in `#pb-menu` pauses the game,
+    and the game's keys stand down while the drawer is open (Esc closes it, stays paused).
+  - `img/og.png` is a generated 1200×630 card, not a screenshot: source is
+    `.claude/og-cards/missile-command.html`, rendered with headless Chrome at
+    `--window-size=1200,630 --force-device-scale-factor=1`. High scores are `localStorage`
+    (`mc-mobile-scores-v1`) — per browser, per origin.
+  - `/missle-command`, `/misslecommand` and `/missilecommand` redirect here (Philip's own
+    spelling of the folder; Vercel paths are case- and letter-exact). `missleCommand/` is his
+    original drop — untouched, gitignored, and byte-identical to this file's first commit.
 
 - **/hello** — the original example.
 

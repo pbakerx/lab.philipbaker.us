@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lab.philipbaker.us/</loc>
-    <lastmod>2026-08-13</lastmod>
+    <lastmod>2026-09-18</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/second-brain-case-study/</loc>
@@ -31,5 +31,9 @@
   <url>
     <loc>https://lab.philipbaker.us/widget-maker/</loc>
     <lastmod>2026-08-09</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.philipbaker.us/missile-command/</loc>
+    <lastmod>2026-09-18</lastmod>
   </url>
 </urlset>

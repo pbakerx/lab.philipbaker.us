@@ -108,6 +108,36 @@
       "source": "/okeii-sra-deployment/:path+",
       "destination": "/OKEII-SRA-Deployment/:path+",
       "permanent": false
+    },
+    {
+      "source": "/missle-command",
+      "destination": "/missile-command",
+      "permanent": true
+    },
+    {
+      "source": "/missle-command/",
+      "destination": "/missile-command/",
+      "permanent": true
+    },
+    {
+      "source": "/misslecommand",
+      "destination": "/missile-command",
+      "permanent": true
+    },
+    {
+      "source": "/misslecommand/",
+      "destination": "/missile-command/",
+      "permanent": true
+    },
+    {
+      "source": "/missilecommand",
+      "destination": "/missile-command",
+      "permanent": true
+    },
+    {
+      "source": "/missilecommand/",
+      "destination": "/missile-command/",
+      "permanent": true
     }
   ],
   "rewrites": [

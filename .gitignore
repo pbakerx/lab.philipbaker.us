@@ -7,3 +7,11 @@ node_modules
 paste-plain/build/
 # staging drop for /second-brain — holds internal handoff notes, never publish it
 ai-second-brain-case-study/
+# Philip's original drop of the Missile Command game (mobile-only, as made). The live copy is
+# missile-command/index.html, whose FIRST commit is this file byte for byte. Kept under the
+# Vault's never-delete rule; ignored so a `git add -A` can't publish it at a misspelled,
+# case-sensitive path.
+missleCommand/
+# macOS AppleDouble sidecars and SMB delete tombstones — required on every Vault repo
+._*
+.smbdelete*
