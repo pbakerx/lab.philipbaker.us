@@ -1,0 +1,52 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+html,body{margin:0;background:#000;width:1200px;height:630px;overflow:hidden}
+canvas{position:absolute;inset:0;display:block}
+.t{position:absolute;left:72px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap}
+.eyebrow{top:74px;font-size:21px;letter-spacing:6px;color:#ff533e}
+h1{top:104px;margin:0;font-size:112px;line-height:.98;letter-spacing:-3px;font-weight:900;color:#f4ec66}
+.sub{top:350px;font-size:26px;color:#b4c0c6}
+.url{top:398px;font-size:20px;letter-spacing:1px;color:#96a2a9}
+</style></head><body>
+<canvas id="c" width="1200" height="630"></canvas>
+<div class="t eyebrow">ARCADE / 1980 TRIBUTE</div>
+<h1 class="t">MISSILE<br>COMMAND</h1>
+<div class="t sub">Six cities. Thirty missiles.</div>
+<div class="t url">lab.philipbaker.us/missile-command</div>
+<script>
+// Same primitives as the game's draw(): ground bar, trapezoid bases, block cities,
+// 1.8px enemy trails with white heads, three-ring blasts, cyan shots with an X marker.
+const ctx=document.getElementById('c').getContext('2d');
+const YEL='#f4ec66',CY='#66e5ff',RED='#ff533e',K=1.2,GY=548;
+const BASE_X=[65,500,935].map(x=>x*K),CITY_X=[190,305,405,595,695,810].map(x=>x*K);
+ctx.fillStyle='#000';ctx.fillRect(0,0,1200,630);
+function line(x,y,tx,ty,c,w){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(tx,ty);ctx.stroke();}
+function disc(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
+// phase: 0 young (solid friendly) · 1 full ring · 2 dying ring (enemy-coloured rim)
+function blast(x,y,r,phase){
+ if(phase===0){disc(x,y,r,CY);return;}
+ disc(x,y,r,phase===1?YEL:RED);disc(x,y,r-6,'#000');disc(x,y,r*.57,CY);
+}
+function trail(ox,tx,ty,u){const x=ox+(tx-ox)*u,y=ty*u;line(ox,0,x,y,RED,2.2);ctx.fillStyle='#fff';ctx.fillRect(x-3,y-3,6,6);}
+// ground, bases, cities
+ctx.fillStyle=YEL;ctx.fillRect(0,GY,1200,4);
+for(const x of BASE_X){ctx.fillStyle=YEL;ctx.beginPath();ctx.moveTo(x-58,GY);ctx.lineTo(x-35,GY-24);ctx.lineTo(x+35,GY-24);ctx.lineTo(x+58,GY);ctx.closePath();ctx.fill();
+ ctx.fillStyle=CY;ctx.fillRect(x-8,GY-30,17,11);
+ for(let i=0;i<10;i++){const ax=x-28+(i%5)*12,ay=GY+16+Math.floor(i/5)*16;ctx.fillRect(ax,ay,4,11);ctx.fillRect(ax-2,ay+7,8,4);}}
+const H=[12,25,19,33,16,22];
+CITY_X.forEach((cx,id)=>{for(let i=0;i<6;i++){const x=cx-30+i*11,h=H[(i+id)%6]*K;ctx.fillStyle=CY;ctx.fillRect(x,GY-h,10,h);ctx.fillStyle='#02060b';for(let y=GY-h+6;y<GY-4;y+=8)ctx.fillRect(x+4,y,2,4);}});
+// the raid: everything heads for the right-hand cities so the title stays clean
+trail(1150,CITY_X[5],GY,.50);trail(760,CITY_X[4],GY,.62);trail(1010,CITY_X[3],GY,.41);
+trail(890,BASE_X[2],GY-24,.30);trail(1180,CITY_X[4],GY,.22);trail(700,CITY_X[3],GY,.74);
+trail(980,BASE_X[1],GY-24,.57);
+// a MIRV that has just split
+const sx=820,sy=250;line(640,0,sx,sy,RED,2.2);
+for(const [tx,u] of [[CITY_X[5],.34],[CITY_X[3],.30]]){const x=sx+(tx-sx)*u,y=sy+(GY-sy)*u;line(sx,sy,x,y,RED,2.2);ctx.fillStyle='#fff';ctx.fillRect(x-3,y-3,6,6);}
+// the defence
+blast(838,372,60,1);blast(1040,300,44,2);blast(716,430,30,0);
+const hx=760,hy=372,tx=930,ty=Math.round((GY-30)+(hy-(GY-30))*(tx-BASE_X[1])/(hx-BASE_X[1]));line(BASE_X[1],GY-30,hx,hy,CY,2.4);ctx.fillStyle='#fff';ctx.fillRect(hx-3,hy-3,6,6);
+line(tx-7,ty-7,tx+7,ty+7,CY,1.6);line(tx-7,ty+7,tx+7,ty-7,CY,1.6);
+// bomber, wave two's gift
+ctx.save();ctx.translate(1080,96);ctx.scale(-2.1,2.1);ctx.fillStyle=RED;ctx.fillRect(-17,-3,31,6);ctx.fillRect(-4,-12,6,22);ctx.fillRect(-16,-8,4,7);ctx.fillRect(13,-1,6,3);ctx.restore();
+</script></body></html>

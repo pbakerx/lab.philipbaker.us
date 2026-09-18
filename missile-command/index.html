@@ -6,27 +6,43 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="A standalone, landscape mobile tribute to the 1980 missile-defense arcade game.">
-<title>Missile Command · Mobile</title>
+<meta name="description" content="Defend six cities with thirty missiles. A one-file tribute to the 1980 missile-defense arcade game — mouse and keys on a desktop, or tap the sky on a phone held sideways.">
+<title>Missile Command — a one-file arcade tribute · lab.philipbaker.us</title>
+<link rel="canonical" href="https://lab.philipbaker.us/missile-command/">
+<meta property="og:title" content="Missile Command — six cities, thirty missiles">
+<meta property="og:description" content="A one-file tribute to the 1980 arcade game. Mouse and keys on a desktop, thumbs on a phone.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lab.philipbaker.us/missile-command/">
+<meta property="og:site_name" content="PB Productions Lab">
+<meta property="og:image" content="https://lab.philipbaker.us/missile-command/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Missile Command: red missile trails fall toward six cities while defensive blasts bloom in a black sky.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Missile Command — six cities, thirty missiles">
+<meta name="twitter:description" content="A one-file tribute to the 1980 arcade game. Mouse and keys on a desktop, thumbs on a phone.">
+<meta name="twitter:image" content="https://lab.philipbaker.us/missile-command/img/og.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='black'/%3E%3Ccircle cx='18' cy='12' r='8' fill='%23ff522c'/%3E%3Cpath d='M3 30L18 12' stroke='%235ceaff' stroke-width='2'/%3E%3C/svg%3E">
 <style>
 :root{color-scheme:dark;--ink:#e9eeee;--cyan:#66e5ff;--yellow:#f4ec66;--red:#ff533e;--dim:#96a2a9}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--ink);font:16px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 body{overscroll-behavior:none;user-select:none;-webkit-user-select:none}
-button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;min-height:44px;border:1px solid #394349;border-radius:0;background:#101619;padding:8px 14px}
-button:active{background:#263239}button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-button[aria-pressed=true]{border-color:var(--cyan);color:var(--cyan);background:#102027}
-button:disabled{opacity:.4;cursor:default}button.primary{background:var(--yellow);border-color:var(--yellow);color:#111;font-weight:900}
+/* :where(#app) keeps these at plain-element specificity while stopping them at the
+   game's edge — unscoped, they restyle the lab's shared hamburger and its Close button. */
+:where(#app) button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;min-height:44px;border:1px solid #394349;border-radius:0;background:#101619;padding:8px 14px}
+:where(#app) button:active{background:#263239}:where(#app) button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+:where(#app) button[aria-pressed=true]{border-color:var(--cyan);color:var(--cyan);background:#102027}
+:where(#app) button:disabled{opacity:.4;cursor:default}:where(#app) button.primary{background:var(--yellow);border-color:var(--yellow);color:#111;font-weight:900}
 [hidden]{display:none!important}
 #app{height:100%;height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-#hud{height:48px;flex:none;display:flex;align-items:center;gap:18px;padding:0 14px;border-bottom:1px solid #172126}
+#hud{height:48px;flex:none;display:flex;align-items:center;gap:18px;padding:0 62px 0 14px;border-bottom:1px solid #172126}
 .stat{white-space:nowrap;display:flex;gap:9px;align-items:baseline;font-size:14px;color:var(--dim)}
 .stat strong{font-size:20px;letter-spacing:1px;color:var(--cyan);font-weight:700;font-variant-numeric:tabular-nums}
 #high{color:var(--yellow)}#wave{color:var(--ink)}#reserve{color:var(--ink)}
 .hud-actions{display:flex;margin-left:auto;gap:6px}.hud-actions button{padding:4px 10px;font-size:13px;min-height:40px}
 #arena{position:relative;flex:1;min-height:0;overflow:hidden}
-canvas{width:100%;height:100%;display:block;touch-action:none}
+canvas{width:100%;height:100%;display:block;touch-action:none;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M16 3v9M16 20v9M3 16h9M20 16h9' stroke='%23000' stroke-width='4'/%3E%3Cpath d='M16 3v9M16 20v9M3 16h9M20 16h9' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E") 16 16,crosshair}
 #controls{height:54px;flex:none;display:grid;grid-template-columns:104px 1fr 1fr 1fr;gap:8px;padding:4px 12px 6px;border-top:1px solid #172126;background:#030708}
 #controls button{min-height:44px;padding:3px 8px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap}
 .ammo{font-size:21px;font-weight:800}.sub{font-size:12px;color:var(--dim)}
@@ -36,20 +52,29 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 .eyebrow{font-size:12px;letter-spacing:3px;color:var(--red);margin:0 0 8px}
 h1{font-size:clamp(25px,4.6vw,48px);line-height:.98;letter-spacing:-1px;margin:0 0 15px;font-weight:900;color:var(--yellow)}
 h2{font-size:24px;line-height:1.1;margin:0 0 14px;color:var(--yellow)}
-p{margin:8px 0 14px;font-size:14px;color:#b4c0c6}.muted{font-size:12px;color:var(--dim)}
+:where(#app,#gate) p{margin:8px 0 14px;font-size:14px;color:#b4c0c6}.muted{font-size:12px;color:var(--dim)}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.small{font-size:13px}.center{text-align:center}
 .center .actions{justify-content:center}.instructions{font-size:14px;margin:0;line-height:1.65}
 .instructions b{color:var(--cyan)}.line{border-top:1px solid #273036;padding-top:10px;margin-top:12px}
 table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}td,th{padding:4px 8px;text-align:left}th{font-size:12px;font-weight:400;color:var(--dim);border-bottom:1px solid #293337}td:last-child,th:last-child{text-align:right}
 .score-number{font-size:30px;color:var(--cyan);font-weight:800}.bonus-grid{display:grid;grid-template-columns:auto auto;gap:7px 30px;max-width:400px;margin:16px auto;text-align:left}.bonus-grid b{text-align:right;color:var(--cyan)}
-.initials{display:flex;gap:9px;justify-content:center;margin:10px 0}.letter{display:grid;gap:2px;min-width:52px}.letter span{font-size:27px;color:var(--cyan)}.letter button{padding:0 12px;min-height:36px}
+.initials{display:flex;gap:9px;justify-content:center;margin:10px 0}.letter{display:grid;gap:2px;min-width:52px}.letter span{font-size:27px;color:var(--cyan)}.letter.on span{color:var(--yellow)}.letter button{padding:0 12px;min-height:36px}
 #toast{position:absolute;left:50%;bottom:45px;transform:translateX(-50%);padding:5px 12px;background:#060e12e8;color:var(--yellow);font-size:14px;white-space:nowrap;pointer-events:none}
 #gate{position:fixed;inset:0;z-index:20;background:#030607;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
 #gate section{max-width:470px}.rotate-icon{font-size:55px;color:var(--cyan);line-height:1;margin-bottom:20px}
-#gate p{font-size:16px}#copy-status{min-height:22px}.gate-actions{margin-top:20px}
-@media(max-height:360px){#hud{height:42px;gap:12px}.stat strong{font-size:17px}#controls{height:50px}.overlay{padding:10px 18px}h1{font-size:29px;margin-bottom:10px}h2{font-size:21px;margin-bottom:8px}.eyebrow{margin-bottom:5px}.panel p{margin:5px 0 8px}.actions{margin-top:8px}.home-grid{gap:20px}}
-@media(max-width:760px){#hud{gap:12px;padding:0 8px}.stat{font-size:12px;gap:5px}.stat strong{font-size:17px}.reserve-stat{display:none}#controls{grid-template-columns:80px 1fr 1fr 1fr;gap:5px;padding-left:6px;padding-right:6px}#controls button{font-size:12px;gap:6px}.sub{display:none}.hud-actions button{font-size:12px;padding:3px 7px}.home-grid{gap:18px}}
+#gate p{font-size:16px}
+/* The lab's shared menu pins its hamburger at top:26px/right:28px, which on a page that
+   scrolls is empty margin and here is the PAUSE button. Seat it in the HUD instead (the HUD
+   reserves the room with padding-right), and let the drawer scroll: five links plus 96px of
+   top padding run ~420px, taller than a phone held sideways. */
+#pb-menu .hamburger{top:calc(env(safe-area-inset-top) + 4px);right:calc(env(safe-area-inset-right) + 12px)}
+#pb-menu .drawer{overflow-y:auto;padding-right:calc(env(safe-area-inset-right) + 44px)}
+#pb-menu .drawer-close{right:calc(env(safe-area-inset-right) + 44px)}
+@media(max-height:480px){#pb-menu .drawer{padding-top:64px;padding-bottom:24px}}
+@media(max-height:360px){#pb-menu .hamburger{top:calc(env(safe-area-inset-top) + 1px)}#hud{height:42px;gap:12px}.stat strong{font-size:17px}#controls{height:50px}.overlay{padding:10px 18px}h1{font-size:29px;margin-bottom:10px}h2{font-size:21px;margin-bottom:8px}.eyebrow{margin-bottom:5px}.panel p{margin:5px 0 8px}.actions{margin-top:8px}.home-grid{gap:20px}}
+@media(max-width:760px){#hud{gap:12px;padding:0 58px 0 8px}.stat{font-size:12px;gap:5px}.stat strong{font-size:17px}.reserve-stat{display:none}#controls{grid-template-columns:80px 1fr 1fr 1fr;gap:5px;padding-left:6px;padding-right:6px}#controls button{font-size:12px;gap:6px}.sub{display:none}.hud-actions button{font-size:12px;padding:3px 7px}.home-grid{gap:18px}}
 </style>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <main id="app">
@@ -61,7 +86,7 @@ table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:ta
   <div class="hud-actions"><button id="sound" aria-label="Toggle sound" aria-pressed="true">SOUND</button><button id="pause" aria-label="Pause game" disabled>PAUSE</button></div>
  </header>
  <section id="arena" aria-label="Missile defense playfield">
-  <canvas id="game" aria-label="Tap the sky to send a defensive missile to that location. Select a base below or use automatic selection."></canvas>
+  <canvas id="game" aria-label="Tap or click the sky to send a defensive missile to that location. Select a base below or use automatic selection. With a keyboard, 1, 2 and 3 fire from Alpha, Delta and Omega at the pointer."></canvas>
   <div id="toast" role="status" hidden></div>
   <div id="menu" class="overlay"></div>
  </section>
@@ -74,15 +99,23 @@ table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:ta
 </main>
 <div id="gate" hidden><section>
  <div class="rotate-icon" aria-hidden="true">↻</div>
- <h2 id="gate-title">ROTATE YOUR PHONE</h2>
- <p id="gate-message">Hold your device horizontally to play.</p>
- <div id="desktop-copy" class="gate-actions" hidden><button id="copy-code" class="primary">COPY ALL HTML</button><p class="muted" id="copy-status">Paste into a file named index.html.</p></div>
+ <h2>ROTATE YOUR DEVICE</h2>
+ <p>Hold your phone or tablet horizontally. Your game stays paused.</p>
 </section></div>
 <script>
 /*
- MISSILE COMMAND — standalone mobile tribute, 2026.
+ MISSILE COMMAND — standalone tribute for phones and desktops, 2026.
  Save this entire document as index.html and serve it as a static page.
  No assets, packages, keys, backend, ROMs, or external requests are needed.
+ (The lab's shared menu and analytics tags are the only outside references,
+ and the game runs the same without either.)
+
+ CONTROLS:
+ Touch — tap the sky; tap a base, or the buttons below, to lock one.
+ Desktop — the mouse is the trackball. A click (or SPACE) fires using AUTO or
+ the locked base; 1 2 3 or A S D are the cabinet's three fire buttons, each
+ launching from its own base at the pointer. P or Esc pauses, M toggles sound,
+ F toggles full screen, Enter takes a panel's primary button.
 
  RESEARCH / FIDELITY:
  Atari TM-147 (2nd printing), p.9: three bases, ten ABMs each, branching
@@ -101,7 +134,6 @@ table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:ta
 */
 (() => {
 'use strict';
-const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
 const $ = id => document.getElementById(id);
 const canvas=$('game'), ctx=canvas.getContext('2d'), menu=$('menu');
 const W=1000, H=450, GROUND=404;
@@ -130,6 +162,8 @@ const S={mode:'home',wave:1,score:0,reserve:0,nextBonus:10000,selected:-1,
  cities:[],bases:[],enemies:[],shots:[],blasts:[],sparks:[],trails:[],schedule:[],
  time:0,totalTime:0,cityLosses:0,intro:0,toastTime:0,lastBase:-1,flashBase:0,settle:0};
 let view={scale:1,x:0,y:0,w:0,h:0}, last=0, accumulator=0, blocked=true, letters=[0,0,0], saved=false;
+// mobile picks the wording and the rotate gate; pointer is the mouse's last spot, for the fire keys; slot is the initial being typed.
+let mobile=isMobile(), pointer=null, slot=0;
 let audio=null, master=null, noiseBuffer=null, activeVoices=0;
 
 function initGround(){
@@ -197,7 +231,7 @@ function board(){
 }
 function showHome(){
  S.mode='home';menu.hidden=false;
- menu.innerHTML=`<div class="panel home-grid"><div><p class="eyebrow">MOBILE ARCADE / 1980 TRIBUTE</p><h1>MISSILE<br>COMMAND</h1><p>Six cities. Thirty missiles. Make every shot count.</p><div class="actions"><button class="primary" id="start">START GAME</button><button id="scores">HIGH SCORES</button></div></div><div><p class="instructions"><b>TAP THE SKY</b> to fire at that point.<br>Lead the incoming missiles.<br>Chain explosions to save ammunition.<br><b>AUTO</b> chooses a stocked base.<br>Tap <b>ALPHA / DELTA / OMEGA</b> to lock a base. Delta fires faster.</p><p class="muted line">Bonus city every 10,000 points.<br>High scores stay in this browser.</p></div></div>`;
+ menu.innerHTML=`<div class="panel home-grid"><div><p class="eyebrow">${mobile?'MOBILE ':''}ARCADE / 1980 TRIBUTE</p><h1>MISSILE<br>COMMAND</h1><p>Six cities. Thirty missiles. Make every shot count.</p><div class="actions"><button class="primary" id="start">START GAME</button><button id="scores">HIGH SCORES</button></div></div><div><p class="instructions"><b>${mobile?'TAP':'CLICK'} THE SKY</b> to fire at that point.<br>Lead the incoming missiles.<br>Chain explosions to save ammunition.<br><b>AUTO</b> chooses a stocked base.<br>${mobile?'Tap':'Click'} <b>ALPHA / DELTA / OMEGA</b> to lock a base. Delta fires faster.${mobile?'':'<br>Or play it like the cabinet: keys <b>1 2 3</b> (or <b>A S D</b>) fire from Alpha, Delta and Omega at the pointer.'}</p><p class="muted line">Bonus city every 10,000 points.<br>High scores stay in this browser.${mobile?'':'<br>SPACE fire · P pause · M sound · F full screen'}</p></div></div>`;
  $('start').onclick=startGame;$('scores').onclick=showScores;updateHUD();
 }
 function showScores(){
@@ -207,7 +241,8 @@ function startGame(){
  if(blocked)return;unlockAudio();initGround();S.wave=1;S.score=0;S.reserve=0;S.nextBonus=CONFIG.bonusEvery;S.selected=-1;S.totalTime=0;saved=false;
  nextWave();
  // Browsers may refuse fullscreen/orientation lock. The rotation gate remains.
- if(document.documentElement.requestFullscreen&&!document.fullscreenElement){
+ // Phones only: there it hides the browser chrome. A desktop window taken over on START is rude — F is the opt-in.
+ if(mobile&&document.documentElement.requestFullscreen&&!document.fullscreenElement){
   try{const f=document.documentElement.requestFullscreen();if(f?.then)f.then(()=>{try{screen.orientation?.lock?.('landscape').catch(()=>{});}catch(e){}}).catch(()=>{});}catch(e){}
  }
 }
@@ -243,12 +278,13 @@ function spawn(item){
   S.enemies.push({type:item.type,x:direction>0?-25:W+25,y:rnd(60,150),direction,speed:70+Math.min(S.wave,24)*3.3,drop:rnd(.6,1.6),drops:0,dead:false});
  }else spawnMissile(item.x,0,item.type);
 }
-function fire(x,y){
+// from: -1 lets AUTO choose, 0-2 names a base. Taps and clicks pass the HUD selection; a fire key passes its own base.
+function fire(x,y,from=S.selected){
  if(S.mode!=='playing'||S.intro>0||blocked)return false;
  x=clamp(x,5,W-5);y=clamp(y,5,GROUND-27);
  const available=S.bases.filter(b=>b.alive&&b.ammo>0);
- const base=S.selected<0?available.sort((a,b)=>Math.abs(a.x-x)-Math.abs(b.x-x)||b.ammo-a.ammo)[0]:S.bases[S.selected];
- if(!base||!base.alive||!base.ammo){voice('dry');toast(S.selected<0?'OUT OF MISSILES':`${NAMES[S.selected]} ${base?.alive?'EMPTY':'DESTROYED'} · SELECT ANOTHER BASE`);return false;}
+ const base=from<0?available.sort((a,b)=>Math.abs(a.x-x)-Math.abs(b.x-x)||b.ammo-a.ammo)[0]:S.bases[from];
+ if(!base||!base.alive||!base.ammo){voice('dry');toast(from<0?'OUT OF MISSILES':`${NAMES[from]} ${base?.alive?'EMPTY':'DESTROYED'}${from===S.selected?' · SELECT ANOTHER BASE':''}`);return false;}
  base.ammo--;S.lastBase=base.id;S.flashBase=.22;
  S.shots.push({x:base.x,y:base.y,ox:base.x,oy:base.y,tx:x,ty:y,speed:base.id===1?CONFIG.centerSpeed:CONFIG.sideSpeed});
  voice('shot');updateHUD();return true;
@@ -285,25 +321,26 @@ function finishWave(){
 }
 function pauseGame(){
  if(S.mode!=='playing')return;S.mode='paused';menu.hidden=false;
- menu.innerHTML='<div class="panel center"><p class="eyebrow">MISSION ON HOLD</p><h2>PAUSED</h2><p>Tap a base to lock it. AUTO restores automatic selection.</p><div class="actions"><button class="primary" id="resume">RESUME</button><button id="restart">RESTART</button></div></div>';
+ menu.innerHTML=`<div class="panel center"><p class="eyebrow">MISSION ON HOLD</p><h2>PAUSED</h2><p>${mobile?'Tap':'Click'} a base to lock it. AUTO restores automatic selection.${mobile?'':'<br>1 2 3 or A S D fire from Alpha, Delta or Omega · P or ENTER resumes'}</p><div class="actions"><button class="primary" id="resume">RESUME</button><button id="restart">RESTART</button></div></div>`;
  $('resume').onclick=resumeGame;$('restart').onclick=startGame;
  if(audio?.state==='running')audio.suspend().catch(()=>{});updateHUD();
 }
 function resumeGame(){if(blocked||S.mode!=='paused')return;unlockAudio();S.mode='playing';menu.hidden=true;last=performance.now();accumulator=0;updateHUD();}
 function endGame(){
- S.mode='over';menu.hidden=false;letters=[0,0,0];
+ S.mode='over';menu.hidden=false;letters=[0,0,0];slot=0;
  const qualify=S.score>0&&(scores.length<8||S.score>scores[scores.length-1].score);
- menu.innerHTML=`<div class="panel center"><p class="eyebrow">WAVE ${S.wave}</p><h2>THE END</h2><div class="score-number">${fmt(S.score)}</div>${qualify?'<p>HIGH SCORE · ENTER YOUR INITIALS</p><div id="initials" class="initials"></div>':'<p>The cities have fallen.</p>'}<div class="actions">${qualify?'<button id="save" class="primary">SAVE SCORE</button>':'<button id="again" class="primary">PLAY AGAIN</button>'}<button id="home">MAIN MENU</button></div><p id="save-note" class="muted"></p></div>`;
+ menu.innerHTML=`<div class="panel center"><p class="eyebrow">WAVE ${S.wave}</p><h2>THE END</h2><div class="score-number">${fmt(S.score)}</div>${qualify?`<p>HIGH SCORE · ${mobile?'ENTER':'TYPE'} YOUR INITIALS</p><div id="initials" class="initials"></div>`:'<p>The cities have fallen.</p>'}<div class="actions">${qualify?'<button id="save" class="primary">SAVE SCORE</button>':'<button id="again" class="primary">PLAY AGAIN</button>'}<button id="home">MAIN MENU</button></div><p id="save-note" class="muted"></p></div>`;
  if(qualify){drawInitials();$('save').onclick=saveEntry;}else $('again').onclick=startGame;
  $('home').onclick=()=>{if(qualify&&!saved)saveEntry(false);initGround();showHome();};updateHUD();
 }
 function drawInitials(){
- $('initials').innerHTML=letters.map((n,i)=>`<div class="letter"><button data-letter="${i}" data-change="1" aria-label="Next letter ${i+1}">+</button><span>${String.fromCharCode(65+n)}</span><button data-letter="${i}" data-change="-1" aria-label="Previous letter ${i+1}">−</button></div>`).join('');
+ // On a desktop the slot the next keystroke lands in is lit; the +/− buttons work either way.
+ $('initials').innerHTML=letters.map((n,i)=>`<div class="letter${!mobile&&!saved&&i===Math.min(slot,2)?' on':''}"><button data-letter="${i}" data-change="1" aria-label="Next letter ${i+1}">+</button><span>${String.fromCharCode(65+n)}</span><button data-letter="${i}" data-change="-1" aria-label="Previous letter ${i+1}">−</button></div>`).join('');
  $('initials').querySelectorAll('button').forEach(b=>b.onclick=()=>{const i=+b.dataset.letter;letters[i]=(letters[i]+(+b.dataset.change)+26)%26;drawInitials();});
 }
 function saveEntry(changeUI=true){
  if(saved)return;saved=true;scores.push({name:letters.map(n=>String.fromCharCode(65+n)).join(''),score:S.score,wave:S.wave});scores.sort((a,b)=>b.score-a.score);scores=scores.slice(0,8);writeScores();
- if(changeUI){$('save').textContent='PLAY AGAIN';$('save').onclick=startGame;$('save-note').textContent=storageOK?'HIGH SCORE SAVED':'Saved for this session. Browser storage is unavailable.';$('initials').querySelectorAll('button').forEach(b=>b.disabled=true);}updateHUD();
+ if(changeUI){$('save').textContent='PLAY AGAIN';$('save').onclick=startGame;$('save-note').textContent=storageOK?'HIGH SCORE SAVED':'Saved for this session. Browser storage is unavailable.';drawInitials();$('initials').querySelectorAll('button').forEach(b=>b.disabled=true);}updateHUD();
 }
 
 function update(dt){
@@ -388,35 +425,76 @@ function draw(){
   if(u>.22&&u<.75){ctx.fillStyle='#000';ctx.beginPath();ctx.arc(b.x,b.y,Math.max(0,b.r-5),0,Math.PI*2);ctx.fill();ctx.fillStyle=friendly;ctx.beginPath();ctx.arc(b.x,b.y,b.r*.57,0,Math.PI*2);ctx.fill();}
  }
  for(const p of S.sparks){ctx.globalAlpha=Math.min(1,p.life*3);ctx.fillStyle=ground;ctx.fillRect(p.x,p.y,2,2);}ctx.globalAlpha=1;
- if(S.mode==='playing'&&S.intro>0){text('WAVE '+S.wave,W/2,170,30,ground);text(multiplier()+'× POINTS',W/2,204,18,friendly);if(S.wave===1)text('DEFEND CITIES',W/2,246,16,'#fff');if(S.wave===6)text('SMART BOMBS INBOUND',W/2,246,16,enemy);}
+ if(S.mode==='playing'&&S.intro>0){text('WAVE '+S.wave,W/2,170,30,ground);text(multiplier()+'× POINTS',W/2,204,18,friendly);if(S.wave===1){text('DEFEND CITIES',W/2,246,16,'#fff');if(!mobile)text('CLICK OR SPACE TO FIRE  ·  1 2 3 FIRE FROM ALPHA / DELTA / OMEGA',W/2,280,13,'#96a2a9');}if(S.wave===6)text('SMART BOMBS INBOUND',W/2,246,16,enemy);}
 }
 function isMobile(){return navigator.maxTouchPoints>0&&(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));}
 function resize(){
  const r=$('arena').getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
  canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);
  const scale=Math.max(.01,Math.min(r.width/W,r.height/H));view={w:r.width,h:r.height,scale,x:(r.width-W*scale)/2,y:(r.height-H*scale)/2};
- const mobile=isMobile(),landscape=window.innerWidth>window.innerHeight;blocked=!mobile||!landscape;
- $('gate').hidden=!blocked;$('desktop-copy').hidden=mobile;
- $('gate-title').textContent=mobile?'ROTATE YOUR DEVICE':'MOBILE ONLY';
- $('gate-message').textContent=mobile?'Hold your phone or tablet horizontally. Your game stays paused.':'Open this page on your phone or tablet, then turn it horizontally to play.';
+ // Only a phone or tablet held upright is gated. A desktop window of any shape plays: the field letterboxes.
+ mobile=isMobile();blocked=mobile&&window.innerWidth<=window.innerHeight;
+ $('gate').hidden=!blocked;
  if(blocked)pauseGame();draw();
 }
+// Client coordinates to playfield coordinates; null in the letterbox.
+function fieldPoint(cx,cy){
+ const r=canvas.getBoundingClientRect(),x=(cx-r.left-view.x)/view.scale,y=(cy-r.top-view.y)/view.scale;
+ return x<0||x>W||y<0||y>H?null:{x,y};
+}
 canvas.addEventListener('pointerdown',e=>{
- e.preventDefault();if(e.pointerType!=='touch'&&e.pointerType!=='pen')return;unlockAudio();
- const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left-view.x)/view.scale,y=(e.clientY-r.top-view.y)/view.scale;
- if(x<0||x>W||y<0||y>H)return;
- if(y>GROUND-30){const base=S.bases.find(b=>Math.abs(b.x-x)<50);if(base){selectBase(base.id);return;}}
- fire(x,y);
+ e.preventDefault();if(e.button!==0)return;unlockAudio(); // touch, pen tip, or the primary mouse button
+ const p=fieldPoint(e.clientX,e.clientY);if(!p)return;
+ if(p.y>GROUND-30){const base=S.bases.find(b=>Math.abs(b.x-p.x)<50);if(base){selectBase(base.id);return;}}
+ fire(p.x,p.y);
 },{passive:false});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
 function selectBase(i){S.selected=i;updateHUD();}
 document.querySelectorAll('[data-base]').forEach(b=>b.onclick=()=>selectBase(+b.dataset.base));$('auto').onclick=()=>selectBase(-1);
 $('pause').onclick=()=>S.mode==='paused'?resumeGame():pauseGame();
 $('sound').onclick=()=>{unlockAudio();soundOn=!soundOn;if(master)master.gain.setTargetAtTime(soundOn?.32:0,audio.currentTime,.02);try{localStorage.setItem(SETTINGS,soundOn?'on':'off');}catch(e){}updateHUD();};
-$('copy-code').onclick=async()=>{
- try{if(!navigator.clipboard?.writeText)throw new Error('clipboard');await navigator.clipboard.writeText(SOURCE);$('copy-status').textContent='Copied. Paste into index.html.';}
- catch(e){const area=document.createElement('textarea');area.value=SOURCE;area.style.cssText='position:fixed;inset:10%;width:80%;height:70%;z-index:50;user-select:text;font:12px monospace';document.body.appendChild(area);area.select();const copied=document.execCommand('copy');if(copied){area.remove();$('copy-status').textContent='Copied. Paste into index.html.';}else{area.onblur=()=>area.remove();$('copy-status').textContent='Source selected. Press Command+C or Ctrl+C.';}}
-};
+// DESKTOP. The mouse stands in for the trackball and 1/2/3 (or A/S/D) for the cabinet's
+// three fire buttons. Bases are matched by e.code first — the physical key, so the row works
+// on any layout — then by the character, because on-screen keyboards, remote desktops and
+// voice control send an empty code. The mnemonics (P, M, F) go by e.key, the letter on the cap.
+const FIRE_KEYS={Digit1:0,Digit2:1,Digit3:2,Numpad1:0,Numpad2:1,Numpad3:2,KeyA:0,KeyS:1,KeyD:2};
+const FIRE_CHARS={1:0,2:1,3:2,a:0,s:1,d:2};
+// Tracked on the window, not the canvas: a panel covers the canvas between waves, and a mouse
+// that sat still through it would otherwise have no known position when play resumes.
+// pointerdown counts too — a remote desktop or an automated click can land without ever moving.
+for(const type of ['pointermove','pointerdown'])window.addEventListener(type,e=>{if(e.pointerType!=='touch')pointer={x:e.clientX,y:e.clientY};},true);
+function keyFire(from){const p=pointer&&fieldPoint(pointer.x,pointer.y);if(p){unlockAudio();fire(p.x,p.y,from);}}
+function toggleFullscreen(){try{const f=document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();f?.catch?.(()=>{});}catch(e){}}
+document.addEventListener('keydown',e=>{
+ // Leave browser shortcuts alone, ignore auto-repeat (a held key must not empty a base), and stand down while the lab menu is open.
+ if(e.metaKey||e.ctrlKey||e.altKey||e.repeat||blocked||document.querySelector('#pb-menu .drawer.open'))return;
+ const key=e.code==='Space'?' ':e.key.toLowerCase(),onButton=e.target instanceof HTMLButtonElement;
+ if(S.mode==='over'&&!saved&&$('initials')){ // typed initials; comes first because A, S, D, P, M and F are letters too
+  if(/^[a-z]$/.test(key)){letters[Math.min(slot,2)]=key.charCodeAt(0)-97;slot=Math.min(3,slot+1);drawInitials();e.preventDefault();return;}
+  if(key==='backspace'){slot=Math.max(0,slot-1);letters[slot]=0;drawInitials();e.preventDefault();return;}
+ }
+ const from=FIRE_KEYS[e.code]??FIRE_CHARS[key];
+ if(from!==undefined){keyFire(from);return;}
+ if(onButton&&(key===' '||key==='enter'))return; // a focused button takes these natively
+ if(key===' '||key==='enter'){
+  e.preventDefault();
+  if(!menu.hidden)menu.querySelector('.primary')?.click();else if(key===' ')keyFire(S.selected);
+ }else if(key==='p'||key==='escape')$('pause').click();
+ else if(key==='m')$('sound').click();
+ else if(key==='f')toggleFullscreen();
+});
+// Each panel hands focus to its primary button as it opens, so Enter or Space always answers it.
+// And takes it back as it closes: not every browser blurs a button that just became display:none,
+// and Space on a hidden, still-focused WAVE button would skip a wave mid-play.
+new MutationObserver(()=>{
+ if(!menu.hidden)menu.querySelector('.primary')?.focus({preventScroll:true});
+ else if(menu.contains(document.activeElement))document.activeElement.blur();
+}).observe(menu,{childList:true,attributes:true,attributeFilter:['hidden']});
+document.addEventListener('click',e=>{
+ if(e.target.closest('#pb-menu'))pauseGame(); // the lab's menu slides over the playfield; don't let the wave run under it
+ // A mouse click (detail>0; a keyboard press is 0) must not park focus on a HUD button, or Space would press it again instead of firing.
+ else if(e.detail)e.target.closest('#hud button,#controls button')?.blur();
+});
 window.addEventListener('resize',resize);window.visualViewport?.addEventListener('resize',resize);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseGame();last=performance.now();accumulator=0;});
 window.addEventListener('pagehide',pauseGame);window.addEventListener('blur',pauseGame);
@@ -428,5 +506,6 @@ function frame(now){
 initGround();showHome();resize();requestAnimationFrame(frame);
 })();
 </script>
+<script src="/shared/menu.js" defer></script>
 </body>
 </html>
