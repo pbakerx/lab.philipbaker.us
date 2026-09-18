@@ -30,7 +30,9 @@ const FALLBACK = {
     { index: "02", label: "About", href: "https://philipbaker.us/about" },
     { index: "03", label: "Press", href: "https://philipbaker.us/press" },
     { index: "04", label: "Lab", href: "https://lab.philipbaker.us" },
-    { index: "05", label: "Contact", href: "mailto:pbakerx@gmail.com" },
+    { index: "05", label: "AechTech", href: "https://aechtech.com" },
+    { index: "06", label: "Catapult Creative", href: "https://catapultcreative.agency" },
+    { index: "07", label: "Contact", href: "mailto:pbakerx@gmail.com" },
   ],
   vars: {
     "--ink": "#fdf3ea",
