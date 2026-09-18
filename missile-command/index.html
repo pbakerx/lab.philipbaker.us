@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="A standalone, landscape mobile tribute to the 1980 missile-defense arcade game.">
+<title>Missile Command · Mobile</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='black'/%3E%3Ccircle cx='18' cy='12' r='8' fill='%23ff522c'/%3E%3Cpath d='M3 30L18 12' stroke='%235ceaff' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+:root{color-scheme:dark;--ink:#e9eeee;--cyan:#66e5ff;--yellow:#f4ec66;--red:#ff533e;--dim:#96a2a9}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--ink);font:16px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+body{overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;min-height:44px;border:1px solid #394349;border-radius:0;background:#101619;padding:8px 14px}
+button:active{background:#263239}button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+button[aria-pressed=true]{border-color:var(--cyan);color:var(--cyan);background:#102027}
+button:disabled{opacity:.4;cursor:default}button.primary{background:var(--yellow);border-color:var(--yellow);color:#111;font-weight:900}
+[hidden]{display:none!important}
+#app{height:100%;height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#hud{height:48px;flex:none;display:flex;align-items:center;gap:18px;padding:0 14px;border-bottom:1px solid #172126}
+.stat{white-space:nowrap;display:flex;gap:9px;align-items:baseline;font-size:14px;color:var(--dim)}
+.stat strong{font-size:20px;letter-spacing:1px;color:var(--cyan);font-weight:700;font-variant-numeric:tabular-nums}
+#high{color:var(--yellow)}#wave{color:var(--ink)}#reserve{color:var(--ink)}
+.hud-actions{display:flex;margin-left:auto;gap:6px}.hud-actions button{padding:4px 10px;font-size:13px;min-height:40px}
+#arena{position:relative;flex:1;min-height:0;overflow:hidden}
+canvas{width:100%;height:100%;display:block;touch-action:none}
+#controls{height:54px;flex:none;display:grid;grid-template-columns:104px 1fr 1fr 1fr;gap:8px;padding:4px 12px 6px;border-top:1px solid #172126;background:#030708}
+#controls button{min-height:44px;padding:3px 8px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap}
+.ammo{font-size:21px;font-weight:800}.sub{font-size:12px;color:var(--dim)}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:auto;background:rgba(0,0,0,.9);padding:14px 24px;touch-action:pan-y}
+.panel{width:min(850px,100%);max-height:100%;overflow:auto;scrollbar-width:thin}
+.home-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center}
+.eyebrow{font-size:12px;letter-spacing:3px;color:var(--red);margin:0 0 8px}
+h1{font-size:clamp(25px,4.6vw,48px);line-height:.98;letter-spacing:-1px;margin:0 0 15px;font-weight:900;color:var(--yellow)}
+h2{font-size:24px;line-height:1.1;margin:0 0 14px;color:var(--yellow)}
+p{margin:8px 0 14px;font-size:14px;color:#b4c0c6}.muted{font-size:12px;color:var(--dim)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.small{font-size:13px}.center{text-align:center}
+.center .actions{justify-content:center}.instructions{font-size:14px;margin:0;line-height:1.65}
+.instructions b{color:var(--cyan)}.line{border-top:1px solid #273036;padding-top:10px;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}td,th{padding:4px 8px;text-align:left}th{font-size:12px;font-weight:400;color:var(--dim);border-bottom:1px solid #293337}td:last-child,th:last-child{text-align:right}
+.score-number{font-size:30px;color:var(--cyan);font-weight:800}.bonus-grid{display:grid;grid-template-columns:auto auto;gap:7px 30px;max-width:400px;margin:16px auto;text-align:left}.bonus-grid b{text-align:right;color:var(--cyan)}
+.initials{display:flex;gap:9px;justify-content:center;margin:10px 0}.letter{display:grid;gap:2px;min-width:52px}.letter span{font-size:27px;color:var(--cyan)}.letter button{padding:0 12px;min-height:36px}
+#toast{position:absolute;left:50%;bottom:45px;transform:translateX(-50%);padding:5px 12px;background:#060e12e8;color:var(--yellow);font-size:14px;white-space:nowrap;pointer-events:none}
+#gate{position:fixed;inset:0;z-index:20;background:#030607;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+#gate section{max-width:470px}.rotate-icon{font-size:55px;color:var(--cyan);line-height:1;margin-bottom:20px}
+#gate p{font-size:16px}#copy-status{min-height:22px}.gate-actions{margin-top:20px}
+@media(max-height:360px){#hud{height:42px;gap:12px}.stat strong{font-size:17px}#controls{height:50px}.overlay{padding:10px 18px}h1{font-size:29px;margin-bottom:10px}h2{font-size:21px;margin-bottom:8px}.eyebrow{margin-bottom:5px}.panel p{margin:5px 0 8px}.actions{margin-top:8px}.home-grid{gap:20px}}
+@media(max-width:760px){#hud{gap:12px;padding:0 8px}.stat{font-size:12px;gap:5px}.stat strong{font-size:17px}.reserve-stat{display:none}#controls{grid-template-columns:80px 1fr 1fr 1fr;gap:5px;padding-left:6px;padding-right:6px}#controls button{font-size:12px;gap:6px}.sub{display:none}.hud-actions button{font-size:12px;padding:3px 7px}.home-grid{gap:18px}}
+</style>
+</head>
+<body>
+<main id="app">
+ <header id="hud">
+  <div class="stat">SCORE <strong id="score">0</strong></div>
+  <div class="stat">HIGH <strong id="high">0</strong></div>
+  <div class="stat">WAVE <strong id="wave">1</strong><span id="mult">1×</span></div>
+  <div class="stat reserve-stat">RESERVE <strong id="reserve">0</strong></div>
+  <div class="hud-actions"><button id="sound" aria-label="Toggle sound" aria-pressed="true">SOUND</button><button id="pause" aria-label="Pause game" disabled>PAUSE</button></div>
+ </header>
+ <section id="arena" aria-label="Missile defense playfield">
+  <canvas id="game" aria-label="Tap the sky to send a defensive missile to that location. Select a base below or use automatic selection."></canvas>
+  <div id="toast" role="status" hidden></div>
+  <div id="menu" class="overlay"></div>
+ </section>
+ <nav id="controls" aria-label="Missile base selection">
+  <button id="auto" aria-pressed="true">AUTO</button>
+  <button data-base="0" aria-pressed="false"><span>ALPHA <span class="sub">LEFT</span></span><span class="ammo">10</span></button>
+  <button data-base="1" aria-pressed="false"><span>DELTA <span class="sub">FAST</span></span><span class="ammo">10</span></button>
+  <button data-base="2" aria-pressed="false"><span>OMEGA <span class="sub">RIGHT</span></span><span class="ammo">10</span></button>
+ </nav>
+</main>
+<div id="gate" hidden><section>
+ <div class="rotate-icon" aria-hidden="true">↻</div>
+ <h2 id="gate-title">ROTATE YOUR PHONE</h2>
+ <p id="gate-message">Hold your device horizontally to play.</p>
+ <div id="desktop-copy" class="gate-actions" hidden><button id="copy-code" class="primary">COPY ALL HTML</button><p class="muted" id="copy-status">Paste into a file named index.html.</p></div>
+</section></div>
+<script>
+/*
+ MISSILE COMMAND — standalone mobile tribute, 2026.
+ Save this entire document as index.html and serve it as a static page.
+ No assets, packages, keys, backend, ROMs, or external requests are needed.
+
+ RESEARCH / FIDELITY:
+ Atari TM-147 (2nd printing), p.9: three bases, ten ABMs each, branching
+ missiles, aircraft from wave two, evasive smart missiles, 3-letter top eight.
+ https://arcarc.xmission.com/PDF_Arcade_Atari_Kee/Missile_Command/Missile_Command_TM-147_2nd_Printing.pdf
+ Arcade gameplay reference: https://en.wikipedia.org/wiki/Missile_Command
+ Operator bonus options: https://www.arcade-museum.com/dipswitch-settings/missile-command
+ Standard scoring: missile 25; bomber/satellite 100; smart bomb 125;
+ leftover ABM 5; surviving city 100. All scale with the wave multiplier.
+ This uses six starting cities and one bonus city per 10,000 points.
+ Original core rules are recreated; the wave table, spawn patterns, timings,
+ landscape geometry, auto-selection, and synthesized audio are adaptations.
+ It is NOT ROM emulation or a claim of frame-exact arcade difficulty/audio.
+ High scores are local to this browser/origin, not world records.
+ Change WAVES and CONFIG below to tune the feel without changing the UI.
+*/
+(() => {
+'use strict';
+const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
+const $ = id => document.getElementById(id);
+const canvas=$('game'), ctx=canvas.getContext('2d'), menu=$('menu');
+const W=1000, H=450, GROUND=404;
+const CONFIG={ammo:10,bonusEvery:10000,blastRadius:49,blastLife:2.35,
+ sideSpeed:365,centerSpeed:640,smartFirstWave:6,maxCityLosses:3};
+// [ballistic missiles, speed, aircraft, smart bombs, MIRV chance].
+// Hand-tuned progression, NOT extracted from the arcade ROM.
+const WAVES=[
+ [12,24,0,0,0],[15,28,1,0,.12],[18,33,1,0,.16],[20,38,2,0,.20],
+ [22,44,2,0,.24],[24,49,2,1,.25],[26,55,2,2,.28],[28,61,3,2,.30],
+ [30,67,3,3,.32],[32,73,3,3,.34],[34,79,3,4,.36],[36,85,4,4,.38]
+];
+const PALETTES=[['#f4ec66','#66e5ff','#ff533e'],['#f777e7','#8bfa8b','#f6e870'],['#69e88c','#69baff','#ff5c80'],['#75a9ff','#f4ec66','#ff836b']];
+const BASE_X=[65,500,935], CITY_X=[190,305,405,595,695,810];
+const NAMES=['ALPHA','DELTA','OMEGA'];
+const STORE='mc-mobile-scores-v1', SETTINGS='mc-mobile-sound-v1';
+const fmt=n=>Math.floor(n).toLocaleString('en-US');
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const rnd=(a,b)=>a+Math.random()*(b-a), pick=a=>a[Math.floor(Math.random()*a.length)];
+let storageOK=true, scores=[], soundOn=true;
+try { const data=JSON.parse(localStorage.getItem(STORE)||'[]');
+ if(Array.isArray(data)) scores=data.filter(e=>e&&/^[A-Z0-9 ]{1,3}$/.test(e.name)&&Number.isSafeInteger(e.score)&&e.score>=0&&Number.isSafeInteger(e.wave)&&e.wave>0).sort((a,b)=>b.score-a.score).slice(0,8);
+ soundOn=localStorage.getItem(SETTINGS)!=='off';
+} catch(e){storageOK=false;}
+const S={mode:'home',wave:1,score:0,reserve:0,nextBonus:10000,selected:-1,
+ cities:[],bases:[],enemies:[],shots:[],blasts:[],sparks:[],trails:[],schedule:[],
+ time:0,totalTime:0,cityLosses:0,intro:0,toastTime:0,lastBase:-1,flashBase:0,settle:0};
+let view={scale:1,x:0,y:0,w:0,h:0}, last=0, accumulator=0, blocked=true, letters=[0,0,0], saved=false;
+let audio=null, master=null, noiseBuffer=null, activeVoices=0;
+
+function initGround(){
+ S.cities=CITY_X.map((x,i)=>({x,y:GROUND,alive:true,id:i}));
+ S.bases=BASE_X.map((x,i)=>({x,y:GROUND-17,alive:true,ammo:CONFIG.ammo,id:i}));
+}
+function multiplier(){return Math.min(6,Math.floor((S.wave-1)/2)+1);}
+function waveConfig(n){
+ if(n<=WAVES.length)return WAVES[n-1];
+ const extra=Math.min(12,n-WAVES.length);
+ return [36+Math.min(18,extra*2),85+extra*4,4+Math.floor(extra/5),4+Math.floor(extra/3),.4];
+}
+function writeScores(){try{localStorage.setItem(STORE,JSON.stringify(scores));}catch(e){storageOK=false;}}
+function toast(message){$('toast').textContent=message;$('toast').hidden=false;S.toastTime=1.8;}
+function updateHUD(){
+ $('score').textContent=fmt(S.score);$('high').textContent=fmt(Math.max(S.score,scores[0]?.score||0));
+ $('wave').textContent=S.wave;$('mult').textContent=multiplier()+'×';$('reserve').textContent=S.reserve;
+ $('sound').setAttribute('aria-pressed',String(soundOn));$('sound').textContent=soundOn?'SOUND ON':'SOUND OFF';
+ $('auto').setAttribute('aria-pressed',String(S.selected<0));
+ document.querySelectorAll('[data-base]').forEach((b,i)=>{const base=S.bases[i];
+  b.setAttribute('aria-pressed',String(S.selected===i));b.querySelector('.ammo').textContent=base.alive?base.ammo:'×';
+  b.setAttribute('aria-label',NAMES[i]+(base.alive?`, ${base.ammo} missiles`: ', destroyed')+(S.selected===i?', selected':''));
+ });
+ $('pause').disabled=S.mode!=='playing'&&S.mode!=='paused';$('pause').textContent=S.mode==='paused'?'RESUME':'PAUSE';
+}
+
+// Audio is unlocked by a user gesture. LFSR noise and square waves imitate
+// the character of old arcade hardware without using recorded game assets.
+function unlockAudio(){
+ try{
+  if(!audio){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+   audio=new AC();master=audio.createGain();master.gain.value=soundOn?.32:0;
+   const limiter=audio.createDynamicsCompressor();limiter.threshold.value=-16;limiter.ratio.value=8;
+   master.connect(limiter);limiter.connect(audio.destination);
+   noiseBuffer=audio.createBuffer(1,audio.sampleRate*2,audio.sampleRate);
+   const d=noiseBuffer.getChannelData(0);let lfsr=0x1ffff,v=0;
+   for(let i=0;i<d.length;i++){if(i%4===0){lfsr=(lfsr>>1)|(((lfsr^(lfsr>>3))&1)<<16);v=(lfsr&1)?1:-1;}d[i]=v;}
+  }
+  if(audio.state==='suspended'||audio.state==='interrupted')audio.resume().catch(()=>{});
+ }catch(e){audio=null;}
+}
+function voice(kind){
+ if(!soundOn||!audio||audio.state!=='running'||activeVoices>18)return;
+ const t=audio.currentTime,g=audio.createGain();g.connect(master);let src,filter;
+ const noisy=kind==='blast'||kind==='impact';
+ const dur=noisy?(kind==='impact'?.85:.43):(kind==='shot'?.16:kind==='bonus'?.48:.10);
+ if(noisy){src=audio.createBufferSource();src.buffer=noiseBuffer;src.playbackRate.value=kind==='impact'?.43:.8;
+  filter=audio.createBiquadFilter();filter.type='lowpass';filter.frequency.setValueAtTime(kind==='impact'?950:2800,t);filter.frequency.exponentialRampToValueAtTime(65,t+dur);
+  src.connect(filter);filter.connect(g);
+ }else{src=audio.createOscillator();src.type='square';
+  const f=kind==='shot'?920:kind==='bonus'?440:170;
+  src.frequency.setValueAtTime(f,t);src.frequency.exponentialRampToValueAtTime(kind==='bonus'?1760:kind==='shot'?110:85,t+dur);src.connect(g);
+ }
+ g.gain.setValueAtTime(.001,t);g.gain.linearRampToValueAtTime(noisy?.38:.14,t+.006);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+ activeVoices++;src.onended=()=>{activeVoices--;src.disconnect();g.disconnect();if(filter)filter.disconnect();};src.start(t);src.stop(t+dur+.01);
+}
+function addScore(points){
+ S.score+=Math.round(points);
+ while(S.score>=S.nextBonus){S.reserve++;S.nextBonus+=CONFIG.bonusEvery;toast('BONUS CITY EARNED');voice('bonus');}
+ updateHUD();
+}
+function board(){
+ if(!scores.length)return '<p>No scores yet. Set the first one.</p>';
+ return '<table><thead><tr><th>#</th><th>NAME</th><th>WAVE</th><th>SCORE</th></tr></thead><tbody>'+scores.map((e,i)=>`<tr><td>${i+1}</td><td>${e.name}</td><td>${e.wave}</td><td>${fmt(e.score)}</td></tr>`).join('')+'</tbody></table>';
+}
+function showHome(){
+ S.mode='home';menu.hidden=false;
+ menu.innerHTML=`<div class="panel home-grid"><div><p class="eyebrow">MOBILE ARCADE / 1980 TRIBUTE</p><h1>MISSILE<br>COMMAND</h1><p>Six cities. Thirty missiles. Make every shot count.</p><div class="actions"><button class="primary" id="start">START GAME</button><button id="scores">HIGH SCORES</button></div></div><div><p class="instructions"><b>TAP THE SKY</b> to fire at that point.<br>Lead the incoming missiles.<br>Chain explosions to save ammunition.<br><b>AUTO</b> chooses a stocked base.<br>Tap <b>ALPHA / DELTA / OMEGA</b> to lock a base. Delta fires faster.</p><p class="muted line">Bonus city every 10,000 points.<br>High scores stay in this browser.</p></div></div>`;
+ $('start').onclick=startGame;$('scores').onclick=showScores;updateHUD();
+}
+function showScores(){
+ menu.innerHTML=`<div class="panel" style="max-width:510px"><h2>HIGH SCORES</h2>${board()}<p class="muted">${storageOK?'Saved on this device and browser.':'Storage unavailable. Scores last for this session only.'}</p><div class="actions"><button class="primary" id="back">BACK</button></div></div>`;$('back').onclick=showHome;
+}
+function startGame(){
+ if(blocked)return;unlockAudio();initGround();S.wave=1;S.score=0;S.reserve=0;S.nextBonus=CONFIG.bonusEvery;S.selected=-1;S.totalTime=0;saved=false;
+ nextWave();
+ // Browsers may refuse fullscreen/orientation lock. The rotation gate remains.
+ if(document.documentElement.requestFullscreen&&!document.fullscreenElement){
+  try{const f=document.documentElement.requestFullscreen();if(f?.then)f.then(()=>{try{screen.orientation?.lock?.('landscape').catch(()=>{});}catch(e){}}).catch(()=>{});}catch(e){}
+ }
+}
+function nextWave(){
+ S.mode='playing';menu.hidden=true;S.enemies=[];S.shots=[];S.blasts=[];S.sparks=[];S.trails=[];S.schedule=[];
+ S.time=0;S.intro=1.7;S.settle=0;S.cityLosses=0;S.lastBase=-1;$('toast').hidden=true;
+ S.bases.forEach(b=>{b.alive=true;b.ammo=CONFIG.ammo;});
+ const [count,speed,craft,smart,split]=waveConfig(S.wave);S.speed=speed;S.split=split;
+ let t=.6;
+ for(let i=0;i<count;){const batch=Math.min(count-i,3+Math.floor(Math.random()*3));const origin=rnd(90,W-90);
+  for(let j=0;j<batch;j++,i++)S.schedule.push({at:t+j*.14,type:'missile',x:clamp(origin+rnd(-65,65),20,W-20)});
+  t+=Math.max(1.2,3.5-S.wave*.09);
+ }
+ for(let i=0;i<craft;i++)S.schedule.push({at:3+i*Math.max(3,t/Math.max(1,craft)),type:i%2?'satellite':'bomber'});
+ for(let i=0;i<smart;i++)S.schedule.push({at:5+i*Math.max(1.6,t/Math.max(1,smart)),type:'smart',x:rnd(65,W-65)});
+ S.schedule.sort((a,b)=>a.at-b.at);voice('bonus');updateHUD();
+}
+function target(){
+ // After three losses, remaining cities survive this wave, as in the arcade.
+ const live=S.cityLosses<CONFIG.maxCityLosses?S.cities.filter(c=>c.alive):[];
+ const bases=S.bases.filter(b=>b.alive);
+ if(live.length&&(!bases.length||Math.random()<.78))return pick(live);
+ return pick(bases.length?bases:S.cities.filter(c=>!c.alive).length?S.cities.filter(c=>!c.alive):S.cities);
+}
+function spawnMissile(x,y=0,type='missile',canSplit=true){
+ const dest=target();S.enemies.push({type,x,y,ox:x,oy:y,tx:dest.x,ty:dest.y,target:dest,
+  speed:S.speed*(type==='smart'?1.45:rnd(.92,1.09)),split:type==='missile'&&canSplit&&Math.random()<S.split,
+  splitY:rnd(100,205),dead:false,path:[{x,y}]});
+}
+function spawn(item){
+ if(item.type==='bomber'||item.type==='satellite'){
+  const direction=Math.random()<.5?1:-1;
+  S.enemies.push({type:item.type,x:direction>0?-25:W+25,y:rnd(60,150),direction,speed:70+Math.min(S.wave,24)*3.3,drop:rnd(.6,1.6),drops:0,dead:false});
+ }else spawnMissile(item.x,0,item.type);
+}
+function fire(x,y){
+ if(S.mode!=='playing'||S.intro>0||blocked)return false;
+ x=clamp(x,5,W-5);y=clamp(y,5,GROUND-27);
+ const available=S.bases.filter(b=>b.alive&&b.ammo>0);
+ const base=S.selected<0?available.sort((a,b)=>Math.abs(a.x-x)-Math.abs(b.x-x)||b.ammo-a.ammo)[0]:S.bases[S.selected];
+ if(!base||!base.alive||!base.ammo){voice('dry');toast(S.selected<0?'OUT OF MISSILES':`${NAMES[S.selected]} ${base?.alive?'EMPTY':'DESTROYED'} · SELECT ANOTHER BASE`);return false;}
+ base.ammo--;S.lastBase=base.id;S.flashBase=.22;
+ S.shots.push({x:base.x,y:base.y,ox:base.x,oy:base.y,tx:x,ty:y,speed:base.id===1?CONFIG.centerSpeed:CONFIG.sideSpeed});
+ voice('shot');updateHUD();return true;
+}
+function burst(x,y,max=CONFIG.blastRadius,hostile=false){
+ S.blasts.push({x,y,age:0,r:0,max,life:hostile?1.25:CONFIG.blastLife,hostile});voice(hostile?'impact':'blast');
+ for(let i=0;i<7;i++)S.sparks.push({x,y,vx:rnd(-55,55),vy:rnd(-55,55),life:rnd(.25,.6)});
+}
+function impact(e){
+ const t=e.target;
+ if(t.alive){
+  if('ammo'in t){t.alive=false;t.ammo=0;}
+  else if(S.cityLosses<CONFIG.maxCityLosses){t.alive=false;S.cityLosses++;}
+ }
+ burst(e.x,e.y,38,true);updateHUD();
+}
+function distanceToSegment(px,py,ax,ay,bx,by){
+ const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy;
+ const u=l?clamp(((px-ax)*dx+(py-ay)*dy)/l,0,1):0;
+ return Math.hypot(px-ax-u*dx,py-ay-u*dy);
+}
+function kill(e){
+ if(e.dead)return;e.dead=true;
+ addScore((e.type==='smart'?125:e.type==='missile'?25:100)*multiplier());burst(e.x,e.y,41);
+}
+function finishWave(){
+ const cities=S.cities.filter(c=>c.alive).length,ammo=S.bases.reduce((n,b)=>n+(b.alive?b.ammo:0),0),m=multiplier();
+ const cityPoints=cities*100*m,ammoPoints=ammo*5*m;addScore(cityPoints+ammoPoints);
+ let restored=0;for(const city of S.cities){if(!city.alive&&S.reserve>0){city.alive=true;S.reserve--;restored++;}}
+ updateHUD();if(!S.cities.some(c=>c.alive)){endGame();return;}
+ S.mode='bonus';menu.hidden=false;
+ menu.innerHTML=`<div class="panel center"><p class="eyebrow">WAVE ${S.wave} COMPLETE</p><h2>BONUS POINTS</h2><div class="bonus-grid"><span>${cities} CITIES × ${100*m}</span><b>${fmt(cityPoints)}</b><span>${ammo} MISSILES × ${5*m}</span><b>${fmt(ammoPoints)}</b></div><p>${restored?restored+' BONUS '+(restored===1?'CITY RESTORED':'CITIES RESTORED'):'ALL BASES REARMED'}${S.reserve?' · '+S.reserve+' IN RESERVE':''}</p><div class="actions"><button id="next" class="primary">WAVE ${S.wave+1}</button></div></div>`;
+ $('next').onclick=()=>{if(blocked)return;unlockAudio();S.wave++;nextWave();};updateHUD();
+}
+function pauseGame(){
+ if(S.mode!=='playing')return;S.mode='paused';menu.hidden=false;
+ menu.innerHTML='<div class="panel center"><p class="eyebrow">MISSION ON HOLD</p><h2>PAUSED</h2><p>Tap a base to lock it. AUTO restores automatic selection.</p><div class="actions"><button class="primary" id="resume">RESUME</button><button id="restart">RESTART</button></div></div>';
+ $('resume').onclick=resumeGame;$('restart').onclick=startGame;
+ if(audio?.state==='running')audio.suspend().catch(()=>{});updateHUD();
+}
+function resumeGame(){if(blocked||S.mode!=='paused')return;unlockAudio();S.mode='playing';menu.hidden=true;last=performance.now();accumulator=0;updateHUD();}
+function endGame(){
+ S.mode='over';menu.hidden=false;letters=[0,0,0];
+ const qualify=S.score>0&&(scores.length<8||S.score>scores[scores.length-1].score);
+ menu.innerHTML=`<div class="panel center"><p class="eyebrow">WAVE ${S.wave}</p><h2>THE END</h2><div class="score-number">${fmt(S.score)}</div>${qualify?'<p>HIGH SCORE · ENTER YOUR INITIALS</p><div id="initials" class="initials"></div>':'<p>The cities have fallen.</p>'}<div class="actions">${qualify?'<button id="save" class="primary">SAVE SCORE</button>':'<button id="again" class="primary">PLAY AGAIN</button>'}<button id="home">MAIN MENU</button></div><p id="save-note" class="muted"></p></div>`;
+ if(qualify){drawInitials();$('save').onclick=saveEntry;}else $('again').onclick=startGame;
+ $('home').onclick=()=>{if(qualify&&!saved)saveEntry(false);initGround();showHome();};updateHUD();
+}
+function drawInitials(){
+ $('initials').innerHTML=letters.map((n,i)=>`<div class="letter"><button data-letter="${i}" data-change="1" aria-label="Next letter ${i+1}">+</button><span>${String.fromCharCode(65+n)}</span><button data-letter="${i}" data-change="-1" aria-label="Previous letter ${i+1}">−</button></div>`).join('');
+ $('initials').querySelectorAll('button').forEach(b=>b.onclick=()=>{const i=+b.dataset.letter;letters[i]=(letters[i]+(+b.dataset.change)+26)%26;drawInitials();});
+}
+function saveEntry(changeUI=true){
+ if(saved)return;saved=true;scores.push({name:letters.map(n=>String.fromCharCode(65+n)).join(''),score:S.score,wave:S.wave});scores.sort((a,b)=>b.score-a.score);scores=scores.slice(0,8);writeScores();
+ if(changeUI){$('save').textContent='PLAY AGAIN';$('save').onclick=startGame;$('save-note').textContent=storageOK?'HIGH SCORE SAVED':'Saved for this session. Browser storage is unavailable.';$('initials').querySelectorAll('button').forEach(b=>b.disabled=true);}updateHUD();
+}
+
+function update(dt){
+ S.totalTime+=dt;if(S.flashBase>0)S.flashBase-=dt;
+ if(S.toastTime>0){S.toastTime-=dt;if(S.toastTime<=0)$('toast').hidden=true;}
+ if(S.intro>0){S.intro-=dt;return;}
+ S.time+=dt;while(S.schedule.length&&S.schedule[0].at<=S.time)spawn(S.schedule.shift());
+ for(const b of S.blasts){b.age+=dt;const u=b.age/b.life;b.r=b.max*(u<.35?u/.35:u<.65?1:(1-u)/.35);}
+ S.blasts=S.blasts.filter(b=>b.age<b.life);
+ for(const shot of S.shots){const dx=shot.tx-shot.x,dy=shot.ty-shot.y,d=Math.hypot(dx,dy),step=shot.speed*dt;
+  if(d<=step){shot.dead=true;burst(shot.tx,shot.ty);}else{shot.x+=dx/d*step;shot.y+=dy/d*step;}}
+ S.shots=S.shots.filter(s=>!s.dead);
+ // Iterate a snapshot: split missiles and aircraft drops move on the next tick.
+ for(const e of [...S.enemies]){
+  if(e.dead)continue;const oldX=e.x,oldY=e.y;
+  if(e.type==='bomber'||e.type==='satellite'){
+   e.x+=e.direction*e.speed*dt;e.drop-=dt;
+   if(e.drop<=0&&e.x>35&&e.x<W-35&&e.drops<4){spawnMissile(e.x,e.y,'missile',false);e.drop=rnd(1.3,2.8);e.drops++;}
+   if(e.x<-45||e.x>W+45){e.dead=true;continue;}
+  }else{
+   let dx=e.tx-e.x,dy=e.ty-e.y,d=Math.hypot(dx,dy),step=e.speed*dt;
+   if(d<=step){e.x=e.tx;e.y=e.ty;}
+   else{
+    let vx=dx/d,vy=dy/d;
+    if(e.type==='smart'){
+     for(const b of S.blasts){if(b.hostile)continue;const bx=e.x-b.x,by=e.y-b.y,dist=Math.hypot(bx,by);
+      if(dist<b.r+48&&dist>0&&b.y>=e.y-24){vx+=Math.sign(bx||e.tx-e.x||1)*(1-dist/(b.r+48))*3;vy=Math.max(.28,vy-.5);}}
+     const norm=Math.hypot(vx,vy);vx/=norm;vy/=norm;
+    }
+    e.x=clamp(e.x+vx*step,5,W-5);e.y+=vy*step;
+   }
+   if(e.type==='smart'){if(e.path.length<100&&Math.hypot(e.x-e.path[e.path.length-1].x,e.y-e.path[e.path.length-1].y)>7)e.path.push({x:e.x,y:e.y});}
+  }
+  for(const b of S.blasts){if(!b.hostile&&distanceToSegment(b.x,b.y,oldX,oldY,e.x,e.y)<=b.r+(e.type==='missile'?1:5)){kill(e);break;}}
+  if(e.dead)continue;
+  if(e.type==='missile'&&e.split&&e.y>=e.splitY){
+   e.split=false;for(let i=0;i<(S.wave>10?3:2);i++)spawnMissile(e.x,e.y,'missile',false);
+  }
+  if((e.type==='missile'||e.type==='smart')&&e.y>=e.ty-.5){e.dead=true;impact(e);}
+ }
+ for(const e of S.enemies){if(e.dead&&e.type==='missile')S.trails.push({x:e.ox,y:e.oy,tx:e.x,ty:e.y,life:.35});}
+ S.enemies=S.enemies.filter(e=>!e.dead);
+ for(const p of S.sparks){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;}S.sparks=S.sparks.filter(p=>p.life>0);
+ for(const t of S.trails)t.life-=dt;S.trails=S.trails.filter(t=>t.life>0);
+ if(!S.schedule.length&&!S.enemies.length&&!S.shots.length&&!S.blasts.length){S.settle+=dt;if(S.settle>.6)finishWave();}else S.settle=0;
+}
+function line(x,y,tx,ty,color,width=1.5){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(tx,ty);ctx.stroke();}
+function text(s,x,y,size,color,align='center'){ctx.fillStyle=color;ctx.font=`bold ${size}px monospace`;ctx.textAlign=align;ctx.fillText(s,x,y);}
+function city(c,color){
+ ctx.fillStyle=c.alive?color:'#263238';
+ if(!c.alive){for(let i=0;i<5;i++)ctx.fillRect(c.x-23+i*10,GROUND-4-(i%2)*4,9,5+(i%2)*4);return;}
+ const heights=[12,25,19,33,16,22];for(let i=0;i<6;i++){const x=c.x-25+i*9,h=heights[(i+c.id)%6];ctx.fillRect(x,GROUND-h,8,h);ctx.fillStyle='#02060b';for(let y=GROUND-h+5;y<GROUND-3;y+=7)ctx.fillRect(x+3,y,2,3);ctx.fillStyle=color;}
+}
+function draw(){
+ const dpr=Math.min(window.devicePixelRatio||1,2);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#000';ctx.fillRect(0,0,view.w,view.h);
+ ctx.translate(view.x,view.y);ctx.scale(view.scale,view.scale);
+ const palette=PALETTES[Math.floor((S.wave-1)/2)%PALETTES.length],ground=palette[0],friendly=palette[1],enemy=palette[2];
+ // Sparse pixel ground; all sprites are drawn locally by this canvas.
+ ctx.fillStyle=ground;ctx.fillRect(0,GROUND,W,3);
+ for(const b of S.bases){ctx.beginPath();ctx.moveTo(b.x-48,GROUND);ctx.lineTo(b.x-29,GROUND-20);ctx.lineTo(b.x+29,GROUND-20);ctx.lineTo(b.x+48,GROUND);ctx.closePath();ctx.fill();}
+ S.cities.forEach(c=>city(c,friendly));
+ for(const b of S.bases){
+  ctx.fillStyle=b.alive?friendly:'#354249';ctx.fillRect(b.x-7,b.y-8,14,9);
+  for(let i=0;i<b.ammo;i++){const x=b.x-23+(i%5)*10,y=GROUND+12+Math.floor(i/5)*13;ctx.fillStyle=friendly;ctx.fillRect(x,y,3,9);ctx.fillRect(x-2,y+6,7,3);}
+  if(S.selected===b.id||S.selected<0&&S.lastBase===b.id&&S.flashBase>0){line(b.x-40,GROUND-28,b.x+40,GROUND-28,friendly,2);}
+  if(!b.alive)text('OUT',b.x,GROUND+22,15,'#8a9498');
+ }
+ for(const t of S.trails){ctx.globalAlpha=t.life/.35;line(t.x,t.y,t.tx,t.ty,enemy);}ctx.globalAlpha=1;
+ for(const e of S.enemies){
+  if(e.type==='missile'){line(e.ox,e.oy,e.x,e.y,enemy,1.8);ctx.fillStyle='#fff';ctx.fillRect(e.x-2,e.y-2,4,4);}
+  else if(e.type==='smart'){
+   ctx.strokeStyle=enemy;ctx.lineWidth=1;ctx.beginPath();e.path.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.lineTo(e.x,e.y);ctx.stroke();
+   ctx.strokeStyle=ground;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(e.x,e.y-7);ctx.lineTo(e.x+6,e.y);ctx.lineTo(e.x,e.y+7);ctx.lineTo(e.x-6,e.y);ctx.closePath();ctx.stroke();
+  }else{ctx.save();ctx.translate(e.x,e.y);ctx.scale(e.direction,1);ctx.fillStyle=enemy;
+   if(e.type==='bomber'){ctx.fillRect(-17,-3,31,6);ctx.fillRect(-4,-12,6,22);ctx.fillRect(-16,-8,4,7);ctx.fillRect(13,-1,6,3);}
+   else{ctx.fillRect(-5,-6,10,12);ctx.fillRect(-20,-9,9,18);ctx.fillRect(11,-9,9,18);ctx.fillRect(-14,-1,28,2);}ctx.restore();}
+ }
+ for(const s of S.shots){line(s.ox,s.oy,s.x,s.y,friendly,2);ctx.fillStyle='#fff';ctx.fillRect(s.x-2,s.y-2,4,4);line(s.tx-5,s.ty-5,s.tx+5,s.ty+5,friendly,1);line(s.tx-5,s.ty+5,s.tx+5,s.ty-5,friendly,1);}
+ for(const b of S.blasts){if(b.r<=0)continue;
+  const u=b.age/b.life;ctx.fillStyle=b.hostile?enemy:u<.2?friendly:u<.6?ground:enemy;
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();
+  if(u>.22&&u<.75){ctx.fillStyle='#000';ctx.beginPath();ctx.arc(b.x,b.y,Math.max(0,b.r-5),0,Math.PI*2);ctx.fill();ctx.fillStyle=friendly;ctx.beginPath();ctx.arc(b.x,b.y,b.r*.57,0,Math.PI*2);ctx.fill();}
+ }
+ for(const p of S.sparks){ctx.globalAlpha=Math.min(1,p.life*3);ctx.fillStyle=ground;ctx.fillRect(p.x,p.y,2,2);}ctx.globalAlpha=1;
+ if(S.mode==='playing'&&S.intro>0){text('WAVE '+S.wave,W/2,170,30,ground);text(multiplier()+'× POINTS',W/2,204,18,friendly);if(S.wave===1)text('DEFEND CITIES',W/2,246,16,'#fff');if(S.wave===6)text('SMART BOMBS INBOUND',W/2,246,16,enemy);}
+}
+function isMobile(){return navigator.maxTouchPoints>0&&(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1));}
+function resize(){
+ const r=$('arena').getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
+ canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);
+ const scale=Math.max(.01,Math.min(r.width/W,r.height/H));view={w:r.width,h:r.height,scale,x:(r.width-W*scale)/2,y:(r.height-H*scale)/2};
+ const mobile=isMobile(),landscape=window.innerWidth>window.innerHeight;blocked=!mobile||!landscape;
+ $('gate').hidden=!blocked;$('desktop-copy').hidden=mobile;
+ $('gate-title').textContent=mobile?'ROTATE YOUR DEVICE':'MOBILE ONLY';
+ $('gate-message').textContent=mobile?'Hold your phone or tablet horizontally. Your game stays paused.':'Open this page on your phone or tablet, then turn it horizontally to play.';
+ if(blocked)pauseGame();draw();
+}
+canvas.addEventListener('pointerdown',e=>{
+ e.preventDefault();if(e.pointerType!=='touch'&&e.pointerType!=='pen')return;unlockAudio();
+ const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left-view.x)/view.scale,y=(e.clientY-r.top-view.y)/view.scale;
+ if(x<0||x>W||y<0||y>H)return;
+ if(y>GROUND-30){const base=S.bases.find(b=>Math.abs(b.x-x)<50);if(base){selectBase(base.id);return;}}
+ fire(x,y);
+},{passive:false});
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+function selectBase(i){S.selected=i;updateHUD();}
+document.querySelectorAll('[data-base]').forEach(b=>b.onclick=()=>selectBase(+b.dataset.base));$('auto').onclick=()=>selectBase(-1);
+$('pause').onclick=()=>S.mode==='paused'?resumeGame():pauseGame();
+$('sound').onclick=()=>{unlockAudio();soundOn=!soundOn;if(master)master.gain.setTargetAtTime(soundOn?.32:0,audio.currentTime,.02);try{localStorage.setItem(SETTINGS,soundOn?'on':'off');}catch(e){}updateHUD();};
+$('copy-code').onclick=async()=>{
+ try{if(!navigator.clipboard?.writeText)throw new Error('clipboard');await navigator.clipboard.writeText(SOURCE);$('copy-status').textContent='Copied. Paste into index.html.';}
+ catch(e){const area=document.createElement('textarea');area.value=SOURCE;area.style.cssText='position:fixed;inset:10%;width:80%;height:70%;z-index:50;user-select:text;font:12px monospace';document.body.appendChild(area);area.select();const copied=document.execCommand('copy');if(copied){area.remove();$('copy-status').textContent='Copied. Paste into index.html.';}else{area.onblur=()=>area.remove();$('copy-status').textContent='Source selected. Press Command+C or Ctrl+C.';}}
+};
+window.addEventListener('resize',resize);window.visualViewport?.addEventListener('resize',resize);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseGame();last=performance.now();accumulator=0;});
+window.addEventListener('pagehide',pauseGame);window.addEventListener('blur',pauseGame);
+function frame(now){
+ const dt=Math.min(.1,(now-(last||now))/1000);last=now;
+ if(S.mode==='playing'&&!blocked&&!document.hidden){accumulator+=dt;while(accumulator>=1/60&&S.mode==='playing'){update(1/60);accumulator-=1/60;}}else accumulator=0;
+ draw();requestAnimationFrame(frame);
+}
+initGround();showHome();resize();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
