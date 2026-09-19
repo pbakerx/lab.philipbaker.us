@@ -456,57 +456,57 @@ harmlessly. New pages must include the tag, and a re-dropped zip package
     spelling of the folder; Vercel paths are case- and letter-exact). `missleCommand/` is his
     original drop — untouched, gitignored, and byte-identical to this file's first commit.
 
-- **/missile-command-deluxe** — the same game in a living 3D world (Sep 19 2026). Philip's brief: "the latest and
-  greatest from three.js… rich with robust explosions and fire… as real as possible… same gameplay tech".
-  - **The game is not rewritten — it is GENERATED.** `game.js` is `/missile-command`'s own script, run through
-    `.claude/missile-command-deluxe/port.py`: every edit is an asserted exact-string replacement (it fails loudly if the
-    original changes), it cuts out the 2D `draw()` and adds a handful of hooks (`R.onBlast`, `R.onImpact`, …). Waves,
-    scoring, input, panels, audio and the iPhone keep-alive are therefore the original's, byte for byte. `index.html`
-    is generated the same way by `shell.py` (same HUD, controls, rotate gate, menu seating). **Change the original,
-    then re-run both** — never hand-edit the two generated files:
-    `python3 .claude/missile-command-deluxe/port.py missile-command/index.html missile-command-deluxe/game.js`
-    `python3 .claude/missile-command-deluxe/shell.py missile-command/index.html missile-command-deluxe/index.html`
-    Its own leaderboard (`mc-deluxe-scores-v1`); the sound setting is shared with the original.
-  - **Renderer:** three.js **r186, WebGPURenderer + TSL + RenderPipeline**, import-mapped from jsdelivr (pinned), no
-    build. One TSL source compiles to WGSL (WebGPU) and GLSL (the renderer's own WebGL2 fallback) — so it is written
-    inside the subset both run: no compute, no storage buffers, no MSAA, no `THREE.Points` (1 px under WebGPU), one
-    pooled instanced draw per kind of thing (~40 draws), every material made once, per-instance data only through real
-    `InstancedBufferAttribute`s. **A phone defaults to the WebGL2 backend**, a desktop to WebGPU; `?gpu=1` / `?gl=1`
-    flip it and are remembered, `?debug=1` shows backend · tier · dpr · fps, `?tier=mobile|high`, `?tm=agx`, `?clarity=1`.
-  - **Files:** `world.js` (renderer, shift-lens camera, the gameplay overlay — trails, heads, kill rings — the fireball
-    shader, bloom, the frame loop and the resolution governor), `land.js` (sky, stars, moon, cirrus, terrain + wet apron,
-    cities, batteries, and `blastLight()` — the ONE light function every surface calls; there are no three.js lights),
-    `fx.js` (stateless GPU particles: sparks, smoke/dust, flames), `craft.js` (bomber, satellite).
-  - **Aiming stays exact.** The camera is a shift lens (`setViewOffset`): it looks straight down −z from 48 units up and
-    slides its window, so the gameplay plane z=0 is the exact letterbox rectangle the 2D game computes and the
-    original `fieldPoint()` maths is untouched. `R.checkFit()` (QA) asserts it: 0 px at every aspect tested.
-  - **The visible radius IS the kill zone.** Fire erodes only inward of `b.r`; the ring sits on the radius with a dark
-    keyline outside it and keeps the 2D game's colour phases (friendly → ground → enemy). Hostile bursts are domes.
-  - **Gotchas that cost time:** (1) r186 re-renders a scene `pass()` once per FRAME id, and that id only advances from
-    the renderer's own rAF loop — in a hidden pane every capture showed the first frame until `R.tickFrame()` advanced
-    it by hand. (2) `generateMipmaps` on a `DataTexture` produced an EMPTY chain on the WebGPU backend (all noise read
-    0: smooth fireballs, no clouds) — the mip chain is built on the CPU. (3) Terrain wound the wrong way is invisible,
-    and the sky's lower half looks exactly like a dark desert. (4) A microfacet lobe cannot make wet-ground streaks
-    from 48 units up — they are analytic, a gaussian in screen x under each light. (5) A `//` comment spliced into a
-    one-line object member eats the rest of the line.
-  - **From the pre-ship review (all fixed; do not regress):** (a) the module entry is ROOT-ABSOLUTE
-    (`/missile-command-deluxe/game.js`) — Vercel serves the page at the bare URL too, and from there `./game.js` is
-    `/game.js`: a 404 and a dead loading screen (the Vault note on `trailingSlash` again); typo redirects point at the
-    slash form. (b) **A lost GPU is terminal and says so:** iOS reclaims a backgrounded tab's context, three.js then
-    returns early from every `render()` for good — `renderer.onDeviceLost` (hooked BEFORE `init()`) tells the game,
-    which pauses, silences audio, and raises the cover with a reload link; nothing starts or resumes while `lost`.
-    (c) START needs a world (`!R` guard). (d) The resolution governor must not read a frame-rate CAP as load: iOS Low
-    Power Mode runs rAF at 30 Hz — two rungs down with no gain means "capped": give the resolution back for a minute.
-    (e) `pow()` of a base that can dip below zero is a NaN, and bloom spreads one NaN pixel over the frame — square by
-    hand, clamp dot products. (f) PAUSE holds the world clock too (`dt = 0`), or frozen interceptors pump smoke.
-    (g) Light slots are ranked by STEADY power so a fire's flicker never reshuffles which ruin is lit. (h) Screen shake
-    moves the window −shake so the field shows at +shake, which is what `fieldPoint()` subtracts.
-  - **Captures:** `?qa=1&shot=NAME&t=MS&w=&h=` runs a scripted battle on a VIRTUAL clock (1/60 s per tick, driven by a
-    MessageChannel — neither rAF nor timers run in a hidden pane), renders to an offscreen target and POSTs the PNG to
-    `/__shot/NAME` (a local mirror server writes it; on the lab it 404s harmlessly). `shot=s…` is a siege. `img/og.png`
-    is one of these frames (1200×630), not a composed card.
-  - **Not verified on a real iPhone** (no simulator on the Mac mini): both backends were exercised in desktop Chrome.
-    Ask Philip which backend his phone prefers (`?debug=1`, then `?gpu=1`).
+- **/missile-command-deluxe** — **City Run** (Sep 19 2026, the second deluxe). Philip's brief: "isn't deluxe enough. Throw
+  all the existing graphic styles and approach out the window and design new. Make it only auto-play. Let's change game play…
+  fly through a city on each level… saves each city a level at a time… flies in 3-d space and shoots from his tethered by
+  wireless base camp… radar… After each level it gets harder. Match color schemes from original missile command."
+  v1 — the 2D game generated into a realistic desert world (WebGPU + TSL, `port.py`/`shell.py`) — is gone from the tree and
+  kept under the git tag **`deluxe-v1`** (`53ea39c`). Nothing here is generated any more; edit the files directly.
+  - **The game.** Each level is one city (the arcade's folkloric six — EUREKA … SAN DIEGO — then it loops with II, III).
+    The craft always flies forward along a closed circuit of avenues; the player only bends its path inside the canyon.
+    It carries no weapons: a tap is a DESIGNATION, and base camp (pads ALPHA/DELTA/OMEGA, ten missiles each, tied to the
+    craft by the visible uplink) fires. **"Only auto-play" was read as AUTO-only** — base camp picks the pad (fullest,
+    then fastest); there is no pad selection, and the bottom control bar is gone. The title screen is also a self-playing
+    attract mode (`S.demo`: silent, scoreless, a gunner that leads its shots), which covers the other reading.
+    Six towers must stand when the raid ends; all six down is game over unless a reserve tower (one per 10,000) re-raises.
+  - **Kept from the original on purpose:** the `WAVES` table and `PALETTES` verbatim (scaled by `CONFIG.count`/`speed`), the
+    blast envelope and its three colour phases, chain kills, scoring and the ×1–×6 multiplier, a pad lost when hit,
+    typed initials, the iPhone Silent-Mode keep-alive (`audio.js`), and the palette cadence — a new scheme every TWO
+    levels. Every colour in the world and on the page is one of the scheme's three (`--ground/--friendly/--enemy` are
+    rewritten per city by `chrome()`), plus white-hot cores.
+  - **Aiming in 3D** (`solveAim`). A tap is a ray and a ray has no depth: the shot bursts where the ray passes closest to
+    a missile's FUTURE path segment, so leading the target works exactly as in 2D and depth solves itself; nothing near
+    the ray → it bursts on the ray at altitude. **The radar is a control**: tap it and the same solve runs down a vertical
+    line from that map spot. The overlay's yellow diamond shows where the shot will actually burst.
+  - **The raid follows the player** (`ahead()`/`pickTarget`). A forward camera plus city-wide targets put the battle
+    off-screen (measured: 0 of 8 missiles in view). "Further along the road" is the wrong test — the circuit corners every
+    few seconds. The craft is flown forward in the mind to four moments of the missile's fall and a tower is kept only if
+    it sits in the forward cone for two of them; staged missiles also arrive from BEYOND the tower. Measured after: 85 %
+    staged, every staged missile seen. One strike in five is unstaged on purpose — that is what the radar is for.
+  - **Steering has to be a choice, never a tax:** rings (+3 missiles) and jammers (3 s without the uplink, from level 3)
+    are always placed OFF the centreline (`scatter`), so a phone player who only taps flies clean and meets neither.
+    A corner narrows the lateral bound so the craft cannot clip a block; the camera rides the ROUTE 15 units behind, never
+    the craft's tangent, for the same reason.
+  - **Files:** `main.js` (rules, flight, aim, input, panels, the frame, the resolution governor), `scene.js` (everything
+    three.js), `radar.js` (the scope + the flat 2D overlay: reticle, brackets, edge chevrons, score pops, thumb stick),
+    `audio.js`. Imports are ROOT-ABSOLUTE (`/missile-command-deluxe/…`): Vercel serves the bare URL too.
+  - **Renderer: deliberately plain.** three.js r186 **classic `WebGLRenderer`** (WebGL2 everywhere), hand-written GLSL,
+    `EffectComposer` → `UnrealBloomPass` → `OutputPass` (ACES). Four pooled instanced draws — buildings (one box, dressed
+    wholly in the shader: windows, corner strips, crowns, collapse via a per-instance `aState`), BEAMS (every line of
+    light; never thinner than ~2 px so far trails don't shimmer), SPRITES (every point of light), blast shells — plus
+    `blastLight()`, the one light function every surface calls (8 slots, ranked by STEADY power). No textures, models or
+    three.js lights. MSAA on the scene target on desktop only.
+  - **Tuning that mattered:** first light was a white-out — bloom threshold 0.16 → 0.42 and windows mostly dim with a few
+    hot fixed it. Anything spawned AT the craft is 15 units from the lens: the engine glow, the uplink's first third and
+    the uplink pulse all have to start tiny or fade in. Blast cores above ~0.3 turn the whole disc white under ACES.
+  - **QA:** `?qa=1` exposes `window.__mcd` (`start()`, `step(n, render)`, `launch(v3)`, `fireAt(x,y)`, `next()`, `S`,
+    `world.project`). **Add `&hold=1`** or the page keeps playing in real time between commands and base camp is rubble by
+    the time you look. `?quality=low|high`, `?dpr=`. The social card `img/og.jpg` is a staged real frame composed in-page
+    and POSTed to the scratch server's `/__shot/` (see the Mac-mini preview note above).
+  - **The `//` gotcha, again:** a comment spliced into the MIDDLE of a one-line statement ate `camera.lookAt(…)` and the
+    camera silently faced −z for two test frames. Comments go at the END of these dense lines, always.
+  - **Not verified on a real phone** — desktop Chrome and its touch emulation only (tap, drag-to-fly, two thumbs at once,
+    layout at 740×360). Lost WebGL context raises a reload cover; the rotate gate and hamburger seating are the original's.
 
 - **/hello** — the original example.
 
