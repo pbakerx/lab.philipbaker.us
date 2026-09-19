@@ -192,7 +192,35 @@ function updateHUD(){
 
 // Audio is unlocked by a user gesture. LFSR noise and square waves imitate
 // the character of old arcade hardware without using recorded game assets.
-function unlockAudio(){
+//
+// iPHONE / iPAD. A page that only uses Web Audio gets iOS's "ambient" audio session, which Silent
+// Mode (the ring switch, the Action button, Control Center) mutes — while audio.state still reads
+// "running". An audible <audio> element moves the page to the "playback" session, which Silent Mode
+// does not touch. So on iOS one looping, silent, UNMUTED element is played inside the same tap that
+// unlocks the context (START GAME, RESUME, SOUND ON). Half a second long: WebKit only offers an
+// element to the lock screen above 0.95 s. One element for life: once it has played inside a tap,
+// WebKit lets THAT element play again without one. A playback session is not mixable — it pauses
+// the player's own music — so only a tap that asks for the game's sound may take it (`ask`); any
+// other unlock merely follows a context that is already running, and PAUSE, a hidden page and
+// SOUND OFF hand the session back. (?ios=1 exercises this path on a desktop browser.)
+const IOS=new URLSearchParams(location.search).has('ios')||/iP(hone|ad|od)/.test(navigator.userAgent)||(/Mac/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+let keep=null;
+function silentWav(rate,secs=.5){ // 16-bit stereo PCM zeros at the context's own rate, as a data: URI — nothing to fetch
+ const ch=2,len=Math.floor(rate*secs)*ch*2,b=new ArrayBuffer(44+len),v=new DataView(b),w=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i));};
+ w(0,'RIFF');v.setUint32(4,36+len,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,ch,true);
+ v.setUint32(24,rate,true);v.setUint32(28,rate*ch*2,true);v.setUint16(32,ch*2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,len,true);
+ const u=new Uint8Array(b);let t='';for(let i=0;i<u.length;i+=0x8000)t+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));
+ return 'data:audio/wav;base64,'+btoa(t);
+}
+function keepAlive(on){
+ if(!IOS||!audio)return;
+ try{
+  if(!keep){keep=document.createElement('audio');keep.setAttribute('x-webkit-airplay','deny');keep.disableRemotePlayback=true;keep.preload='auto';keep.loop=true;
+   keep.muted=false;keep.volume=1;keep.src=silentWav(audio.sampleRate);keep.load();} // unmuted and at volume: WebKit only counts an element that CAN produce audio
+  if(on&&soundOn&&!document.hidden&&S.mode!=='paused'){if(keep.paused)keep.play()?.catch(()=>{});}else if(!keep.paused)keep.pause();
+ }catch(e){}
+}
+function unlockAudio(ask){
  try{
   if(!audio){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
    audio=new AC();master=audio.createGain();master.gain.value=soundOn?.32:0;
@@ -202,7 +230,10 @@ function unlockAudio(){
    const d=noiseBuffer.getChannelData(0);let lfsr=0x1ffff,v=0;
    for(let i=0;i<d.length;i++){if(i%4===0){lfsr=(lfsr>>1)|(((lfsr^(lfsr>>3))&1)<<16);v=(lfsr&1)?1:-1;}d[i]=v;}
   }
-  if(audio.state==='suspended'||audio.state==='interrupted')audio.resume().catch(()=>{});
+  // play() before resume(), both synchronous inside the tap. Without `ask`, only follow a running context: while it is
+  // interrupted the player's own audio has the session, and resume() simply waits for it — play() would take it back.
+  if(ask||audio.state==='running')keepAlive(true);
+  if(audio.state!=='running')audio.resume().then(()=>keepAlive(true)).catch(()=>{});
  }catch(e){audio=null;}
 }
 function voice(kind){
@@ -238,7 +269,9 @@ function showScores(){
  menu.innerHTML=`<div class="panel" style="max-width:510px"><h2>HIGH SCORES</h2>${board()}<p class="muted">${storageOK?'Saved on this device and browser.':'Storage unavailable. Scores last for this session only.'}</p><div class="actions"><button class="primary" id="back">BACK</button></div></div>`;$('back').onclick=showHome;
 }
 function startGame(){
- if(blocked)return;unlockAudio();initGround();S.wave=1;S.score=0;S.reserve=0;S.nextBonus=CONFIG.bonusEvery;S.selected=-1;S.totalTime=0;saved=false;
+ // The mode leaves 'paused' BEFORE the unlock (RESTART is pressed on the pause panel): keepAlive() will not play while paused,
+ // and on an iPhone the keep-alive has to be played inside this very tap.
+ if(blocked)return;S.mode='playing';unlockAudio(true);initGround();S.wave=1;S.score=0;S.reserve=0;S.nextBonus=CONFIG.bonusEvery;S.selected=-1;S.totalTime=0;saved=false;
  nextWave();
  // Browsers may refuse fullscreen/orientation lock. The rotation gate remains.
  // Phones only: there it hides the browser chrome. A desktop window taken over on START is rude — F is the opt-in.
@@ -323,9 +356,9 @@ function pauseGame(){
  if(S.mode!=='playing')return;S.mode='paused';menu.hidden=false;
  menu.innerHTML=`<div class="panel center"><p class="eyebrow">MISSION ON HOLD</p><h2>PAUSED</h2><p>${mobile?'Tap':'Click'} a base to lock it. AUTO restores automatic selection.${mobile?'':'<br>1 2 3 or A S D fire from Alpha, Delta or Omega · P or ENTER resumes'}</p><div class="actions"><button class="primary" id="resume">RESUME</button><button id="restart">RESTART</button></div></div>`;
  $('resume').onclick=resumeGame;$('restart').onclick=startGame;
- if(audio?.state==='running')audio.suspend().catch(()=>{});updateHUD();
+ if(audio?.state==='running')audio.suspend().catch(()=>{});keepAlive(false);updateHUD();
 }
-function resumeGame(){if(blocked||S.mode!=='paused')return;unlockAudio();S.mode='playing';menu.hidden=true;last=performance.now();accumulator=0;updateHUD();}
+function resumeGame(){if(blocked||S.mode!=='paused')return;S.mode='playing';unlockAudio(true);menu.hidden=true;last=performance.now();accumulator=0;updateHUD();}
 function endGame(){
  S.mode='over';menu.hidden=false;letters=[0,0,0];slot=0;
  const qualify=S.score>0&&(scores.length<8||S.score>scores[scores.length-1].score);
@@ -452,7 +485,7 @@ canvas.addEventListener('contextmenu',e=>e.preventDefault());
 function selectBase(i){S.selected=i;updateHUD();}
 document.querySelectorAll('[data-base]').forEach(b=>b.onclick=()=>selectBase(+b.dataset.base));$('auto').onclick=()=>selectBase(-1);
 $('pause').onclick=()=>S.mode==='paused'?resumeGame():pauseGame();
-$('sound').onclick=()=>{unlockAudio();soundOn=!soundOn;if(master)master.gain.setTargetAtTime(soundOn?.32:0,audio.currentTime,.02);try{localStorage.setItem(SETTINGS,soundOn?'on':'off');}catch(e){}updateHUD();};
+$('sound').onclick=()=>{soundOn=!soundOn;unlockAudio(soundOn);keepAlive(soundOn);if(master)master.gain.setTargetAtTime(soundOn?.32:0,audio.currentTime,.02);try{localStorage.setItem(SETTINGS,soundOn?'on':'off');}catch(e){}updateHUD();};
 // DESKTOP. The mouse stands in for the trackball and 1/2/3 (or A/S/D) for the cabinet's
 // three fire buttons. Bases are matched by e.code first — the physical key, so the row works
 // on any layout — then by the character, because on-screen keyboards, remote desktops and
@@ -496,8 +529,8 @@ document.addEventListener('click',e=>{
  else if(e.detail)e.target.closest('#hud button,#controls button')?.blur();
 });
 window.addEventListener('resize',resize);window.visualViewport?.addEventListener('resize',resize);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseGame();last=performance.now();accumulator=0;});
-window.addEventListener('pagehide',pauseGame);window.addEventListener('blur',pauseGame);
+document.addEventListener('visibilitychange',()=>{if(document.hidden){pauseGame();keepAlive(false);}last=performance.now();accumulator=0;});
+window.addEventListener('pagehide',()=>{pauseGame();keepAlive(false);});window.addEventListener('blur',pauseGame);
 function frame(now){
  const dt=Math.min(.1,(now-(last||now))/1000);last=now;
  if(S.mode==='playing'&&!blocked&&!document.hidden){accumulator+=dt;while(accumulator>=1/60&&S.mode==='playing'){update(1/60);accumulator-=1/60;}}else accumulator=0;

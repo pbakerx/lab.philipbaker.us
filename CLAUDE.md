@@ -436,6 +436,18 @@ harmlessly. New pages must include the tag, and a re-dropped zip package
     `:where(#app)`: zero specificity, so the cascade inside the game is unchanged, but they
     stop restyling the menu's own buttons. A click anywhere in `#pb-menu` pauses the game,
     and the game's keys stand down while the drawer is open (Esc closes it, stays paused).
+  - **Sound on iPhone (Sep 19 2026).** The game was silent on iPhones in Silent Mode: a page that
+    only uses Web Audio gets iOS's *ambient* audio session, which the ring switch mutes while
+    `audio.state` still reads "running". On iOS only, one detached, looping, silent, **unmuted**
+    `<audio>` element (a 0.5 s WAV data URI — above 0.95 s WebKit offers it to the lock screen) is
+    played inside the same tap that unlocks the context, which moves the page to the *playback*
+    session. One element for life: WebKit lifts the gesture requirement per element. Playback is
+    not mixable (it pauses the player's own music), so only a tap that asks for the game's sound
+    takes it — START GAME, RESUME, SOUND ON (`unlockAudio(true)`); every other unlock merely
+    follows a context that is already running, and PAUSE, a hidden page and SOUND OFF hand the
+    session back. Same technique as the AechTech instrument hero, where Philip confirmed it on
+    his phone. `?ios=1` exercises the path on a desktop browser; nothing on a phone reads
+    differently, and no wording changed.
   - `img/og.png` is a generated 1200×630 card, not a screenshot: source is
     `.claude/og-cards/missile-command.html`, rendered with headless Chrome at
     `--window-size=1200,630 --force-device-scale-factor=1`. High scores are `localStorage`
