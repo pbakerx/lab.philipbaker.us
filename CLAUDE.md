@@ -615,6 +615,12 @@ harmlessly. New pages must include the tag, and a re-dropped zip package
     the radar only works while you stand still. The sidekick is your opponent when you are alone
     and your ally when other people are on the wire. Missiles take 190 ms a cell and a held step
     165 ms — so, as a 1984 Mac salesman remembered, a long enough hallway lets you back away from one.
+  - **J and L are side-steps — Philip's call, not the original's** (Sep 19 2026): one cell to your
+    left / right *relative to your facing*, and your facing does not change. He remembered a strafe;
+    the original's strings only list four compass keys ("Moves your guy North/East/South/West"),
+    which this build had guessed turn-then-step. I and , are still that (absolute North / South,
+    turning you) — the odd pair out now; if they ever change, forward / back without turning is
+    the consistent choice. Both key maps carry the change.
   - **Keys** are the original's two maps (`STR ` 1111/1112: standard, and Touch Typist) plus arrows;
     Return/Tab opens the message box; a click in the hall fires (the original's cursor there is a
     gun sight). ⌘-equivalents also answer to Ctrl, since browsers keep ⌘N/⌘T/⌘M for themselves.

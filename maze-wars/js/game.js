@@ -14,11 +14,11 @@ window.MW = window.MW || {};
   const OPT = { MAZES: 1, BLACKOUT: 2, INVISIBLE: 4, STATIONARY: 8 }, OPT_NAMES = { 1: '4 Mazes', 2: 'Maze Black-out', 4: 'Invisible Neighbors', 8: 'Stationary Radar' };
   const STEP_MS = 165, TURN_MS = 190, MISSILE_MS = 190, RELOAD_MS = 350;
   const KEYS = {
-    std: { k: 'fire', ' ': 'fire', t: 'peekR', e: 'peekL', g: 'right', d: 'left', f: 'fwd', r: 'fwd', v: 'back', i: 'north', l: 'east', ',': 'south', j: 'west', a: 'about', u: 'about' },
-    typist: { k: 'fire', ' ': 'fire', r: 'peekR', w: 'peekL', f: 'right', s: 'left', d: 'fwd', e: 'fwd', c: 'back', i: 'north', l: 'east', ',': 'south', j: 'west', a: 'about', u: 'about' },
+    std: { k: 'fire', ' ': 'fire', t: 'peekR', e: 'peekL', g: 'right', d: 'left', f: 'fwd', r: 'fwd', v: 'back', i: 'north', l: 'strafeR', ',': 'south', j: 'strafeL', a: 'about', u: 'about' },
+    typist: { k: 'fire', ' ': 'fire', r: 'peekR', w: 'peekL', f: 'right', s: 'left', d: 'fwd', e: 'fwd', c: 'back', i: 'north', l: 'strafeR', ',': 'south', j: 'strafeL', a: 'about', u: 'about' },
     arrows: { arrowup: 'fwd', arrowdown: 'back', arrowleft: 'left', arrowright: 'right' }
   };
-  const HELP = { fire: 'Shoots a missile.', peekR: 'Peeks around the right corner without exposing you.', peekL: 'Peeks around the left corner without exposing you.', right: 'Turns your guy to the right.', left: 'Turns your guy to the left.', fwd: 'Moves your guy forward.', back: 'Backs your guy up.', north: 'Moves your guy North.', east: 'Moves your guy East.', south: 'Moves your guy South.', west: 'Moves your guy West.', about: 'Makes your guy do an about-face.' };
+  const HELP = { fire: 'Shoots a missile.', peekR: 'Peeks around the right corner without exposing you.', peekL: 'Peeks around the left corner without exposing you.', right: 'Turns your guy to the right.', left: 'Turns your guy to the left.', fwd: 'Moves your guy forward.', back: 'Backs your guy up.', north: 'Moves your guy North.', south: 'Moves your guy South.', strafeL: 'Side-steps one space to your left without turning you.', strafeR: 'Side-steps one space to your right without turning you.', about: 'Makes your guy do an about-face.' };
 
   const store = { get() { try { return JSON.parse(localStorage.getItem('mazewars.v1')) || {}; } catch (e) { return {}; } }, set(o) { try { localStorage.setItem('mazewars.v1', JSON.stringify(o)); } catch (e) { } } };
   const saved = store.get();
@@ -74,7 +74,9 @@ window.MW = window.MW || {};
     else if (a === 'about') { me.dir = (me.dir + 2) & 3; stateDirty = true; }
     else if (a === 'fwd') step(me.dir);
     else if (a === 'back') step((me.dir + 2) & 3);
-    else if (a === 'north' || a === 'east' || a === 'south' || a === 'west') { const d = ['north', 'east', 'south', 'west'].indexOf(a); me.dir = d; stateDirty = true; step(d); }
+    else if (a === 'strafeL') step((me.dir + 3) & 3);            // side-step: one cell to your left, still facing the same way
+    else if (a === 'strafeR') step((me.dir + 1) & 3);
+    else if (a === 'north' || a === 'south') { const d = a === 'north' ? 0 : 2; me.dir = d; stateDirty = true; step(d); }
   }
 
   // ---------------------------------------------------------------- missiles
@@ -368,7 +370,7 @@ window.MW = window.MW || {};
     if (held.__clear) { for (const k in held) delete held[k]; heldOrder = []; peek = 0; }
     if (phase === 'play') {
       if (ride && t - ride.t0 > 1300) { me.level = ride.to; me.dir = W.exitDir(me.level, me.x, me.y); me.arrived = t; ride = null; stateDirty = true; }
-      if (canAct() && heldOrder.length && t >= nextActAt) { const a = heldOrder[heldOrder.length - 1]; act(a); nextActAt = t + (a === 'fwd' || a === 'back' || a === 'north' || a === 'east' || a === 'south' || a === 'west' ? STEP_MS : a === 'fire' ? 120 : TURN_MS); }
+      if (canAct() && heldOrder.length && t >= nextActAt) { const a = heldOrder[heldOrder.length - 1]; act(a); nextActAt = t + (a === 'fwd' || a === 'back' || a === 'strafeL' || a === 'strafeR' || a === 'north' || a === 'south' ? STEP_MS : a === 'fire' ? 120 : TURN_MS); }
       tickMissiles(t); tickRobot(t); sweep(t); headcount(t);
       if (net.status === 'on' && (stateDirty || t - lastSentAt > 2000) && t - lastSentAt > 70) sendState(t);
     }
@@ -412,7 +414,7 @@ window.MW = window.MW || {};
       A.on = cfg.sound; const warm = MW.art.warm(); ui.busy = true;
       const pump = () => { const t0 = now(); let r; do { r = warm.next(); if (!r.done) bootPct = r.value; } while (!r.done && now() - t0 < 12);
         if (!r.done) { setTimeout(pump, 0); return; }
-        ui.busy = false; phase = 'ready'; dlgName(() => dlgLook(() => { phase = 'play'; materialize(); notice('Welcome, ' + me.name + '. F forward, D and G turn, K or Space fires.'); if (cfg.net) net.connect(cfg.zone); else notice('AppleTalk is off (Options menu).'); })); };
+        ui.busy = false; phase = 'ready'; dlgName(() => dlgLook(() => { phase = 'play'; materialize(); notice('Welcome, ' + me.name + '. F forward, D and G turn, J and L side-step, K or Space fires.'); if (cfg.net) net.connect(cfg.zone); else notice('AppleTalk is off (Options menu).'); })); };
       setTimeout(pump, 350);
     }
   };
