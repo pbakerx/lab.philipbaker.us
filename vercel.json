@@ -138,6 +138,66 @@
       "source": "/missilecommand/",
       "destination": "/missile-command/",
       "permanent": true
+    },
+    {
+      "source": "/missle-command-deluxe",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/missle-command-deluxe/",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/misslecommand-deluxe",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/misslecommand-deluxe/",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/misslecommanddeluxe",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/misslecommanddeluxe/",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/missilecommanddeluxe",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/missilecommanddeluxe/",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/missilecommand-deluxe",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/missilecommand-deluxe/",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/missile-command-delux",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
+    },
+    {
+      "source": "/missile-command-delux/",
+      "destination": "/missile-command-deluxe/",
+      "permanent": true
     }
   ],
   "rewrites": [
