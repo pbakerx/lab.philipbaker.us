@@ -31,11 +31,14 @@
   #pad button { font: 600 20px/1 -apple-system, system-ui, sans-serif; color: #fff; background: #222; border: 1px solid #555; border-radius: 9px; touch-action: none; -webkit-tap-highlight-color: transparent; }
   #pad button.on { background: #fff; color: #000; }
   #pad .fire { grid-row: span 2; font-size: 15px; letter-spacing: .06em; }
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   noscript { position: fixed; inset: 0; display: grid; place-items: center; color: #fff; font: 16px/1.5 system-ui, sans-serif; text-align: center; padding: 2em; }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
+<h1 class="sr">Maze Wars+ — the 1986 Macintosh network maze shooter, playable online</h1>
+<p class="sr">A first-person maze drawn in one-bit dither. Move with F, turn with D and G, fire with K or Space, or use the arrow keys; Return opens the message box to chat with whoever else is online. Pick an appearance, find the teleporters and the lifts between the four mazes, and mind the robot.</p>
 <div id="stage">
   <canvas id="screen" width="512" height="342" aria-label="Maze Wars+ — a one-bit Macintosh screen: a first-person maze view, an overhead map, a player roster and a message box."></canvas>
   <div id="pad" aria-hidden="true">
