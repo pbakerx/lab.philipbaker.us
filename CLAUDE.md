@@ -66,6 +66,16 @@ propagation before verifying new paths (fresh 404s right after READY are usually
 `vercel.json` sets `Access-Control-Allow-Origin: *` on `/vault/media/*` so external tools
 (e.g. the Infinite Mac emulator) can fetch recovered binaries cross-origin.
 
+**Two sessions, one checkout.** Philip often has more than one Claude session working in this
+repo at once, and they share this folder — so they share one branch, one index and one HEAD.
+Do **not** create or switch branches here while another session may be active: it would move the
+other session onto your branch mid-work. Projects are isolated by folder instead. Commit only your
+own paths (`git add <paths>` then `git commit -m … -- <paths>`; never `git add -A` or `commit -a`),
+check `git --no-optional-locks status` first, and make edits to the shared files (`index.html`,
+`sitemap.xml`, `vercel.json`, `.gitignore`, this file) at the last moment, committing them in the
+same breath so they never sit modified in a tree someone else is about to commit from. While a
+project is unfinished, a line in `.git/info/exclude` keeps it out of other sessions' sweeps.
+
 ## Shared chrome
 
 Every lab page except the full-screen players (`widget-maker/frame.html`,
@@ -507,6 +517,72 @@ harmlessly. New pages must include the tag, and a re-dropped zip package
     camera silently faced −z for two test frames. Comments go at the END of these dense lines, always.
   - **Not verified on a real phone** — desktop Chrome and its touch emulation only (tap, drag-to-fly, two thumbs at once,
     layout at 740×360). Lost WebGL context raises a reload cover; the rotate gate and hamburger seating are the original's.
+
+- **/maze-wars** — Maze Wars+ (MacroMind, 1986; Alan McNeil & Burt Sloane), the Macintosh descendant
+  of the 1973 Maze War, rebuilt to play in a browser — online, with chat (Sep 19 2026). A 512×342
+  one-bit framebuffer scaled by whole numbers; no assets, no build, no server of ours.
+  `/MaseWars` (Philip's spelling, and the ignored folder this was built from), `/mazewars`,
+  `/maze-wars-plus` and friends redirect here.
+  - **What is the original's and what is ours.** Philip supplied his own copy (two floppy images,
+    v1.0 MFS / v1.1 HFS). The **four mazes, the rules, the key maps, the strings and every window
+    and dialog rectangle** come from its resources. **Every picture is redrawn** (`js/art.js`, by
+    code, fresh at each of the 9 depths) — the repo is public and the art is MacroMind's, so the
+    disk images and anything extracted from them stay out. Don't "upgrade" the sprites by dropping
+    the original bitmaps in. The tools that read the disks are in `.claude/maze-wars/`.
+  - **The data, decoded.** Resource `maze` #1 (1024 bytes) is all four 16×16 mazes interleaved and
+    column-major: cell (x,y) of level k is byte `(x*16+y)*4+k`, wall bits **E=1 S=2 W=4 N=8**
+    (15 = a solid block). `whoo` #1 is two bytes per cell, same indexing: low 3 bits of byte 0 —
+    4 floor, 5 solid, 6 teleporter (byte 1 = a group number), 7 lift (`byte0 >> 3` = destination
+    level). Lifts pair up at the same x,y on both levels and are all dead-end closets; the app
+    calls the right-hand column window `level`. `maze`/`whoo` 2–4 are an older 17×18 format — unused.
+    `js/levels.js` is generated from this; zero inconsistent shared walls, and level 0 matched the
+    published screenshots wall for wall.
+  - **The hall is measured, not guessed.** Every cell boundary is a square centred on (140,136) with
+    half-sizes 110, 77, 54, 38, 26, 18, 12… (`floor(h × 0.7071)` each step — the sprites step by the
+    same 1/√2), so every wall edge is a true 45° line. One dither for all walls (the app's
+    `PAT 1000`, 25% staggered), a 4-dots-per-8×8 floor weave, white ceiling. Lines only where a run
+    of wall starts or stops. A side opening must NOT paint the far boundary column — it carries the
+    next wall's edge line. **Fidelity check:** pose the game like a reference shot and lay the shot
+    over the canvas with `mix-blend-mode: difference` (the dungeoncrawlers.org images are exact
+    512×342 captures) — identical pixels go black. Hall, map, menu bar and name row are black.
+    Menu titles: first at x=19, each next one 15 px after the last ends.
+  - **Network = "AppleTalk".** `js/net.js` is a ~60-line MQTT 3.1.1 client over WSS to a **public
+    broker** (broker.emqx.io, fallback broker.hivemq.com; both answered from here). Topic tree
+    `pbmazewars/1/<zone>/s/<id>` (state, on change + 2 s heartbeat) and `…/e` (events: fire, hit,
+    chat, option, teleport, bye — `bye` is also the MQTT last-will). Zone `lobby` is everyone;
+    Options ▸ Phone… dials a private zone, mirrored in the URL as `?line=`. Like the original there
+    is no server and nobody in charge: **each machine decides when its OWN man or robot is hit**
+    and tells the rest (a remote missile pauses 380 ms in an occupied cell to let that ruling
+    arrive). Everything inbound is range-checked, text is reduced to glyphs the bitmap fonts can
+    draw, and nothing received is ever HTML. It is a public test broker: no SLA, chat is readable
+    by anyone who guesses the topic — the About box says so. To move to a broker of our own, only
+    the `BROKERS` list changes.
+  - **Guesses, flagged as such** (the 68k code was not disassembled): ◇◇◇◇ in the name row = the
+    four network-wide options (4 Mazes, Black-out, Invisible Neighbors, Stationary Radar — the code
+    has a "Blacked-out by" string, so options announce who set them); the teleporter byte is a
+    group (same number = pass you round the group); the inverted name row marks the leader;
+    Alter-Ego = the dome robot, Teleporter = a police box that is not a booth, Hunter = the heavy
+    robot, Shadow Master = its silhouette, off the radar, coming from behind; "Stationary Radar" =
+    the radar only works while you stand still. The sidekick is your opponent when you are alone
+    and your ally when other people are on the wire. Missiles take 190 ms a cell and a held step
+    165 ms — so, as a 1984 Mac salesman remembered, a long enough hallway lets you back away from one.
+  - **Keys** are the original's two maps (`STR ` 1111/1112: standard, and Touch Typist) plus arrows;
+    Return/Tab opens the message box; a click in the hall fires (the original's cursor there is a
+    gun sight). ⌘-equivalents also answer to Ctrl, since browsers keep ⌘N/⌘T/⌘M for themselves.
+  - **Text entry goes through a hidden `<input id="ime">`** that is focused whenever a dialog field
+    is active — that is what makes phone keyboards, paste, and the Browser pane's `type` action
+    work (the pane inserts text as input events, not keystrokes; and its **"Return" key sends an
+    empty `key` — use "Enter"**).
+  - **Working on it from the Mac mini.** `jsc` (JavaScriptCore's shell, at
+    `/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc`) is there even
+    though Node is not: `new Function(read(file))` syntax-checks, and levels/fonts/gfx/art/world/hall
+    load headlessly (`var window = this`) — sprites can be rendered to PNG without a browser. The
+    preview is the scratchpad-mirror recipe above; its launch entry lives in the ignored
+    `MaseWars/.claude/launch.json`. `MW.game.dev` exposes `opts`/`phase`/`log` for posing scenes.
+  - `img/og.png` is a photograph of the game, not a composed card: `?shot=1` poses a scene at 2×
+    pinned to the top with the menu hidden; shoot it with headless Chrome at
+    `--window-size=1200,630 --force-device-scale-factor=1`. Bump the `?v=` stamps in `index.html`
+    whenever a script changes.
 
 - **/hello** — the original example.
 

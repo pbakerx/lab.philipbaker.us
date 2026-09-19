@@ -15,3 +15,7 @@ missleCommand/
 # macOS AppleDouble sidecars and SMB delete tombstones — required on every Vault repo
 ._*
 .smbdelete*
+# Philip's working folder for the Maze Wars session (his spelling of it). The live game is
+# maze-wars/; this holds only a scratch launch config for the local preview. Ignored so a
+# `git add -A` can't publish anything at a misspelled, case-sensitive path.
+MaseWars/

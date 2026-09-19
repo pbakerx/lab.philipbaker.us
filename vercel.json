@@ -198,6 +198,76 @@
       "source": "/missile-command-delux/",
       "destination": "/missile-command-deluxe/",
       "permanent": true
+    },
+    {
+      "source": "/MaseWars",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/MaseWars/",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/masewars",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/masewars/",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/mazewars",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/mazewars/",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/maze-wars-plus",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/maze-wars-plus/",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/mazewarsplus",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/mazewarsplus/",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/maze-war",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/maze-war/",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/mazewar",
+      "destination": "/maze-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/mazewar/",
+      "destination": "/maze-wars/",
+      "permanent": true
     }
   ],
   "rewrites": [

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Maze Wars+ — the 1986 Macintosh network shooter, rebuilt to play online</title>
+<meta name="description" content="Maze Wars+, MacroMind's 1986 Macintosh descendant of the first first-person shooter, rebuilt for the browser: four one-bit dithered mazes, teleporters, robot sidekicks, and live players and chat over the network.">
+<link rel="canonical" href="https://lab.philipbaker.us/maze-wars/">
+<meta name="theme-color" content="#111111">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="lab.philipbaker.us">
+<meta property="og:title" content="Maze Wars+ — play the 1986 Mac network shooter online">
+<meta property="og:description" content="Four one-bit mazes, teleporters, robot sidekicks, and whoever else is on the wire. Pick an eyeball, a boot or a taxi and go hunting.">
+<meta property="og:url" content="https://lab.philipbaker.us/maze-wars/">
+<meta property="og:image" content="https://lab.philipbaker.us/maze-wars/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Maze Wars+ — play the 1986 Mac network shooter online">
+<meta name="twitter:description" content="Four one-bit mazes, teleporters, robot sidekicks, and whoever else is on the wire.">
+<meta name="twitter:image" content="https://lab.philipbaker.us/maze-wars/img/og.png">
+<style>
+  html, body { margin: 0; height: 100%; background: #111; overflow: hidden; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: none; }
+  #stage { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); box-sizing: border-box; }
+  #screen { display: block; image-rendering: pixelated; image-rendering: crisp-edges; background: #fff; cursor: none; border-radius: 3px; box-shadow: 0 0 0 1px #000, 0 0 60px rgba(255,255,255,.05); touch-action: none; }
+  .touch #screen { cursor: default; }
+  #ime { position: fixed; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; border: 0; padding: 0; font-size: 16px; pointer-events: none; }
+  #pad { display: none; }
+  .touch #pad { display: grid; grid-template-columns: repeat(3, 58px) 1fr repeat(2, 66px); grid-template-rows: 50px 50px; gap: 8px; width: min(96vw, 520px); margin-top: 12px; }
+  @media (orientation: landscape) { .touch #stage { flex-direction: row; } .touch #pad { width: auto; margin: 0 0 0 12px; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(4, 46px); } .touch #pad .gap { display: none; } }
+  #pad button { font: 600 20px/1 -apple-system, system-ui, sans-serif; color: #fff; background: #222; border: 1px solid #555; border-radius: 9px; touch-action: none; -webkit-tap-highlight-color: transparent; }
+  #pad button.on { background: #fff; color: #000; }
+  #pad .fire { grid-row: span 2; font-size: 15px; letter-spacing: .06em; }
+  noscript { position: fixed; inset: 0; display: grid; place-items: center; color: #fff; font: 16px/1.5 system-ui, sans-serif; text-align: center; padding: 2em; }
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="screen" width="512" height="342" aria-label="Maze Wars+ — a one-bit Macintosh screen: a first-person maze view, an overhead map, a player roster and a message box."></canvas>
+  <div id="pad" aria-hidden="true">
+    <button data-a="left">&#8630;</button><button data-a="fwd">&#9650;</button><button data-a="right">&#8631;</button><span class="gap"></span><button class="fire" data-a="fire">FIRE</button><button class="fire" data-a="msg">&#9993;</button>
+    <button data-a="peekL" style="visibility:hidden"></button><button data-a="back">&#9660;</button><button data-a="about">&#8635;</button>
+  </div>
+</div>
+<input id="ime" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
+<noscript>Maze Wars+ is a game drawn pixel by pixel in JavaScript, so it needs JavaScript switched on.</noscript>
+<script src="/maze-wars/js/levels.js?v=1"></script>
+<script src="/maze-wars/js/fonts.js?v=1"></script>
+<script src="/maze-wars/js/gfx.js?v=1"></script>
+<script src="/maze-wars/js/art.js?v=1"></script>
+<script src="/maze-wars/js/world.js?v=1"></script>
+<script src="/maze-wars/js/hall.js?v=1"></script>
+<script src="/maze-wars/js/ui.js?v=1"></script>
+<script src="/maze-wars/js/net.js?v=1"></script>
+<script src="/maze-wars/js/audio.js?v=1"></script>
+<script src="/maze-wars/js/game.js?v=1"></script>
+<script src="/maze-wars/js/main.js?v=1"></script>
+<script src="/shared/menu.js" defer></script>
+</body>
+</html>
