@@ -497,9 +497,47 @@ harmlessly. New pages must include the tag, and a re-dropped zip package
     are always placed OFF the centreline (`scatter`), so a phone player who only taps flies clean and meets neither.
     A corner narrows the lateral bound so the craft cannot clip a block; the camera rides the ROUTE 15 units behind, never
     the craft's tangent, for the same reason.
+  - **Round two, same day** (Philip: "all new graphics including the user interface, the sound button… The old one was
+    modeled after 80s. This should feel holographic and modern. The sounds are terrible… ping eleven labs… keyboard for
+    flying, mouse for shooting. We should be able to fly above. radar… more integrated higher in view… more bad guys,
+    planes that drop missiles"):
+    - **The interface is a hologram, not a console.** No top bar: the view runs to all four edges and everything floats on
+      it — `.holo` is the one surface (a breath of glass, a hairline, two corner ticks), Rajdhani (Google Fonts) replaces
+      the monospace, SOUND / PAUSE / FULLSCREEN are icon buttons, base camp is three ten-segment gauges. The lab hamburger
+      keeps its stock spot; the tools sit to its left. A corner tick that OVERHANGS a scrolling panel by a pixel makes it
+      scroll, and the scrollbars read as a grey bevel — panel ticks sit inside the box.
+    - **The radar hangs top-centre** (top-left on a phone held sideways), has no opaque face, and **a click goes THROUGH it
+      unless it lands on a blip** (`radar.blipAt` from `fireAt`) — it sits over the very sky the staged missiles fall
+      through, so it must never eat a shot. `#radar` is `pointer-events:none`; all input enters through the game canvas.
+    - **Flying: keys are a VELOCITY, not a position** — hold W to climb, let go and you stay. Below `CONFIG.roof` (305, above
+      every spire) the craft lives in a slot 7.5 wide over the avenue; above it the slot opens like a bowl (the higher, the
+      wider, to ±135) and the street route melts into THE HIGH ROAD — the same circuit low-passed by a moving average, its
+      control points taken at equal distances along the street route so its parameter `t` is the same place as distance
+      fraction `u` (`route.frameAt(u, s, …)` blends them by `c.s`). Off to one side the FLOOR is the roofline: you come
+      back down only over an avenue. The camera tips from +25 (looking up at the raid) to −30 (down on the city) with height.
+    - **Aircraft** share the craft's dart geometry, scaled (`PLANE`): bombers from city 1 (half cross your view, half come
+      straight down your road overhead; they lay a STRING of missiles), raiders in a V of three from city 2, satellites
+      from city 4. All are spawned relative to a point on the player's road a few seconds ahead. `isPlane = e.drops !== undefined`.
+      The table's aircraft column is ignored; `CONFIG.count` came down to 1.1 because the planes bring the rest.
+    - **Sound is sampled** — 17 MP3s in `sfx/` (724 KB) made with ElevenLabs' sound-generation model on Philip's Creator
+      plan (commercial licence). `.claude/missile-command-deluxe-sfx.py` holds every prompt and regenerates any of them
+      (`… .py blast impact`); it reads `ELEVENLABS_API_KEY` from the philipbaker.us project's `.env.local` INSIDE the
+      process — never print, echo or pass that key on a command line. `audio.js` trims leading silence and level-matches
+      at load (the raw files arrive 20 dB apart), pans by screen position, dulls with range, folds the engine loop's tail
+      into its head, and keeps the old synth only as a fallback. **Nobody has listened to these yet** — they were judged by
+      duration / peak / RMS only. The iPhone keep-alive is unchanged.
+    - **World:** the wireframe mountains and desert grid (the most 80s things in it) are gone. In their place: a hex DEFENCE
+      DOME that lights up around every blast (view-space halo from the light slots), avenues that are dark MIRRORS (the
+      ground is see-through over a second, y-flipped draw of the same building instances — `uMirror`, BackSide), a lens pass
+      (colour fringing, vignette, grain), dust motes, perimeter rings beyond the city limits.
+    - **Three bugs worth remembering:** (1) the hex tiling `(1, √3)` is pointy-top — its flat distance is along **x**; with
+      the axes swapped the outlines become filled wedges that look like stray triangles in the sky. (2) Motes wrap around
+      the camera, and a 0.2-unit speck one unit from the lens is 100 px wide and gets sliced into a triangle by the near
+      plane — skip anything within 10 units. (3) The ground became `transparent`, so every additive pool that does not write
+      depth (rings, jammers, pad rings) needs a `renderOrder` above the ground's or the ground paints over it.
   - **Files:** `main.js` (rules, flight, aim, input, panels, the frame, the resolution governor), `scene.js` (everything
-    three.js), `radar.js` (the scope + the flat 2D overlay: reticle, brackets, edge chevrons, score pops, thumb stick),
-    `audio.js`. Imports are ROOT-ABSOLUTE (`/missile-command-deluxe/…`): Vercel serves the bare URL too.
+    three.js), `radar.js` (the scope + the flat 2D overlay: reticle, brackets, edge chevrons, score pops, altitude tape,
+    thumb stick), `audio.js`, `sfx/`. Imports are ROOT-ABSOLUTE (`/missile-command-deluxe/…`): Vercel serves the bare URL too.
   - **Renderer: deliberately plain.** three.js r186 **classic `WebGLRenderer`** (WebGL2 everywhere), hand-written GLSL,
     `EffectComposer` → `UnrealBloomPass` → `OutputPass` (ACES). Four pooled instanced draws — buildings (one box, dressed
     wholly in the shader: windows, corner strips, crowns, collapse via a per-instance `aState`), BEAMS (every line of

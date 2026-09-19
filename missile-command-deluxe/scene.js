@@ -17,6 +17,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 
 const V3 = THREE.Vector3;
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
@@ -78,6 +79,15 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
   composer.addPass(new RenderPass(scene, camera));
   const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.55, 0.5, 0.42);
   composer.addPass(bloom);
+  // The lens: what makes a render read as a hologram seen through glass — colour fringing toward the edges, a vignette, a breath of grain.
+  const lens = new ShaderPass({ uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uAmount: { value: lowEnd ? .6 : 1 } },
+    vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+    fragmentShader: `uniform sampler2D tDiffuse; uniform float uTime,uAmount; varying vec2 vUv;
+      float h(vec2 p){ p=fract(p*vec2(443.897,441.423)); p+=dot(p,p.yx+19.19); return fract((p.x+p.y)*p.x); }
+      void main(){ vec2 c=vUv-.5; float r2=dot(c,c); vec2 off=c*r2*.011*uAmount;
+        vec3 col=vec3(texture2D(tDiffuse,vUv+off).r,texture2D(tDiffuse,vUv).g,texture2D(tDiffuse,vUv-off).b);
+        col*=1.-.6*r2*uAmount; col+=(h(vUv*vec2(1613.,907.)+fract(uTime)*7.)-.5)*.016*uAmount; gl_FragColor=vec4(max(col,0.),1.); }` });
+  composer.addPass(lens);
   composer.addPass(new OutputPass());
 
   // ---------------------------------------------------------------- shared uniforms
@@ -110,7 +120,7 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
 
   // ---------------------------------------------------------------- the ground: streets inside the city, a vector desert outside
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(14000, 14000).rotateX(-Math.PI / 2), new THREE.ShaderMaterial({
-    uniforms: shared('uTime', 'uGround', 'uFriendly', 'uHalf', 'uPitch', 'uAve', ...LIGHT),
+    transparent: true, uniforms: shared('uTime', 'uGround', 'uFriendly', 'uHalf', 'uPitch', 'uAve', ...LIGHT),
     vertexShader: `varying vec3 vW; void main(){ vec4 w=modelMatrix*vec4(position,1.); vW=w.xyz; gl_Position=projectionMatrix*viewMatrix*w; }`,
     fragmentShader: GLSL_COMMON + /* glsl */`
       varying vec3 vW; uniform vec3 uGround,uFriendly; uniform float uHalf,uPitch,uAve,uTime;
@@ -131,38 +141,36 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
           col=vec3(.0055,.0065,.009); vec2 b=g-uAve; float bw=uPitch-uAve;
           float e=min(min(b.x,bw-b.x),min(b.y,bw-b.y));
           col+=uGround*aaLine(e-.7,.26)*.5*fade;
-        }else{                                                                // the desert: one square per city block, to the horizon
-          col=vec3(.0035,.004,.006); vec2 f=fract(p/uPitch); vec2 dl=min(f,1.-f)*uPitch;
-          col+=uGround*max(aaLine(dl.x,.55),aaLine(dl.y,.55))*.6*exp(-dist*.00075);
+        }else{                                                                // beyond the city: the defence perimeter, ring after ring
+          col=vec3(.0032,.0038,.0058); float rr=length(p); float ring=aaLine(mod(rr,260.)-130.,.8);
+          float spoke=aaLine(abs(fract(atan(p.y,p.x)*3.8197)-.5)*rr*.2618,.6)*step(uHalf*1.5,rr);
+          col+=uFriendly*(ring*.42+spoke*.16)*exp(-dist*.00062);
         }
         col+=blastLight(vW,vec3(0.,1.,0.))*.62;
-        gl_FragColor=vec4(fogged(col,dist),1.);
+        float ndv=clamp(normalize(cameraPosition-vW).y,0.,1.), street=inCity*max(inX,inY);
+        float alpha=mix(1.,mix(.42,.9,ndv),street);                           // an avenue is a dark mirror: most reflective at a grazing angle
+        gl_FragColor=vec4(fogged(col,dist),alpha);
       }`,
   }));
-  ground.frustumCulled = false; scene.add(ground);
+  ground.frustumCulled = false; ground.renderOrder = 1; scene.add(ground);
 
-  // ---------------------------------------------------------------- mountains: a ridge of ground-coloured line at the edge of the world
-  {
-    const r = rng(77), N = 180, R0 = 3600, ridge = [];
-    const n1 = Array.from({ length: 16 }, () => r()), noise = a => { const x = (a / (Math.PI * 2)) * 16, i = Math.floor(x), f = smooth(x - i); return lerp(n1[i % 16], n1[(i + 1) % 16], f); };
-    for (let i = 0; i <= N; i++) { const a = (i / N) * Math.PI * 2, h = 90 + noise(a) * 520 + noise(a * 3 + 1) * 190 + (i % 2) * 60 * r(); ridge.push(new V3(Math.cos(a) * R0, h, Math.sin(a) * R0)); }
-    ridge[N].copy(ridge[0]);
-    const fill = [], lines = [];
-    for (let i = 0; i < N; i++) {
-      const a = ridge[i], b = ridge[i + 1];
-      fill.push(a.x, a.y, a.z, b.x, b.y, b.z, a.x, -20, a.z, b.x, b.y, b.z, b.x, -20, b.z, a.x, -20, a.z);
-      lines.push(a.x, a.y, a.z, b.x, b.y, b.z);
-      if (i % 2 === 0) lines.push(a.x, a.y, a.z, a.x * .93, 0, a.z * .93);          // a facet line down to the desert
-      lines.push(a.x * .93, 0, a.z * .93, b.x * .93, 0, b.z * .93);
-    }
-    const fg = new THREE.BufferGeometry(); fg.setAttribute('position', new THREE.Float32BufferAttribute(fill, 3));
-    const fm = new THREE.Mesh(fg, new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide })); fm.frustumCulled = false; scene.add(fm);
-    const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.Float32BufferAttribute(lines, 3));
-    const lm = new THREE.LineSegments(lg, new THREE.ShaderMaterial({ uniforms: shared('uGround'), transparent: true, depthWrite: false,
-      vertexShader: `void main(){ gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
-      fragmentShader: `uniform vec3 uGround; void main(){ gl_FragColor=vec4(uGround*.55,1.); }` }));
-    lm.frustumCulled = false; scene.add(lm);
-  }
+  // ---------------------------------------------------------------- the defence grid: a faint hex dome over the city that lights up around every blast
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(2600, 48, 20, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.ShaderMaterial({
+    uniforms: shared('uTime', 'uFriendly', 'uLightPos', 'uLightCol'), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.BackSide,
+    vertexShader: `varying vec3 vW; void main(){ vec4 w=modelMatrix*vec4(position,1.); vW=w.xyz; gl_Position=projectionMatrix*viewMatrix*w; }`,
+    fragmentShader: /* glsl */`
+      varying vec3 vW; uniform float uTime; uniform vec3 uFriendly; uniform vec4 uLightPos[8]; uniform vec3 uLightCol[8];
+      float hexEdge(vec2 uv){ vec2 r=vec2(1.,1.7320508), h=r*.5, a=mod(uv,r)-h, b=mod(uv-h,r)-h; vec2 g=dot(a,a)<dot(b,b)?a:b; g=abs(g); return .5-max(dot(g,vec2(.5,.866025)),g.x); }   // the tiling (1, √3) is pointy-top: its flat distance is along x. Swap the axes and the outlines become filled wedges
+      void main(){
+        vec3 d=normalize(vW); float e=hexEdge(d.xz/(1.+d.y)*10.), fw=fwidth(e); float line=1.-smoothstep(.012-fw,.012+fw,e);
+        float scan=smoothstep(.965,1.,sin(d.y*8.-uTime*.4)); vec3 v=normalize(vW-cameraPosition), halo=vec3(0.);
+        for(int i=0;i<8;i++){ if(uLightPos[i].w<=0.) continue; float a=max(dot(v,normalize(uLightPos[i].xyz-cameraPosition)),0.); a*=a; a*=a; a*=a; a*=a; halo+=uLightCol[i]*a*a; }
+        float band=smoothstep(0.,.16,d.y)*(1.-smoothstep(.45,.95,d.y))+.12;
+        gl_FragColor=vec4(uFriendly*line*(.02+.06*scan)*band+halo*(line*.3+.012),1.);
+      }`,
+  }));
+  dome.renderOrder = 2; dome.frustumCulled = false; scene.add(dome);
+  const MOTES = Array.from({ length: lowEnd ? 70 : 160 }, () => new V3(Math.random() * 180, Math.random() * 100, Math.random() * 180));   // drifting specks near the lens: the cheapest sense of speed there is
 
   // ---------------------------------------------------------------- buildings: one instanced box, dressed entirely in the shader
   const MAXB = 900;
@@ -172,10 +180,10 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
   bState.setUsage(THREE.DynamicDrawUsage);
   bGeo.setAttribute('aPos', bPos); bGeo.setAttribute('aSize', bSize); bGeo.setAttribute('aMisc', bMisc); bGeo.setAttribute('aState', bState);
   bGeo.instanceCount = 0;
-  const buildingMat = new THREE.ShaderMaterial({
-    uniforms: shared('uTime', 'uGround', 'uFriendly', 'uEnemy', ...LIGHT),
+  const makeBuildingMat = mirror => new THREE.ShaderMaterial({
+    side: mirror ? THREE.BackSide : THREE.FrontSide, uniforms: { ...shared('uTime', 'uGround', 'uFriendly', 'uEnemy', ...LIGHT), uMirror: { value: mirror ? 1 : 0 } },
     vertexShader: /* glsl */`
-      attribute vec3 aPos,aSize; attribute vec4 aMisc; attribute float aState;
+      attribute vec3 aPos,aSize; attribute vec4 aMisc; attribute float aState; uniform float uMirror;
       varying vec3 vW,vN,vL,vSize; varying vec4 vMisc; varying float vState;
       void main(){
         vec3 p=position; p.y+=.5; float s=smoothstep(0.,1.,aState), keep=1.-.9*s;       // a fallen tower keeps a tenth of itself
@@ -183,11 +191,11 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
         lp.xz+=aState*(1.-aState)*5.*p.y*vec2(sin(p.y*9.+aMisc.x*40.),cos(p.y*7.+aMisc.x*23.));  // it sways on the way down
         vec3 w=vec3(aPos.x,aPos.y*keep,aPos.z)+lp;
         vW=w; vN=normal; vL=vec3(p.x*aSize.x,p.y*aSize.y,p.z*aSize.z); vSize=aSize; vMisc=aMisc; vState=aState;
-        gl_Position=projectionMatrix*viewMatrix*vec4(w,1.);
+        gl_Position=projectionMatrix*viewMatrix*vec4(w.x,mix(w.y,-w.y,uMirror),w.z,1.);
       }`,
     fragmentShader: GLSL_COMMON + /* glsl */`
       varying vec3 vW,vN,vL,vSize; varying vec4 vMisc; varying float vState;
-      uniform vec3 uGround,uFriendly,uEnemy; uniform float uTime;
+      uniform vec3 uGround,uFriendly,uEnemy; uniform float uTime,uMirror;
       void main(){
         vec3 n=normalize(vN); float seed=vMisc.x, kind=vMisc.y, glow=vMisc.z; float dist=length(vW-cameraPosition);
         float alive=1.-smoothstep(.05,.6,vState); vec3 col=vec3(.010,.012,.018); vec3 emit=vec3(0.);
@@ -208,15 +216,18 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
           float top=smoothstep(vSize.y-1.3,vSize.y-.35,vL.y);
           emit+=accent*(corner+top)*(kind>.5?1.15:.17*glow)*alive;
           if(kind>.5){ float y=vL.y/vSize.y; float scan=smoothstep(.985,1.,sin(y*26.-uTime*2.2+seed*9.)); emit+=uFriendly*scan*.75*alive; } // the six: a scan climbs them
+          emit+=accent*pow(1.-abs(dot(n,normalize(cameraPosition-vW))),3.)*.11*alive;   // glass catches light at a glancing angle
           emit+=uGround*exp(-vW.y*.16)*.05;                                             // street light spills up the first storeys
           col*=.55+.45*smoothstep(0.,26.,vW.y);
         }
         emit+=uEnemy*vState*(1.-vState)*5.+uEnemy*.22*step(.95,vState)*exp(-vW.y*.12)*(.6+.4*sin(uTime*7.+seed*50.)); // falling glows; a stump smoulders
         col+=blastLight(vW,n)*.55+emit;
+        if(uMirror>.5) col*=.8*exp(-vW.y*.0125);                              // the reflection: strongest at the kerb, gone by the rooftops
         gl_FragColor=vec4(fogged(col,dist),1.);
       }`,
   });
-  const buildings = new THREE.Mesh(bGeo, buildingMat); buildings.frustumCulled = false; scene.add(buildings);
+  const buildings = new THREE.Mesh(bGeo, makeBuildingMat(false)); buildings.frustumCulled = false; scene.add(buildings);
+  const mirrored = new THREE.Mesh(bGeo, makeBuildingMat(true)); mirrored.frustumCulled = false; scene.add(mirrored);   // the same city, hung upside-down beneath the see-through avenues
 
   // ---------------------------------------------------------------- beams: every line of light
   const MAXBEAM = 420;
@@ -259,8 +270,8 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
     uniforms: shared('uPxScale'), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     vertexShader: /* glsl */`
       attribute vec4 aPos,aCol; uniform float uPxScale; varying vec2 vUv; varying vec4 vCol;
-      void main(){ vec4 mv=viewMatrix*vec4(aPos.xyz,1.); float s=max(aPos.w,-mv.z*uPxScale*4.2); mv.xy+=position.xy*s;
-        vUv=position.xy*2.; vCol=vec4(aCol.rgb,aCol.a*clamp(aPos.w/s,.6,1.)); gl_Position=projectionMatrix*mv; }`,
+      void main(){ vec4 mv=viewMatrix*vec4(aPos.xyz,1.); float base=abs(aPos.w), s=aPos.w<0.?base:max(base,-mv.z*uPxScale*4.2); mv.xy+=position.xy*s;
+        vUv=position.xy*2.; vCol=vec4(aCol.rgb,aCol.a*clamp(base/s,.6,1.)); gl_Position=projectionMatrix*mv; }`,
     fragmentShader: /* glsl */`
       varying vec2 vUv; varying vec4 vCol;
       void main(){ float d=length(vUv); float a=exp(-d*d*4.2)*(1.-smoothstep(.82,1.,d)); gl_FragColor=vec4(vCol.rgb*(1.+2.4*exp(-d*d*42.)),a*vCol.a); }`,
@@ -283,29 +294,27 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
   const shells = Array.from({ length: MAXBLAST }, () => { const m = new THREE.Mesh(sphere, blastMat()); m.visible = false; m.frustumCulled = false; m.renderOrder = 4; scene.add(m); return m; });
 
   // ---------------------------------------------------------------- the craft: a dark dart with lit edges
-  const craft = new THREE.Group(); {
-    const v = [[0, 0, 2.6], [-2.0, -0.05, -1.5], [2.0, -0.05, -1.5], [0, 0.1, -0.9], [0, 0.62, -0.5], [0, -0.3, -0.4]];
-    const faces = [[0, 4, 1], [0, 2, 4], [1, 4, 3], [4, 2, 3], [0, 1, 5], [0, 5, 2], [1, 3, 5], [5, 3, 2]];
-    const g = new THREE.BufferGeometry(), pos = []; for (const f of faces) for (const i of f) pos.push(...v[i]);
-    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.computeVertexNormals();
-    const body = new THREE.Mesh(g, new THREE.ShaderMaterial({ uniforms: shared('uFriendly', ...LIGHT), side: THREE.DoubleSide,
-      vertexShader: `varying vec3 vW,vN; void main(){ vec4 w=modelMatrix*vec4(position,1.); vW=w.xyz; vN=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*w; }`,
-      fragmentShader: GLSL_COMMON + `varying vec3 vW,vN; uniform vec3 uFriendly;
-        void main(){ vec3 n=normalize(vN), v=normalize(cameraPosition-vW); float fr=pow(1.-abs(dot(n,v)),2.);
-          gl_FragColor=vec4(vec3(.016,.02,.028)+uFriendly*fr*.5+blastLight(vW,n)*.7,1.); }` }));
-    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(g, 1), new THREE.ShaderMaterial({ uniforms: shared('uFriendly'),
-      vertexShader: `void main(){ gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`, fragmentShader: `uniform vec3 uFriendly; void main(){ gl_FragColor=vec4(uFriendly*2.4,1.); }` }));
-    craft.add(body, edges); scene.add(craft);
-  }
+  const dart = (() => { const v = [[0, 0, 2.6], [-2.0, -0.05, -1.5], [2.0, -0.05, -1.5], [0, 0.1, -0.9], [0, 0.62, -0.5], [0, -0.3, -0.4]], faces = [[0, 4, 1], [0, 2, 4], [1, 4, 3], [4, 2, 3], [0, 1, 5], [0, 5, 2], [1, 3, 5], [5, 3, 2]];
+    const g = new THREE.BufferGeometry(), pos = []; for (const f of faces) for (const i of f) pos.push(...v[i]); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.computeVertexNormals(); return { g, edges: new THREE.EdgesGeometry(g, 1) }; })();
+  const hullMat = key => new THREE.ShaderMaterial({ uniforms: shared(key, ...LIGHT), side: THREE.DoubleSide,
+    vertexShader: `varying vec3 vW,vN; void main(){ vec4 w=modelMatrix*vec4(position,1.); vW=w.xyz; vN=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*w; }`,
+    fragmentShader: GLSL_COMMON + `varying vec3 vW,vN; uniform vec3 ${key};
+      void main(){ vec3 n=normalize(vN), v=normalize(cameraPosition-vW); float fr=pow(1.-abs(dot(n,v)),2.);
+        gl_FragColor=vec4(vec3(.016,.02,.028)+${key}*fr*.55+blastLight(vW,n)*.7,1.); }` });
+  const edgeMat = key => new THREE.ShaderMaterial({ uniforms: shared(key), vertexShader: `void main(){ gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`, fragmentShader: `uniform vec3 ${key}; void main(){ gl_FragColor=vec4(${key}*2.4,1.); }` });
+  const craft = new THREE.Group(); craft.add(new THREE.Mesh(dart.g, hullMat('uFriendly')), new THREE.LineSegments(dart.edges, edgeMat('uFriendly'))); scene.add(craft);
+  // the enemy flies the same dart, stretched into a bomber's wing or left small for a raider
+  const enemyHull = hullMat('uEnemy'), enemyEdge = edgeMat('uEnemy'), PLANE = { bomber: new V3(11, 4.2, 5.4), raider: new V3(3.6, 2.4, 3.3) };
+  const planes = Array.from({ length: 14 }, () => { const g = new THREE.Group(); g.add(new THREE.Mesh(dart.g, enemyHull), new THREE.LineSegments(dart.edges, enemyEdge)); g.visible = false; scene.add(g); return g; });
 
   // ---------------------------------------------------------------- pickups (rings) and jammers (mines): small pools of plain meshes
   const glowMat = key => new THREE.ShaderMaterial({ uniforms: { ...shared(key), uK: { value: 1 } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     vertexShader: `void main(){ gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`, fragmentShader: `uniform vec3 ${key}; uniform float uK; void main(){ gl_FragColor=vec4(${key}*uK,1.); }` });
   const ringGeo = new THREE.TorusGeometry(4.6, 0.34, 8, 40);
-  const rings = Array.from({ length: 10 }, () => { const m = new THREE.Mesh(ringGeo, glowMat('uFriendly')); m.material.uniforms.uK.value = 1.7; m.visible = false; scene.add(m); return m; });
+  const rings = Array.from({ length: 10 }, () => { const m = new THREE.Mesh(ringGeo, glowMat('uFriendly')); m.material.uniforms.uK.value = 1.7; m.visible = false; m.renderOrder = 3; scene.add(m); return m; });
   const mineGeo = new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(3.2, 0));
-  const mines = Array.from({ length: 10 }, () => { const m = new THREE.LineSegments(mineGeo, glowMat('uEnemy')); m.material.uniforms.uK.value = 2.2; m.visible = false; scene.add(m); return m; });
-  const padRings = Array.from({ length: 3 }, () => { const m = new THREE.Mesh(new THREE.RingGeometry(5.2, 6.4, 40).rotateX(-Math.PI / 2), glowMat('uFriendly')); m.visible = false; scene.add(m); return m; });
+  const mines = Array.from({ length: 10 }, () => { const m = new THREE.LineSegments(mineGeo, glowMat('uEnemy')); m.material.uniforms.uK.value = 2.2; m.visible = false; m.renderOrder = 3; scene.add(m); return m; });
+  const padRings = Array.from({ length: 3 }, () => { const m = new THREE.Mesh(new THREE.RingGeometry(5.2, 6.4, 40).rotateX(-Math.PI / 2), glowMat('uFriendly')); m.visible = false; m.renderOrder = 3; scene.add(m); return m; });
 
   // ---------------------------------------------------------------- city
   let city = null;
@@ -358,8 +367,14 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
     let run = 0; const at = [0]; for (let i = 1; i < pts.length; i++) at.push(run += pts[i].distanceTo(pts[i - 1])); run += pts[0].distanceTo(pts[pts.length - 1]);
     const ph = r() * 6.28; pts.forEach((p, i) => { const f = at[i] / run; p.y = Math.max(15, 30 + 15 * Math.sin(6.283 * 2 * f + ph) + 9 * Math.sin(6.283 * 5 * f + ph * 2) + 46 * smooth(clamp(1 - Math.abs(f - .7) / .13, 0, 1))); });
     const curve = new THREE.CatmullRomCurve3(pts, true, 'centripetal'); curve.arcLengthDivisions = 1600; const length = curve.getLength();
+    // THE HIGH ROAD. Above the rooftops nothing needs a right angle: the same circuit, low-passed into one long easy loop. Its control
+    // points are samples at EQUAL distances along the street route, so parameter t on it is the same place as distance-fraction u below.
+    const M = 400, zig = Array.from({ length: M }, (_, i) => curve.getPointAt(i / M)), WIN = 26, soft = [];
+    for (let i = 0; i < M; i += 5) { let x = 0, z = 0; for (let k = -WIN; k <= WIN; k++) { const q = zig[(i + k + M) % M]; x += q.x; z += q.z; } soft.push(new V3(x / (2 * WIN + 1), 0, z / (2 * WIN + 1))); }
+    const high = new THREE.CatmullRomCurve3(soft, true, 'centripetal'), hp = new V3(), ht = new V3();
     const route = { length, curve,
-      frame(u, P, T) { u = ((u % 1) + 1) % 1; curve.getPointAt(u, P); curve.getTangentAt(u, T); return route; },
+      frame(u, P, T) { return route.frameAt(u, 0, P, T); },
+      frameAt(u, s, P, T) { u = ((u % 1) + 1) % 1; curve.getPointAt(u, P); curve.getTangentAt(u, T); if (s > 0) { const y = P.y; high.getPoint(u, hp); high.getTangent(u, ht).normalize(); P.lerp(hp, s); P.y = y; T.lerp(ht, s).normalize(); } return route; },
       map: Array.from({ length: 160 }, (_, i) => { const p = curve.getPointAt(i / 160); return [p.x, p.z]; }) };
 
     fires.length = 0; anims.length = 0; particles.n = 0; flashes.length = 0; pulses.length = 0;
@@ -408,7 +423,7 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
   const beam = (a, b, col, aHead, aTail, width, dash = 0, k = 1) => { if (nb >= MAXBEAM) return; beA.setXYZ(nb, a.x, a.y, a.z); beB.setXYZ(nb, b.x, b.y, b.z); beC.setXYZW(nb, col.r * k, col.g * k, col.b * k, aHead); beP.setXYZW(nb, width, aTail, dash, 0); nb++; };
   const spr = (p, size, col, a, k = 1) => { if (ns >= MAXSPR) return; spP.setXYZW(ns, p.x, p.y, p.z, size); spC.setXYZW(ns, col.r * k, col.g * k, col.b * k, a); ns++; };
   const WHITE = new THREE.Color(1, 1, 1), tmpA = new V3(), tmpB = new V3(), tmpC = new V3(), camP = new V3(), camT = new V3(), look = new V3(), lookNow = new V3(0, 40, 0), camNow = new V3(0, 60, -200);
-  const wing = [[], []], lights = []; let camReady = false, trailClock = 0;
+  const wing = [[], []], lights = [], basis = new THREE.Matrix4(); let camReady = false, trailClock = 0;
   const blastColour = b => b.hostile ? pal.enemy : (b.age / b.life < .2 ? pal.friendly : b.age / b.life < .6 ? pal.ground : pal.enemy);  // the original's three phases
 
   function sync(S, dt, view) {
@@ -416,10 +431,11 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
     const t = U.uTime.value, c = S.craft, route = city.route;
 
     // craft and camera. The camera rides the ROUTE a little way behind — never the craft's tangent — so it cannot swing through a corner block.
-    route.frame(c.u - 15 / route.length, camP, camT);
+    route.frameAt(c.u - 15 / route.length, c.s, camP, camT);
     const R = tmpA.crossVectors(camT, THREE.Object3D.DEFAULT_UP).normalize(), Uv = tmpB.crossVectors(R, camT).normalize();
-    camP.addScaledVector(R, c.ox * .82).addScaledVector(Uv, c.oy * .82 + 4.2);
-    look.copy(c.pos).addScaledVector(c.T, 60).addScaledVector(c.U, 25 + (view.lookY + view.leanY) * 52).addScaledVector(c.R, (view.lookX + view.leanX) * 70);
+    camP.addScaledVector(R, c.ox - clamp(c.ox * .18, -1.5, 1.5)).addScaledVector(Uv, c.oy - clamp(c.oy * .1, -1.2, 1.2) + 4.2 + c.s * 5);
+    const tip = smooth(clamp((c.pos.y - 130) / 300, 0, 1));                               // down in the canyon you look up at the raid; over the city you look down on it
+    look.copy(c.pos).addScaledVector(c.T, 60).addScaledVector(c.U, lerp(25, -30, tip) + (view.lookY + view.leanY) * 52).addScaledVector(c.R, (view.lookX + view.leanX) * 70);
     const k = camReady ? 1 - Math.exp(-dt * 7) : 1; camNow.lerp(camP, k); lookNow.lerp(look, camReady ? 1 - Math.exp(-dt * 5) : 1); camReady = true;
     camera.position.copy(camNow); if (shakeAmt > .01) { camera.position.x += (Math.random() - .5) * shakeAmt; camera.position.y += (Math.random() - .5) * shakeAmt; shakeAmt *= Math.exp(-dt * 5); }
     camera.up.set(0, 1, 0).addScaledVector(c.R, -c.roll * .2).normalize(); camera.lookAt(lookNow);   // the craft banks hard; the horizon only leans — you have to aim through this
@@ -456,14 +472,23 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
       lights.push({ p: tmpA.set(f.pos.x, 14, f.pos.z).clone(), r: 70, col: pal.enemy, k: .55 * fl, rank: .55 }); }                  // ranked by STEADY power, so the flicker never reshuffles the slots
 
     // the raid
+    let pi = 0;
     for (const e of S.enemies) {
-      if (e.type === 'bomber' || e.type === 'satellite') { const d = tmpA.copy(e.vel).normalize(), rgt = tmpB.set(-d.z, 0, d.x);
-        beam(tmpC.copy(e.pos).addScaledVector(d, -13), new V3().copy(e.pos).addScaledVector(d, 13), pal.enemy, 1, 1, 3.4, 0, 1.3);
-        beam(new V3().copy(e.pos).addScaledVector(rgt, -11).addScaledVector(d, -4), new V3().copy(e.pos).addScaledVector(rgt, 11).addScaledVector(d, -4), pal.enemy, 1, 1, e.type === 'bomber' ? 2.6 : 5, 0, 1.3);
-        spr(e.pos, 12, pal.enemy, .6); continue; }
+      if (e.type === 'satellite') { const d = tmpA.copy(e.vel).normalize(), rgt = tmpB.set(-d.z, 0, d.x);
+        beam(tmpC.copy(e.pos).addScaledVector(rgt, -16), new V3().copy(e.pos).addScaledVector(rgt, 16), pal.enemy, 1, 1, 5, 0, 1.2); beam(tmpC.copy(e.pos).addScaledVector(d, -5), new V3().copy(e.pos).addScaledVector(d, 5), pal.ground, 1, 1, 4, 0, 1.3);
+        spr(e.pos, 14, pal.enemy, .55); continue; }
+      if (e.type === 'bomber' || e.type === 'raider') { const big = e.type === 'bomber', d = tmpA.copy(e.vel).normalize(), rgt = tmpB.crossVectors(d, THREE.Object3D.DEFAULT_UP).normalize(), up = tmpC.crossVectors(rgt, d).normalize();
+        if (pi < planes.length) { const m = planes[pi++]; m.visible = true; m.position.copy(e.pos); m.scale.copy(PLANE[e.type]); m.quaternion.setFromRotationMatrix(basis.makeBasis(rgt.clone().negate(), up, d)); m.rotateZ(e.bank || 0); }
+        const span = big ? 21 : 6.8, back = big ? 8 : 4.6, tail = new V3().copy(e.pos).addScaledVector(d, -back);
+        spr(tail, big ? 7 : 3.4, pal.enemy, .95, 1.7); spr(tail, big ? 20 : 9, pal.enemy, .3);
+        e.ribbon = e.ribbon || [[], []]; e.ribbonClock = (e.ribbonClock || 0) + dt;
+        if (e.ribbonClock > .07) { e.ribbonClock = 0; for (let k = 0; k < 2; k++) { e.ribbon[k].unshift(new V3().copy(tail).addScaledVector(rgt, k ? span : -span)); if (e.ribbon[k].length > 24) e.ribbon[k].pop(); } }
+        for (let k = 0; k < 2; k++) for (let i = 1; i < e.ribbon[k].length; i++) { const f = 1 - i / e.ribbon[k].length; beam(e.ribbon[k][i], e.ribbon[k][i - 1], pal.enemy, .55 * f, .55 * f, (big ? 1.5 : .8) * f + .2); }
+        continue; }
       const smart = e.type === 'smart'; beam(e.origin, e.pos, smart ? pal.ground : pal.enemy, .95, .1, smart ? 1.0 : 1.5);
       spr(e.pos, smart ? 7 : 5, WHITE, 1, 1.5); spr(e.pos, smart ? 17 : 13, smart ? pal.ground : pal.enemy, .55);
     }
+    for (; pi < planes.length; pi++) planes[pi].visible = false;
     for (const tr of S.trails) beam(tr.a, tr.b, pal.enemy, .9 * tr.life / .45, .08 * tr.life / .45, 1.5);
     for (const s of S.shots) { beam(s.from, s.pos, pal.friendly, 1, .06, 1.3); spr(s.pos, 5.5, WHITE, 1, 1.6); spr(s.pos, 14, pal.friendly, .5); }
 
@@ -480,6 +505,11 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
     // pickups and jammers
     rings.forEach((m, i) => { const p = S.pickups[i]; m.visible = !!p && !p.taken; if (m.visible) { m.position.copy(p.pos); m.lookAt(tmpA.copy(p.pos).add(p.T)); m.rotateZ(t * 1.4); spr(p.pos, 6, pal.friendly, .5); } });
     mines.forEach((m, i) => { const p = S.mines[i]; m.visible = !!p && !p.hit; if (m.visible) { m.position.copy(p.pos); m.rotation.set(t * .7, t * 1.1 + i, 0); m.scale.setScalar(1 + .12 * Math.sin(t * 6 + i)); spr(p.pos, 9, pal.enemy, .55); } });
+
+    for (const m of MOTES) { const x = ((m.x - camera.position.x) % 180 + 180) % 180 - 90, y = ((m.y - camera.position.y) % 100 + 100) % 100 - 50, z = ((m.z - camera.position.z) % 180 + 180) % 180 - 90;
+      const d2 = x * x + y * y + z * z; if (d2 < 100) continue;                                  // never near the lens: a speck a unit away is a hundred pixels wide, and the near plane cuts it into a triangle
+      spr(tmpA.set(camera.position.x + x, camera.position.y + y, camera.position.z + z), -.2, WHITE, .34 * Math.min(1, (d2 - 100) / 300) * (1 - Math.min(1, d2 / 8100))); }
+    lens.uniforms.uTime.value = t;
 
     // particles
     const P = particles; for (let i = 0; i < P.n; i++) { P.life[i] -= dt; if (P.life[i] <= 0) { const l = --P.n; if (i !== l) { for (const a of [P.p, P.v, P.c]) { a[i * 3] = a[l * 3]; a[i * 3 + 1] = a[l * 3 + 1]; a[i * 3 + 2] = a[l * 3 + 2]; } P.life[i] = P.life[l]; P.span[i] = P.span[l]; P.size[i] = P.size[l]; P.g[i] = P.g[l]; } i--; continue; }

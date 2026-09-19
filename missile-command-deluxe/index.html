@@ -6,11 +6,11 @@
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="Missile Command Deluxe: City Run. Fly a spotter through a luminous 3D city under attack and call in interceptors from your base camp. Radar, six towers, thirty missiles a city — in the colours of the 1980 original.">
+<meta name="description" content="Missile Command Deluxe: City Run. Fly a spotter through — and over — a holographic 3D city under attack, and call in interceptors from your base camp. Bombers, raiders, radar, six towers, thirty missiles a city.">
 <title>Missile Command Deluxe — City Run: fly the raid, save the city · lab.philipbaker.us</title>
 <link rel="canonical" href="https://lab.philipbaker.us/missile-command-deluxe/">
 <meta property="og:title" content="Missile Command Deluxe — City Run">
-<meta property="og:description" content="Fly through a city under attack and call the strikes from your base camp. Radar, six towers, thirty missiles — in the colours of the 1980 original.">
+<meta property="og:description" content="Fly through a city under attack and call the strikes from your base camp. Bombers, radar, six towers, thirty missiles — in the colours of the 1980 original.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lab.philipbaker.us/missile-command-deluxe/">
 <meta property="og:site_name" content="PB Productions Lab">
@@ -20,98 +20,172 @@
 <meta property="og:image:alt" content="A small craft flies down a glowing avenue between dark towers while missile trails fall and blasts bloom overhead.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Missile Command Deluxe — City Run">
-<meta name="twitter:description" content="Fly through a city under attack and call the strikes from your base camp. Radar, six towers, thirty missiles — in the colours of the 1980 original.">
+<meta name="twitter:description" content="Fly through a city under attack and call the strikes from your base camp. Bombers, radar, six towers, thirty missiles — in the colours of the 1980 original.">
 <meta name="twitter:image" content="https://lab.philipbaker.us/missile-command-deluxe/img/og.jpg">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='black'/%3E%3Ccircle cx='18' cy='12' r='8' fill='%23ff522c'/%3E%3Cpath d='M3 30L18 12' stroke='%235ceaff' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='black'/%3E%3Ccircle cx='18' cy='12' r='8' fill='none' stroke='%23ff533e' stroke-width='2'/%3E%3Ccircle cx='18' cy='12' r='3.5' fill='%2366e5ff'/%3E%3Cpath d='M3 30L18 12' stroke='%2366e5ff' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-/* --ground / --friendly / --enemy are the original game's colour triad. main.js rewrites them with each city's scheme, so the page wears the same colours as the world. */
-:root{color-scheme:dark;--ink:#e9eeee;--ground:#f4ec66;--friendly:#66e5ff;--enemy:#ff533e;--dim:#96a2a9}
+/* THE INTERFACE IS A HOLOGRAM, not a console. Nothing here has a solid face: every surface is a breath of glass with a fine luminous
+   edge and two corner ticks, floating over a view that runs to all four edges of the screen. --ground / --friendly / --enemy are the
+   original game's colour triad; main.js rewrites them with each city's scheme, so the page always wears the same colours as the world. */
+:root{color-scheme:dark;--ink:#eef7fa;--ground:#f4ec66;--friendly:#66e5ff;--enemy:#ff533e;--dim:#8fa3ad;
+ --f:Rajdhani,"Avenir Next Condensed","Segoe UI",system-ui,sans-serif;
+ --line:color-mix(in srgb,var(--friendly) 42%,transparent);--haze:color-mix(in srgb,var(--friendly) 13%,transparent)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--ink);font:16px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--ink);font:500 16px/1.4 var(--f)}
 body{overscroll-behavior:none;user-select:none;-webkit-user-select:none}
-/* :where(#app) keeps these at plain-element specificity while stopping them at the game's edge — unscoped, they restyle the lab's shared hamburger and its Close button. */
-:where(#app) button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;min-height:44px;border:1px solid #394349;border-radius:0;background:#101619;padding:8px 14px}
-:where(#app) button:active{background:#263239}:where(#app) button:focus-visible{outline:2px solid var(--friendly);outline-offset:2px}
-:where(#app) button[aria-pressed=true]{border-color:var(--friendly);color:var(--friendly);background:#102027}
-:where(#app) button:disabled{opacity:.4;cursor:default}:where(#app) button.primary{background:var(--ground);border-color:var(--ground);color:#111;font-weight:900}
 [hidden]{display:none!important}
-#app{height:100%;height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-#hud{height:48px;flex:none;display:flex;align-items:center;gap:18px;padding:0 62px 0 14px;border-bottom:1px solid #172126}
-.stat{white-space:nowrap;display:flex;gap:9px;align-items:baseline;font-size:14px;color:var(--dim)}
-.stat strong{font-size:20px;letter-spacing:1px;color:var(--friendly);font-weight:700;font-variant-numeric:tabular-nums}
-#high{color:var(--ground)}#level,#reserve{color:var(--ink)}#cityname{color:var(--ground);font-size:13px;letter-spacing:1px}
-.hud-actions{display:flex;margin-left:auto;gap:6px}.hud-actions button{padding:4px 10px;font-size:13px;min-height:40px}
-#arena{position:relative;flex:1;min-height:0;overflow:hidden}
+#app{position:fixed;inset:0}
+#arena{position:absolute;inset:0;overflow:hidden}
 #game,#over{position:absolute;inset:0;width:100%;height:100%;display:block}
 #game{touch-action:none;outline:none;cursor:crosshair}#over{pointer-events:none}
-/* the instruments: radar bottom-left, pads and uplink bottom-right */
-#radarbox{position:absolute;left:12px;bottom:12px;width:clamp(124px,24vh,196px);aspect-ratio:1;touch-action:none}
-#radar{width:100%;height:100%;display:block;border-radius:50%;cursor:crosshair;touch-action:none}
-#radarbox span{position:absolute;left:0;right:0;top:-17px;text-align:center;font-size:10px;letter-spacing:2px;color:var(--friendly);opacity:.75;pointer-events:none;text-shadow:0 0 6px #000}
-#camp{position:absolute;right:12px;bottom:12px;display:grid;gap:4px;width:clamp(150px,22vw,210px);pointer-events:none;text-shadow:0 0 6px #000,0 1px 2px #000}
-#camp header{display:flex;justify-content:space-between;align-items:baseline;font-size:10px;letter-spacing:2px;color:var(--friendly);opacity:.85}
-#ammo-total{font-size:24px;font-weight:800;letter-spacing:0;color:var(--ink);font-variant-numeric:tabular-nums}
-.pad{display:grid;grid-template-columns:52px 1fr 20px;gap:7px;align-items:center;font-size:11px;letter-spacing:1px;color:var(--dim)}
-.pad u{display:block;height:6px;background:#0c1418cc;border:1px solid #2a353b;text-decoration:none}.pad i{display:block;height:100%;background:var(--friendly);box-shadow:0 0 8px var(--friendly)}
-.pad b{text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}.pad.out{color:var(--enemy)}.pad.out b{color:var(--enemy)}
-#link{display:flex;align-items:center;gap:7px;margin-top:3px;font-size:10px;letter-spacing:2px;color:var(--friendly)}
-#link:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 9px currentColor;animation:beat 1.1s infinite}
-#link.lost{color:var(--enemy)}#link.lost:before{animation-duration:.22s}
-@keyframes beat{50%{opacity:.25}}
-.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:auto;background:radial-gradient(ellipse at center,rgba(0,3,7,.8),rgba(0,2,5,.46) 72%,rgba(0,2,5,.28));-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);padding:14px 24px;touch-action:pan-y}
-.panel{width:min(850px,100%);max-height:100%;overflow:auto;scrollbar-width:thin;text-shadow:0 1px 2px #000,0 0 14px rgba(0,0,0,.85)}
-.home-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:32px;align-items:center}
-.eyebrow{font-size:12px;font-weight:400;letter-spacing:3px;color:var(--enemy);margin:0 0 8px}
-.title{font-size:clamp(34px,7vw,84px);line-height:.92;letter-spacing:-2px;margin:0 0 15px;font-weight:900;color:var(--ground);text-shadow:0 0 28px color-mix(in srgb,var(--ground) 55%,transparent),0 2px 3px #000}
-h2{font-size:24px;line-height:1.1;margin:0 0 14px;color:var(--ground)}
-:where(#app,#gate,#boot) p{margin:8px 0 14px;font-size:14px;color:#b4c0c6}.muted{font-size:12px;color:var(--dim)}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.center{text-align:center}.center .actions{justify-content:center}
-.instructions{font-size:14px;margin:0;line-height:1.65}.instructions b{color:var(--friendly)}.line{border-top:1px solid #273036;padding-top:10px;margin-top:12px}
-table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}td,th{padding:4px 8px;text-align:left}th{font-size:12px;font-weight:400;color:var(--dim);border-bottom:1px solid #293337}td:last-child,th:last-child{text-align:right}
-.score-number{font-size:30px;color:var(--friendly);font-weight:800}.bonus-grid{display:grid;grid-template-columns:auto auto;gap:7px 30px;max-width:400px;margin:16px auto;text-align:left}.bonus-grid b{text-align:right;color:var(--friendly)}
-.initials{display:flex;gap:9px;justify-content:center;margin:10px 0}.letter{display:grid;gap:2px;min-width:52px}.letter span{font-size:27px;color:var(--friendly)}.letter.on span{color:var(--ground)}.letter button{padding:0 12px;min-height:36px}
-#intro{position:absolute;left:0;right:0;top:22%;display:grid;justify-items:center;gap:8px;pointer-events:none;text-align:center;font-weight:900;text-shadow:0 0 3px #000,0 0 18px rgba(0,0,0,.95)}
-#intro .w{font-size:clamp(22px,4.4vw,40px);letter-spacing:2px;color:var(--ground)}#intro .m{font-size:clamp(14px,2.4vw,20px);color:var(--friendly)}#intro .d{margin-top:8px;font-size:clamp(13px,2vw,17px);color:#fff}#intro .k{max-width:92%;font-size:clamp(10px,1.4vw,13px);color:var(--dim);font-weight:400}
-#toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);padding:5px 12px;background:#060e12e8;border:1px solid #1d2a30;color:var(--ground);font-size:14px;white-space:nowrap;pointer-events:none}
-#boot{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;text-align:center;background:#010305;padding:24px;transition:opacity .6s}#boot.done{opacity:0;pointer-events:none}#boot a{color:var(--friendly)}
-#gate{position:fixed;inset:0;z-index:20;background:#030607;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
-#gate section{max-width:470px}.rotate-icon{font-size:55px;color:var(--friendly);line-height:1;margin-bottom:20px}#gate p{font-size:16px}
-/* The lab's shared menu pins its hamburger at top:26px/right:28px, which here is the PAUSE button. Seat it in the HUD instead (the HUD reserves the room with padding-right), and let the drawer scroll: its links outgrow a phone held sideways. */
-#pb-menu .hamburger{top:calc(env(safe-area-inset-top) + 4px);right:calc(env(safe-area-inset-right) + 12px)}
-#pb-menu .drawer{overflow-y:auto;padding-right:calc(env(safe-area-inset-right) + 44px)}
-#pb-menu .drawer-close{right:calc(env(safe-area-inset-right) + 44px)}
+
+/* one surface, used everywhere */
+.holo{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,rgba(6,18,26,.5),rgba(6,18,26,.16));-webkit-backdrop-filter:blur(9px) saturate(1.25);backdrop-filter:blur(9px) saturate(1.25);box-shadow:0 0 22px var(--haze),inset 0 0 26px color-mix(in srgb,var(--friendly) 6%,transparent)}
+.holo:before,.holo:after{content:"";position:absolute;width:9px;height:9px;border:1.5px solid var(--friendly);filter:drop-shadow(0 0 4px var(--friendly));pointer-events:none}
+.holo:before{left:-1px;top:-1px;border-right:0;border-bottom:0}.holo:after{right:-1px;bottom:-1px;border-left:0;border-top:0}
+
+/* the frame: four fine brackets at the corners of the world */
+.corner{position:absolute;width:26px;height:26px;border:1px solid var(--line);opacity:.8;pointer-events:none}
+.corner.tl{left:calc(env(safe-area-inset-left) + 10px);top:calc(env(safe-area-inset-top) + 10px);border-right:0;border-bottom:0}.corner.tr{right:calc(env(safe-area-inset-right) + 10px);top:calc(env(safe-area-inset-top) + 10px);border-left:0;border-bottom:0}
+.corner.bl{left:calc(env(safe-area-inset-left) + 10px);bottom:calc(env(safe-area-inset-bottom) + 10px);border-right:0;border-top:0}.corner.br{right:calc(env(safe-area-inset-right) + 10px);bottom:calc(env(safe-area-inset-bottom) + 10px);border-left:0;border-top:0}
+
+/* readouts */
+.read{display:grid;gap:0;padding:5px 14px 6px;min-width:96px}
+.read label,.tag{font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:color-mix(in srgb,var(--friendly) 78%,#fff);opacity:.85;white-space:nowrap}
+.read strong{font-size:24px;font-weight:600;letter-spacing:.05em;line-height:1.05;font-variant-numeric:tabular-nums;color:var(--ink);text-shadow:0 0 12px color-mix(in srgb,var(--friendly) 70%,transparent);white-space:nowrap}
+.read.big strong{font-size:34px}#high{color:var(--ground);text-shadow:0 0 12px color-mix(in srgb,var(--ground) 60%,transparent)}
+#cityname{font-size:19px;color:var(--ground);text-shadow:0 0 12px color-mix(in srgb,var(--ground) 55%,transparent)}
+#hudL,#hudR{position:absolute;top:calc(env(safe-area-inset-top) + 22px);display:flex;gap:8px;align-items:flex-start;pointer-events:none}
+#hudL{left:calc(env(safe-area-inset-left) + 24px)}#hudR{right:calc(env(safe-area-inset-right) + 224px)}
+
+/* the radar: hung high and central, with a wing to either side that ties it into the rest */
+#radarbox{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 12px);width:clamp(150px,27vh,236px);aspect-ratio:1;transform:translateX(-50%);pointer-events:none;filter:drop-shadow(0 0 14px var(--haze))}
+#radar{width:100%;height:100%;display:block}
+#radarbox .wing{position:absolute;top:50%;width:clamp(60px,11vw,150px);height:1px;background:linear-gradient(90deg,transparent,var(--friendly));opacity:.55}
+#radarbox .wing.l{right:100%}#radarbox .wing.r{left:100%;transform:scaleX(-1)}
+#radarbox .wing span{position:absolute;bottom:5px;right:8px;font-size:10.5px;font-weight:600;letter-spacing:.22em;color:var(--friendly);white-space:nowrap}
+#radarbox .wing.r span{transform:scaleX(-1);right:auto;left:8px;text-align:left}
+#radarbox .wing b{font-weight:700;color:var(--ink)}
+
+/* tools: icons, not words */
+#tools{position:absolute;top:calc(env(safe-area-inset-top) + 26px);right:calc(env(safe-area-inset-right) + 86px);display:flex;gap:8px}
+#tools button{width:40px;height:40px;display:grid;place-items:center;padding:0;color:var(--friendly);cursor:pointer;font:inherit;touch-action:manipulation;transition:color .15s,box-shadow .15s,background .15s}
+#tools button:hover{color:#fff;box-shadow:0 0 26px color-mix(in srgb,var(--friendly) 45%,transparent)}#tools button:active{background:color-mix(in srgb,var(--friendly) 22%,transparent)}
+#tools button:focus-visible,#menu button:focus-visible{outline:1px solid #fff;outline-offset:3px}
+#tools button:disabled{opacity:.3;cursor:default;box-shadow:none}
+#tools svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px currentColor)}
+#sound[aria-pressed=true] .off,#sound[aria-pressed=false] .on,#pause .go,#pause.on .hold{display:none}#pause.on .go{display:block}#sound[aria-pressed=false]{color:var(--dim)}
+
+/* base camp: three segmented gauges along the bottom */
+#camp{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 18px);transform:translateX(-50%);display:flex;align-items:center;gap:20px;padding:9px 20px 10px;pointer-events:none;white-space:nowrap}
+#link{display:grid;gap:3px;color:var(--friendly)}#link .bars{display:flex;gap:3px;align-items:flex-end;height:14px}
+#link .bars i{width:4px;background:currentColor;box-shadow:0 0 7px currentColor;animation:sig 1.3s infinite}#link .bars i:nth-child(1){height:5px}#link .bars i:nth-child(2){height:8px;animation-delay:.12s}#link .bars i:nth-child(3){height:11px;animation-delay:.24s}#link .bars i:nth-child(4){height:14px;animation-delay:.36s}
+#link.lost{color:var(--enemy)}#link.lost .bars i{animation:dead .18s infinite}
+@keyframes sig{0%,100%{opacity:1}50%{opacity:.35}}@keyframes dead{50%{opacity:.1}}
+.pad{display:grid;gap:3px}.pad .row{display:flex;justify-content:space-between;align-items:baseline;gap:14px}.pad b{font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.pad u{display:block;width:110px;height:7px;text-decoration:none;background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--friendly) 20%,transparent) 0 8px,transparent 8px 11px)}
+.pad u i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--friendly) 0 8px,transparent 8px 11px);filter:drop-shadow(0 0 5px var(--friendly));transition:width .18s}
+.pad.out .tag,.pad.out b{color:var(--enemy)}.pad.out u{background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--enemy) 30%,transparent) 0 8px,transparent 8px 11px)}
+#total{display:grid;justify-items:end;padding-left:18px;border-left:1px solid var(--line)}#ammo-total{font-size:34px;font-weight:600;line-height:.95;font-variant-numeric:tabular-nums;text-shadow:0 0 14px color-mix(in srgb,var(--friendly) 70%,transparent)}
+
+/* words that arrive in the sky */
+#intro{position:absolute;left:0;right:0;top:36%;display:grid;justify-items:center;gap:6px;pointer-events:none;text-align:center;text-shadow:0 0 4px #000,0 0 22px rgba(0,0,0,.9)}
+#intro .w{font-size:clamp(26px,5vw,56px);font-weight:500;letter-spacing:.3em;text-indent:.3em;color:#fff;text-shadow:0 0 24px var(--ground),0 0 4px #000;animation:arrive .9s cubic-bezier(.16,1,.3,1) both}
+#intro .m{font-size:clamp(13px,1.9vw,19px);font-weight:600;letter-spacing:.4em;color:var(--friendly)}#intro .d{margin-top:8px;font-size:clamp(14px,2vw,20px);font-weight:600;letter-spacing:.3em;color:var(--ground)}
+#intro .k{max-width:min(92%,900px);margin-top:4px;font-size:clamp(10px,1.3vw,13px);font-weight:500;letter-spacing:.18em;color:var(--ink);opacity:.72}
+@keyframes arrive{from{opacity:0;letter-spacing:.9em;filter:blur(8px)}}
+#toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + clamp(150px,27vh,236px) + 34px);transform:translateX(-50%);padding:5px 18px 6px;font-size:14px;font-weight:600;letter-spacing:.26em;color:var(--ground);white-space:nowrap;pointer-events:none;text-shadow:0 0 10px color-mix(in srgb,var(--ground) 60%,transparent)}
+
+/* panels */
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:auto;background:radial-gradient(ellipse at center,rgba(0,4,8,.62),rgba(0,3,6,.3) 70%,rgba(0,3,6,.12));padding:20px 24px;touch-action:pan-y}
+.panel{width:min(900px,100%);max-height:100%;overflow:auto;scrollbar-width:thin;padding:clamp(18px,3.4vw,40px);border:1px solid var(--line);position:relative;
+ background:repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px),linear-gradient(160deg,rgba(6,20,30,.72),rgba(4,12,18,.5));
+ -webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);box-shadow:0 0 60px var(--haze),inset 0 0 70px color-mix(in srgb,var(--friendly) 5%,transparent);animation:panel .45s cubic-bezier(.16,1,.3,1) both}
+.panel:before,.panel:after{content:"";position:absolute;width:16px;height:16px;border:2px solid var(--friendly);filter:drop-shadow(0 0 6px var(--friendly));pointer-events:none}
+.panel:before{left:0;top:0;border-right:0;border-bottom:0}.panel:after{right:0;bottom:0;border-left:0;border-top:0}   /* INSIDE the box: a tick that overhangs by a pixel makes the panel scroll, and the scrollbars read as a grey bevel */
+@keyframes panel{from{opacity:0;transform:translateY(10px) scale(.985);filter:blur(6px)}}
+.home-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(18px,4vw,44px);align-items:center}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.5em;color:var(--enemy);margin:0 0 10px;text-shadow:0 0 12px color-mix(in srgb,var(--enemy) 60%,transparent)}
+.title{font-size:clamp(46px,9vw,124px);line-height:.84;letter-spacing:.03em;margin:0 0 16px;font-weight:700;background:linear-gradient(100deg,#fff 10%,var(--friendly) 45%,#fff 60%,var(--ground));background-size:240% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px color-mix(in srgb,var(--friendly) 55%,transparent));animation:sheen 7s linear infinite}
+@keyframes sheen{to{background-position:-240% 0}}
+h2{font-size:clamp(22px,3.4vw,34px);font-weight:600;letter-spacing:.22em;line-height:1.1;margin:0 0 14px;color:#fff;text-shadow:0 0 18px var(--ground)}
+:where(#app,#gate,#boot) p{margin:8px 0 14px;font-size:16px;color:#c4d3da}.muted{font-size:13px;letter-spacing:.06em;color:var(--dim)}
+.instructions{font-size:16px;margin:0;line-height:1.55}.instructions b{color:var(--friendly);font-weight:700;letter-spacing:.08em}.line{border-top:1px solid var(--line);padding-top:10px;margin-top:14px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.center{text-align:center}.center .actions{justify-content:center}
+#menu button{font:600 15px/1 var(--f);letter-spacing:.24em;text-indent:.24em;color:var(--friendly);cursor:pointer;touch-action:manipulation;min-height:46px;padding:0 24px;border:1px solid var(--line);background:color-mix(in srgb,var(--friendly) 7%,transparent);transition:box-shadow .15s,background .15s,color .15s;clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+#menu button:hover{color:#fff;background:color-mix(in srgb,var(--friendly) 18%,transparent)}#menu button:disabled{opacity:.35;cursor:default}
+#menu button.primary{color:#04141b;border-color:transparent;background:linear-gradient(100deg,var(--ground),color-mix(in srgb,var(--ground) 62%,#fff));font-weight:700;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--ground) 55%,transparent))}
+#menu button.primary:hover{filter:drop-shadow(0 0 24px var(--ground)) brightness(1.08)}
+table{border-collapse:collapse;width:100%;font-size:17px;font-variant-numeric:tabular-nums}td,th{padding:6px 10px;text-align:left}th{font-size:11px;font-weight:600;letter-spacing:.24em;color:var(--friendly);border-bottom:1px solid var(--line)}td:last-child,th:last-child{text-align:right}tr:first-child td{color:var(--ground)}
+.score-number{font-size:clamp(38px,6vw,64px);font-weight:600;letter-spacing:.06em;line-height:1;text-shadow:0 0 22px var(--friendly)}
+.bonus-grid{display:grid;grid-template-columns:auto auto;gap:8px 36px;max-width:440px;margin:18px auto;text-align:left;font-size:17px;letter-spacing:.1em}.bonus-grid b{text-align:right;color:var(--friendly);font-variant-numeric:tabular-nums}
+.initials{display:flex;gap:12px;justify-content:center;margin:12px 0}.letter{display:grid;gap:4px;min-width:58px;justify-items:center}.letter span{font-size:40px;font-weight:600;line-height:1;color:#fff;border-bottom:2px solid var(--line);padding:0 8px 2px;text-shadow:0 0 14px var(--friendly)}.letter.on span{border-color:var(--ground);text-shadow:0 0 16px var(--ground)}
+#menu .letter button{min-height:32px;padding:0 16px;letter-spacing:0;text-indent:0;clip-path:none}
+
+#boot{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at center,#04111a,#000 70%);padding:24px;transition:opacity .7s}#boot.done{opacity:0;pointer-events:none}#boot a{color:var(--friendly)}
+#boot h2:after{content:"";display:block;width:180px;height:1px;margin:16px auto 0;background:linear-gradient(90deg,transparent,var(--friendly),transparent);background-size:200% 100%;animation:sheen 1.6s linear infinite}
+#gate{position:fixed;inset:0;z-index:20;background:radial-gradient(ellipse at center,#04111a,#000 70%);display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+#gate section{max-width:470px}.rotate-icon{font-size:55px;color:var(--friendly);line-height:1;margin-bottom:20px;text-shadow:0 0 18px var(--friendly)}
+/* the lab's shared menu keeps its own spot (top:26px right:28px); only its drawer needs help — its links outgrow a phone held sideways */
+#pb-menu .drawer{overflow-y:auto;padding-right:calc(env(safe-area-inset-right) + 44px)}#pb-menu .drawer-close{right:calc(env(safe-area-inset-right) + 44px)}
+#pb-menu .hamburger{top:calc(env(safe-area-inset-top) + 26px);right:calc(env(safe-area-inset-right) + 28px)}
 @media(max-height:480px){#pb-menu .drawer{padding-top:64px;padding-bottom:24px}}
-@media(max-height:360px){#pb-menu .hamburger{top:calc(env(safe-area-inset-top) + 1px)}#hud{height:42px;gap:12px}.stat strong{font-size:17px}.overlay{padding:10px 18px}.title{font-size:40px;margin-bottom:8px}h2{font-size:21px;margin-bottom:8px}.eyebrow{margin-bottom:5px}.panel p{margin:5px 0 8px}.actions{margin-top:8px}.home-grid{gap:20px}.instructions{font-size:12px;line-height:1.5}}
-@media(max-width:760px){#hud{gap:11px;padding:0 58px 0 8px}.stat{font-size:12px;gap:5px}.stat strong{font-size:17px}.reserve-stat,#cityname{display:none}.hud-actions button{font-size:12px;padding:3px 7px}.home-grid{gap:18px}#radarbox{left:8px;bottom:8px}#camp{right:8px;bottom:8px}}
+
+/* a phone held sideways: the radar moves to the corner your left thumb is not using, and everything tightens */
+@media(max-height:520px),(max-width:900px){
+ #radarbox{left:calc(env(safe-area-inset-left) + 14px);top:calc(env(safe-area-inset-top) + 12px);transform:none;width:clamp(104px,34vh,150px)}#radarbox .wing{display:none}
+ #hudL{left:calc(env(safe-area-inset-left) + clamp(104px,34vh,150px) + 26px);top:calc(env(safe-area-inset-top) + 12px);gap:6px}#hudR{display:none}
+ .read{padding:3px 10px 4px;min-width:0}.read strong{font-size:18px}.read.big strong{font-size:24px}.read label{font-size:9px}
+ #tools{top:calc(env(safe-area-inset-top) + 12px);right:calc(env(safe-area-inset-right) + 78px);gap:6px}#tools button{width:36px;height:36px}#pb-menu .hamburger{top:calc(env(safe-area-inset-top) + 10px)}
+ #camp{left:auto;right:calc(env(safe-area-inset-right) + 14px);bottom:calc(env(safe-area-inset-bottom) + 12px);transform:none;gap:10px;padding:6px 12px 7px}.pad u{width:56px;height:5px;background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--friendly) 20%,transparent) 0 4px,transparent 4px 5.6px)}.pad u i{background:repeating-linear-gradient(90deg,var(--friendly) 0 4px,transparent 4px 5.6px)}.pad b{font-size:12px}.pad .tag{font-size:8.5px;letter-spacing:.16em}#ammo-total{font-size:24px}#total{padding-left:10px}#link .tag{display:none}
+ #toast{top:auto;bottom:calc(env(safe-area-inset-bottom) + 74px);font-size:12px}#intro{top:30%}
+ .overlay{padding:10px 16px}.panel{padding:14px 18px}.title{font-size:clamp(38px,11vh,64px);margin-bottom:8px}.instructions{font-size:13px;line-height:1.4}.muted{font-size:11px}.eyebrow{margin-bottom:5px;font-size:10px}.panel p{margin:4px 0 8px;font-size:13px}.actions{margin-top:8px}#menu button{min-height:40px;font-size:13px;padding:0 16px}h2{margin-bottom:8px}.corner{display:none}}
+@media(max-width:1180px) and (min-width:901px){#hudR{right:calc(env(safe-area-inset-right) + 222px)}#hudR .reserve-stat{display:none}}
+@media(max-width:1020px) and (min-width:901px){#hudR{display:none}}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <main id="app">
- <header id="hud">
-  <div class="stat">SCORE <strong id="score">0</strong></div>
-  <div class="stat">HIGH <strong id="high">0</strong></div>
-  <div class="stat">CITY <strong id="level">1</strong><span id="cityname">EUREKA</span><span id="mult">1×</span></div>
-  <div class="stat reserve-stat">RESERVE <strong id="reserve">0</strong></div>
-  <div class="hud-actions"><button id="sound" aria-label="Toggle sound" aria-pressed="true">SOUND</button><button id="pause" aria-label="Pause game" disabled>PAUSE</button></div>
- </header>
  <section id="arena" aria-label="The city, from the air">
-  <canvas id="game" aria-label="Tap or click the sky ahead of a falling missile to call a strike from base camp. Drag, or use W A S D, to fly. Tap the radar to strike what you cannot see."></canvas>
+  <canvas id="game" aria-label="Aim with the mouse or tap the sky ahead of a falling missile to call a strike from base camp. W A S D or a drag flies; hold up to climb over the city. Tap a radar blip to strike what you cannot see."></canvas>
   <canvas id="over" aria-hidden="true"></canvas>
-  <div id="radarbox"><span>RADAR</span><canvas id="radar" aria-label="Radar. Tap a blip to call a strike there."></canvas></div>
-  <div id="camp" aria-label="Base camp">
-   <header><span>BASE CAMP · AUTO</span><span id="ammo-total">30</span></header>
-   <div class="pad" data-pad="0"><span>ALPHA</span><u><i></i></u><b>10</b></div>
-   <div class="pad" data-pad="1"><span>DELTA</span><u><i></i></u><b>10</b></div>
-   <div class="pad" data-pad="2"><span>OMEGA</span><u><i></i></u><b>10</b></div>
-   <div id="link"><span id="link-word">UPLINK</span></div>
+  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+  <div id="hudL">
+   <div class="read big holo"><label>Score</label><strong id="score">0</strong></div>
+   <div class="read holo"><label>High</label><strong id="high">0</strong></div>
   </div>
+  <div id="radarbox" aria-label="Radar. A click on a blip calls a strike there; anywhere else it is sky.">
+   <canvas id="radar"></canvas>
+   <i class="wing l"><span>HDG <b id="hdg">000</b></span></i><i class="wing r"><span>RNG <b>680</b></span></i>
+  </div>
+  <div id="hudR">
+   <div class="read holo"><label>City <span id="level">1</span> · <span id="mult">1×</span></label><strong id="cityname">EUREKA</strong></div>
+   <div class="read holo reserve-stat"><label>Reserve</label><strong id="reserve">0</strong></div>
+  </div>
+  <div id="tools">
+   <button id="sound" class="holo" aria-label="Toggle sound" aria-pressed="true"><svg class="on" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.6 7.6 0 0 1 0 11"/></svg><svg class="off" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
+   <button id="pause" class="holo" aria-label="Pause" disabled><svg class="hold" viewBox="0 0 24 24"><path d="M8.5 6v12M15.5 6v12"/></svg><svg class="go" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>
+   <button id="full" class="holo" aria-label="Full screen"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+  </div>
+
+  <div id="camp" class="holo" aria-label="Base camp">
+   <div id="link"><span class="tag" id="link-word">Uplink</span><span class="bars"><i></i><i></i><i></i><i></i></span></div>
+   <div class="pad" data-pad="0"><div class="row"><span class="tag">Alpha</span><b>10</b></div><u><i></i></u></div>
+   <div class="pad" data-pad="1"><div class="row"><span class="tag">Delta</span><b>10</b></div><u><i></i></u></div>
+   <div class="pad" data-pad="2"><div class="row"><span class="tag">Omega</span><b>10</b></div><u><i></i></u></div>
+   <div id="total"><span class="tag">Auto</span><span id="ammo-total">30</span></div>
+  </div>
+
   <div id="intro" aria-live="polite" hidden></div>
-  <div id="toast" role="status" hidden></div>
+  <div id="toast" class="holo" role="status" hidden></div>
   <div id="menu" class="overlay" hidden></div>
  </section>
 </main>
-<div id="boot"><section><h1 class="eyebrow">MISSILE COMMAND DELUXE · CITY RUN</h1><h2 id="boot-line">RAISING THE CITY…</h2><p id="boot-note" class="muted"></p></section></div>
+<div id="boot"><section><h1 class="eyebrow">MISSILE COMMAND DELUXE · CITY RUN</h1><h2 id="boot-line">RAISING THE CITY</h2><p id="boot-note" class="muted"></p></section></div>
 <div id="gate" hidden><section>
  <div class="rotate-icon" aria-hidden="true">↻</div>
  <h2>ROTATE YOUR DEVICE</h2>
@@ -127,7 +201,7 @@ table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:ta
 // A module that cannot load or cannot parse fails SILENTLY. Say so plainly, and point at the version that needs nothing.
 window.__mcdFail=function(why){var l=document.getElementById('boot-line'),n=document.getElementById('boot-note');document.getElementById('boot').classList.remove('done');l.textContent='THE GAME COULD NOT START';n.innerHTML=(why?String(why).replace(/[<&]/g,'')+'<br>':'')+'Check the connection and <a href="" onclick="location.reload();return false">reload</a> — or play the 2D original: <a href="/missile-command/">/missile-command</a>';};
 setTimeout(function(){if(window.__mcdReady)return;var l=document.getElementById('boot-line'),n=document.getElementById('boot-note');if(!l||/COULD NOT/.test(l.textContent))return;
- l.textContent='STILL LOADING…';n.innerHTML='If this never finishes, your browser may be too old for the 3D world. The original, drawn in 2D, plays anywhere: <a href="/missile-command/">/missile-command</a>';},9000);
+ l.textContent='STILL LOADING';n.innerHTML='If this never finishes, your browser may be too old for the 3D world. The original, drawn in 2D, plays anywhere: <a href="/missile-command/">/missile-command</a>';},9000);
 </script>
 <!-- ROOT-ABSOLUTE on purpose: Vercel serves this page at /missile-command-deluxe AND /missile-command-deluxe/, and from the first a relative ./main.js resolves to /main.js — a 404 and a dead loading screen. -->
 <script type="module" src="/missile-command-deluxe/main.js" onerror="window.__mcdFail&&window.__mcdFail()"></script>
