@@ -32,7 +32,9 @@ just `os.getcwd()`: a zero-dependency server script placed in this repo — at t
 `.claude/` — dies with "can't open file … Operation not permitted". What works: `rsync` the
 folders under test to the session scratchpad and add a **temporary** launch entry that runs a
 scratchpad server script over that mirror (`/usr/bin/python3 -I <script> <mirror> <port>`),
-then `git checkout -- .claude/launch.json`. Have that script pass GET `/api/menu` through to
+then take **your own entry** back out. Do NOT `git checkout -- .claude/launch.json` to do it: that restores the whole
+file, and when two sessions share this working copy (Sep 19 2026: City Run and Maze Wars did) it silently erases
+the other session's temporary entry too. Have that script pass GET `/api/menu` through to
 production and the real hamburger mounts; proxy nothing else under `/api/` (generate spends
 money, the rest write shared state). Re-`rsync` after every edit — it is a copy.
 A hidden pane reports `document.hidden === true` and throttles frames between tool calls;
