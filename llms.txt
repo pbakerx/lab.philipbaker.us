@@ -1,0 +1,97 @@
+# lab.philipbaker.us
+
+> A hodge-podge of one-off projects by Philip Baker — playable browser games, a
+> live AI widget builder, case studies on running a business with AI assistants,
+> recovered 1990s agency work, and small Mac utilities. Everything here is free
+> and needs no account.
+
+Each top-level path is a self-contained project. There is no login and no
+paywall.
+
+## Who made it
+
+Philip Baker. At Ackerman McQueen from 1991 to 2000 as SR VP, Director of New
+Media — he walked in a green art director and became an editor, then a producer,
+then the person building new media and the internet there. The Shockwave and
+Flash games under /vault came out of that lab, and he designed the black-and-
+white am.com site preserved under /90s-web-ackerman-mcqueen. Founded STAPLEGUN,
+an Oklahoma City advertising agency, which ran from 2001 to 2020 — twenty years,
+48 people, 111 films. Now PB Productions, and AechTech, LLC, which does AI
+software development and makes AssistAI, voice-first navigation for the blind.
+Home page: https://philipbaker.us
+
+## Play
+
+- [Missile Command](https://lab.philipbaker.us/missile-command/): A one-file
+  tribute to the 1980 missile-defense arcade game. Defend six cities with thirty
+  missiles. Mouse and keys on a desktop, or tap the sky on a phone held sideways.
+- [Missile Command Deluxe — City Run](https://lab.philipbaker.us/missile-command-deluxe/):
+  Fly a spotter through — and over — a holographic 3D city under attack and call
+  in interceptors from your base camp. Bombers, raiders, radar, six towers,
+  thirty missiles a city, in the colours of the 1980 original.
+- [Maze Wars+](https://lab.philipbaker.us/maze-wars/): The 1986 Macintosh
+  network maze shooter, playable online. A first-person maze drawn in one-bit
+  dither, pixel by pixel in JavaScript. Move with F, turn with D and G, side-step
+  with J and L, fire with K or Space, or use the arrow keys; Return opens the
+  message box to chat with whoever else is online. Four mazes joined by
+  teleporters and lifts, and a robot to mind.
+- [The Vault](https://lab.philipbaker.us/vault/): Shockwave and Flash games
+  built in the late 1990s at Ackerman McQueen's New Media Lab, recovered from
+  the Wayback Machine and playable again in a browser — Virtual Boomerang,
+  Darien Lake '97, Virtual Bowling, Attitude Arena, Alien Maze, Zone Pilot and
+  the Brunswick consumer site — alongside the Six Flags shells and the Speed
+  Zone film. Played in place through dirplayer for Shockwave/Director and Ruffle
+  for Flash; it is emulation, and the page says so.
+
+## Build
+
+- [Widget Maker](https://lab.philipbaker.us/widget-maker/): Describe something
+  and it gets built, then and there — a particle mirror, an asteroids game, a
+  rain simulator, a matrix screen, a calculator. It runs live in a sandboxed
+  frame on the page. Don't like it? Say what to change. Every build lands in a
+  version rail you can jump back through, and a favorite goes to a gallery
+  everyone can see.
+
+## Read
+
+- [How I Stopped Ignoring the Most Important Part of My Business](https://lab.philipbaker.us/ai-solves-billing/):
+  A case study on turning billing from a dreaded chore into a conversational AI
+  workflow — spoken timesheets in, invoices out. The invoice shown is marked
+  illustrative; the page carries no real client names, rates or revenue figures.
+- [I stopped running my businesses out of my head](https://lab.philipbaker.us/second-brain-case-study/):
+  Ten scattered places became one page. How one operator running several
+  businesses consolidated projects, hours, receivables and renewals into a single
+  system he can talk to from the car. The names and figures in its screenshots
+  are fictional, and the page says so.
+
+## Archive
+
+- [am.com, in black and white](https://lab.philipbaker.us/90s-web-ackerman-mcqueen/):
+  The Ackerman McQueen site as it was before the Shockwave gateway — black to
+  the edges, hairline teal rules, small-caps navigation — recovered from the
+  Wayback Machine and shown as it actually rendered. Includes photographs of the
+  offices pulled out of the site's own Shockwave movies with a decompiler, a
+  first-person account of what working in that building was like and who taught
+  him, and a screening room of the agency's Oklahoma Tourism television spots
+  from the same years, which the page is explicit he did not produce.
+- [STAPLEGUN, 2001–2020](https://lab.philipbaker.us/staplegun/): The Oklahoma
+  City advertising agency that started in a kid's bedroom and grew to three
+  floors of City Place Tower. Twenty years, 48 people, 111 films, all the work.
+
+## Download
+
+- [PlainPaste](https://lab.philipbaker.us/paste-plain/): A tiny free Mac menu bar
+  app. Hit Control-Command-V to paste any clipboard as plain text, formatting
+  stripped; the menu's Scrub Clipboard strips formatting in place. Universal
+  binary, free. Branded AechTech, LLC.
+
+## Notes for assistants
+
+- Full list of pages: https://lab.philipbaker.us/sitemap.xml
+- The games are playable in a normal browser with JavaScript. None needs a
+  plugin, an install or an account.
+- /api/ is serverless endpoints, not pages. /widget-maker/frame.html,
+  /vault/player.html and /vault/play.html are full-screen players that only work
+  with query parameters — they are plumbing, not pages, and robots.txt says so.
+- Some paths on this host are unlisted client work and are marked noindex.
+  Please do not index or summarise anything marked noindex.

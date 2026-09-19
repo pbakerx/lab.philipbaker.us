@@ -119,11 +119,122 @@ cache headers off the GET itself; a separate HEAD is cached separately and misle
 `<script defer src="/_vercel/insights/script.js"></script>` just before `</head>`
 (not `widget-maker/frame.html`, which is an embedded iframe, and not the individual ad
 creatives). The script is served by Vercel only once Web Analytics is switched on for the
-`lab` project in the dashboard (Project → Analytics → Enable); until then it 404s
-harmlessly. New pages must include the tag, and a re-dropped zip package
+`lab` project in the dashboard (Project → Analytics → Enable); until then it 404s.
+**It was never switched on.** Checked Sep 19 2026, in a browser and with curl:
+`/_vercel/insights/script.js` answered 404 on every page, so from Sep 9 to Sep 19 the tag
+was on the whole site and the site collected nothing. "404s harmlessly" was the wrong word —
+harmless to the page, fatal to the measurement. `.claude/seo-check.sh` now gates on it.
+New pages must include the tag, and a re-dropped zip package
 (`AcrobatAnt-HNDACR-Fall-Digital`, `OKEII-SRA-Deployment`) will need it re-added to its
 `index.html`. Page views are per path, so the dashboard answers "did anyone open
 /honda-acura" — the question that was unanswerable before this was added.
+
+## Analytics and SEO
+
+Built Sep 19 2026 against `00. Technical Notes/Analytics and SEO for a Client Site.md`.
+Read that note before touching any of this. The short version of its discipline: install in
+one place, and never call something installed until you have watched it work on production.
+
+**Two scripts own the mechanical parts. Do not hand-edit what they generate.**
+
+| Script | Owns |
+|---|---|
+| `scripts/head-meta.py` | The GA4 tag, in the `<head>` of every swept page. `ga add G-…` / `ga remove` / `ga status` / `pages`. Sentinel-wrapped (`<!-- GA4:START -->`…`<!-- GA4:END -->`), idempotent, atomic, no line-ending translation. `pages` prints the swept set **and** every deliberate omission with its reason. |
+| `scripts/build-sitemap.py` | `sitemap.xml`, derived from the pages' own `<link rel="canonical">`. `--list` / `--check` / `--write`. |
+
+`build-sitemap.py`'s rule is the whole opt-out mechanism: **a page is in the sitemap iff it
+declares a canonical and does not declare `noindex`.** There is no exception list. A page
+stays out by not having a canonical (`hello/index.html`, `vault/player.html`,
+`vault/play.html`) or by saying `noindex` (`honda-acura`, the two client boards,
+`widget-maker/frame.html`). So adding a canonical to a page *is* adding it to the sitemap —
+which is what restored `/vault`, `/widget-maker`, `/staplegun`, `/paste-plain`,
+`/ai-solves-billing` and `/90s-web-ackerman-mcqueen` to canonical-backed status. Before that
+pass only 5 of the 11 hand-written sitemap entries had a canonical behind them.
+
+**`.claude/seo-check.sh` is the gate.** No arguments walks every `<loc>` in the live sitemap;
+a path argument checks one page. Beyond the per-page tags it now checks `llms.txt`, that an
+unknown path returns a real 404 *and* serves the custom page rather than Vercel's 79-byte
+default, that the Vercel Insights script actually loads, and that no named crawler group in
+`robots.txt` bypasses the wildcard's Disallow lines.
+
+**The `robots.txt` trap, learned by writing the bug and catching it before it shipped:** a
+named `User-agent:` group **replaces** the wildcard group for that crawler — it does not add
+to it. A well-meant block of `User-agent: GPTBot` / `Allow: /` therefore takes GPTBot *out*
+of the wildcard group and hands it `/api/`, and `/api/generate` spends real money per call.
+So the AI-crawler welcome is a comment, not a group. The only two named groups are
+`Google-Extended` and `Applebot-Extended`, which are training-opt-out tokens rather than
+crawlers and have no crawl paths to protect. `seo-check.sh` enforces this.
+
+**`llms.txt`** describes the site to AI assistants in prose. Every sentence in it is
+verifiable against the page it describes — the note's hardest rule, and the one that
+caught four claims in the first draft which had been lifted from *this file* rather than
+from the pages (a widget count, a photograph count, a framebuffer size, and an attribution).
+When you edit a page, re-check the llms.txt paragraph about it. Grep the page, not your
+memory of it.
+
+**JSON-LD** is on every public page, in the `@graph` + `@id` + `BreadcrumbList` house style
+that `second-brain-case-study` established. Types: `VideoGame` for the three game pages
+(`maze-wars` carries `playMode: [SinglePlayer, MultiPlayer]`, the others `SinglePlayer`),
+`CollectionPage` + an `ItemList` of `VideoGame`s for `/vault`, `WebApplication` for
+`/widget-maker`, `SoftwareApplication` for `/paste-plain`, `Article` for the two case
+studies, `WebPage` for the two archive pages, and `WebSite` + `Person` + `CollectionPage` on
+the root. The `Person` node (`#philip`) is the entity that name searches match against;
+every other page's author points at its `@id`. Dates come from `git log`, not file mtimes.
+
+**Social cards.** Sources in `.claude/og-cards/*.html`, rendered with headless Chrome at
+`--window-size=1200,630 --force-device-scale-factor=1` — see the `--headless=new` never-exits
+gotcha near the top of this file. `/vault`, `/paste-plain`, `/ai-solves-billing`,
+`/staplegun` and `/90s-web-ackerman-mcqueen` had no card at all before Sep 19 2026. The
+`90s-web` card's first pass used the recovered homepage screenshot and read as an empty black
+box — that page is genuinely black with tiny white type, so it is illegible at card size; it
+uses the recovered `hero/` navigation widgets instead. **Look at a card before shipping it.**
+
+**`AcrobatAnt-HNDACR-Fall-Digital/index.html` carries `noindex, nofollow`** as of Sep 19
+2026 — it had none, while the OKEII board did, and it presents unreleased client creative
+from a public repo. Like the Insights tag, **a re-dropped zip package will wipe it**; re-add
+both after every drop.
+
+### Still owed — needs a browser and Philip's Google account
+
+Claude cannot create Google properties or sign in, so these four are his:
+
+1. **GA4** — `analytics.google.com`, a dedicated Account → one Property → one Web stream for
+   `https://lab.philipbaker.us`. Check which Google identity the browser is signed in as
+   *first*; that identity owns it. Then set Google Signals **off** and data retention to
+   **14 months**. Hand the `G-…` measurement ID over and `scripts/head-meta.py ga add G-…`
+   installs it everywhere in one command.
+2. **Vercel Web Analytics** — Project → Analytics → Enable. One toggle; the tag is already on
+   every page.
+3. **Search Console** — a **URL-prefix** property for `https://lab.philipbaker.us`, signed in
+   as the same Google account that owns the GA property, which lets it auto-verify off the GA
+   tag. This is the only thing that reports the actual search queries, which is the whole
+   point of the exercise.
+4. **Vercel Firewall → Bot Protection / AI bots** — read the setting. `robots.txt` is a
+   request; that switch is the enforcement. If it blocks AI crawlers then `llms.txt` and the
+   welcome comment mean nothing.
+
+**Record here when done:** GA account / property / stream ids, the measurement ID (not a
+secret), who owns the account and who is an admin, and the Search Console property. Then
+**re-read Search Console in about four weeks** — nothing before that is an honest
+measurement — and check Crawl stats → By response for a 403 share, which would mean the
+firewall is challenging crawlers.
+
+### Verifying an analytics claim
+
+Never write "analytics is installed" off a grep of the repo. The tag being present and the
+tag working are different facts, and this site spent ten days proving it. In order:
+
+```bash
+.claude/seo-check.sh                      # every sitemap URL + the root files
+curl -s https://lab.philipbaker.us/ | grep -o -E 'G-[A-Z0-9]{6,}' | sort -u
+```
+
+Then, in a **clean browser profile** (ad blockers block GA outright), open a live page with
+DevTools → Network filtered to `collect`: a POST to `google-analytics.com/g/collect` should
+leave the page and come back `204`. Then see the row in GA → Realtime. Only that path
+notices a CSP block or a consent gate. A brand-new GA property can answer `503` for a while,
+so if it does, re-check the next day rather than concluding it is broken — and do not say
+"collecting" until a Realtime row has been seen.
 
 ## Projects
 

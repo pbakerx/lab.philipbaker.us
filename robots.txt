@@ -7,4 +7,25 @@ Disallow: /widget-maker/frame.html
 Disallow: /vault/player.html
 Disallow: /vault/play.html
 
+# AI assistants and AI search crawlers are welcome — GPTBot, ClaudeBot, PerplexityBot,
+# CCBot and the rest are covered by the wildcard group above, which allows everything
+# except the plumbing. They are deliberately NOT given named groups of their own: a named
+# User-agent group REPLACES the wildcard group for that crawler, so naming them would
+# silently hand them /api/ — and /api/generate spends real money per call.
+#
+# /llms.txt describes the site for them in prose.
+#
+# Note this file is a request, not an enforcement point. What actually admits or blocks a
+# crawler is the host setting — Vercel Firewall → Bot Protection / AI bots for this
+# project. If that ever blocks AI crawlers, nothing here overrides it.
+
+# These two tokens are not crawlers. They only control whether content may be used for
+# AI training and grounding, so they have no crawl paths to protect and a named group
+# costs nothing. Explicit yes.
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://lab.philipbaker.us/sitemap.xml

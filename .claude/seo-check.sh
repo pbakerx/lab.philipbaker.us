@@ -72,9 +72,41 @@ PY
   fi
 }
 
-printf '\033[1mrobots.txt / sitemap.xml\033[0m\n'
+printf '\033[1mroot files, 404 and analytics\033[0m\n'
 curl -sf "$BASE/robots.txt" >/dev/null && printf '  \033[32m✓\033[0m robots.txt\n' || { printf '  \033[31m✗\033[0m robots.txt\n'; fails=$((fails+1)); }
 curl -sf "$BASE/sitemap.xml" >/dev/null && printf '  \033[32m✓\033[0m sitemap.xml\n' || { printf '  \033[31m✗\033[0m sitemap.xml\n'; fails=$((fails+1)); }
+
+curl -sf "$BASE/llms.txt"    >/dev/null && printf '  \033[32m✓\033[0m llms.txt\n'    || { printf '  \033[31m✗\033[0m llms.txt\n';    fails=$((fails+1)); }
+
+# robots.txt: a named User-agent group REPLACES the wildcard group for that crawler,
+# so any named group other than the two training-opt-out tokens would silently hand
+# it /api/. /api/generate spends real money per call.
+stray=$(curl -s "$BASE/robots.txt" | grep -i '^User-agent:' \
+        | grep -v -i -E '^User-agent: *(\*|Google-Extended|Applebot-Extended) *$' | wc -l | tr -d ' ')
+if [ "$stray" = "0" ]; then printf '  \033[32m✓\033[0m no named crawler group bypasses the Disallow lines\n'
+else printf '  \033[31m✗\033[0m %s named crawler group(s) bypass the wildcard Disallow lines\n' "$stray"; fails=$((fails+1)); fi
+
+# A miss must be a real 404 AND serve the custom page, not Vercel's 79-byte default.
+miss="/no-such-page-seocheck-xyz"
+b404=$(curl -s -o /dev/null -w '%{http_code}' "$BASE$miss")
+if [ "$b404" = "404" ]; then printf '  \033[32m✓\033[0m unknown path returns 404\n'
+else printf '  \033[31m✗\033[0m unknown path returns %s (want 404)\n' "$b404"; fails=$((fails+1)); fi
+if curl -s "$BASE$miss" | grep -q 'back to the lab'; then
+  printf '  \033[32m✓\033[0m custom 404 page is served\n'
+else printf '  \033[31m✗\033[0m custom 404 page is NOT served (Vercel default?)\n'; fails=$((fails+1)); fi
+
+# Analytics. The tag is worthless if the script it loads 404s — which is exactly how
+# the lab sat for weeks: Insights tag on every page, /_vercel/insights/script.js 404,
+# nothing collected. Never call analytics "installed" without this line passing.
+ic=$(curl -s -o /dev/null -w '%{http_code}' "$BASE/_vercel/insights/script.js")
+if [ "$ic" = "200" ]; then printf '  \033[32m✓\033[0m Vercel Web Analytics script loads\n'
+else printf '  \033[31m✗\033[0m /_vercel/insights/script.js -> %s (Web Analytics OFF in the dashboard)\n' "$ic"; fails=$((fails+1)); fi
+
+# GA4, once a measurement ID is installed by scripts/head-meta.py.
+ga=$(curl -s "$BASE/" | grep -o -E 'G-[A-Z0-9]{6,}' | head -1)
+if [ -n "$ga" ]; then
+  printf '  \033[32m✓\033[0m GA4 tag on the home page (%s)\n' "$ga"
+else printf '  -- GA4 not installed yet (scripts/head-meta.py ga add G-XXXXXXXXXX)\n'; fi
 
 if [ $# -gt 0 ]; then
   for p in "$@"; do check_page "$p"; done

@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- Source for /90s-web-ackerman-mcqueen/img/og.png. See vault.html for the render command.
+     First pass used the recovered homepage screenshot (img/02_1998-am-homepage.jpg) and it
+     read as an empty black box — that page is genuinely black with tiny white type, so it
+     is illegible at card size. These are the recovered navigation widgets from hero/, which
+     are the site's actual interface and are high-contrast. -->
+<html><head><meta charset="utf-8">
+<style>
+html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#000}
+body{font-family:Inter,-apple-system,system-ui,sans-serif;position:relative}
+.scan{position:absolute;inset:0;background:repeating-linear-gradient(
+      to bottom,rgba(95,179,179,.05) 0 1px,transparent 1px 4px)}
+.wrap{position:absolute;inset:0;padding:70px 72px;box-sizing:border-box;
+      display:flex;align-items:center;gap:52px}
+.left{flex:1 1 auto}
+.eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+         font-size:18px;letter-spacing:5.5px;color:#5fb3b3;text-transform:uppercase}
+h1{margin:16px 0 0;font-size:74px;line-height:.98;letter-spacing:-2px;
+   font-weight:800;color:#e8e8e8}
+.sub{margin:20px 0 0;font-size:25px;line-height:1.36;color:#8a8a8a;max-width:490px}
+.url{margin:30px 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+     font-size:19px;letter-spacing:.5px;color:#666}
+.art{flex:0 0 auto;width:388px;display:flex;flex-direction:column;gap:18px;align-items:center}
+.art .hero{width:340px;filter:drop-shadow(0 16px 42px rgba(95,179,179,.28))}
+.strip{display:flex;gap:18px;align-items:center;opacity:.95}
+.strip img{height:104px;width:auto;display:block}
+.strip .inv{background:#000;padding:2px}
+</style></head><body>
+<div class="scan"></div>
+<div class="wrap">
+  <div class="left">
+    <div class="eyebrow">Recovered &middot; 1997&ndash;1999</div>
+    <h1>am.com,<br>in black<br>and white</h1>
+    <div class="sub">The Ackerman McQueen site, pulled back out of the Wayback Machine &mdash; with the offices and the era's films.</div>
+    <div class="url">lab.philipbaker.us/90s-web-ackerman-mcqueen</div>
+  </div>
+  <div class="art">
+    <img class="hero" src="../../90s-web-ackerman-mcqueen/hero/monitor.gif" alt="">
+    <div class="strip">
+      <img src="../../90s-web-ackerman-mcqueen/hero/offices.gif" alt="">
+      <img class="inv" src="../../90s-web-ackerman-mcqueen/hero/newmedia.gif" alt="">
+    </div>
+  </div>
+</div>
+</body></html>
