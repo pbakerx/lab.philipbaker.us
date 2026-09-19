@@ -43,13 +43,21 @@ check_page() {
   if [ "$h1" = "1" ]; then printf '  \033[32m✓\033[0m exactly one <h1>\n'
   else printf '  \033[31m✗\033[0m %s <h1> tags (want 1)\n' "$h1"; fails=$((fails+1)); fi
 
-  # every img has non-empty alt
-  local imgs noalt
+  # An EMPTY alt is correct markup, not an omission — it is how you mark an image as
+  # decorative, or one whose alt a script fills in later. staplegun's lightbox and
+  # widget-maker's share preview both do this, and both were flagged by the first
+  # version of this check. Only a missing alt ATTRIBUTE is a fault.
+  local imgs noalt empty
   imgs=$(grep -o '<img [^>]*>' <<<"$html")
-  if [ -z "$imgs" ]; then noalt=0
-  else noalt=$(grep -cv 'alt="[^"]\+"' <<<"$imgs"); fi
-  if [ "$noalt" = "0" ]; then printf '  \033[32m✓\033[0m all <img> have alt text\n'
-  else printf '  \033[31m✗\033[0m %s <img> missing alt\n' "$noalt"; fails=$((fails+1)); fi
+  if [ -z "$imgs" ]; then noalt=0; empty=0
+  else
+    noalt=$(grep -cv 'alt="' <<<"$imgs")
+    empty=$(grep -c 'alt=""' <<<"$imgs")
+  fi
+  if [ "$noalt" = "0" ]; then
+    if [ "$empty" = "0" ]; then printf '  [32m✓[0m all <img> have alt text\n'
+    else printf '  [32m✓[0m all <img> have an alt attribute (%s intentionally empty)\n' "$empty"; fi
+  else printf '  [31m✗[0m %s <img> with no alt attribute at all\n' "$noalt"; fails=$((fails+1)); fi
 
   # og:image must actually resolve
   local ogi; ogi=$(sed -n 's/.*property="og:image" content="\([^"]*\)".*/\1/p' <<<"$html" | head -1)
@@ -91,7 +99,7 @@ miss="/no-such-page-seocheck-xyz"
 b404=$(curl -s -o /dev/null -w '%{http_code}' "$BASE$miss")
 if [ "$b404" = "404" ]; then printf '  \033[32m✓\033[0m unknown path returns 404\n'
 else printf '  \033[31m✗\033[0m unknown path returns %s (want 404)\n' "$b404"; fails=$((fails+1)); fi
-if curl -s "$BASE$miss" | grep -q 'back to the lab'; then
+if curl -s "$BASE$miss" | grep -q 'There is nothing at that address'; then
   printf '  \033[32m✓\033[0m custom 404 page is served\n'
 else printf '  \033[31m✗\033[0m custom 404 page is NOT served (Vercel default?)\n'; fails=$((fails+1)); fi
 
