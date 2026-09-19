@@ -445,8 +445,8 @@ export async function createWorld(canvas, { mobile = false, quality = null } = {
 
     if (!view.hideCraft) {                                                               // engines and wingtip ribbons
       const tail = tmpA.copy(c.pos).addScaledVector(c.T, -1.7); spr(tail, 1.3, pal.friendly, .9, 1.5); spr(tail, 3.6, pal.friendly, .14);
-      trailClock += dt; if (trailClock > .028) { trailClock = 0; craft.updateMatrixWorld(true); for (let s = 0; s < 2; s++) { const w = craft.localToWorld(new V3(s ? 2 : -2, -.05, -1.5)); wing[s].unshift(w); if (wing[s].length > 22) wing[s].pop(); } }
-      for (let s = 0; s < 2; s++) for (let i = 1; i < wing[s].length; i++) { const f = 1 - i / wing[s].length; beam(wing[s][i], wing[s][i - 1], pal.friendly, .5 * f, .5 * f, .42 * f + .08); }
+      trailClock += dt; if (trailClock > .028) { trailClock = 0; craft.updateMatrixWorld(true); for (let s = 0; s < 2; s++) { const w = craft.localToWorld(new V3(s ? 2 : -2, -.05, -1.5)); wing[s].unshift(w); if (wing[s].length > 14) wing[s].pop(); } }
+      for (let s = 0; s < 2; s++) for (let i = 1; i < wing[s].length; i++) { const f = 1 - i / wing[s].length; beam(wing[s][i], wing[s][i - 1], pal.friendly, .2 * f * f, .2 * f * f, .2 * f + .04); }   // faint and short: they stream straight back at the lens, and at full strength read as two searchlights
     }
 
     // the tether: craft → mast, an arc of crawling dashes. Jammed, it turns enemy-coloured and stutters.
