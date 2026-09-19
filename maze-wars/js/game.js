@@ -177,12 +177,14 @@ window.MW = window.MW || {};
     if (e.t === 'f') { if (typeof e.m !== 'string' || e.m.length > 24 || missiles.length > 80) return; const x = clampInt(e.x, 0, 15), y = clampInt(e.y, 0, 15), l = clampInt(e.l, 0, 3); missiles.push({ mid: e.m, mine: 0, owner: e.id, ok: e.k ? 1 : 0, level: l, x, y, dir: clampInt(e.d, 0, 3), stepAt: t + 60, holdUntil: 0 }); if (l === me.level) A.shot(loud(x, y)); }
     else if (e.t === 'h') { const i = missiles.findIndex(m => m.mid === e.m); if (i >= 0) missiles.splice(i, 1); const x = clampInt(e.x, 0, 15), y = clampInt(e.y, 0, 15), l = clampInt(e.l, 0, 3); boom(l, x, y); skulls.push({ level: l, x, y, t0: t });
       if (e.w === 0) o.alive = false; else o.robot = null;
-      if (e.by === net.id) { if (!e.bk) { me.kills++; A.score(); } else { me.kills++; } stateDirty = true; notice((e.bk ? 'Your robot ' : 'You ') + VERBS[clampInt(e.v, 0, VERBS.length - 1)] + ' ' + o.name + (e.w ? "'s robot." : '.')); checkLimit(); } }
+      if (e.by === net.id) { if (!e.bk) { me.kills++; A.score(); } else { me.kills++; } stateDirty = true; { const verb = VERBS[clampInt(e.v, 0, VERBS.length - 1)]; notice((e.bk ? 'Your robot ' : 'You ') + (verb === 'undone' ? 'undid' : verb) + ' ' + o.name + (e.w ? "'s robot." : '.')); } checkLimit(); } }
     else if (e.t === 'm') { if (e.to && e.to !== net.id) return; const s = MW.FONT.clean(e.s, 120).trim(); if (!s) return; o.msgs = o.msgs.filter(q => t - q < 6000); if (o.msgs.length >= 5) return; o.msgs.push(t); say(s, o.name); A.mail(); }
     else if (e.t === 'o') { const bit = clampInt(e.c, 0, 15); if (OPT_NAMES[bit]) { const on = (clampInt(e.o, 0, 15) & bit) !== 0; notice(bit === OPT.BLACKOUT && on ? 'Blacked-out by ' + o.name + '.' : OPT_NAMES[bit] + (on ? ' switched on by ' : ' switched off by ') + o.name + '.'); } }
     else if (e.t === 't') { if (clampInt(e.l, 0, 3) === me.level) A.tele(); }
   };
-  net.onStatus = (s) => { if (s === 'on') { notice('AppleTalk is on' + (net.zone !== 'lobby' ? ', private line ' + net.zone : '') + '.'); stateDirty = true; lastSent = ''; } else if (s === 'off') { others.clear(); } };
+  net.onStatus = (s) => { if (s === 'on') { notice(net.zone !== 'lobby' ? 'Private line ' + net.zone + ': only callers of that number are here. Phone, HangUp to leave.' : 'AppleTalk is on: the public maze.'); stateDirty = true; lastSent = ''; } else if (s === 'off') { others.clear(); } };
+  const TITLE = document.title; let titleAt = 0, titleN = -1;
+  function headcount(t) { if (t - titleAt < 1000) return; titleAt = t; const n = phase === 'play' ? humans() : 0; if (n !== titleN) { titleN = n; document.title = (n ? '(' + (n + 1) + ') ' : '') + TITLE; } }
   function sweep(t) { for (const [id, o] of others) if (t - o.seen > 9000) { if (o.inMaze) notice(o.name + ' dropped off the network.'); others.delete(id); } }
   function setOpt(bit) { opts ^= bit; optClock = Date.now(); stateDirty = true; net.event({ t: 'o', o: opts, c: bit, n: me.name }); if (bit === OPT.MAZES && !mazesOn() && me.inMaze && me.level !== 0) { me.level = 0; materialize(); } }
 
@@ -216,10 +218,18 @@ window.MW = window.MW || {};
       { t: 'button', x: 204, y: 41, w: 55, h: 20, label: 'OK', def: true, act: () => { ui.close(); if (on !== cfg.net) { cfg.net = on; persist(); if (on) net.connect(cfg.zone); else net.disconnect(); } } }], escDefault: true }); }
   function dlgPhone() { ui.show({ x: 7, y: 268, w: 261, h: 68, plain: true, items: [
       { t: 'text', x: 6, y: 6, s: 'Phone#' }, { t: 'edit', x: 71, y: 6, w: 127, h: 15, max: 16, id: 'z', value: cfg.zone },
-      { t: 'custom', x: 6, y: 28, w: 190, h: 38, draw: (x, y) => { G.wrap(GEN, cfg.zone ? 'On a private line. Anyone who dials the same number joins you.' : 'Dial any number to open a private line. Friends dial the same one.', 192).forEach((l, k) => G.text(GEN, l, x, y + 9 + k * 12, 1)); } },
+      { t: 'custom', x: 6, y: 28, w: 190, h: 38, draw: (x, y) => { G.wrap(GEN, cfg.zone ? 'On a private line: a maze of your own. HangUp rejoins everyone.' : 'A private line is a separate maze. Make a number up; friends dial the same one.', 192).forEach((l, k) => G.text(GEN, l, x, y + 9 + k * 12, 1)); } },
       { t: 'button', x: 205, y: 3, w: 55, h: 20, label: 'Dial', def: true, act: () => { const z = net.cleanZone(ui.field('z').value); ui.close(); cfg.zone = z === 'lobby' ? '' : z; cfg.net = true; persist(); others.clear(); net.disconnect(); net.connect(cfg.zone); syncURL(); } },
       { t: 'button', x: 205, y: 25, w: 55, h: 20, label: 'HangUp', act: () => { ui.close(); if (cfg.zone) { cfg.zone = ''; others.clear(); net.disconnect(); if (cfg.net) net.connect(''); syncURL(); } } },
       { t: 'button', x: 205, y: 47, w: 55, h: 20, label: 'OK', cancel: true, act: () => ui.close() }] }); }
+  function inviteURL() { return 'https://lab.philipbaker.us/maze-wars/' + (cfg.zone ? '?line=' + cfg.zone : ''); }
+  function dlgInvite() { let label = 'Copy'; const url = inviteURL();
+    const copy = () => { const done = () => { label = 'Copied'; }; try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(url).then(done, () => { label = 'Select it'; }); return; } } catch (e) { } label = 'Select it'; };
+    ui.show({ x: 66, y: 96, w: 380, h: 132, escDefault: true, items: [
+      { t: 'text', x: 8, y: 6, w: 364, s: cfg.zone ? 'Anyone who opens this address joins your private line:' : 'Anyone who opens this address lands in the same maze as you:' },
+      { t: 'custom', x: 8, y: 44, w: 364, h: 20, draw: (x, y) => { G.frame(x, y, 364, 20, 1); G.text(GEN, G.fit(GEN, url, 354), x + 5, y + 14, 1); } },
+      { t: 'text', x: 8, y: 72, w: 364, s: cfg.zone ? 'Hang up (Options, Phone) to go back to the public maze.' : 'For a game of your own, dial a private line first: Options, Phone.' },
+      { t: 'button', x: 214, y: 106, w: 70, h: 20, label: () => label, act: copy }, { t: 'button', x: 300, y: 106, w: 70, h: 20, label: 'OK', def: true, act: () => ui.close() }] }); }
   function syncURL() { try { const u = new URL(location.href); if (cfg.zone) u.searchParams.set('line', cfg.zone); else u.searchParams.delete('line'); history.replaceState(null, '', u); } catch (e) { } }
   function dlgKeys() { let msg = 'Press a key to learn its purpose.'; const rows = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm,'];
     ui.show({ x: 106, y: 40, w: 300, h: 250, escDefault: true, onKey: (e) => { if (e.key === 'Enter' || e.key === 'Escape') return false; const k = e.key.toLowerCase(), a = (cfg.typist ? KEYS.typist : KEYS.std)[k] || KEYS.arrows[k]; msg = a ? HELP[a] : (k === 'tab' ? 'Opens the message box.' : 'Useful for typing words.'); ui.dialog.lit = k; return true; }, items: [
@@ -238,7 +248,7 @@ window.MW = window.MW || {};
   const playing = () => phase === 'play';
   ui.menus = [
     { title: '', items: [{ label: 'About Maze Wars+…', action: dlgAbout }, { sep: true }, { label: 'Help with Keys…', action: dlgKeys, enabled: playing }, { label: 'Sound', check: () => cfg.sound, action: () => { cfg.sound = !cfg.sound; A.set(cfg.sound); persist(); } }] },
-    { title: 'File', items: [{ label: 'New', key: 'N', action: dlgNew, enabled: playing }, { label: 'Quit', action: () => { net.disconnect(); location.href = '/'; } }] },
+    { title: 'File', items: [{ label: 'New', key: 'N', action: dlgNew, enabled: playing }, { label: 'Invite a Friend\u2026', key: 'I', action: dlgInvite, enabled: playing }, { label: 'Quit', action: () => { net.disconnect(); location.href = '/'; } }] },
     { title: 'Edit', dim: () => !ui.dialog, items: [{ label: 'Undo', key: 'Z', enabled: () => false }, { sep: true }, { label: 'Cut', key: 'X', enabled: () => false }, { label: 'Copy', key: 'C', enabled: () => false }, { label: 'Paste', key: 'V', enabled: () => false }, { label: 'Clear', enabled: () => false }] },
     { title: 'Options', items: [{ label: 'Message…', key: 'M', action: dlgMessage, enabled: playing }, { label: 'Boss is Looking…', key: 'B', action: () => { boss = true; }, enabled: playing }, { sep: true },
         { label: 'Phone…', key: 'P', action: dlgPhone, enabled: playing }, { label: 'AppleTalk…', key: 'A', action: dlgTalk, enabled: playing }, { sep: true },
@@ -302,12 +312,18 @@ window.MW = window.MW || {};
     const all = [{ name: me.name, kills: me.kills, deaths: me.deaths, me: true }]; for (const o of others.values()) if (o.inMaze) all.push(o);
     let lead = null, top = 0; for (const p of all) if (p.kills > top) { top = p.kills; lead = p; }
     const row = (p, y, first) => { const inv = p === lead; if (inv) G.fill(14, y - 9, 238, 12, 1); const c = inv ? 0 : 1;
-      G.text(GEN, G.fit(GEN, p.name, 128), 17, y, c); G.text(GEN, p.kills + '-' + p.deaths, 207, y, c);
+      G.text(GEN, G.fit(GEN, p.name, first ? 128 : 118), 17, y, c); G.text(GEN, p.kills + '-' + p.deaths, 207, y, c);
+      if (!first) G.text(GEN, (p.alive ? 'level ' : 'down, ') + (p.level + 1), 140, y, c);   // where to go looking for them
       if (first) { for (let k = 0; k < 4; k++) G.text(GEN, (opts >> k) & 1 ? '\u25C6' : '\u25C7', 151 + k * 9, y, c); for (let j = 0; j < 11; j++) for (let i = 0; i < 11; i++) if (PAC[j][i] === '#') G.pset(254 + i, 267 + j, 1); } };
     row(all[0], 275, true);
     const rest = all.slice(1).sort((a, b) => b.kills - a.kills); listTop = Math.max(0, Math.min(listTop, rest.length - 5));
     for (let k = 0; k < 5 && k + listTop < rest.length; k++) row(rest[k + listTop], 292 + k * 12, false);
-    if (!rest.length) { G.text(GEN, net.status === 'on' ? 'Nobody else is on the network yet.' : cfg.net ? 'Looking for the network…' : 'AppleTalk is off.', 17, 296, 1); G.text(GEN, cfg.robotOn ? 'Your robot will keep you company.' : 'Robot menu: Robot Sidekick.', 17, 310, 1); }
+    if (!rest.length) { // alone: say why, and what would change it — wrapped to the list, clear of the scroll bar
+      const why = cfg.zone && cfg.net ? 'You are on a PRIVATE LINE: only people who dial the same number can see you. To rejoin everyone: Options menu, Phone, HangUp.'
+        : !cfg.net ? 'AppleTalk is OFF, so you are playing alone. To join the others: Options menu, AppleTalk, On.'
+        : net.status !== 'on' ? 'Looking for the network\u2026'
+        : 'Nobody else is on the network yet. ' + (cfg.robotOn ? 'Your robot will keep you company.' : 'The Robot menu has a sidekick for you.') + ' File menu: Invite a Friend\u2026';
+      G.wrap(GEN, why, 228).slice(0, 4).forEach((l, k) => G.text(GEN, l, 17, 293 + k * 13, 1)); }
   }
   function phoneIcon(x, y, live) { const p = live ? 0 : G.P.desk; G.rrect(x + 3, y + 4, 26, 9, 4, 1, p); G.fill(x + 8, y + 9, 16, 5, 0); G.hline(x + 8, x + 23, y + 9, 1);
     G.poly([[x + 8, y + 13], [x + 24, y + 13], [x + 29, y + 24], [x + 3, y + 24]], p === 0 ? 0 : p); G.line(x + 8, y + 13, x + 3, y + 24, 1); G.line(x + 23, y + 13, x + 28, y + 24, 1); G.hline(x + 3, x + 28, y + 24, 1); G.hline(x + 8, x + 23, y + 13, 1);
@@ -353,7 +369,7 @@ window.MW = window.MW || {};
     if (phase === 'play') {
       if (ride && t - ride.t0 > 1300) { me.level = ride.to; me.dir = W.exitDir(me.level, me.x, me.y); me.arrived = t; ride = null; stateDirty = true; }
       if (canAct() && heldOrder.length && t >= nextActAt) { const a = heldOrder[heldOrder.length - 1]; act(a); nextActAt = t + (a === 'fwd' || a === 'back' || a === 'north' || a === 'east' || a === 'south' || a === 'west' ? STEP_MS : a === 'fire' ? 120 : TURN_MS); }
-      tickMissiles(t); tickRobot(t); sweep(t);
+      tickMissiles(t); tickRobot(t); sweep(t); headcount(t);
       if (net.status === 'on' && (stateDirty || t - lastSentAt > 2000) && t - lastSentAt > 70) sendState(t);
     }
     if (boss) { drawBoss(); ui.cursor = 'arrow'; }

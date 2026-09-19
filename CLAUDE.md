@@ -595,6 +595,15 @@ harmlessly. New pages must include the tag, and a re-dropped zip package
     draw, and nothing received is ever HTML. It is a public test broker: no SLA, chat is readable
     by anyone who guesses the topic — the About box says so. To move to a broker of our own, only
     the `BROKERS` list changes.
+  - **Finding each other** (learned the first evening, Sep 19 2026: Philip's two devices could not see
+    one another — one had clicked the phone icon and dialed, and was alone on a private line without
+    knowing it). So: a roster with nobody in it now says WHY in plain words (private line / AppleTalk
+    off / nobody here yet) and how to change it; every other player's row carries the level they are
+    on; the tab title carries a head-count, "(3) Maze Wars+"; File ▸ Invite a Friend… shows the link
+    (with `?line=` when on a private line). **Line names are scrambled before they go on the wire**
+    (`net.tz`; the lobby stays `lobby`) — people type real phone numbers into that field, and a topic
+    on a public broker is readable by anyone: subscribing to `pbmazewars/1/#` is how the stray
+    device was found. To see who is where when debugging, do exactly that from any page's console.
   - **Guesses, flagged as such** (the 68k code was not disassembled): ◇◇◇◇ in the name row = the
     four network-wide options (4 Mazes, Black-out, Invisible Neighbors, Stationary Radar — the code
     has a "Blacked-out by" string, so options announce who set them); the teleporter byte is a
