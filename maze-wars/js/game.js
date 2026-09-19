@@ -53,7 +53,7 @@ window.MW = window.MW || {};
   function place(who, level) { const c = W.randomCell(level, Math.random, (x, y) => occupied(level, x, y) || (me.alive && W.los(level, me.x, me.y, me.dir, x, y) > 0)); who.level = level; who.x = c[0]; who.y = c[1]; const ex = W.exits(level, who.x, who.y); who.dir = ex.length ? ex[rint(ex.length)] : 0; who.arrived = now(); }
 
   function materialize() { place(me, mazesOn() ? me.level : 0); me.alive = true; me.inMaze = true; poof = now() + 350; A.tele(); stateDirty = true; }
-  function spawnRobot() { if (!cfg.robotOn) { robot.alive = false; return; } place(robot, mazesOn() ? rint(4) === 0 ? rint(4) : me.level : 0); robot.alive = true; robot.thinkAt = now() + 1200; robot.jumpAt = now() + 9000 + rint(6000); stateDirty = true; }
+  function spawnRobot() { if (!cfg.robotOn) { robot.alive = false; return; } place(robot, me.level); robot.alive = true; robot.followAt = 0; robot.thinkAt = now() + 1200; robot.jumpAt = now() + 9000 + rint(6000); stateDirty = true; }
 
   // ---------------------------------------------------------------- moving
   function canAct() { return phase === 'play' && me.alive && !ride && !ui.dialog && !boss; }
@@ -132,6 +132,8 @@ window.MW = window.MW || {};
   function tickRobot(t) {
     if (!cfg.robotOn) { if (robot.alive) { robot.alive = false; stateDirty = true; } return; }
     if (!robot.alive) { if (t >= robot.backAt && me.inMaze) spawnRobot(); return; }
+    // a sidekick accompanies you: change levels and it takes the next lift, a few seconds behind
+    if (robot.level !== me.level && me.alive && !ride) { if (!robot.followAt) robot.followAt = t + 4000 + rint(4000); else if (t >= robot.followAt) { place(robot, me.level); robot.followAt = 0; stateDirty = true; if (me.level === robot.level) A.lift(); } } else robot.followAt = 0;
     if (t < robot.thinkAt) return; const type = cfg.robotType; robot.thinkAt = t + ROBOT_THINK[type] + rint(120);
     const ts = targets(); let best = null, bd = 99, bdir = -1;
     for (const tg of ts) for (let d = 0; d < 4; d++) { const n = W.los(robot.level, robot.x, robot.y, d, tg.x, tg.y, 12); if (n > 0 && n < bd) { bd = n; best = tg; bdir = d; } }
@@ -145,7 +147,6 @@ window.MW = window.MW || {};
     if ((type === 2 || type === 3) && ts.length) { let tg = ts[0], dist = 1e9; for (const q of ts) { const dd = Math.abs(q.x - robot.x) + Math.abs(q.y - robot.y); if (dd < dist) { dist = dd; tg = q; } }
       let gx = tg.x, gy = tg.y; if (type === 3) { const bk = (tg.dir + 2) & 3; if (!W.wall(robot.level, tg.x, tg.y, bk)) { gx += DX[bk]; gy += DY[bk]; } } // the Shadow Master comes from behind
       const d = W.route(robot.level, robot.x, robot.y, gx, gy); if (d >= 0 && robotStep(d)) return; }
-    if (mazesOn() && Math.random() < 0.004 && humans() === 0 && robot.level !== me.level) { place(robot, me.level); stateDirty = true; return; }
     wander();
   }
 
@@ -340,11 +341,11 @@ window.MW = window.MW || {};
   }
   function drawBoss() { G.fill(0, 21, 512, 321, G.P.desk); G.fill(20, 30, 472, 300, 0); G.frame(20, 30, 472, 300, 1); G.fill(21, 31, 470, 18, 0); for (let y = 34; y < 46; y += 2) G.hline(24, 487, y, 1); G.hline(20, 491, 49, 1);
     const tw = G.textW(CHI, 'Budget 1987') + 16; G.fill(256 - tw / 2, 32, tw, 16, 0); G.textC(CHI, 'Budget 1987', 256, 44, 1); G.fill(28, 34, 11, 11, 0); G.frame(28, 34, 11, 11, 1);
-    const cols = ['', 'Q1', 'Q2', 'Q3', 'Q4', 'Total'], rows = ['Salaries', 'Rent', 'Floppies', 'Phone', 'Travel', 'AppleTalk kit', 'Coffee', 'Printing', 'Postage', 'Software', 'Repairs', 'Sundries', 'TOTAL'];
-    for (let c = 0; c <= 6; c++) G.vline(20 + (c === 0 ? 0 : 100 + (c - 1) * 74), 50, 329, 1); for (let r = 0; r <= 14; r++) G.hline(20, 491, 50 + r * 20, 1);
+    const cols = ['', 'Q1', 'Q2', 'Q3', 'Q4', 'Total'], rows = ['Salaries', 'Rent', 'Floppies', 'Phone', 'Travel', 'AppleTalk kit', 'Coffee', 'Printing', 'Postage', 'Software', 'Repairs', 'TOTAL'];
+    for (let c = 0; c <= 6; c++) G.vline(20 + (c === 0 ? 0 : 100 + (c - 1) * 74), 50, 310, 1); for (let r = 0; r <= 13; r++) G.hline(20, 491, 50 + r * 20, 1);
     cols.forEach((s, c) => { if (s) G.textC(CHI, s, 157 + (c - 1) * 74, 64, 1); });
-    rows.forEach((s, r) => { G.text(GEN, s, 26, 84 + r * 20, 1); let sum = 0; for (let c = 0; c < 5; c++) { const v = c < 4 ? ((r * 37 + c * 53) % 90 + 10) * (r === 12 ? 12 : 1) * 10 : sum; sum += c < 4 ? v : 0; G.textR(GEN, String(v), 186 + c * 74, 84 + r * 20, 1); } });
-    G.fill(150, 300, 212, 22, 0); G.frame(150, 300, 212, 22, 1); G.textC(GEN, 'Click anywhere when the coast is clear.', 256, 315, 1); }
+    rows.forEach((s, r) => { G.text(GEN, s, 26, 84 + r * 20, 1); let sum = 0; for (let c = 0; c < 5; c++) { const v = c < 4 ? ((r * 37 + c * 53) % 90 + 10) * (r === 11 ? 11 : 1) * 10 : sum; sum += c < 4 ? v : 0; G.textR(GEN, String(v), 186 + c * 74, 84 + r * 20, 1); } });
+    G.textC(GEN, 'Click anywhere, or press any key, when the coast is clear.', 256, 324, 1); }
 
   // ---------------------------------------------------------------- the frame
   function frame(t) {
