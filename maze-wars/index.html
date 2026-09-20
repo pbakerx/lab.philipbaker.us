@@ -58,12 +58,39 @@
   #screen { display: block; image-rendering: pixelated; image-rendering: crisp-edges; background: #fff; cursor: none; border-radius: 3px; box-shadow: 0 0 0 1px #000, 0 0 60px rgba(255,255,255,.05); touch-action: none; }
   .touch #screen { cursor: default; }
   #ime { position: fixed; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; border: 0; padding: 0; font-size: 16px; pointer-events: none; }
-  #pad { display: none; }
-  .touch #pad { display: grid; grid-template-columns: repeat(3, 58px) 1fr repeat(2, 66px); grid-template-rows: 50px 50px; gap: 8px; width: min(96vw, 520px); margin-top: 12px; }
-  @media (orientation: landscape) { .touch #stage { flex-direction: row; } .touch #pad { width: auto; margin: 0 0 0 12px; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(4, 46px); } .touch #pad .gap { display: none; } }
-  #pad button { font: 600 20px/1 -apple-system, system-ui, sans-serif; color: #fff; background: #222; border: 1px solid #555; border-radius: 9px; touch-action: none; -webkit-tap-highlight-color: transparent; }
-  #pad button.on { background: #fff; color: #000; }
-  #pad .fire { grid-row: span 2; font-size: 15px; letter-spacing: .06em; }
+  /* ---- phones and tablets only, from here to the end of the block: nothing below applies without .touch ---- */
+  .pad { display: none; }
+  .touch #stage { display: grid; }
+  .touch.port #stage { grid-template: "s s" auto "l r" 1fr / 1fr 1fr; padding-top: calc(env(safe-area-inset-top) + 60px); }
+  .touch.land #stage { grid-template: "l s r" 1fr / 1fr auto 1fr; }
+  .touch #screen { grid-area: s; place-self: center; }
+  .touch.port #screen { align-self: start; }
+  .touch .pad { display: flex; flex-direction: column; gap: 12px; width: var(--dp, 170px); align-self: center; }
+  .touch #padL { grid-area: l; justify-self: start; margin-left: 14px; }
+  .touch #padR { grid-area: r; justify-self: end; margin-right: 14px; }
+  .touch.land .pad { align-self: end; margin-bottom: 8px; gap: 10px; }
+  .pad .row { display: flex; gap: 10px; }
+  .pad button { flex: 1 1 0; height: 46px; min-width: 0; margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; gap: 4px; font: 700 clamp(10px, calc(var(--dp, 170px) * .068), 12px)/1 -apple-system, system-ui, sans-serif; letter-spacing: .06em; color: #fff; background: #000; border: 2px solid #fff; border-radius: 11px; touch-action: none; -webkit-tap-highlight-color: transparent; }
+  .pad button svg { flex: none; width: clamp(19px, calc(var(--dp, 170px) * .135), 26px); height: 20px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+  .pad button .solid { fill: currentColor; stroke: none; }
+  .pad button.on { background: #fff; color: #000; }
+  .snug .pad .lbl { display: none; }   /* a pad this small has no room for the word; the straight arrow still reads as a step, the bent ones as turns */
+  /* the pad is read by ANGLE from its centre, so its touch area is this whole square (and 14px beyond it), not the drawn arrows */
+  #dpad { width: var(--dp, 170px); height: var(--dp, 170px); margin: -14px; padding: 14px; touch-action: none; -webkit-tap-highlight-color: transparent; }
+  #dpad svg { display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  #dpad .w { fill: #000; stroke: #fff; stroke-width: 2.5; stroke-linejoin: round; }
+  #dpad .g { fill: #fff; }
+  #dpad .a { fill: none; stroke: #fff; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+  #dpad[data-on="fwd"] .w-fwd, #dpad[data-on="back"] .w-back, #dpad[data-on="left"] .w-left, #dpad[data-on="right"] .w-right { fill: #fff; }
+  #dpad[data-on="fwd"] .g-fwd, #dpad[data-on="back"] .g-back, #dpad[data-on="left"] .g-left, #dpad[data-on="right"] .g-right { fill: #000; }
+  #dpad[data-on="left"] .a-left, #dpad[data-on="right"] .a-right { stroke: #000; }
+  .pad #fire { flex: none; width: var(--dp, 170px); height: var(--dp, 170px); border: 0; background: none; border-radius: 0; }   /* the whole square fires, not just the drawn button */
+  #fire span { display: flex; align-items: center; justify-content: center; width: calc(var(--dp, 170px) * .8); height: calc(var(--dp, 170px) * .8); margin: auto 0 auto auto; border: 3px solid #fff; border-radius: 50%; background: #000; color: #fff; font: 800 17px/1 -apple-system, system-ui, sans-serif; letter-spacing: .12em; text-indent: .12em; pointer-events: none; }
+  #fire.on span { background: #fff; color: #000; }
+  /* a REAL text field over each field the canvas draws: a phone only raises its keyboard, and only keeps it up, for a field the
+     finger actually tapped. The letters stay invisible because the canvas draws them; 16px stops iOS zooming in on focus. */
+  .ime { position: absolute; display: none; z-index: 5; box-sizing: border-box; margin: 0; padding: 0; border: 0; outline: 0; border-radius: 0; background: transparent; color: transparent; caret-color: transparent; font: 16px/1 -apple-system, system-ui, sans-serif; -webkit-appearance: none; appearance: none; -webkit-user-select: text; user-select: text; -webkit-tap-highlight-color: transparent; }
+  .ime::selection { background: transparent; }
   .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   noscript { position: fixed; inset: 0; display: grid; place-items: center; color: #fff; font: 16px/1.5 system-ui, sans-serif; text-align: center; padding: 2em; }
 </style>
@@ -81,26 +108,45 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <h1 class="sr">Maze Wars+ — the 1986 Macintosh network maze shooter, playable online</h1>
 <p class="sr">A first-person maze drawn in one-bit dither. Move with F, turn with D and G, side-step with J and L, fire with K or Space, or use the arrow keys; Return opens the message box to chat with whoever else is online. Pick an appearance, find the teleporters and the lifts between the four mazes, and mind the robot.</p>
 <div id="stage">
+  <div id="padL" class="pad" aria-hidden="true">
+    <div class="row">
+      <button data-a="strafeL"><svg viewBox="0 0 26 20"><path d="M24 10H4M11 3L4 10l7 7"/></svg><span class="lbl">STEP</span></button>
+      <button data-a="strafeR"><span class="lbl">STEP</span><svg viewBox="0 0 26 20"><path d="M2 10h20M15 3l7 7-7 7"/></svg></button>
+    </div>
+    <div id="dpad"><svg viewBox="0 0 200 200">
+      <path class="w w-fwd" d="M32.1 32.1A96 96 0 0 1 167.9 32.1L118.4 81.6A26 26 0 0 0 81.6 81.6Z"/>
+      <path class="w w-right" d="M167.9 32.1A96 96 0 0 1 167.9 167.9L118.4 118.4A26 26 0 0 0 118.4 81.6Z"/>
+      <path class="w w-back" d="M167.9 167.9A96 96 0 0 1 32.1 167.9L81.6 118.4A26 26 0 0 0 118.4 118.4Z"/>
+      <path class="w w-left" d="M32.1 167.9A96 96 0 0 1 32.1 32.1L81.6 81.6A26 26 0 0 0 81.6 118.4Z"/>
+      <path class="g g-fwd" d="M100 16L128 58H72Z"/>
+      <path class="g g-back" d="M100 184L77 150H123Z"/>
+      <path class="a a-left" d="M62 130V110Q62 92 46 92H36"/><path class="g g-left" d="M38 76L15 92L38 108Z"/>
+      <path class="a a-right" d="M138 130V110Q138 92 154 92H164"/><path class="g g-right" d="M162 76L185 92L162 108Z"/>
+    </svg></div>
+  </div>
   <canvas id="screen" width="512" height="342" aria-label="Maze Wars+ — a one-bit Macintosh screen: a first-person maze view, an overhead map, a player roster and a message box."></canvas>
-  <div id="pad" aria-hidden="true">
-    <button data-a="left">&#8630;</button><button data-a="fwd">&#9650;</button><button data-a="right">&#8631;</button><span class="gap"></span><button class="fire" data-a="fire">FIRE</button><button class="fire" data-a="msg">&#9993;</button>
-    <button data-a="peekL" style="visibility:hidden"></button><button data-a="back">&#9660;</button><button data-a="about">&#8635;</button>
+  <div id="padR" class="pad" aria-hidden="true">
+    <div class="row">
+      <button data-a="about"><svg viewBox="0 0 26 20"><path d="M7 18V9a6 6 0 0 1 12 0v4"/><path class="solid" d="M13.5 11.5h11L19 19z"/></svg></button>
+      <button data-a="msg"><svg viewBox="0 0 26 20"><path d="M3 3h20v14H3zM3 4l10 8 10-8"/></svg></button>
+    </div>
+    <button id="fire" data-a="fire"><span>FIRE</span></button>
   </div>
 </div>
 <input id="ime" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
 <noscript>Maze Wars+ is a game drawn pixel by pixel in JavaScript, so it needs JavaScript switched on.</noscript>
-<script src="/maze-wars/js/levels.js?v=5"></script>
-<script src="/maze-wars/js/fonts.js?v=5"></script>
-<script src="/maze-wars/js/gfx.js?v=5"></script>
-<script src="/maze-wars/js/art.js?v=5"></script>
-<script src="/maze-wars/js/world.js?v=5"></script>
-<script src="/maze-wars/js/hall.js?v=5"></script>
-<script src="/maze-wars/js/ui.js?v=5"></script>
-<script src="/maze-wars/js/net.js?v=5"></script>
-<script src="/maze-wars/js/audio.js?v=5"></script>
-<script src="/maze-wars/js/club.js?v=5"></script>
-<script src="/maze-wars/js/game.js?v=5"></script>
-<script src="/maze-wars/js/main.js?v=5"></script>
+<script src="/maze-wars/js/levels.js?v=6"></script>
+<script src="/maze-wars/js/fonts.js?v=6"></script>
+<script src="/maze-wars/js/gfx.js?v=6"></script>
+<script src="/maze-wars/js/art.js?v=6"></script>
+<script src="/maze-wars/js/world.js?v=6"></script>
+<script src="/maze-wars/js/hall.js?v=6"></script>
+<script src="/maze-wars/js/ui.js?v=6"></script>
+<script src="/maze-wars/js/net.js?v=6"></script>
+<script src="/maze-wars/js/audio.js?v=6"></script>
+<script src="/maze-wars/js/club.js?v=6"></script>
+<script src="/maze-wars/js/game.js?v=6"></script>
+<script src="/maze-wars/js/main.js?v=6"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>

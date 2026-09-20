@@ -13,6 +13,7 @@ window.MW = window.MW || {};
       // iPhone: a page that only uses Web Audio is silenced by the ring switch; one looping, silent,
       // UNMUTED media element moves it to the playback session (same trick as /missile-command)
       if (!keep && /iP(hone|ad|od)/.test(navigator.userAgent)) { keep = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='); keep.loop = true; keep.play().catch(() => { }); }
+      else if (keep && keep.paused) keep.play().catch(() => { });   // refused the first time (a touch that had not yet lifted): ask again
     },
     set(on) { A.on = on; if (!on && ac) ac.suspend(); if (!on && keep) { keep.pause(); keep = null; } if (on) A.unlock(); },
     tone(freq, to, dur, type, vol, when) { if (!ac || !A.on) return; const t = ac.currentTime + (when || 0), o = ac.createOscillator(), g = ac.createGain(); o.type = type || 'square'; o.frequency.setValueAtTime(freq, t); if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur);

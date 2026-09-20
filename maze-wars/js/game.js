@@ -31,6 +31,7 @@ window.MW = window.MW || {};
   const log = [];               // chat + notices, already wrapped to the Mail Box width
   let phase = 'boot', bootPct = 0, ride = null, poof = 0, peek = 0, boss = false, listTop = 0, lastSent = '', lastSentAt = 0, stateDirty = true, over = false;
   const held = {}; let heldOrder = []; let nextActAt = 0, lastInputAt = 0;
+  let padHeld = false, padFire = false, padFireAt = 0;          // the phone's thumb pad (game.press); never set by a keyboard
 
   const persist = () => store.set({ name: me.name, look: me.look, robotOn: cfg.robotOn, robotType: cfg.robotType, typist: cfg.typist, allEyes: cfg.allEyes, sound: cfg.sound, net: cfg.net });
   const now = () => performance.now();
@@ -370,10 +371,11 @@ window.MW = window.MW || {};
 
   // ---------------------------------------------------------------- the frame
   function frame(t) {
-    if (held.__clear) { for (const k in held) delete held[k]; heldOrder = []; peek = 0; }
+    if (held.__clear) { for (const k in held) delete held[k]; heldOrder = []; peek = 0; padFire = false; }
     if (phase === 'play') {
       if (ride && t - ride.t0 > 1300) { me.level = ride.to; me.dir = W.exitDir(me.level, me.x, me.y); me.arrived = t; ride = null; stateDirty = true; }
-      if (canAct() && heldOrder.length && t >= nextActAt) { const a = heldOrder[heldOrder.length - 1]; act(a); nextActAt = t + (a === 'fwd' || a === 'back' || a === 'strafeL' || a === 'strafeR' || a === 'north' || a === 'south' ? STEP_MS : a === 'fire' ? 120 : TURN_MS); }
+      if (canAct() && heldOrder.length && t >= nextActAt) { const a = heldOrder[heldOrder.length - 1]; act(a); nextActAt = t + (a === 'fwd' || a === 'back' || a === 'strafeL' || a === 'strafeR' || a === 'north' || a === 'south' ? STEP_MS : a === 'fire' ? 120 : padHeld ? 340 : TURN_MS); }
+      if (padFire && canAct() && t >= padFireAt) { act('fire'); padFireAt = t + 120; }
       tickMissiles(t); tickRobot(t); sweep(t); headcount(t);
       if (net.status === 'on' && (stateDirty || t - lastSentAt > 2000) && t - lastSentAt > 70) sendState(t);
     }
@@ -395,7 +397,7 @@ window.MW = window.MW || {};
       if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); dlgMessage(); return; }
       const a = keyAction(e); if (!a) return; e.preventDefault(); if (e.repeat) return;
       if (a === 'peekR') { peek = 1; return; } if (a === 'peekL') { peek = -1; return; }
-      if (!held[a]) { held[a] = true; heldOrder.push(a); act(a); nextActAt = now() + (a === 'fire' ? 120 : 260); }
+      if (!held[a]) { held[a] = true; heldOrder.push(a); padHeld = false; act(a); nextActAt = now() + (a === 'fire' ? 120 : 260); }
     },
     keyup(e) { const a = keyAction(e); if (!a) return; if (a === 'peekR' || a === 'peekL') { peek = 0; return; } delete held[a]; heldOrder = heldOrder.filter(q => q !== a); },
     blur() { held.__clear = true; },
@@ -404,8 +406,14 @@ window.MW = window.MW || {};
       else if (x >= 270 && x <= 301 && y >= 243 && y <= 274) dlgPhone(); else if (x >= 476 && x <= 507 && y >= 243 && y <= 274) dlgTalk();
       else if (x >= 270 && x <= 507 && y >= 276 && y <= 340) dlgMessage();
       else if (x >= 252 && x <= 265 && y >= 281 && y <= 294) listTop--; else if (x >= 252 && x <= 265 && y >= 327 && y <= 340) listTop++; },
-    // touch pad buttons hold an action the way a held key does
-    press(a, on) { A.unlock(); lastInputAt = now(); if (a === 'msg') { if (on) dlgMessage(); return; } if (on) { if (!held[a]) { held[a] = true; heldOrder.push(a); act(a); nextActAt = now() + 260; } } else { delete held[a]; heldOrder = heldOrder.filter(q => q !== a); } },
+    // The phone's thumb pad. A thumb on glass stays down far longer than a finger on a key: on a key's timing (repeat after
+    // 260 ms) one tap of a turn arrow was very often TWO turns, and you were facing backwards. So a held turn waits half a second
+    // and then goes round slowly, a held step waits a little longer than a key does, and about-face never repeats. FIRE keeps a
+    // clock of its own, so one thumb can walk while the other shoots — a held key stops the key before it; two thumbs should not.
+    press(a, on) { A.unlock(); lastInputAt = now(); if (a === 'msg') { if (on) dlgMessage(); return; }
+      if (a === 'fire') { padFire = on; if (on) { act('fire'); padFireAt = now() + 120; } return; }
+      if (a === 'about') { if (on) act('about'); return; }
+      if (on) { if (!held[a]) { held[a] = true; heldOrder.push(a); padHeld = true; act(a); nextActAt = now() + (a === 'left' || a === 'right' ? 520 : 300); } } else { delete held[a]; heldOrder = heldOrder.filter(q => q !== a); } },
     // ?shot=1 — a posed scene with no dialogs and no network: what the social card is photographed from
     demo() { me.name = 'Philip'; me.look = 1; cfg.robotOn = false; cfg.net = false; phase = 'play'; ui.busy = false; ui.mouse.seen = false; opts = 1;
       Object.assign(me, { level: 0, x: 10, y: 11, dir: 3, alive: true, inMaze: true, kills: 2, deaths: 1 });
@@ -417,7 +425,7 @@ window.MW = window.MW || {};
       A.on = cfg.sound; const warm = MW.art.warm(); ui.busy = true;
       const pump = () => { const t0 = now(); let r; do { r = warm.next(); if (!r.done) bootPct = r.value; } while (!r.done && now() - t0 < 12);
         if (!r.done) { setTimeout(pump, 0); return; }
-        ui.busy = false; phase = 'ready'; const signIn = () => dlgName(() => dlgLook(() => { phase = 'play'; lastInputAt = now(); materialize(); MW.club.entered(); notice('Welcome, ' + me.name + '. F forward, D and G turn, J and L side-step, K or Space fires.'); if (cfg.net) net.connect(cfg.zone); else notice('AppleTalk is off (Options menu).'); }));
+        ui.busy = false; phase = 'ready'; const signIn = () => dlgName(() => dlgLook(() => { phase = 'play'; lastInputAt = now(); materialize(); MW.club.entered(); notice('Welcome, ' + me.name + (ui.touch ? '. Left thumb drives, right thumb fires.' : '. F forward, D and G turn, J and L side-step, K or Space fires.')); if (cfg.net) net.connect(cfg.zone); else notice('AppleTalk is off (Options menu).'); }));
         if (MW.club.prof.skipHow) signIn(); else MW.club.howTo(signIn); };
       setTimeout(pump, 350);
     }

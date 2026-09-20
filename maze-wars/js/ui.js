@@ -75,7 +75,13 @@ window.MW = window.MW || {};
     },
     hitItem(mx, my) { const d = ui.dialog; if (!d) return null; for (let i = d.items.length - 1; i >= 0; i--) { const it = d.items[i]; if (it.hidden && it.hidden()) continue; const x = d.x + it.x, y = d.y + it.y;
         let w = it.w, h = it.h; if (it.t === 'radio' || it.t === 'check') { w = 20 + G.textW(CHI(), it.label); h = 16; } if (it.t === 'text' || (it.t === 'custom' && !it.click)) continue;
-        if (mx >= x - 2 && mx < x + w + 2 && my >= y - 2 && my < y + h + 2) return it; } return null; },
+        if (mx >= x - 2 && mx < x + w + 2 && my >= y - 2 && my < y + h + 2) return it; }
+      if (!ui.touch) return null;
+      // a fingertip covers a whole Mac button — on a phone a 20-pixel button is 15 points tall — so take the nearest control within reach
+      let best = null, reach = 12; for (const it of d.items) { if ((it.hidden && it.hidden()) || it.t === 'text' || (it.t === 'custom' && !it.click)) continue; const x = d.x + it.x, y = d.y + it.y;
+        let w = it.w, h = it.h; if (it.t === 'radio' || it.t === 'check') { w = 20 + G.textW(CHI(), it.label); h = 16; }
+        const far = Math.hypot(Math.max(x - mx, 0, mx - (x + w)), Math.max(y - my, 0, my - (y + h))); if (far < reach) { reach = far; best = it; } }
+      return best; },
     activate(it) { if (!it) return; if (it.t === 'button') { if (it.act) it.act(ui.dialog); } else if (it.t === 'radio' || it.t === 'check') it.set(); else if (it.t === 'custom' && it.click) it.click(ui.mouse.x - ui.dialog.x - it.x, ui.mouse.y - ui.dialog.y - it.y); },
     defaultButton() { const d = ui.dialog; return d && d.items.find(i => i.t === 'button' && i.def); },
     cancelButton() { const d = ui.dialog; return d && d.items.find(i => i.t === 'button' && i.cancel); },
@@ -111,10 +117,55 @@ window.MW = window.MW || {};
       return true;
     },
     // phones have no keys until a real text field has focus: keep an invisible one in step
-    syncIME() { const el = ui.ime; if (!el) return; const d = ui.dialog, it = d && d.items[d.focus];
+    syncIME() { if (ui.touch) return ui.syncFields(); const el = ui.ime; if (!el) return; const d = ui.dialog, it = d && d.items[d.focus];
       if (it && it.t === 'edit') { if (el.value !== it.value) el.value = it.value; el.maxLength = it.max || 40; if (document.activeElement !== el) { try { el.focus({ preventScroll: true }); } catch (e) { } } if (it.sel) { try { el.select(); } catch (e) { } } }
       else if (document.activeElement === el) { try { el.blur(); } catch (e) { } } },
     imeInput() { const d = ui.dialog, it = d && d.items[d.focus]; if (!it || it.t !== 'edit') return; let v = MW.FONT.clean(ui.ime.value, it.max || 40); if (it.digits) v = v.replace(/[^0-9]/g, ''); it.value = v; it.sel = false; if (ui.ime.value !== v) ui.ime.value = v; },
+    isIme(t) { return !!t && (t === ui.ime || (t.classList && t.classList.contains('ime'))); },
+
+    // ---------- phones: a real text field over every field the canvas draws ----------
+    // The desktop keeps one invisible input focused from code. A phone will not have that: it raises the keyboard only for
+    // focus() inside a tap, never from a timer or a callback (and half these dialogs open from one); once an input is focused
+    // without a keyboard, focusing it again does nothing; and a tap on the canvas took focus straight back off it. So on a phone
+    // every field gets a genuine <input> laid exactly over it. Tap the field and you have tapped a text field: the OS does the
+    // rest, and it is the OS's own path rather than one of ours. The canvas still draws the letters; the input's are invisible.
+    syncFields() {
+      const d = ui.dialog, pool = ui.imes || (ui.imes = []); clearTimeout(ui.imeT);
+      const edits = d ? d.items.filter(it => it.t === 'edit' && !(it.hidden && it.hidden())) : [];
+      if (!edits.length) { ui.imeT = setTimeout(() => { for (const el of pool) { el._it = null; if (document.activeElement === el) { try { el.blur(); } catch (e) { } } el.style.display = 'none'; } }, 0); return; }   // a breath later: "close, then open the next one" must not bounce the keyboard
+      edits.forEach((it, k) => { const el = pool[k] || (pool[k] = ui.newField());
+        if (el._it !== it) { el._it = it; el.maxLength = it.max || 40; const mail = it.id === 'email' || it.id === 'contact';
+          el.setAttribute('inputmode', it.digits ? 'numeric' : mail ? 'email' : 'text'); el.setAttribute('enterkeyhint', it.id === 'm' ? 'send' : 'done');
+          el.setAttribute('autocapitalize', it.multi ? 'sentences' : it.id === 'full' || it.id === 'loc' ? 'words' : 'off'); el.setAttribute('autocomplete', mail ? 'email' : 'off'); }
+        if (el.value !== it.value) el.value = it.value; el.style.display = 'block'; });
+      for (let k = edits.length; k < pool.length; k++) pool[k]._it = null;
+      const live = document.activeElement; if (live && live._it && d.items.indexOf(live._it) >= 0) d.focus = d.items.indexOf(live._it);   // the field holding the keyboard IS the focused field
+      ui.placeIME();
+      // focus from code only where the keyboard will follow: inside a tap, or when it is already up and merely changing fields
+      const el = pool[edits.indexOf(d.items[d.focus])]; if (el && document.activeElement !== el && (ui.inGesture || ui.isIme(document.activeElement))) { try { el.focus(); } catch (e) { } }
+      for (let k = edits.length; k < pool.length; k++) pool[k].style.display = 'none';
+    },
+    newField() { const el = document.createElement('input'); el.type = 'text'; el.className = 'ime'; el.spellcheck = false; el.setAttribute('autocorrect', 'off'); el.setAttribute('aria-label', 'Text');
+      const toEnd = () => { try { const n = el.value.length; el.setSelectionRange(n, n); } catch (e) { } };   // the canvas draws its caret at the end, so keep the real one there
+      el.addEventListener('input', (e) => { ui.fieldTyped(el, e); toEnd(); });
+      el.addEventListener('pointerdown', () => { const d = ui.dialog; if (!d || !el._it) return; el._it.sel = false; const i = d.items.indexOf(el._it); if (i >= 0) d.focus = i; });                          // a tap in a field places the caret, as a click does on the desktop
+      el.addEventListener('click', () => setTimeout(toEnd, 0));
+      el.addEventListener('focus', () => { const d = ui.dialog; if (d && el._it) d.focus = d.items.indexOf(el._it); ui.setTyping(true); });
+      el.addEventListener('blur', () => setTimeout(() => { if (!ui.isIme(document.activeElement)) ui.setTyping(false); }, 0));
+      (ui.stage || document.body).appendChild(el); return el; },
+    setTyping(on) { if (!!ui.typing === on) return; ui.typing = on; if (ui.onTyping) ui.onTyping(on); },
+    fieldTyped(el, e) { const it = el._it; if (!it) return; let v = el.value;
+      if (it.sel) { const ty = (e && e.inputType) || '', old = it.value; if (ty.indexOf('insert') === 0 && typeof e.data === 'string') v = e.data; else if (ty.indexOf('delete') === 0) v = ''; else if (old && v.indexOf(old) === 0) v = v.slice(old.length); it.sel = false; }   // a selected field is replaced by what is typed
+      v = MW.FONT.clean(v, it.max || 40); if (it.digits) v = v.replace(/[^0-9]/g, ''); it.value = v; if (el.value !== v) el.value = v; },
+    // Lay each input over its field — measured against #stage, its own parent, so any offset the browser applies to the whole
+    // page cancels out — and grow it toward a 44-point finger target, but never over a neighbouring control.
+    placeIME() { const d = ui.dialog, pool = ui.imes; if (!d || !pool || !ui.canvas || !ui.stage) return;
+      const c = ui.canvas.getBoundingClientRect(), st = ui.stage.getBoundingClientRect(), k = c.width / 512; if (!(k > 0)) return;
+      const box = (it) => { let w = it.w, h = it.h; if (it.t === 'radio' || it.t === 'check') { w = 20 + G.textW(CHI(), it.label); h = 16; } return { x0: d.x + it.x - 3, y0: d.y + it.y - 3, x1: d.x + it.x + w + 3, y1: d.y + it.y + h + 3 }; };
+      const solid = d.items.filter(it => !(it.hidden && it.hidden()) && it.t !== 'text' && !(it.t === 'custom' && !it.click));
+      for (const el of pool) { const it = el._it; if (!it) continue; const r = box(it); let up = Math.max(0, (44 / k - (r.y1 - r.y0)) / 2), dn = up;
+        for (const o of solid) { if (o === it) continue; const q = box(o); if (q.x1 <= r.x0 || q.x0 >= r.x1) continue; if (q.y1 <= r.y0) up = Math.min(up, (r.y0 - q.y1) / 2); else if (q.y0 >= r.y1) dn = Math.min(dn, (q.y0 - r.y1) / 2); else { up = 0; dn = 0; } }
+        el.style.left = (c.left - st.left + r.x0 * k) + 'px'; el.style.top = (c.top - st.top + (r.y0 - up) * k) + 'px'; el.style.width = ((r.x1 - r.x0) * k) + 'px'; el.style.height = ((r.y1 - r.y0 + up + dn) * k) + 'px'; } },
 
     draw(now) {
       ui.caretOn = (now % 1000) < 560;

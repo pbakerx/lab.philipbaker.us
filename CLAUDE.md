@@ -814,10 +814,61 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
   - **Keys** are the original's two maps (`STR ` 1111/1112: standard, and Touch Typist) plus arrows;
     Return/Tab opens the message box; a click in the hall fires (the original's cursor there is a
     gun sight). ⌘-equivalents also answer to Ctrl, since browsers keep ⌘N/⌘T/⌘M for themselves.
-  - **Text entry goes through a hidden `<input id="ime">`** that is focused whenever a dialog field
-    is active — that is what makes phone keyboards, paste, and the Browser pane's `type` action
-    work (the pane inserts text as input events, not keystrokes; and its **"Return" key sends an
-    empty `key` — use "Enter"**).
+  - **Text entry on the DESKTOP goes through a hidden `<input id="ime">`** that is focused whenever a
+    dialog field is active — that is what makes paste and the Browser pane's `type` action work (the
+    pane inserts text as input events, not keystrokes; and its **"Return" key sends an empty `key` —
+    use "Enter"**). Phones do NOT use it:
+  - **Text entry on a phone: a real `<input class="ime">` laid over every field the canvas draws**
+    (Sep 20 2026, `ui.syncFields` / `placeIME`). Philip, on iOS 27: "the keyboard won't come up
+    sometimes and won't stay up". The hidden-input trick has four separate ways to fail there and the
+    build had all four: (1) iOS raises the keyboard only for `focus()` *inside a tap* — never from a
+    timer or a callback, and the obituary, the card and the start-up name box all open from one;
+    (2) once an input is focused WITHOUT a keyboard, focusing it again is a no-op, and `syncIME`
+    skipped the call anyway because it was already `activeElement`; (3) after a touch iOS replays it
+    as a mouse click, and a mousedown on something unfocusable — the canvas — takes focus OFF the
+    input: up, then straight back down; (4) `html, body { -webkit-user-select: none }` reaches
+    inputs in WebKit. So now the finger taps a genuine text field and the OS does the rest — its own
+    path, not one of ours. The letters stay invisible (`color`/`caret-color: transparent`, NOT
+    `opacity: 0`) because the canvas draws them; 16px stops the focus zoom; `user-select: text` is
+    restated; each input grows toward a 44pt target but never over a neighbouring control; they are
+    positioned against `#stage`, their own parent, so any offset the browser applies to the page
+    cancels out. `focus()` from code happens only while `ui.inGesture` (set by the `tap()` wrapper in
+    `main.js`) or when the keyboard is already up and merely changing fields. Which field is focused
+    is read from `document.activeElement`, not from a `focus` event — those do not fire in a hidden
+    pane, and a test caught the difference. The canvas and the pads `preventDefault` touchstart /
+    touchend / mousedown (no click replay, no blur); **the envelope button is the exception — it must
+    stay a real `click`**, the one event certain to raise a keyboard. Blur is deferred a tick so
+    "close, then open the next dialog" does not bounce the keyboard. While a field has focus
+    `fitTouch` holds still (a layout that moves under the keyboard can drop it, and on Android the
+    shrunken viewport would flip the page to landscape); when it goes, `scrollTo(0,0)` + refit twice
+    — iOS 26.0 shipped a bug that leaves fixed elements a few pixels out after the keyboard closes.
+    In portrait the screen is pinned to the TOP so every dialog stays clear of the keyboard and iOS
+    never pans the page; a canvas app that gets panned has its hit-testing knocked out
+    (unoplatform/uno#24526 is this exact failure, in somebody else's canvas).
+  - **The phone's controls** (Sep 20 2026; the first pad was six 58×50 buttons in a row). Philip:
+    "the left and right buttons are too hard to use". Two causes, and size was the smaller one. A held
+    pad button repeated on a KEY's timing — first repeat after 260 ms — and a thumb on glass stays
+    down about that long, so one tap of a turn arrow was very often two turns and you were facing
+    backwards. `game.press` now waits 520 ms before a held turn repeats, then 340 ms a turn; a held
+    step waits 300 ms and then walks at the keyboard's 165; about-face never repeats; and FIRE keeps
+    its own clock (`padFire`), so one thumb walks while the other shoots — a held key stops the key
+    before it, two thumbs should not. None of it is reachable from a keyboard (`padHeld` is cleared
+    in `keydown`). The layout is a gamepad: movement under the left thumb, FIRE under the right, the
+    screen between them in landscape and above them in portrait. **The round pad is read by ANGLE
+    from its centre, not by which arrow was hit** — "turn left" is everything to the left, the whole
+    square and 14px beyond it — with a rest in the middle and 14° of stickiness past each diagonal so
+    a thumb lying on the line cannot chatter. Slide from one direction to the next without lifting.
+    The genre's usual six-arrow pad (Legend of Grimrock on iOS) puts side-step beside turn and is
+    documented as making people hit one for the other, so STEP is a separate pair of buttons above
+    the pad with straight arrows, and the turns are bent ones. `--dp`, the pad's diameter, is
+    whatever room is left (108–220px); under 140 the word STEP is dropped (`.snug`).
+    Everything is under `.touch` / `if (ui.touch)`: **the desktop was checked byte-identical against
+    production** (`?shot=1` and the start-up screen, same screenshot hash) — do that again after
+    touching `fit()` or the stage CSS. `?touch=1` shows the phone layout on a desktop. Headless
+    Chrome will not go narrower than 500px, so phone proof shots load the page in a 393px iframe
+    (a scratchpad `t-frame.html`). **Not verified on a real phone or on iOS 27** — no simulator on
+    the Mac mini; the keyboard fix is reasoned from WebKit's rules and only Philip's phone can
+    confirm it. `navigator.vibrate` ticks on Android; iOS has no such API.
   - **Working on it from the Mac mini.** `jsc` (JavaScriptCore's shell, at
     `/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc`) is there even
     though Node is not: `new Function(read(file))` syntax-checks, and levels/fonts/gfx/art/world/hall
