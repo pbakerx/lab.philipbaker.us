@@ -764,6 +764,20 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       recipients, paced under Resend's 2/second. Every player email carries a one-click
       unsubscribe (`?op=unsub`, HMAC-signed) and `List-Unsubscribe` headers. Do not widen the
       audience to "everyone with an address" — one public checkbox would become a spam cannon.
+    - **Mail wiring, as it stood on Sep 19 2026** (done through Philip's Chrome): `philipbaker.us`
+      was ADDED to his Resend account (the account already had `catapultcreative.agency`), by
+      Manual setup rather than Auto-configure, so Resend holds no standing access to the DNS.
+      Three records were added at **GoDaddy** (the domain's DNS host, `domaincontrol.com`):
+      TXT `resend._domainkey` (DKIM), CNAME `rsend` -> `rsend.forge.rmta.net`, CNAME `send` ->
+      `send.forge.rmta.net`. Resend's optional "Enable Receiving" records were deliberately NOT
+      added — the domain's inbound mail is Google Workspace and must stay that way. In Vercel
+      (project `lab`, Production, type Config): `MAZEWARS_MAIL_FROM` =
+      `Maze Wars+ <philip@philipbaker.us>`, `MAZEWARS_OWNER_EMAIL` = Philip's Gmail.
+      `RESEND_API_KEY` is Philip's to paste (type Secret) — Claude never handles it — followed
+      by a redeploy. To check it worked: `POST /api/mazewars {op:"hello",…}` answers
+      `email:true` once the key is live and `owner:true` once a notice actually went out
+      (which also needs Resend to have finished verifying the domain). A Resend key scoped to
+      another domain will not send for this one.
     - Scores are browser-reported and unverifiable (the game is peer-to-peer). The checks — at
       least 3 s per kill, caps, per-IP rate limits — stop accidents and lazy scripts only.
     - **The robot stands down** while its owner is dead or has not touched a key for 45 s: on the
