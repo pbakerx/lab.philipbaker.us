@@ -1,0 +1,54 @@
+<!doctype html>
+<!-- Source of maze-wars/img/x-card.png — the image attached to social posts (1600x900).
+     A 400x225 one-bit picture drawn by the GAME'S OWN engine (fonts, hall, sprites), shown at 4x so
+     it reads at timeline size. Serve the repo (or the scratchpad mirror) and open
+     /.claude/og-cards/maze-wars-x-card.html — or copy this file anywhere under the served root —
+     then: Chrome --headless --window-size=1600,900 --force-device-scale-factor=1 --screenshot=… -->
+<html><head><meta charset="utf-8"><title>Maze Wars+ card</title>
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block;width:1600px;height:900px;image-rendering:pixelated}</style></head>
+<body><canvas id="card" width="400" height="225"></canvas>
+<script src="/maze-wars/js/levels.js"></script><script src="/maze-wars/js/fonts.js"></script><script src="/maze-wars/js/gfx.js"></script>
+<script src="/maze-wars/js/art.js"></script><script src="/maze-wars/js/world.js"></script><script src="/maze-wars/js/hall.js"></script>
+<script>
+(function () {
+  const G = MW.gfx, CHI = MW.FONT.chi, GEN = MW.FONT.gen, W = 400, H = 225;
+  const grab = (x, y, w, h) => { const px = new Uint8Array(w * h); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) px[j * w + i] = G.get(x + i, y + j); return { w, h, px, mk: null }; };
+  const big = (font, str, k) => { const w = G.textW(font, str), h = 13; G.fill(0, 300, w + 2, h + 2, 0); G.text(font, str, 0, 310, 1); const s = grab(0, 300, w, h), o = { w: w * k, h: h * k, px: new Uint8Array(w * k * h * k), mk: new Uint8Array(w * k * h * k) };
+    for (let j = 0; j < o.h; j++) for (let i = 0; i < o.w; i++) { const v = s.px[Math.floor(j / k) * w + Math.floor(i / k)]; o.px[j * o.w + i] = v; o.mk[j * o.w + i] = v; } return o; };
+
+  // 1. the hall: an eyeball two cells off, down a corridor with side passages — drawn where the game draws it, then lifted out
+  G.fill(0, 0, 512, 342, 0);
+  MW.hall.draw({ L: MW.world.levels[0], x: 10, y: 11, dir: 3, elevOk: true, things: (x, y) => (x === 8 && y === 11) ? [{ kind: 'eyeball', dir: 1 }] : (x === 5 && y === 11) ? [{ kind: 'dome', dir: 1 }] : null });
+  const hall = grab(16, 41, 249, 204);
+  const title1 = big(CHI, 'MAZE', 3), title2 = big(CHI, 'WARS+', 3);
+
+  // 2. the card
+  G.fill(0, 0, 512, 342, 0);
+  G.fill(0, 21, W, H - 21, G.P.desk);
+  G.fill(0, 0, W, 20, 0); G.hline(0, W - 1, 20, 1);
+  const corner = [5, 3, 2, 1, 1]; for (let j = 0; j < 5; j++) { G.hline(0, corner[j] - 1, j, 1); G.hline(W - corner[j], W - 1, j, 1); G.hline(0, corner[j] - 1, H - 1 - j, 1); G.hline(W - corner[j], W - 1, H - 1 - j, 1); }
+  let mx = 19; for (const t of ['', 'File', 'Edit', 'Options', 'Robot']) { G.text(CHI, t, mx, 14, 1); mx += G.textW(CHI, t) + 15; }
+  G.blit(hall, 0, 21); G.vline(249, 21, H - 1, 1); G.vline(250, 21, H - 1, 1);
+
+  // the title window, with the classic drop shadow
+  const wx = 259, wy = 26, ww = 134, wh = 194;
+  G.fill(wx + 2, wy + 2, ww, wh, 1); G.fill(wx, wy, ww, wh, 0); G.frame(wx, wy, ww, wh, 1);
+  G.fill(wx + 1, wy + 1, ww - 2, 17, 0); for (let y = wy + 4; y < wy + 16; y += 2) G.hline(wx + 3, wx + ww - 4, y, 1); G.hline(wx, wx + ww - 1, wy + 18, 1);
+  G.fill(wx + 8, wy + 4, 11, 11, 0); G.frame(wx + 8, wy + 4, 11, 11, 1);
+  const tt = 'Read Me', tw = G.textW(CHI, tt) + 10; G.fill(wx + (ww >> 1) - (tw >> 1), wy + 3, tw, 13, 0); G.textC(CHI, tt, wx + (ww >> 1), wy + 14, 1);
+  G.blit(title1, wx + (ww >> 1) - (title1.w >> 1), wy + 22, 'or'); G.blit(title2, wx + (ww >> 1) - (title2.w >> 1), wy + 52, 'or');
+  const lines = ['The 1986 Macintosh', 'network shooter,', 'rebuilt for the web.', 'Four mazes. Robots.', 'Real people. Free.'];
+  lines.forEach((l, i) => G.textC(GEN, l, wx + (ww >> 1), wy + 100 + i * 12, 1));
+  // the cast along the bottom of the window
+  const cast = [['arcade', 0], ['mac', 0], ['boot', 3], ['taxi', 0]].map(c => MW.art.sprite(c[0], c[1], 6)); let cw = -4; cast.forEach(b => cw += b.w + 4); let cx = wx + (ww >> 1) - (cw >> 1);
+  cast.forEach(b => { G.blit(b, cx, wy + wh - 5 - b.h); cx += b.w + 4; });
+
+  // the address, as a Mac button over the hall's floor
+  const url = 'lab.philipbaker.us/maze-wars', uw = G.textW(CHI, url) + 22, ux = 125 - (uw >> 1), uy = H - 30;
+  G.rrect(ux - 3, uy - 3, uw + 6, 26, 10, 1, 0); G.rrect(ux - 2, uy - 2, uw + 4, 24, 9, 1); G.rrect(ux, uy, uw, 20, 8, 1, 0); G.textC(CHI, url, 125, uy + 14, 1);
+
+  const c = document.getElementById('card'), g = c.getContext('2d'), img = g.createImageData(W, H), u = new Uint32Array(img.data.buffer);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) u[y * W + x] = G.get(x, y) ? 0xFF000000 : 0xFFFFFFFF;
+  g.putImageData(img, 0, 0); document.title = 'ready';
+})();
+</script></body></html>
