@@ -6,6 +6,9 @@
     },
     "api/okeii.js": {
       "maxDuration": 300
+    },
+    "api/mazewars.js": {
+      "maxDuration": 60
     }
   },
   "redirects": [

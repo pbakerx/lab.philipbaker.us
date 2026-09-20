@@ -30,7 +30,7 @@ window.MW = window.MW || {};
   const missiles = [], blasts = [], skulls = [];
   const log = [];               // chat + notices, already wrapped to the Mail Box width
   let phase = 'boot', bootPct = 0, ride = null, poof = 0, peek = 0, boss = false, listTop = 0, lastSent = '', lastSentAt = 0, stateDirty = true, over = false;
-  const held = {}; let heldOrder = []; let nextActAt = 0;
+  const held = {}; let heldOrder = []; let nextActAt = 0, lastInputAt = 0;
 
   const persist = () => store.set({ name: me.name, look: me.look, robotOn: cfg.robotOn, robotType: cfg.robotType, typist: cfg.typist, allEyes: cfg.allEyes, sound: cfg.sound, net: cfg.net });
   const now = () => performance.now();
@@ -106,17 +106,17 @@ window.MW = window.MW || {};
     if (!me.alive) return; me.alive = false; me.deaths++; const verb = stomp ? STOMPS[rint(STOMPS.length)] : rint(VERBS.length); boom(me.level, me.x, me.y); A.die(); skulls.push({ level: me.level, x: me.x, y: me.y, t0: now() });
     net.event({ t: 'h', w: 0, by, bk: byKind, m: mid, how: stomp ? 1 : 0, v: verb, l: me.level, x: me.x, y: me.y }); stateDirty = true;
     const line = obit('You were', verb, by, byKind, stomp); const killer = by === net.id ? 'Your robot' : ((others.get(by) || {}).name || 'Somebody');
-    held.__clear = true; setTimeout(() => showObit(line, killer, by), 900);
+    held.__clear = true; MW.club.died(); setTimeout(() => showObit(line, killer, by), 900);
   }
   function killRobot(by, byKind, mid, stomp) {
     if (!robot.alive) return; robot.alive = false; robot.backAt = now() + 4500; const verb = stomp ? STOMPS[rint(STOMPS.length)] : rint(VERBS.length); boom(robot.level, robot.x, robot.y); skulls.push({ level: robot.level, x: robot.x, y: robot.y, t0: now() });
     net.event({ t: 'h', w: 1, by, bk: byKind, m: mid, how: stomp ? 1 : 0, v: verb, l: robot.level, x: robot.x, y: robot.y }); stateDirty = true;
-    if (by === net.id && !byKind) { me.kills++; A.score(); checkLimit(); }
+    if (by === net.id && !byKind) { me.kills++; A.score(); checkLimit(); MW.club.kill(); }
     notice(obit('Your robot was', verb, by, byKind, stomp));
   }
   function showObit(line, killer, by) {
     if (phase !== 'play') return; const a = GRIPES[rint(GRIPES.length)], b = EXCUSES[rint(EXCUSES.length)];
-    const done = (text) => { ui.close(); if (text && by !== net.id) { net.event({ t: 'm', n: me.name, s: text, to: by }); say(text, me.name); } if (!over) materialize(); };
+    const done = (text) => { ui.close(); if (text && by !== net.id) { net.event({ t: 'm', n: me.name, s: text, to: by }); say(text, me.name); } MW.club.afterDeath(() => { if (!over) materialize(); }); };
     ui.show({ x: 12, y: 32, w: 236, h: 216, escDefault: true, items: [
       { t: 'text', x: 4, y: 5, w: 228, s: line }, { t: 'text', x: 4, y: 58, w: 228, s: killer + ' appreciates your comments:' },
       { t: 'button', x: 4, y: 95, w: 194, h: 20, label: a, act: () => done(a) }, { t: 'button', x: 4, y: 117, w: 194, h: 20, label: b, act: () => done(b) },
@@ -133,6 +133,8 @@ window.MW = window.MW || {};
   function wander() { const ex = W.exits(robot.level, robot.x, robot.y).filter(d => { const nx = robot.x + DX[d], ny = robot.y + DY[d]; return !W.isTele(robot.level, nx, ny) && W.elevTo(robot.level, nx, ny) < 0; }); if (!ex.length) return; const fwd = ex.filter(d => d !== ((robot.dir + 2) & 3)); const pick = fwd.length ? (fwd.includes(robot.dir) && Math.random() < 0.7 ? robot.dir : fwd[rint(fwd.length)]) : ex[0]; robotStep(pick); }
   function tickRobot(t) {
     if (!cfg.robotOn) { if (robot.alive) { robot.alive = false; stateDirty = true; } return; }
+    const away = !me.alive || t - lastInputAt > 45000;            // nobody home: no hunting on an absent owner's behalf, no camping their corpse
+    if (away) { if (robot.alive) { robot.alive = false; stateDirty = true; } robot.backAt = Math.max(robot.backAt, t + 1500); return; }
     if (!robot.alive) { if (t >= robot.backAt && me.inMaze) spawnRobot(); return; }
     // a sidekick accompanies you: change levels and it takes the next lift, a few seconds behind
     if (robot.level !== me.level && me.alive && !ride) { if (!robot.followAt) robot.followAt = t + 4000 + rint(4000); else if (t >= robot.followAt) { place(robot, me.level); robot.followAt = 0; stateDirty = true; if (me.level === robot.level) A.lift(); } } else robot.followAt = 0;
@@ -179,7 +181,7 @@ window.MW = window.MW || {};
     if (e.t === 'f') { if (typeof e.m !== 'string' || e.m.length > 24 || missiles.length > 80) return; const x = clampInt(e.x, 0, 15), y = clampInt(e.y, 0, 15), l = clampInt(e.l, 0, 3); missiles.push({ mid: e.m, mine: 0, owner: e.id, ok: e.k ? 1 : 0, level: l, x, y, dir: clampInt(e.d, 0, 3), stepAt: t + 60, holdUntil: 0 }); if (l === me.level) A.shot(loud(x, y)); }
     else if (e.t === 'h') { const i = missiles.findIndex(m => m.mid === e.m); if (i >= 0) missiles.splice(i, 1); const x = clampInt(e.x, 0, 15), y = clampInt(e.y, 0, 15), l = clampInt(e.l, 0, 3); boom(l, x, y); skulls.push({ level: l, x, y, t0: t });
       if (e.w === 0) o.alive = false; else o.robot = null;
-      if (e.by === net.id) { if (!e.bk) { me.kills++; A.score(); } else { me.kills++; } stateDirty = true; { const verb = VERBS[clampInt(e.v, 0, VERBS.length - 1)]; notice((e.bk ? 'Your robot ' : 'You ') + (verb === 'undone' ? 'undid' : verb) + ' ' + o.name + (e.w ? "'s robot." : '.')); } checkLimit(); } }
+      if (e.by === net.id) { if (!e.bk) { me.kills++; A.score(); MW.club.kill(); } stateDirty = true; /* a robot's kills are its own: they no longer pad its owner's score */ { const verb = VERBS[clampInt(e.v, 0, VERBS.length - 1)]; notice((e.bk ? 'Your robot ' : 'You ') + (verb === 'undone' ? 'undid' : verb) + ' ' + o.name + (e.w ? "'s robot." : '.')); } checkLimit(); } }
     else if (e.t === 'm') { if (e.to && e.to !== net.id) return; const s = MW.FONT.clean(e.s, 120).trim(); if (!s) return; o.msgs = o.msgs.filter(q => t - q < 6000); if (o.msgs.length >= 5) return; o.msgs.push(t); say(s, o.name); A.mail(); }
     else if (e.t === 'o') { const bit = clampInt(e.c, 0, 15); if (OPT_NAMES[bit]) { const on = (clampInt(e.o, 0, 15) & bit) !== 0; notice(bit === OPT.BLACKOUT && on ? 'Blacked-out by ' + o.name + '.' : OPT_NAMES[bit] + (on ? ' switched on by ' : ' switched off by ') + o.name + '.'); } }
     else if (e.t === 't') { if (clampInt(e.l, 0, 3) === me.level) A.tele(); }
@@ -191,9 +193,10 @@ window.MW = window.MW || {};
   function setOpt(bit) { opts ^= bit; optClock = Date.now(); stateDirty = true; net.event({ t: 'o', o: opts, c: bit, n: me.name }); if (bit === OPT.MAZES && !mazesOn() && me.inMaze && me.level !== 0) { me.level = 0; materialize(); } }
 
   // ---------------------------------------------------------------- dialogs (laid out from the original's)
-  function dlgName(after) { ui.show({ x: 126, y: 270, w: 270, h: 62, items: [
+  function dlgName(after) { const c = MW.club.prof; ui.show({ x: 126, y: 248, w: 270, h: 84, items: [
       { t: 'text', x: 6, y: 6, s: 'Please Enter Your Name:' }, { t: 'edit', x: 26, y: 30, w: 172, h: 16, max: 15, id: 'n', value: me.name },
-      { t: 'button', x: 220, y: 5, w: 40, h: 20, label: 'OK', def: true, act: () => { const v = ui.field('n').value.trim(); if (!v) { A.beep(); return; } me.name = v; persist(); ui.close(); after(); } }] }); }
+      { t: 'check', x: 6, y: 58, label: 'Tell the other players I am online', on: () => c.announce, set: () => { c.announce = !c.announce; } },
+      { t: 'button', x: 220, y: 5, w: 40, h: 20, label: 'OK', def: true, act: () => { const v = ui.field('n').value.trim(); if (!v) { A.beep(); return; } me.name = v; persist(); try { localStorage.setItem('mazewars.club.v1', JSON.stringify(c)); } catch (e) { } ui.close(); after(); } }] }); }
   function dlgNew() { let reset = true, lim = cfg.limit > 0; ui.show({ x: 6, y: 200, w: 266, h: 128, items: [
       { t: 'text', x: 6, y: 6, s: 'Please Enter Your New Name:' }, { t: 'edit', x: 26, y: 30, w: 172, h: 16, max: 15, id: 'n', value: me.name },
       { t: 'check', x: 24, y: 56, label: 'Reset score (to 0-0)', on: () => reset, set: () => { reset = !reset; } },
@@ -249,8 +252,8 @@ window.MW = window.MW || {};
   // ---------------------------------------------------------------- menus
   const playing = () => phase === 'play';
   ui.menus = [
-    { title: '', items: [{ label: 'About Maze Wars+…', action: dlgAbout }, { sep: true }, { label: 'Help with Keys…', action: dlgKeys, enabled: playing }, { label: 'Sound', check: () => cfg.sound, action: () => { cfg.sound = !cfg.sound; A.set(cfg.sound); persist(); } }] },
-    { title: 'File', items: [{ label: 'New', key: 'N', action: dlgNew, enabled: playing }, { label: 'Invite a Friend\u2026', key: 'I', action: dlgInvite, enabled: playing }, { label: 'Quit', action: () => { net.disconnect(); location.href = '/'; } }] },
+    { title: '', items: [{ label: 'About Maze Wars+…', action: dlgAbout }, { sep: true }, { label: 'How to Play…', action: () => MW.club.howTo(), enabled: playing }, { label: 'Help with Keys…', action: dlgKeys, enabled: playing }, { label: 'Suggest a Feature…', action: () => MW.club.request(), enabled: playing }, { sep: true }, { label: 'Sound', check: () => cfg.sound, action: () => { cfg.sound = !cfg.sound; A.set(cfg.sound); persist(); } }] },
+    { title: 'File', items: [{ label: 'New', key: 'N', action: dlgNew, enabled: playing }, { label: 'Invite a Friend\u2026', key: 'I', action: dlgInvite, enabled: playing }, { label: 'High Scores\u2026', key: 'H', action: () => MW.club.scores(), enabled: playing }, { label: 'High Score Card\u2026', action: () => MW.club.card(), enabled: playing }, { label: 'Quit', action: () => { net.disconnect(); location.href = '/'; } }] },
     { title: 'Edit', dim: () => !ui.dialog, items: [{ label: 'Undo', key: 'Z', enabled: () => false }, { sep: true }, { label: 'Cut', key: 'X', enabled: () => false }, { label: 'Copy', key: 'C', enabled: () => false }, { label: 'Paste', key: 'V', enabled: () => false }, { label: 'Clear', enabled: () => false }] },
     { title: 'Options', items: [{ label: 'Message…', key: 'M', action: dlgMessage, enabled: playing }, { label: 'Boss is Looking…', key: 'B', action: () => { boss = true; }, enabled: playing }, { sep: true },
         { label: 'Phone…', key: 'P', action: dlgPhone, enabled: playing }, { label: 'AppleTalk…', key: 'A', action: dlgTalk, enabled: playing }, { sep: true },
@@ -383,10 +386,10 @@ window.MW = window.MW || {};
   // ---------------------------------------------------------------- input
   function keyAction(e) { const k = e.key.toLowerCase(); return KEYS.arrows[k] || (cfg.typist ? KEYS.typist : KEYS.std)[k]; }
   const game = MW.game = {
-    me, cfg, others, robot, missiles, frame, act, say,
+    me, cfg, others, robot, missiles, frame, act, say, notice,
     dev: { get opts() { return opts; }, set opts(v) { opts = v & 15; }, get phase() { return phase; }, log },   // for poking at from the console
     keydown(e) {
-      A.unlock(); if (boss) { boss = false; e.preventDefault(); return; }
+      A.unlock(); lastInputAt = now(); if (boss) { boss = false; e.preventDefault(); return; }
       if (ui.key(e)) { e.preventDefault(); return; }
       if (phase !== 'play' || ui.dialog || e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); dlgMessage(); return; }
@@ -396,13 +399,13 @@ window.MW = window.MW || {};
     },
     keyup(e) { const a = keyAction(e); if (!a) return; if (a === 'peekR' || a === 'peekL') { peek = 0; return; } delete held[a]; heldOrder = heldOrder.filter(q => q !== a); },
     blur() { held.__clear = true; },
-    down(x, y) { A.unlock(); if (boss) { boss = false; return; } if (ui.down(x, y)) return; if (phase !== 'play') return;
+    down(x, y) { A.unlock(); lastInputAt = now(); if (boss) { boss = false; return; } if (ui.down(x, y)) return; if (phase !== 'play') return;
       if (x >= 16 && x <= 264 && y >= 26 && y <= 260) act('fire');
       else if (x >= 270 && x <= 301 && y >= 243 && y <= 274) dlgPhone(); else if (x >= 476 && x <= 507 && y >= 243 && y <= 274) dlgTalk();
       else if (x >= 270 && x <= 507 && y >= 276 && y <= 340) dlgMessage();
       else if (x >= 252 && x <= 265 && y >= 281 && y <= 294) listTop--; else if (x >= 252 && x <= 265 && y >= 327 && y <= 340) listTop++; },
     // touch pad buttons hold an action the way a held key does
-    press(a, on) { A.unlock(); if (a === 'msg') { if (on) dlgMessage(); return; } if (on) { if (!held[a]) { held[a] = true; heldOrder.push(a); act(a); nextActAt = now() + 260; } } else { delete held[a]; heldOrder = heldOrder.filter(q => q !== a); } },
+    press(a, on) { A.unlock(); lastInputAt = now(); if (a === 'msg') { if (on) dlgMessage(); return; } if (on) { if (!held[a]) { held[a] = true; heldOrder.push(a); act(a); nextActAt = now() + 260; } } else { delete held[a]; heldOrder = heldOrder.filter(q => q !== a); } },
     // ?shot=1 — a posed scene with no dialogs and no network: what the social card is photographed from
     demo() { me.name = 'Philip'; me.look = 1; cfg.robotOn = false; cfg.net = false; phase = 'play'; ui.busy = false; ui.mouse.seen = false; opts = 1;
       Object.assign(me, { level: 0, x: 10, y: 11, dir: 3, alive: true, inMaze: true, kills: 2, deaths: 1 });
@@ -414,7 +417,8 @@ window.MW = window.MW || {};
       A.on = cfg.sound; const warm = MW.art.warm(); ui.busy = true;
       const pump = () => { const t0 = now(); let r; do { r = warm.next(); if (!r.done) bootPct = r.value; } while (!r.done && now() - t0 < 12);
         if (!r.done) { setTimeout(pump, 0); return; }
-        ui.busy = false; phase = 'ready'; dlgName(() => dlgLook(() => { phase = 'play'; materialize(); notice('Welcome, ' + me.name + '. F forward, D and G turn, J and L side-step, K or Space fires.'); if (cfg.net) net.connect(cfg.zone); else notice('AppleTalk is off (Options menu).'); })); };
+        ui.busy = false; phase = 'ready'; const signIn = () => dlgName(() => dlgLook(() => { phase = 'play'; lastInputAt = now(); materialize(); MW.club.entered(); notice('Welcome, ' + me.name + '. F forward, D and G turn, J and L side-step, K or Space fires.'); if (cfg.net) net.connect(cfg.zone); else notice('AppleTalk is off (Options menu).'); }));
+        if (MW.club.prof.skipHow) signIn(); else MW.club.howTo(signIn); };
       setTimeout(pump, 350);
     }
   };

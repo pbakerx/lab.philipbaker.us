@@ -717,6 +717,43 @@ so if it does, re-check the next day rather than concluding it is broken — and
     (`net.tz`; the lobby stays `lobby`) — people type real phone numbers into that field, and a topic
     on a public broker is readable by anyone: subscribing to `pbmazewars/1/#` is how the stray
     device was found. To see who is where when debugging, do exactly that from any page's console.
+  - **The clubhouse** (Sep 19 2026) — the only server-side part, and the game plays without it:
+    `api/mazewars.js` + `lib/mazewars.js` on Vercel Blob, `js/club.js` in the page. A How to Play page
+    before sign-in; a **high score board** (most kills in one visit, ties to fewer deaths then to
+    whoever got there first; a robot's kills no longer count for its owner); an optional **card**
+    (full name, location, email, two consents); a **feature-request box** (Apple menu); and
+    "I just came in". Blob layout follows the Vault note to the letter — every write a new object,
+    listings read from PATHNAMES: `mazewars/s/<b64 public row>.<player hash>.<stamp>.json` (the
+    board is one `list()`), `mazewars/p/<hash>.<flags b|o|x>.<stamp>.json` (cards; the flags let an
+    announcement find its audience without opening every body), `mazewars/b/` (announcement
+    markers), `mazewars/r/` (requests — readable in the Vercel Blob browser, or
+    `GET ?op=requests` with `x-admin-key` once `MAZEWARS_ADMIN_KEY` is set; `DELETE ?id=` takes a
+    row off the board with the same key).
+    - **Public vs private.** Name, full name, location and score are the board, so they are public
+      and ride in the pathname. **Email never appears in a pathname or in any response**; it lives
+      only in a card's body as AES-256-GCM ciphertext (key derived from `MAZEWARS_SECRET`, else
+      `WIDGET_MAKER_SECRET`, else the Blob token) because every object in that store is a public
+      URL to whoever learns it. The browser holds a random player id; only its hash is public, and
+      holding the id is what lets you edit or **Remove Me** (which deletes score and card).
+    - **Email is OFF until Philip wires it**: `RESEND_API_KEY`, `MAZEWARS_MAIL_FROM` (an address on
+      a domain verified in that Resend account, or Resend refuses), `MAZEWARS_OWNER_EMAIL`. Then
+      REDEPLOY — env vars are snapshotted (see the Vault's Wiring note). Until then the card still
+      stores addresses and says plainly that notices are not switched on. Three kinds of mail:
+      every login -> the owner; bumped out of the top ten -> that player, if they ticked it; and
+      "somebody is online" -> only players who ticked THAT box, only when the arriving player
+      ticked "Tell the other players I am online", at most once an hour site-wide, at most 40
+      recipients, paced under Resend's 2/second. Every player email carries a one-click
+      unsubscribe (`?op=unsub`, HMAC-signed) and `List-Unsubscribe` headers. Do not widen the
+      audience to "everyone with an address" — one public checkbox would become a spam cannon.
+    - Scores are browser-reported and unverifiable (the game is peer-to-peer). The checks — at
+      least 3 s per kill, caps, per-IP rate limits — stop accidents and lazy scripts only.
+    - **The robot stands down** while its owner is dead or has not touched a key for 45 s: on the
+      first evening an idle phone's robot ran its owner's score to 10-1.
+  - **An editor trap that bit twice here:** writing a file through the Write tool DECODES
+    `\uXXXX` escapes in the content into the literal characters. Harmless for an ellipsis (though
+    later string-matching patches then miss it — match both forms); dangerous for
+    `/[\u0000-\u001f]/`, which landed as raw NUL/control BYTES in `lib/mazewars.js`. Use `\p{Cc}`
+    with the `u` flag, or write such files from Python, and scan new files for bytes < 0x20.
   - **Guesses, flagged as such** (the 68k code was not disassembled): ◇◇◇◇ in the name row = the
     four network-wide options (4 Mazes, Black-out, Invisible Neighbors, Stationary Radar — the code
     has a "Blacked-out by" string, so options announce who set them); the teleporter byte is a
