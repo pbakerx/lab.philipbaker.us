@@ -204,8 +204,8 @@ Claude cannot create Google properties or sign in, so these four are his:
    stock snippet Google hands you does not. **Record here when known:** account / property /
    stream ids, which Google identity owns the account, and who else is an admin.
    Still to confirm in the GA UI: Google Signals **off** and data retention **14 months**.
-2. **Vercel Web Analytics** — Project → Analytics → Enable. One toggle; the tag is already on
-   every page.
+2. ~~**Vercel Web Analytics**~~ — **done Sep 19 2026.** `/_vercel/insights/script.js` now
+   answers 200 and a page load POSTs `/_vercel/insights/view` → 200, both seen in a browser.
 3. **Search Console** — a **URL-prefix** property for `https://lab.philipbaker.us`, signed in
    as the same Google account that owns the GA property, which lets it auto-verify off the GA
    tag. This is the only thing that reports the actual search queries, which is the whole
@@ -236,6 +236,24 @@ leave the page and come back `204`. Then see the row in GA → Realtime. Only th
 notices a CSP block or a consent gate. A brand-new GA property can answer `503` for a while,
 so if it does, re-check the next day rather than concluding it is broken — and do not say
 "collecting" until a Realtime row has been seen.
+
+**Two traps found doing exactly this on Sep 19 2026.** The Browser pane's
+`read_network_requests` shows **only same-origin requests**, so GA looks completely absent
+there even while it is firing. And `PerformanceResourceTiming.responseStatus` reads **0** for
+a cross-origin resource unless the server sends `Timing-Allow-Origin`, which Google does not
+— so the page cannot tell you the beacon's status either. What does work, from the page:
+
+```js
+performance.getEntriesByType('resource').filter(e => /google/.test(e.name))
+```
+
+That shows `googletagmanager.com/gtag/js?id=…` loaded and each `g/collect` call with its
+`tid=` and `en=` (event name) in the query string. `npa=1` there confirms
+`allow_ad_personalization_signals:false` reached the tag. Verified this way on Sep 19 2026:
+`gtag` a function, `dataLayer` populated, and `page_view` plus `scroll` beacons for
+`tid=G-X8JTH9PN21`. A shell POST to the collect endpoint returned **204, not 503**, so the
+property is provisioned — but note the endpoint accepts a made-up ID too, so that only rules
+out a 503. **A Realtime row has still not been seen; that needs Philip's GA login.**
 
 ## Projects
 
