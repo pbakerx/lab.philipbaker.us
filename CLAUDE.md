@@ -778,6 +778,15 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       `email:true` once the key is live and `owner:true` once a notice actually went out
       (which also needs Resend to have finished verifying the domain). A Resend key scoped to
       another domain will not send for this one.
+      **Confirmed working that same night:** Resend verified the domain within the hour; after
+      Philip pasted the key and an empty-commit redeploy, `hello` answered `owner:true` and
+      Resend's log showed the notice Delivered. The bumped-off notice was proven end to end
+      with throwaway rows: fill the board to ten BELOW the real players (1 kill, rising deaths),
+      give the tenth a card with `bump:true`, post an eleventh that beats it -> `mailed:1`;
+      then `forget` every test pid (nine records). Not yet exercised with real mail: the
+      "somebody is online" announcement (it would mail any real player who opted in, and rests
+      the bell for an hour) and the unsubscribe link's success path — both are easy to try
+      with two of Philip's own devices.
     - Scores are browser-reported and unverifiable (the game is peer-to-peer). The checks — at
       least 3 s per kill, caps, per-IP rate limits — stop accidents and lazy scripts only.
     - **The robot stands down** while its owner is dead or has not touched a key for 45 s: on the
