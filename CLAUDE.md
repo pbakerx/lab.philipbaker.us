@@ -198,11 +198,12 @@ both after every drop.
 
 Claude cannot create Google properties or sign in, so these four are his:
 
-1. **GA4** — `analytics.google.com`, a dedicated Account → one Property → one Web stream for
-   `https://lab.philipbaker.us`. Check which Google identity the browser is signed in as
-   *first*; that identity owns it. Then set Google Signals **off** and data retention to
-   **14 months**. Hand the `G-…` measurement ID over and `scripts/head-meta.py ga add G-…`
-   installs it everywhere in one command.
+1. ~~**GA4**~~ — **done Sep 19 2026. Measurement ID `G-X8JTH9PN21`** (not a secret),
+   installed on all 16 swept pages by `scripts/head-meta.py`. The tag config carries
+   `allow_google_signals:false` and `allow_ad_personalization_signals:false`, which the
+   stock snippet Google hands you does not. **Record here when known:** account / property /
+   stream ids, which Google identity owns the account, and who else is an admin.
+   Still to confirm in the GA UI: Google Signals **off** and data retention **14 months**.
 2. **Vercel Web Analytics** — Project → Analytics → Enable. One toggle; the tag is already on
    every page.
 3. **Search Console** — a **URL-prefix** property for `https://lab.philipbaker.us`, signed in
