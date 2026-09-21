@@ -139,6 +139,14 @@ BLOCKS = {
         "body": events_body,
         "needs_arg": False,
         "what": "/shared/analytics.js",
+        # Per-block omissions. The GA4 tag goes everywhere; this one does not.
+        "skip": {
+            "maze-wars/index.html":
+                "Philip's call, Sep 21 2026: no edits to the Maze Wars game, at all. "
+                "It keeps the GA4 tag (page views, like every page) and nothing else. "
+                "So /maze-wars reports page_view but no select_item and no game_start — "
+                "do not 'fix' that by sweeping it back in.",
+        },
     },
 }
 
@@ -171,8 +179,12 @@ def indent_of(text: str, idx: int) -> str:
     return text[bol:idx] if text[bol:idx].strip() == "" else ""
 
 
-def each_page():
+def each_page(spec=None):
+    skip = (spec or {}).get("skip", {})
     for rel in PAGES:
+        if rel in skip:
+            yield rel, os.path.join(ROOT, rel), None, "skip"
+            continue
         path = os.path.join(ROOT, rel)
         if not os.path.exists(path):
             yield rel, path, None, "MISSING"
@@ -218,7 +230,10 @@ def cmd_status(names) -> int:
         spec = BLOCKS[name]
         print(f"\n{name} — {spec['what']}\n")
         ids: set[str] = set()
-        for rel, _path, text, state in each_page():
+        for rel, _path, text, state in each_page(spec):
+            if state == "skip":
+                print(f"  -- not swept   {rel}  ({spec['skip'][rel].split('.')[0]})")
+                continue
             if state != "ok":
                 print(f"  !! {state:12} {rel}")
                 bad += 1
@@ -253,7 +268,10 @@ def cmd_add(name: str, arg: str) -> int:
         print(f"not a GA4 measurement ID: {arg!r} (want G-XXXXXXXXXX)", file=sys.stderr)
         return 2
     changed = present = skipped = 0
-    for rel, path, text, state in each_page():
+    for rel, path, text, state in each_page(spec):
+        if state == "skip":
+            print(f"  -- not swept: {rel}")
+            continue
         if state != "ok":
             print(f"  !! skipped ({state}): {rel}", file=sys.stderr)
             skipped += 1
@@ -287,7 +305,9 @@ def cmd_add(name: str, arg: str) -> int:
 def cmd_remove(name: str) -> int:
     spec = BLOCKS[name]
     changed = absent = skipped = 0
-    for rel, path, text, state in each_page():
+    for rel, path, text, state in each_page(spec):
+        if state == "skip":
+            continue
         if state != "ok":
             print(f"  !! skipped ({state}): {rel}", file=sys.stderr)
             skipped += 1
