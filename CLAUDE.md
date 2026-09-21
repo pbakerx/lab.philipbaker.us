@@ -916,9 +916,11 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     production** (`?shot=1` and the start-up screen, same screenshot hash) — do that again after
     touching `fit()` or the stage CSS. `?touch=1` shows the phone layout on a desktop. Headless
     Chrome will not go narrower than 500px, so phone proof shots load the page in a 393px iframe
-    (a scratchpad `t-frame.html`). **Not verified on a real phone or on iOS 27** — no simulator on
-    the Mac mini; the keyboard fix is reasoned from WebKit's rules and only Philip's phone can
-    confirm it. `navigator.vibrate` ticks on Android; iOS has no such API.
+    (a scratchpad `t-frame.html`). There is no simulator on the Mac mini, so none of this could be
+    tried on a device before it shipped; the keyboard fix was reasoned from WebKit's rules.
+    **Philip tried it on his phone the same evening (Sep 20 2026): "I tried the phone. It's great."**
+    He did not itemise, so the individual keyboard paths (envelope, tapping a field, the canvas
+    message box) are not separately confirmed. `navigator.vibrate` ticks on Android; iOS has no such API.
   - **Working on it from the Mac mini.** `jsc` (JavaScriptCore's shell, at
     `/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc`) is there even
     though Node is not: `new Function(read(file))` syntax-checks, and levels/fonts/gfx/art/world/hall
