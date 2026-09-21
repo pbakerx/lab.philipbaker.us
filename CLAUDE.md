@@ -847,6 +847,13 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       step. **Invite is the exception**, because a browser can do better than a 1986 dialog: the phone's own share sheet
       (`navigator.share`, touch only), a copied link and a toast elsewhere, and the Mac dialog if the clipboard is refused
       (it is, for a synthetic click — that is the path a test sees).
+    - **On a phone the strip also works BEFORE play** (Philip, the same day: "the welcome screen mutes the new buttons… only
+      fix the mobile" — a desktop still dims them). `ui.pick` would refuse (the menu items are off until play), and just
+      opening High Scores over the welcome page would STRAND the player: close it and no dialog is left, with sign-in never
+      reached. So `welcomePick()` remembers the window you were on — the welcome page (`isHowTo`), or the name box for
+      someone who skips it — ONCE (hopping Suggest > Ideas must not overwrite it), opens what was asked for, and the frame
+      loop (`stripBack` in `main.js`) puts that window back when everything has been closed, however you got out. A typed
+      name survives the trip. Invite needs no dialog and works any time.
     - Dimmed and `pointer-events: none` until `phase === 'play'` (`html.playing`, toggled from the frame loop). Every click
       ends with `blur()`: Space is FIRE, and a focused button would press itself again. Tab is already the game's.
     - The game rewrites `document.title` every second (the head-count) — a headless probe that reports through the title

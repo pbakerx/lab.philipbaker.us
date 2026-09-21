@@ -106,6 +106,7 @@
   #bar button:active { background: rgba(255,255,255,.16); }
   #bar button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   html:not(.playing) #bar button { opacity: .35; pointer-events: none; }        /* nothing to open until you are in the game */
+  html.touch:not(.playing) #bar button { opacity: 1; pointer-events: auto; }    /* ...except on a phone, where the strip is how you reach these at all: see welcomePick() in main.js */
   #bar .s { display: none; }
   @media (max-width: 640px) { #bar { gap: 6px; } #bar button { padding: 9px 11px; font-size: 12.5px; } #bar .l { display: none; } #bar .s { display: inline; } }
   @media (max-width: 430px) { #bar { gap: 4px; } #bar button { padding: 9px 8px; font-size: 12px; letter-spacing: 0; } }        /* six pills across a 375px phone */
@@ -165,19 +166,19 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <div id="toast" role="status" aria-live="polite"></div>
 <input id="ime" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
 <noscript>Maze Wars+ is a game drawn pixel by pixel in JavaScript, so it needs JavaScript switched on.</noscript>
-<script src="/maze-wars/js/levels.js?v=17"></script>
-<script src="/maze-wars/js/fonts.js?v=17"></script>
-<script src="/maze-wars/js/gfx.js?v=17"></script>
-<script src="/maze-wars/js/art.js?v=17"></script>
-<script src="/maze-wars/js/world.js?v=17"></script>
-<script src="/maze-wars/js/hall.js?v=17"></script>
-<script src="/maze-wars/js/ui.js?v=17"></script>
-<script src="/maze-wars/js/net.js?v=17"></script>
-<script src="/maze-wars/js/audio.js?v=17"></script>
-<script src="/maze-wars/js/club.js?v=17"></script>
-<script src="/maze-wars/js/game.js?v=17"></script>
-<script src="/maze-wars/js/thumbs.js?v=17"></script>
-<script src="/maze-wars/js/main.js?v=17"></script>
+<script src="/maze-wars/js/levels.js?v=18"></script>
+<script src="/maze-wars/js/fonts.js?v=18"></script>
+<script src="/maze-wars/js/gfx.js?v=18"></script>
+<script src="/maze-wars/js/art.js?v=18"></script>
+<script src="/maze-wars/js/world.js?v=18"></script>
+<script src="/maze-wars/js/hall.js?v=18"></script>
+<script src="/maze-wars/js/ui.js?v=18"></script>
+<script src="/maze-wars/js/net.js?v=18"></script>
+<script src="/maze-wars/js/audio.js?v=18"></script>
+<script src="/maze-wars/js/club.js?v=18"></script>
+<script src="/maze-wars/js/game.js?v=18"></script>
+<script src="/maze-wars/js/thumbs.js?v=18"></script>
+<script src="/maze-wars/js/main.js?v=18"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>

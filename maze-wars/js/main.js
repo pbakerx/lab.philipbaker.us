@@ -99,14 +99,26 @@
   async function invite() { const url = 'https://lab.philipbaker.us/maze-wars/' + (game.cfg.zone ? '?line=' + game.cfg.zone : ''), text = 'Come and play Maze Wars+ with me: the 1986 Macintosh network shooter, in your browser.';
     if (ui.touch && navigator.share) { try { await navigator.share({ title: 'Maze Wars+', text, url }); } catch (e) { } return; }
     try { await navigator.clipboard.writeText(url); say(game.cfg.zone ? 'Private-line link copied. Send it to a friend.' : 'Link copied. Send it to a friend.'); } catch (e) { ui.pick('Invite a Friend'); } }
-  for (const b of document.querySelectorAll('#bar button')) b.addEventListener('click', tap(() => { b.blur(); if (game.dev.phase !== 'play') return; if (b.dataset.go === 'invite') invite(); else ui.pick(b.dataset.go); }));      // blur: Space is FIRE, and must not press this button again
+  // ON A PHONE the strip also works BEFORE play (Philip, Sep 21: "the welcome screen mutes the new buttons… only fix the mobile").
+  // The menu items are switched off until you are playing, so ui.pick would refuse — and simply opening High Scores over the welcome page
+  // would strand you: close it and no dialog is left, with sign-in never reached. So the window you were on (the welcome page; the name
+  // box for someone who skips it) is remembered ONCE, the thing you asked for opens, and the frame loop puts you back when it has all
+  // been closed — however you got out of it, including the windows that lead to one another.
+  let stripBack = null;
+  const OPEN = { 'High Scores': () => MW.club.scores(), 'Suggest a Feature': () => MW.club.request(), 'Everyone': () => MW.club.ideas(), 'High Score Card': () => MW.club.card() };
+  function welcomePick(go) { const d = ui.dialog; if (!d || ui.busy) return;                       // still reading the mazes: nothing to come back to yet
+    if (go === 'How to Play') { if (d.isHowTo) return; if (!stripBack) stripBack = d; ui.close(); if (!stripBack.isHowTo) MW.club.howTo(); return; }   // (from the welcome page's own windows, closing is enough: it comes back)
+    if (!OPEN[go]) return; if (!stripBack) stripBack = d; ui.close(); OPEN[go](); }
+  for (const b of document.querySelectorAll('#bar button')) b.addEventListener('click', tap(() => { b.blur(); const playing = game.dev.phase === 'play';      // blur: Space is FIRE, and must not press this button again
+    if (!playing && !ui.touch) return; if (b.dataset.go === 'invite') invite(); else if (playing) ui.pick(b.dataset.go); else welcomePick(b.dataset.go); }));
   let seenPhase = '';
 
   // rAF draws. In a hidden tab rAF stops, so something else has to keep the player's heartbeat going — and it cannot be a timer
   // of this page's: Chrome slows a hidden page's timers to one a second, and after five minutes to one a MINUTE, which is how a
   // window left in the background fell off the network (Sep 20 2026). A worker's clock is not slowed, so the tick comes from one;
   // the page timer stays as the fallback for a browser that will not start a worker.
-  let last = 0; const tick = () => { last = performance.now(); game.frame(last); const ph = game.dev.phase; if (ph !== seenPhase) { seenPhase = ph; root.classList.toggle('playing', ph === 'play'); } };
+  let last = 0; const tick = () => { last = performance.now(); game.frame(last); const ph = game.dev.phase; if (ph !== seenPhase) { seenPhase = ph; root.classList.toggle('playing', ph === 'play'); }
+    if (stripBack) { if (ph === 'play') stripBack = null; else if (!ui.dialog) { const d = stripBack; stripBack = null; ui.show(d); } } };
   const loop = () => { tick(); requestAnimationFrame(loop); }; requestAnimationFrame(loop);
   const slow = () => { if (performance.now() - last > 400) tick(); };
   setInterval(slow, 500);

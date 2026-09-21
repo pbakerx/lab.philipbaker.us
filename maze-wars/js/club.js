@@ -71,7 +71,7 @@ window.MW = window.MW || {};
     // ---------------------------------------------------------------- How to Play
     howTo(next) {
       const keys = [['F', 'forward', 'V', 'back up'], ['D', 'turn left', 'G', 'turn right'], ['J', 'step left', 'L', 'step right'], ['A', 'about-face', 'K', 'fire, or Space'], ['E', 'peek left', 'T', 'peek right']];
-      ui.show({ x: 36, y: 34, w: 440, h: 286, escDefault: true, items: [
+      ui.show({ x: 36, y: 34, w: 440, h: 286, escDefault: true, isHowTo: true, items: [
         { t: 'custom', x: 0, y: 0, w: 440, h: 250, draw: (x, y) => {
             G.text(CHI, 'Maze Wars+', x + 10, y + 14, 1); G.text(GEN, 'Macintosh, 1986. Rebuilt to play online.', x + 112, y + 14, 1); G.hline(x + 8, x + 431, y + 21, 1);
             let yy = para('You are loose in a maze with whoever else is online, and a robot. Find them before they find you. One hit and you are out, until you rematerialize somewhere else.', x + 10, y + 38, 204);
