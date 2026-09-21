@@ -31,6 +31,10 @@ window.MW = window.MW || {};
   const log = [];               // chat + notices, already wrapped to the Mail Box width
   let phase = 'boot', bootPct = 0, ride = null, poof = 0, peek = 0, boss = false, listTop = 0, lastSent = '', lastSentAt = 0, stateDirty = true, over = false;
   const held = {}; let heldOrder = []; let nextActAt = 0, lastInputAt = 0;
+  // THE LOBBY: out of the maze, where nothing can reach you. 0 = in the maze (or dead in it); 1 = stepped out because a form is open,
+  // and back the moment it closes; 2 = waiting there by choice. wantOut = a form has opened and the step out is pending (it waits for
+  // a missile already on its way — opening the About box is not a dodge). pendingObit = you died; the obituary is waiting its turn.
+  let lobby = 0, wantOut = false, pendingObit = null;
   let padHeld = false, padFire = false, padFireAt = 0;          // the phone's thumb pad (game.press); never set by a keyboard
 
   const persist = () => store.set({ name: me.name, look: me.look, robotOn: cfg.robotOn, robotType: cfg.robotType, typist: cfg.typist, allEyes: cfg.allEyes, sound: cfg.sound, net: cfg.net });
@@ -53,7 +57,7 @@ window.MW = window.MW || {};
   function occupied(l, x, y) { if (me.alive && me.level === l && me.x === x && me.y === y) return true; for (const b of beings(false)) if (b.level === l && b.x === x && b.y === y) return true; return false; }
   function place(who, level) { const c = W.randomCell(level, Math.random, (x, y) => occupied(level, x, y) || (me.alive && W.los(level, me.x, me.y, me.dir, x, y) > 0)); who.level = level; who.x = c[0]; who.y = c[1]; const ex = W.exits(level, who.x, who.y); who.dir = ex.length ? ex[rint(ex.length)] : 0; who.arrived = now(); }
 
-  function materialize() { place(me, mazesOn() ? me.level : 0); me.alive = true; me.inMaze = true; poof = now() + 350; A.tele(); stateDirty = true; }
+  function materialize() { lobby = 0; wantOut = false; place(me, mazesOn() ? me.level : 0); me.alive = true; me.inMaze = true; poof = now() + 350; A.tele(); stateDirty = true; }
   function spawnRobot() { if (!cfg.robotOn) { robot.alive = false; return; } place(robot, me.level); robot.alive = true; robot.followAt = 0; robot.thinkAt = now() + 1200; robot.jumpAt = now() + 9000 + rint(6000); stateDirty = true; }
 
   // ---------------------------------------------------------------- moving
@@ -108,7 +112,7 @@ window.MW = window.MW || {};
     if (!me.alive) return; me.alive = false; me.deaths++; const verb = stomp ? STOMPS[rint(STOMPS.length)] : rint(VERBS.length); boom(me.level, me.x, me.y); A.die(); skulls.push({ level: me.level, x: me.x, y: me.y, t0: now() });
     net.event({ t: 'h', w: 0, by, bk: byKind, m: mid, how: stomp ? 1 : 0, v: verb, l: me.level, x: me.x, y: me.y }); stateDirty = true;
     const line = obit('You were', verb, by, byKind, stomp); const killer = by === net.id ? 'Your robot' : ((others.get(by) || {}).name || 'Somebody');
-    held.__clear = true; MW.club.died(); setTimeout(() => showObit(line, killer, by), 900);
+    held.__clear = true; MW.club.died(); pendingObit = { line, killer, by, at: now() + 900 };      // shown by frame() once no dialog and no menu is in the way
     const k = others.get(by); if (k && k.local && !byKind) { k.kills++; MW.thumbs.scored(stomp); }
   }
   function killRobot(by, byKind, mid, stomp) {
@@ -119,14 +123,30 @@ window.MW = window.MW || {};
   }
   function showObit(line, killer, by) {
     if (phase !== 'play') return; const a = GRIPES[rint(GRIPES.length)], b = EXCUSES[rint(EXCUSES.length)];
-    const done = (text) => { ui.close(); if (text && by !== net.id) { net.event({ t: 'm', n: me.name, s: text, to: by }); say(text, me.name); MW.club.said(); if (MW.thumbs && by === MW.thumbs.ID) MW.thumbs.heard(text); } MW.club.afterDeath(() => { if (!over) materialize(); }); };
-    ui.show({ x: 12, y: 32, w: 236, h: 216, escDefault: true, items: [
+    const done = (text, toLobby) => { ui.close(); if (text && by !== net.id) { net.event({ t: 'm', n: me.name, s: text, to: by }); say(text, me.name); MW.club.said(); if (MW.thumbs && by === MW.thumbs.ID) MW.thumbs.heard(text); } MW.club.afterDeath(() => { if (over) return; if (toLobby) goOut(2); else materialize(); }); };
+    ui.show({ x: 12, y: 32, w: 236, h: 216, escDefault: true, inWorld: true, items: [
       { t: 'text', x: 4, y: 5, w: 228, s: line }, { t: 'text', x: 4, y: 58, w: 228, s: killer + ' appreciates your comments:' },
       { t: 'button', x: 4, y: 95, w: 194, h: 20, label: a, act: () => done(a) }, { t: 'button', x: 4, y: 117, w: 194, h: 20, label: b, act: () => done(b) },
       { t: 'edit', x: 6, y: 146, w: 224, h: 38, multi: true, max: 90, id: 'c' },
-      { t: 'button', x: 3, y: 194, w: 70, h: 19, label: 'OK', def: true, act: (d) => done(ui.field('c').value.trim()) }] });
+      { t: 'button', x: 3, y: 194, w: 70, h: 19, label: 'OK', def: true, act: (d) => done(ui.field('c').value.trim()) },
+      { t: 'button', x: 84, y: 194, w: 70, h: 19, label: 'Lobby', act: (d) => done(ui.field('c').value.trim(), true) }] });
   }
   function checkLimit() { if (!cfg.limit || over) return; let top = me.kills; for (const o of others.values()) top = Math.max(top, o.kills); if (top >= cfg.limit) { over = true; ui.alert('GAME OVER\rThe Score limit was reached.\rUse New to start again.', [{ label: 'OK', def: true }, { label: 'New', act: () => dlgNew() }]); } }
+
+  // ---------------------------------------------------------------- the lobby
+  // Philip, Sep 21 2026: typing into Suggest a Feature, "the bot kills me and the dialog box comes on top. I can't access any menu items
+  // when the message box pops up when i die… maybe a 'go to lobby' button?" Three faults: the obituary REPLACED the form (and his text);
+  // a player filling in a form was still standing in the maze; and any dialog locked the menu bar. So: every form but the message box
+  // steps you out while it is open (ui.onShow / frame), the obituary queues behind whatever is open, the menus stay live (ui.js), and
+  // the lobby is also somewhere you can choose to be — from the obituary, or File > Wait in the Lobby.
+  const threatened = () => me.alive && missiles.some((m) => m.mine !== 1 && m.mine !== 2 && m.level === me.level && W.los(m.level, m.x, m.y, m.dir, me.x, me.y, 5) > 0);
+  function goOut(kind) { lobby = kind; wantOut = false; me.alive = false; me.inMaze = false; ride = null; held.__clear = true; stateDirty = true; if (kind === 2) notice('You are in the lobby. Click the hall, or press a movement key, to go back in.'); }
+  function comeIn() { if (over || phase !== 'play') return; if (pendingObit) { lobby = 0; me.inMaze = true; stateDirty = true; return; } if (!me.alive) materialize(); else lobby = 0; }    // died just before stepping out? the obituary brings you back
+  function toggleLobby() { if (phase !== 'play') return; if (lobby === 2) { comeIn(); return; } if (threatened()) { A.beep(); notice('Not with a missile on its way to you.'); return; } if (me.inMaze || lobby === 1) goOut(2); }
+  ui.onShow = (d) => { if (phase === 'play' && !d.inWorld && lobby === 0 && me.inMaze) wantOut = true; };
+  ui.menusLive = () => phase === 'play';
+  function drawLobby() { G.fill(16, 26, 249, 235, 0); const lines = [].concat(G.wrap(GEN, 'You are in the lobby: out of the maze, where nothing can reach you. The map still shows who is about, and the message box still works.', 200), [''], G.wrap(GEN, ui.touch ? 'Tap here, or touch the pad, to go back in.' : 'Click here, or press any movement key, to go back in.', 200));
+    G.textC(CHI, 'The Lobby', 140, 96, 1); lines.forEach((l, k) => G.textC(GEN, l, 140, 122 + k * 13, 1)); }
 
   // ---------------------------------------------------------------- the robot sidekick
   // Alone, it is your opponent. With other people on the wire it is on your side.
@@ -165,13 +185,14 @@ window.MW = window.MW || {};
   net.onState = (id, s) => {
     let o = others.get(id); const t = now(); const fresh = !o;
     if (fresh) { if (others.size >= 40) return; o = { name: '?', look: 1, level: 0, x: 0, y: 0, dir: 0, kills: 0, deaths: 0, alive: false, inMaze: false, robot: null, arrived: t, msgs: [] }; others.set(id, o); }
-    const name = MW.FONT.clean(s.n, 15).trim() || 'Nobody'; const x = clampInt(s.x, 0, 15), y = clampInt(s.y, 0, 15), l = clampInt(s.l, 0, 3);
+    const wasIn = o.inMaze; const name = MW.FONT.clean(s.n, 15).trim() || 'Nobody'; const x = clampInt(s.x, 0, 15), y = clampInt(s.y, 0, 15), l = clampInt(s.l, 0, 3);
     if (W.levels[l].w[y][x] === 15) return;                                                   // nobody stands inside a wall
     if (o.x !== x || o.y !== y || o.level !== l) o.arrived = t;
     o.name = name; o.look = clampInt(s.a, 0, 4); o.level = l; o.x = x; o.y = y; o.dir = clampInt(s.d, 0, 3); o.kills = clampInt(s.k, 0, 9999); o.deaths = clampInt(s.q, 0, 9999); o.alive = s.v === 1; o.inMaze = s.i === 1; o.idle = s.h === 1; o.seen = t;
     if (Array.isArray(s.r) && s.r.length === 5) { const rx = clampInt(s.r[2], 0, 15), ry = clampInt(s.r[3], 0, 15), rl = clampInt(s.r[1], 0, 3); if (W.levels[rl].w[ry][rx] !== 15) { const moved = !o.robot || o.robot.x !== rx || o.robot.y !== ry; o.robot = { type: clampInt(s.r[0], 0, 3), level: rl, x: rx, y: ry, dir: clampInt(s.r[4], 0, 3), arrived: moved ? t : o.robot.arrived }; } } else o.robot = null;
     const oc = +s.oc || 0; if (oc > optClock && oc < Date.now() + 60000) { optClock = oc; opts = clampInt(s.o, 0, 15); }
-    if (fresh && o.inMaze) { notice(name + ' joined the game.'); A.mail(); stateDirty = true; }
+    if (o.inMaze && !o.everIn) { o.everIn = true; notice(name + ' joined the game.'); A.mail(); stateDirty = true; }
+    else if (!fresh && o.inMaze !== wasIn) { if (o.inMaze) { if (o.outSaid) notice(name + ' is back in the maze.'); o.outAt = 0; o.outSaid = false; } else o.outAt = t; }     // said only if they stay out (see sweep): a glance at the About box is not news
     // somebody has walked into the cell you were already standing in
     if (me.alive && !ride && o.alive && o.level === me.level && o.x === me.x && o.y === me.y && o.arrived > me.arrived + 60) killMe(id, 0, null, true);
     if (me.alive && !ride && o.robot && o.robot.level === me.level && o.robot.x === me.x && o.robot.y === me.y && o.robot.arrived > me.arrived + 60) killMe(id, 1, null, true);
@@ -200,7 +221,8 @@ window.MW = window.MW || {};
   // by the broker, so this is only for the rest. It was 9 s for everybody, and a window in the BACKGROUND (whose heartbeat the browser
   // slows, to one a minute after five minutes) flickered in and out of everyone's list all evening. A player who told us their page
   // is hidden gets a long leash; one who should be sending every 2 s gets 20.
-  function sweep(t) { for (const [id, o] of others) if (!o.local && t - o.seen > (o.idle ? 90000 : 20000)) { if (o.inMaze) notice(o.name + ' dropped off the network.'); others.delete(id); } }
+  function sweep(t) { for (const o of others.values()) if (o.outAt && !o.outSaid && !o.inMaze && t - o.outAt > 6000) { o.outSaid = true; notice(o.name + ' stepped out to the lobby.'); }
+    for (const [id, o] of others) if (!o.local && t - o.seen > (o.idle ? 90000 : 20000)) { if (o.inMaze) notice(o.name + ' dropped off the network.'); others.delete(id); } }
   function setOpt(bit) { opts ^= bit; optClock = Date.now(); stateDirty = true; net.event({ t: 'o', o: opts, c: bit, n: me.name }); if (bit === OPT.MAZES && !mazesOn() && me.inMaze && me.level !== 0) { me.level = 0; materialize(); } }
 
   // ---------------------------------------------------------------- dialogs (laid out from the original's)
@@ -224,7 +246,7 @@ window.MW = window.MW || {};
     ['Alter-Ego', 'Tardis', 'Hunter', 'Shadow Master'].forEach((nm, i) => items.push({ t: 'radio', x: 21, y: 39 + i * 20, label: nm, on: () => pick === i, set: () => { pick = i; } }));
     items.push({ t: 'button', x: 22, y: 137, w: 66, h: 20, label: 'OK', def: true, act: () => { cfg.robotType = pick; cfg.robotOn = true; robot.alive = false; robot.backAt = 0; persist(); ui.close(); } });
     ui.show({ x: 28, y: 42, w: 182, h: 168, items, escDefault: true }); }
-  function dlgMessage() { if (phase !== 'play' || ui.dialog) return; ui.show({ x: 7, y: 268, w: 261, h: 68, plain: true, items: [
+  function dlgMessage() { if (phase !== 'play' || ui.dialog) return; ui.show({ x: 7, y: 268, w: 261, h: 68, plain: true, inWorld: true, items: [
       { t: 'text', x: 7, y: 4, s: 'Message:' }, { t: 'edit', x: 9, y: 29, w: 242, h: 34, multi: true, max: 120, id: 'm' },
       { t: 'button', x: 118, y: 2, w: 64, h: 20, label: 'OK', def: true, act: () => { const s = ui.field('m').value.trim(); ui.close(); if (s) { say(s, me.name); if (!net.event({ t: 'm', n: me.name, s }) && cfg.net) notice('Not connected: nobody heard that.'); MW.club.said(); if (MW.thumbs) MW.thumbs.heard(s); } } },
       { t: 'button', x: 192, y: 2, w: 64, h: 20, label: 'Cancel', cancel: true, act: () => ui.close() }] }); }
@@ -281,7 +303,7 @@ window.MW = window.MW || {};
   const playing = () => phase === 'play';
   ui.menus = [
     { title: '', items: [{ label: 'About Maze Wars+…', action: dlgAbout }, { label: 'Where It Came From…', action: dlgThanks }, { sep: true }, { label: 'How to Play…', action: () => MW.club.howTo(), enabled: playing }, { label: 'Help with Keys…', action: dlgKeys, enabled: playing }, { label: 'Suggest a Feature…', action: () => MW.club.request(), enabled: playing }, { sep: true }, { label: 'Sound', check: () => cfg.sound, action: () => { cfg.sound = !cfg.sound; A.set(cfg.sound); persist(); } }] },
-    { title: 'File', items: [{ label: 'New', key: 'N', action: dlgNew, enabled: playing }, { label: 'Invite a Friend\u2026', key: 'I', action: dlgInvite, enabled: playing }, { label: 'High Scores\u2026', key: 'H', action: () => MW.club.scores(), enabled: playing }, { label: 'High Score Card\u2026', action: () => MW.club.card(), enabled: playing }, { label: 'Quit', action: () => { net.disconnect(); location.href = '/'; } }] },
+    { title: 'File', items: [{ label: 'New', key: 'N', action: dlgNew, enabled: playing }, { label: 'Invite a Friend\u2026', key: 'I', action: dlgInvite, enabled: playing }, { label: 'High Scores\u2026', key: 'H', action: () => MW.club.scores(), enabled: playing }, { label: 'High Score Card\u2026', action: () => MW.club.card(), enabled: playing }, { label: 'Wait in the Lobby', key: 'L', check: () => lobby === 2, action: toggleLobby, enabled: playing }, { sep: true }, { label: 'Quit', action: () => { net.disconnect(); location.href = '/'; } }] },
     { title: 'Edit', dim: () => !ui.dialog, items: [{ label: 'Undo', key: 'Z', enabled: () => false }, { sep: true }, { label: 'Cut', key: 'X', enabled: () => false }, { label: 'Copy', key: 'C', enabled: () => false }, { label: 'Paste', key: 'V', enabled: () => false }, { label: 'Clear', enabled: () => false }] },
     { title: 'Options', items: [{ label: 'Message…', key: 'M', action: dlgMessage, enabled: playing }, { label: 'Boss is Looking…', key: 'B', action: () => { boss = true; }, enabled: playing }, { sep: true },
         { label: 'Phone…', key: 'P', action: dlgPhone, enabled: playing }, { label: 'AppleTalk…', key: 'A', action: dlgTalk, enabled: playing }, { sep: true },
@@ -388,6 +410,7 @@ window.MW = window.MW || {};
         return out; } });
     if (t < poof) { const n = Math.floor((poof - t) / 50); for (let y = 26; y <= 260; y++) if (((y >> 2) + n) % 3 === 0) G.hline(16, 264, y, 2); }
     if (!me.alive) for (let y = 26; y <= 260; y += 2) G.hline(16, 264, y, 2);
+    if (lobby === 2) drawLobby();
   }
   function drawBoss() { G.fill(0, 21, 512, 321, G.P.desk); G.fill(20, 30, 472, 300, 0); G.frame(20, 30, 472, 300, 1); G.fill(21, 31, 470, 18, 0); for (let y = 34; y < 46; y += 2) G.hline(24, 487, y, 1); G.hline(20, 491, 49, 1);
     const tw = G.textW(CHI, 'Budget 1987') + 16; G.fill(256 - tw / 2, 32, tw, 16, 0); G.textC(CHI, 'Budget 1987', 256, 44, 1); G.fill(28, 34, 11, 11, 0); G.frame(28, 34, 11, 11, 1);
@@ -402,6 +425,8 @@ window.MW = window.MW || {};
     net.tick();
     if (held.__clear) { for (const k in held) delete held[k]; heldOrder = []; peek = 0; padFire = false; }
     if (phase === 'play') {
+      if (pendingObit && t >= pendingObit.at && !ui.dialog && ui.open < 0) { const p = pendingObit; pendingObit = null; showObit(p.line, p.killer, p.by); }
+      if (wantOut) { if (!ui.dialog) wantOut = false; else if (!threatened()) goOut(1); } else if (lobby === 1 && !ui.dialog && ui.open < 0) comeIn();
       if (ride && t - ride.t0 > 1300) { me.level = ride.to; me.dir = W.exitDir(me.level, me.x, me.y); me.arrived = t; ride = null; stateDirty = true; }
       if (canAct() && heldOrder.length && t >= nextActAt) { const a = heldOrder[heldOrder.length - 1]; act(a); nextActAt = t + (a === 'fwd' || a === 'back' || a === 'strafeL' || a === 'strafeR' || a === 'north' || a === 'south' ? STEP_MS : a === 'fire' ? 120 : padHeld ? 340 : TURN_MS); }
       if (padFire && canAct() && t >= padFireAt) { act('fire'); padFireAt = t + 120; }
@@ -427,13 +452,14 @@ window.MW = window.MW || {};
       if (phase !== 'play' || ui.dialog || e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); dlgMessage(); return; }
       const a = keyAction(e); if (!a) return; e.preventDefault(); if (e.repeat) return;
+      if (lobby === 2) { comeIn(); return; }
       if (a === 'peekR') { peek = 1; return; } if (a === 'peekL') { peek = -1; return; }
       if (!held[a]) { held[a] = true; heldOrder.push(a); padHeld = false; act(a); nextActAt = now() + (a === 'fire' ? 120 : 260); }
     },
     keyup(e) { const a = keyAction(e); if (!a) return; if (a === 'peekR' || a === 'peekL') { peek = 0; return; } delete held[a]; heldOrder = heldOrder.filter(q => q !== a); },
     blur() { held.__clear = true; },
     down(x, y) { A.unlock(); lastInputAt = now(); if (boss) { boss = false; return; } if (ui.down(x, y)) return; if (phase !== 'play') return;
-      if (x >= 16 && x <= 264 && y >= 26 && y <= 260) act('fire');
+      if (x >= 16 && x <= 264 && y >= 26 && y <= 260) { if (lobby === 2) comeIn(); else act('fire'); }
       else if (x >= 270 && x <= 301 && y >= 243 && y <= 274) dlgPhone(); else if (x >= 476 && x <= 507 && y >= 243 && y <= 274) dlgTalk();
       else if (x >= 270 && x <= 507 && y >= 276 && y <= 340) dlgMessage();
       else if (x >= 252 && x <= 265 && y >= 281 && y <= 294) listTop--; else if (x >= 252 && x <= 265 && y >= 327 && y <= 340) listTop++; },
@@ -441,7 +467,7 @@ window.MW = window.MW || {};
     // 260 ms) one tap of a turn arrow was very often TWO turns, and you were facing backwards. So a held turn waits half a second
     // and then goes round slowly, a held step waits a little longer than a key does, and about-face never repeats. FIRE keeps a
     // clock of its own, so one thumb can walk while the other shoots — a held key stops the key before it; two thumbs should not.
-    press(a, on) { A.unlock(); lastInputAt = now(); if (a === 'msg') { if (on) dlgMessage(); return; }
+    press(a, on) { A.unlock(); lastInputAt = now(); if (a === 'msg') { if (on) dlgMessage(); return; } if (lobby === 2) { if (on) comeIn(); return; }
       if (a === 'fire') { padFire = on; if (on) { act('fire'); padFireAt = now() + 120; } return; }
       if (a === 'about') { if (on) act('about'); return; }
       if (on) { if (!held[a]) { held[a] = true; heldOrder.push(a); padHeld = true; act(a); nextActAt = now() + (a === 'left' || a === 'right' ? 520 : 300); } } else { delete held[a]; heldOrder = heldOrder.filter(q => q !== a); } },

@@ -787,6 +787,36 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       minutes), the watcher logged it dropping off and rejoining, the broker then announced its line dead, and a
       listener on the backup broker heard it there, alone — before it bounced home again. The fixed build: 208
       heartbeats, worst gap 2.6 s, 0.3% CPU.
+  - **The lobby, the queued obituary, and menus that stay live** (Sep 21 2026). Philip, testing Suggest a Feature: "when i'm
+    in there typing text, the bot kills me and the dialog box comes on top. I can't access any menu items when the message
+    box pops up when i die… I'd like to have the menu always available and maybe a 'go to lobby' button?" Three faults,
+    one idea:
+    - **The obituary REPLACED whatever dialog was open** (`ui.show` swaps `ui.dialog`), so his text was gone. Dying now
+      sets `pendingObit`, and `frame()` shows it only when no dialog and no menu is in the way. Your chat line still
+      goes out even though you died while typing it.
+    - **A player filling in a form was still standing in the maze.** `lobby` is a real state — `me.inMaze = false`, so
+      nothing can see, shoot or walk over you: 0 in the maze, 1 stepped out because a form is open (back the frame after
+      it closes — a frame, not `ui.close`, because "close this, open that" chains must not bounce you in and out), 2 there
+      by choice. Every dialog steps you out EXCEPT those marked `inWorld` — the message box (typing a message has always
+      left you standing there; Thumbs does the same) and the obituary. Coming back is `materialize()`: somewhere random,
+      as after a death. **No dodging:** a step out waits while a hostile missile is within five cells in a straight line
+      (`threatened()`), so opening the About box is not an escape — you are hit, the form stays up, the obituary waits.
+      By choice: the obituary's **Lobby** button, File > **Wait in the Lobby** (⌘L, a check mark while you are there);
+      any movement key, a click in the hall, or the phone's pad brings you back. The hall shows a card; the map and the
+      message box still work. `materialize()` resets the state, which is what keeps New > appearance > back-in from
+      materializing twice. A GAME OVER leaves you out until New.
+    - **Any dialog locked the menu bar.** While playing (`ui.menusLive`), the bar and an open menu take the pointer
+      first; the pulled-down menu is drawn over the dialog (`draw()` repaints the bar last); and **a menu choice first
+      dismisses the dialog the way Escape would** — its Cancel, or its default if `escDefault` — up to three deep, since
+      closing the obituary can open the card prompt. A dialog with no way out (the sign-in name box) keeps the menus
+      shut, and nothing changes before play: there, "Escape" on How to Play means Play.
+    - Others are told, but not for a glance: `sweep()` says "X stepped out to the lobby" only after six seconds out, and
+      "X is back in the maze" only if the first was said. `everIn` keeps "joined the game" for a first arrival. A player
+      in the lobby is not `inMaze`, so they leave the roster and do not count as somebody for Thumbs to make way for.
+    - Tested on a private line with `dev.anywhere`: his exact case (form open, Thumbs lined up for 3.5 s: not shot, text
+      intact, back in on close); shot while typing a chat line (box stays, obituary follows); File pulled down over the
+      obituary and High Scores chosen; the Lobby button, the key, the hall click, the menu toggle; and the missile case.
+      `?shot=1` still hashes identical to production.
   - **"Where It Came From…"** (Apple menu, Sep 21 2026) — Philip's homage: "a nod to the original creators. And an homage to a
     great fun time in the late 80s… don't make it too long." Three short paragraphs and four link buttons
     (`window.open` inside the click, so no popup blocker). The 1973 paragraph is from Steve Colley's OWN account on

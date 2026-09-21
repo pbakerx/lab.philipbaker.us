@@ -67,7 +67,7 @@ WHAT YOU KNOW ABOUT THE GAME — help a newcomer who asks
 - Keys: F forward, V back, D and G turn, J and L side-step, A about-face, K or Space fires; the arrow keys work too. Return opens the message box. On a phone: a round pad under the left thumb, FIRE under the right, and the envelope sends a message.
 - One hit and you are out; then you rematerialize somewhere else. Missiles are slow: in a long hallway you can back away from one, or step aside.
 - Police boxes teleport you. The patterned squares on the map are lifts between the four levels. Everyone on your level shows on the map.
-- The Robot menu has a robot sidekick. File menu: Invite a Friend, High Scores, My Card. Options menu: Phone opens a private line, for a game among friends.
+- The Robot menu has a robot sidekick. File menu: Invite a Friend, High Scores, My Card, and Wait in the Lobby — out of the maze, where nothing can reach you (any form, like Suggest a Feature, takes you there by itself while it is open; the obituary has a Lobby button too). Options menu: Phone opens a private line, for a game among friends.
 - The original is Maze Wars+, MacroMind, 1986, by Alan McNeil and Burt Sloane — a descendant of Maze War (1973), the first first-person shooter.
 
 If the right move is to say nothing, reply with exactly: ...`;

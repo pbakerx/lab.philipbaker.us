@@ -44,13 +44,17 @@ window.MW = window.MW || {};
     },
     menuHit(x, y) { if (y >= 20) return -1; for (let i = 0; i < ui.menus.length; i++) if (x >= ui.menus[i].x0 && x < ui.menus[i].x1) return i; return -1; },
     itemHit(x, y) { if (ui.open < 0) return -1; const m = ui.menus[ui.open], r = ui.menuRect(m); if (x < r.x || x > r.x + r.w || y < r.y + 1 || y >= r.y + r.h - 1) return -1; const k = Math.floor((y - r.y - 1) / 16); return m.items[k] && !m.items[k].sep ? k : -1; },
-    choose(mi, k) { const it = ui.menus[mi] && ui.menus[mi].items[k]; ui.open = -1; ui.hot = -1; ui.sticky = false; if (it && !it.sep && !(it.enabled && !it.enabled()) && it.action) it.action(); },
+    // A menu choice made while a dialog is up first dismisses that dialog the way Escape would (its Cancel, or its default button if it
+    // says escDefault) — a dialog that will not go stays, and the choice is dropped. Up to three, because closing one can open another.
+    choose(mi, k) { const it = ui.menus[mi] && ui.menus[mi].items[k]; ui.open = -1; ui.hot = -1; ui.sticky = false; if (!it || it.sep || (it.enabled && !it.enabled()) || !it.action) return;
+      for (let n = 0; n < 3 && ui.dialog; n++) { const was = ui.dialog, b = ui.cancelButton() || (was.escDefault ? ui.defaultButton() : null); if (!b) return; ui.pressed = null; ui.activate(b); if (ui.dialog === was) return; }
+      if (!ui.dialog) it.action(); },
     // command-key equivalents; returns true if one matched
     cmdKey(ch) { ch = ch.toUpperCase(); for (let i = 0; i < ui.menus.length; i++) for (let k = 0; k < ui.menus[i].items.length; k++) { const it = ui.menus[i].items[k]; if (it.key === ch) { if (!(it.enabled && !it.enabled())) { ui.flash = { i, until: performance.now() + 120 }; it.action && it.action(); } return true; } } return false; },
 
     // ---------- dialogs ----------
     // d = {x,y,w,h, plain?, items:[…], onOpen?, onKey?}; items: text/edit/button/radio/check/custom
-    show(d) { ui.dialog = d; d.focus = d.items.findIndex(i => i.t === 'edit'); for (const it of d.items) if (it.t === 'edit') { it.value = it.value || ''; it.sel = it.value.length > 0; } ui.open = -1; if (d.onOpen) d.onOpen(d); ui.syncIME(); },
+    show(d) { ui.dialog = d; d.focus = d.items.findIndex(i => i.t === 'edit'); for (const it of d.items) if (it.t === 'edit') { it.value = it.value || ''; it.sel = it.value.length > 0; } ui.open = -1; if (d.onOpen) d.onOpen(d); if (ui.onShow) ui.onShow(d); ui.syncIME(); },
     close() { ui.dialog = null; ui.syncIME(); },
     field(id) { const d = ui.dialog; return d && d.items.find(i => i.id === id); },
     drawDialog() {
@@ -90,7 +94,8 @@ window.MW = window.MW || {};
     // ---------- events (coordinates already in screen pixels) ----------
     down(x, y) {
       ui.mouse.x = x; ui.mouse.y = y; ui.mouse.down = true; ui.mouse.seen = true;
-      if (ui.dialog) { const it = ui.hitItem(x, y); if (it && it.t === 'edit') { ui.dialog.focus = ui.dialog.items.indexOf(it); it.sel = false; } else if (it) { ui.pressed = it; ui.overPressed = true; } ui.syncIME(); return true; }
+      const bar = ui.dialog && ui.menusLive && ui.menusLive() && (ui.open >= 0 || ui.menuHit(x, y) >= 0);      // Philip: "I'd like to have the menu always available"
+      if (ui.dialog && !bar) { const it = ui.hitItem(x, y); if (it && it.t === 'edit') { ui.dialog.focus = ui.dialog.items.indexOf(it); it.sel = false; } else if (it) { ui.pressed = it; ui.overPressed = true; } ui.syncIME(); return true; }
       const mi = ui.menuHit(x, y);
       if (mi >= 0) { if (ui.open === mi && ui.sticky) { ui.open = -1; ui.sticky = false; } else { ui.open = mi; ui.sticky = false; ui.hot = -1; ui.downAt = performance.now(); } return true; }
       if (ui.open >= 0) { const k = ui.itemHit(x, y); if (k >= 0) ui.choose(ui.open, k); else { ui.open = -1; ui.sticky = false; } return true; }
@@ -99,12 +104,12 @@ window.MW = window.MW || {};
     move(x, y) { ui.mouse.x = x; ui.mouse.y = y; ui.mouse.seen = true; if (ui.open >= 0) { ui.hot = ui.itemHit(x, y); if (ui.mouse.down) { const mi = ui.menuHit(x, y); if (mi >= 0 && mi !== ui.open) { ui.open = mi; ui.hot = -1; } } } if (ui.pressed) ui.overPressed = ui.hitItem(x, y) === ui.pressed; },
     up(x, y) {
       ui.mouse.x = x; ui.mouse.y = y; ui.mouse.down = false;
-      if (ui.dialog) { const p = ui.pressed; ui.pressed = null; if (p && ui.hitItem(x, y) === p) ui.activate(p); return true; }
+      if (ui.dialog && ui.open < 0) { const p = ui.pressed; ui.pressed = null; if (p && ui.hitItem(x, y) === p) ui.activate(p); return true; }
       if (ui.open >= 0) { const k = ui.itemHit(x, y); if (k >= 0) ui.choose(ui.open, k); else if (ui.menuHit(x, y) === ui.open && !ui.sticky && performance.now() - ui.downAt < 400) ui.sticky = true; else if (!ui.sticky || ui.menuHit(x, y) < 0) { ui.open = -1; ui.sticky = false; } return true; }
       return false;
     },
     key(e) { // returns true when the interface consumed the key
-      const d = ui.dialog;
+      const d = ui.dialog; if (e.key === 'Escape' && ui.open >= 0) { ui.open = -1; ui.sticky = false; return true; }        // Escape closes an open menu before it closes anything else
       if ((e.metaKey || e.ctrlKey) && e.key.length === 1 && !e.altKey) { if (d) { const it = d.items[d.focus]; if (it && e.key.toLowerCase() === 'a') { it.sel = true; return true; } return false; } return ui.cmdKey(e.key); }
       if (!d) { if (e.key === 'Escape' && ui.open >= 0) { ui.open = -1; return true; } return false; }
       if (d.onKey && d.onKey(e, d)) return true;
@@ -170,7 +175,7 @@ window.MW = window.MW || {};
     draw(now) {
       ui.caretOn = (now % 1000) < 560;
       if (ui.flash && now > ui.flash.until) ui.flash = null;
-      ui.drawBar(); ui.drawDialog();
+      ui.drawBar(); ui.drawDialog(); if (ui.dialog && ui.open >= 0) ui.drawBar();          // a menu pulled down over a dialog is drawn over it
     },
     drawPointer() { if (!ui.mouse.seen || ui.touch) return; let k = ui.cursor; if (ui.busy) k = 'eye'; else if (ui.dialog) { const it = ui.hitItem(ui.mouse.x, ui.mouse.y); k = it && it.t === 'edit' ? 'ibeam' : 'arrow'; } else if (ui.open >= 0 || ui.mouse.y < 21) k = 'arrow'; drawCursor(k, ui.mouse.x, ui.mouse.y); },
 
