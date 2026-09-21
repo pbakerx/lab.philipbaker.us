@@ -837,6 +837,13 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       note), the player's name in the BODY only, nothing linking it to a card or an email. Read a day with
       `GET /api/thumbs?op=transcripts[&day=]` and `x-admin-key` (`MAZEWARS_ADMIN_KEY`), or in the Vercel Blob browser.
       Every response carries `kept: true|false`, so storage can be checked without the key.
+    - **Each talk is mailed to Philip when it ends** (his ask, the same night). `thumbs.js` sends `{op:'end', sid}` from
+      `gone()` and on `pagehide` — a beacon, since one way a talk ends is the page closing — once per talk, and only if
+      the player said anything (a visitor who never typed already produces the "player came in" notice). The server
+      waits 1.5 s (his goodbye may still be landing), lists `<day>/<sid>.` for today AND yesterday (a talk can
+      straddle midnight UTC), writes a `<sid>.mailed.<stamp>.json` marker BEFORE sending so a second `end` cannot
+      send a second copy, and mails `MAZEWARS_OWNER_EMAIL` through the clubhouse's `sendMail`. The canned goodbye
+      (used when the model is slow) is not in the record; the model's is.
     - **Testing him without haunting the lobby.** `MW.thumbs.dev.anywhere = true` lets him onto a private line (and
       past the hidden-page check — the Browser pane is a hidden page); `dev.join()`, `dev.leave()`, `dev.state`. The
       scratchpad `serve.py` grew a stub for `POST /api/thumbs` that echoes and logs every request body (`GET /__thumbs`),

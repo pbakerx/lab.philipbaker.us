@@ -35,7 +35,7 @@ window.MW = window.MW || {};
   let nextAt = 0, lockedAt = 0, lockedDir = -1, reloadAt = 0, deadUntil = 0, ride = null, mercyUntil = 0, planAt = 0, plan = -1, followAt = 0, shots = 0;
   let typingUntil = 0, dodged = new Set(), anywhere = false;     // anywhere: tests only — lets him onto a private line, so that a test never puts a stray player in the public maze
   // talking
-  let sid = '', seq = 0, hist = [], asked = 0, busy = false, queued = null, lastLineAt = 0, unprompted = 0, lastTalkAt = 0, nudges = 0;
+  let sid = '', seq = 0, hist = [], asked = 0, busy = false, queued = null, lastLineAt = 0, unprompted = 0, lastTalkAt = 0, nudges = 0, spoke = 0, ended = true;
 
   const me = game.me, others = game.others, missiles = game.missiles;
   const realPlayers = () => { let n = 0; for (const p of others.values()) if (!p.local && p.inMaze && !p.idle) n++; return n; };   // someone whose window is in the background is not someone to play
@@ -48,12 +48,16 @@ window.MW = window.MW || {};
   function join(t) {
     o = { name: NAME, look: LOOK, level: 0, x: 0, y: 0, dir: 0, kills: 0, deaths: 0, alive: true, inMaze: true, robot: null, arrived: t, seen: t, msgs: [], idle: false, local: true };
     X.place(o, X.mazesOn() ? me.level : 0); others.set(ID, o); mode = 'here'; joinedAt = t; nextAt = t + rnd(1500, 2600); mercyUntil = t + 5000; ride = null; deadUntil = 0; dodged = new Set();
-    sid = ''; for (let i = 0; i < 20; i++) sid += 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]; seq = 0; hist = []; asked = 0; unprompted = 0; nudges = 0; busy = false; queued = null; lastTalkAt = t;
+    sid = ''; for (let i = 0; i < 20; i++) sid += 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]; seq = 0; hist = []; asked = 0; unprompted = 0; nudges = 0; busy = false; queued = null; lastTalkAt = t; spoke = 0; ended = false;
     game.notice(NAME + ' joined the game.'); A.mail();
     const hello = fill(HELLOS[Math.floor(Math.random() * HELLOS.length)]); typingUntil = t + rnd(1600, 2400);
     setTimeout(() => { if (mode === 'here' && o) { speak(hello); post({ kind: 'hello', line: hello }); } }, typingUntil - t);
   }
-  function gone(why) { if (o && others.get(ID) === o) { others.delete(ID); if (why) game.notice(NAME + why); } o = null; mode = 'absent'; aloneSince = 0; offlineSince = 0; for (let i = missiles.length - 1; i >= 0; i--) if (missiles[i].owner === ID) missiles.splice(i, 1); }
+  // The talk is over: ask the server to mail Philip the transcript. Once per talk, and only if the player said anything. A beacon,
+  // because one of the ways a talk ends is the page closing.
+  function endTalk() { if (ended || !sid || !spoke) return; ended = true; const body = JSON.stringify({ op: 'end', sid });
+    try { if (!(navigator.sendBeacon && navigator.sendBeacon(API, new Blob([body], { type: 'application/json' })))) fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => { }); } catch (e) { } }
+  function gone(why) { endTalk(); if (o && others.get(ID) === o) { others.delete(ID); if (why) game.notice(NAME + why); } o = null; mode = 'absent'; aloneSince = 0; offlineSince = 0; for (let i = missiles.length - 1; i >= 0; i--) if (missiles[i].owner === ID) missiles.splice(i, 1); }
   function leave(t) { // a real player has arrived: stop fighting at once, say goodbye, go
     mode = 'leaving'; const canned = fill(BYES[Math.floor(Math.random() * BYES.length)]); let said = false; const say1 = (s) => { if (said || !o) return; said = true; speak(s); setTimeout(() => gone(' left the game.'), 1400); };
     post({ kind: 'bye' }).then((r) => say1(r && r.line ? r.line : canned)); setTimeout(() => say1(canned), 2600);
@@ -75,7 +79,7 @@ window.MW = window.MW || {};
   function remark(text, p) { const t = now(); if (!o || mode !== 'here' || busy || unprompted >= 10 || t - lastLineAt < 20000 || !chance(p)) return; unprompted++; ask('event', text); }
 
   // ------------------------------------------------------------------ what the game tells him
-  function heard(text) { if (!o || mode !== 'here') return; text = String(text || '').trim(); if (!text) return; hist.push({ w: 'p', s: text }); if (hist.length > 14) hist.shift(); lastTalkAt = now(); ask('reply', text); }
+  function heard(text) { if (!o || mode !== 'here') return; text = String(text || '').trim(); if (!text) return; spoke++; hist.push({ w: 'p', s: text }); if (hist.length > 14) hist.shift(); lastTalkAt = now(); ask('reply', text); }
   function die(by, robotDid, stomp) { // a missile reached him, or he was walked over. This machine is the one that says so.
     if (!o || !o.alive) return; const t = now(); o.alive = false; o.deaths++; deadUntil = t + rnd(2600, 5200); ride = null; X.boom(o.level, o.x, o.y); X.skull(o.level, o.x, o.y);
     const verb = stomp ? X.STOMPS[X.rint(X.STOMPS.length)] : X.rint(X.VERBS.length), word = X.VERBS[verb] === 'undone' ? 'undid' : X.VERBS[verb];
@@ -147,6 +151,7 @@ window.MW = window.MW || {};
     if (t - lastTalkAt > 150000 && nudges < 2 && X.idleMs() < 20000) { nudges++; lastTalkAt = t; remark('It has been quiet for a couple of minutes. ' + me.name + ' has not said anything. Say something short to get them talking, or taunt them into finding you.', 1); }
   }
 
+  addEventListener('pagehide', () => { if (mode !== 'absent') endTalk(); });
   MW.thumbs = { ID, tick, hit, steppedOn, scored, heard, get here() { return mode !== 'absent'; },
     dev: { set anywhere(v) { anywhere = !!v; }, join: () => { if (mode === 'absent') join(now()); }, leave: () => { if (mode === 'here') leave(now()); }, get state() { return { mode, sid, asked, unprompted, busy, typing: typingUntil > now(), o }; } } };
 })();

@@ -10,6 +10,9 @@
 //             "bye"    a second human arrived and Thumbs is leaving; say goodbye
 //             "hello"  NOT generated here. The opening line is a fixed template in the client — it is the one that says "I'm an
 //                      AI", and a disclosure must not depend on a model choosing to make it. This call only records it.
+//   POST {op:"end", sid}   the conversation is over (he left, or the page closed): mail it to MAZEWARS_OWNER_EMAIL — once, and only
+//        if the player actually said something. A marker object (<sid>.mailed.<stamp>.json) is written BEFORE the mail goes, so a
+//        second "end" for the same talk cannot send a second copy.
 //   GET  ?op=transcripts[&day=YYYYMMDD]   (x-admin-key = MAZEWARS_ADMIN_KEY) -> that day's conversations, grouped
 //
 // THE RULE THIS FILE EXISTS TO KEEP: Thumbs never passes as a person. Anthropic's usage policy forbids using output "to convince
@@ -28,13 +31,14 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { put, list } from "@vercel/blob";
 import { originAllowed, clientIp, rateLimiter } from "../lib/guard.js";
-import { clean, stamp } from "../lib/mazewars.js";
+import { clean, stamp, sendMail, mailReady } from "../lib/mazewars.js";
 
 const MODEL = process.env.THUMBS_MODEL || "claude-haiku-4-5-20251001";
 const DAILY = Math.max(0, Math.min(1000, parseInt(process.env.THUMBS_DAILY_LINES || "900", 10) || 0));   // one list() page is 1000
 const TALK = "mazewars/t/";
 const PUT = { access: "public", contentType: "application/json", addRandomSuffix: false, cacheControlMaxAge: 31536000 };
 const limited = rateLimiter({ windowMs: 60_000, max: 30 });
+const endLimited = rateLimiter({ windowMs: 600_000, max: 8 });
 const SID_RE = /^[a-z0-9]{12,40}$/;
 const KINDS = new Set(["hello", "reply", "event", "bye"]);
 const admin = (req) => !!process.env.MAZEWARS_ADMIN_KEY && req.headers["x-admin-key"] === process.env.MAZEWARS_ADMIN_KEY;
@@ -111,7 +115,25 @@ export default async function handler(req, res) {
     if (req.method !== "POST") return res.status(405).json({ error: "POST, please." });
 
     // ── talking ────────────────────────────────────────────────────────────────────────────
-    const b = req.body || {}; if (b.op !== "say") return res.status(400).json({ error: "Unknown request." });
+    const b = req.body || {};
+    // ── the talk is over: send Philip the transcript ─────────────────────────────────────────
+    if (b.op === "end") {
+      const sid = String(b.sid || ""), owner = process.env.MAZEWARS_OWNER_EMAIL;
+      if (!SID_RE.test(sid) || endLimited(clientIp(req))) return res.status(200).json({ ok: true, mailed: false });
+      if (!process.env.BLOB_READ_WRITE_TOKEN || !mailReady() || !owner) return res.status(200).json({ ok: true, mailed: false, why: "mail is not set up" });
+      await new Promise((r) => setTimeout(r, 1500));                                            // his goodbye may still be on its way into the store
+      const blobs = []; for (const d of [day(), day(new Date(Date.now() - 86_400_000))]) blobs.push(...(await list({ prefix: `${TALK}${d}/${sid}.`, limit: 200 })).blobs);   // a talk can straddle midnight UTC
+      if (!blobs.length || blobs.some((x) => x.pathname.includes(".mailed."))) return res.status(200).json({ ok: true, mailed: false, why: blobs.length ? "already sent" : "nothing kept" });
+      const talk = (await Promise.all(blobs.map((x) => fetch(x.url).then((r) => r.json()).catch(() => null)))).filter((e) => e && e.sid === sid).sort((a, c) => a.seq - c.seq);
+      if (!talk.some((e) => e.said)) return res.status(200).json({ ok: true, mailed: false, why: "the player never spoke" });
+      await put(`${TALK}${day()}/${sid}.mailed.${stamp()}.json`, JSON.stringify({ v: 1, sid, seq: 999, kind: "mailed", when: new Date().toISOString() }), PUT);
+      const who = talk[0].player || "Somebody", last = talk[talk.length - 1], c = last.ctx || {}, began = new Date(talk[0].when);
+      const lines = talk.flatMap((e) => [e.said ? `${e.player}: ${e.said}` : null, !e.said && e.note ? `   [${e.note}]` : null, e.thumbs ? `Thumbs: ${e.thumbs}` : null].filter(Boolean));
+      const text = `${who} talked with Thumbs in Maze Wars+.\n\nBegan ${began.toLocaleString("en-US", { timeZone: "America/Chicago", dateStyle: "medium", timeStyle: "short" })} Central (${talk[0].when}).\nAbout ${c.mins ?? 0} min together. Score when it ended, kills-deaths: ${who} ${c.pk ?? 0}-${c.pd ?? 0}, Thumbs ${c.tk ?? 0}-${c.td ?? 0}.\n\n${lines.join("\n")}\n\n--\nSession ${sid}. Kept at ${TALK}<day>/${sid}.*  ·  https://lab.philipbaker.us/maze-wars/`;
+      const sent = await sendMail(owner, `Maze Wars+: ${who} talked with Thumbs (${talk.filter((e) => e.said).length} lines)`, text);
+      return res.status(200).json({ ok: true, mailed: !!sent.sent, why: sent.sent ? undefined : sent.why });
+    }
+    if (b.op !== "say") return res.status(400).json({ error: "Unknown request." });
     if (limited(clientIp(req))) return res.status(429).json({ quiet: true, why: "slow down" });
     const sid = String(b.sid || ""), seq = b.seq | 0, kind = String(b.kind || "");
     if (!SID_RE.test(sid) || seq < 0 || seq > 120 || !KINDS.has(kind)) return res.status(400).json({ error: "Malformed." });
