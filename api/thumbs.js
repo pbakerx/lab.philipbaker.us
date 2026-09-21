@@ -130,7 +130,7 @@ export default async function handler(req, res) {
       const who = talk[0].player || "Somebody", last = talk[talk.length - 1], c = last.ctx || {}, began = new Date(talk[0].when);
       const lines = talk.flatMap((e) => [e.said ? `${e.player}: ${e.said}` : null, !e.said && e.note ? `   [${e.note}]` : null, e.thumbs ? `Thumbs: ${e.thumbs}` : null].filter(Boolean));
       const text = `${who} talked with Thumbs in Maze Wars+.\n\nBegan ${began.toLocaleString("en-US", { timeZone: "America/Chicago", dateStyle: "medium", timeStyle: "short" })} Central (${talk[0].when}).\nAbout ${c.mins ?? 0} min together. Score when it ended, kills-deaths: ${who} ${c.pk ?? 0}-${c.pd ?? 0}, Thumbs ${c.tk ?? 0}-${c.td ?? 0}.\n\n${lines.join("\n")}\n\n--\nSession ${sid}. Kept at ${TALK}<day>/${sid}.*  ·  https://lab.philipbaker.us/maze-wars/`;
-      const sent = await sendMail(owner, `Maze Wars+: ${who} talked with Thumbs (${talk.filter((e) => e.said).length} lines)`, text);
+      const said = talk.filter((e) => e.said).length; const sent = await sendMail(owner, `Maze Wars+: ${who} talked with Thumbs (${said} line${said === 1 ? "" : "s"})`, text);
       return res.status(200).json({ ok: true, mailed: !!sent.sent, why: sent.sent ? undefined : sent.why });
     }
     if (b.op !== "say") return res.status(400).json({ error: "Unknown request." });
