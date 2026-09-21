@@ -128,14 +128,34 @@ window.MW = window.MW || {};
 
     // ---------------------------------------------------------------- the feature-request box
     request() {
-      ui.show({ x: 76, y: 62, w: 360, h: 204, items: [
+      ui.show({ x: 76, y: 52, w: 360, h: 224, items: [
         { t: 'text', x: 10, y: 4, s: 'What should Maze Wars+ do next?' },
         { t: 'edit', x: 12, y: 32, w: 336, h: 96, multi: true, max: 240, id: 'idea' },
         { t: 'text', x: 10, y: 140, s: 'Reply to' }, { t: 'edit', x: 84, y: 140, w: 264, h: 16, max: 60, id: 'contact', value: prof.email },
-        { t: 'custom', x: 84, y: 160, w: 264, h: 12, draw: (x, y) => G.text(GEN, 'Optional. Only Philip sees it.', x, y + 9, 1) },
-        { t: 'button', x: 196, y: 176, w: 70, h: 20, label: 'Cancel', cancel: true, act: () => ui.close() },
-        { t: 'button', x: 280, y: 176, w: 70, h: 20, label: 'Send', def: true, act: () => { const text = ui.field('idea').value.trim(), contact = ui.field('contact').value.trim(); if (text.length < 4) { A.beep(); return; } ui.close();
-            call({ op: 'request', text, name: prof.full || me().name, contact }).then(() => ui.alert('Thank you. It is in the box.'), (e) => ui.alert('That did not get through.\r' + e.message)); } }] });
+        { t: 'custom', x: 84, y: 160, w: 264, h: 26, draw: (x, y) => { G.text(GEN, 'Optional. Only Philip sees it.', x, y + 9, 1); G.text(GEN, 'Your idea and game name go on a list all can read.', x - 72, y + 23, 1); } },
+        { t: 'button', x: 12, y: 196, w: 96, h: 20, label: 'See the List', act: () => { ui.close(); club.ideas(); } },
+        { t: 'button', x: 196, y: 196, w: 70, h: 20, label: 'Cancel', cancel: true, act: () => ui.close() },
+        { t: 'button', x: 280, y: 196, w: 70, h: 20, label: 'Send', def: true, act: () => { const text = ui.field('idea').value.trim(), contact = ui.field('contact').value.trim(); if (text.length < 4) { A.beep(); return; } ui.close();
+            call({ op: 'request', text, name: me().name, full: prof.full, contact }).then(() => club.ideas({ text, name: me().name, when: new Date().toISOString().slice(0, 10) }), (e) => ui.alert('That did not get through.\r' + e.message)); } }] });
+    },
+
+    // ---------------------------------------------------------------- everybody's ideas
+    // Philip: "Can we make it so that folks can see all the feature requests?" The idea, the game name and the date — never the
+    // contact. `mine` is the one just sent: it goes on top at once, whatever a cache in between still thinks the list is.
+    ideas(mine) {
+      const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], PER = 4; let list = null, failed = false, top = 0;
+      const day = (w) => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(w || ''); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) : ''; };
+      call(null, '?op=ideas').then((j) => { list = (j.items || []).filter((q) => !(mine && q.text === mine.text && q.name === mine.name)); if (mine) list.unshift(mine); }, () => { failed = true; list = mine ? [mine] : []; });
+      ui.show({ x: 36, y: 30, w: 440, h: 294, escDefault: true, items: [
+        { t: 'custom', x: 0, y: 0, w: 440, h: 256, draw: (x, y) => { G.text(CHI, mine ? 'Thank you. It is on the list.' : 'What people have asked for', x + 12, y + 14, 1); G.hline(x + 10, x + 429, y + 21, 1);
+            if (!list) { G.text(GEN, 'Fetching the list...', x + 12, y + 40, 1); return; } if (!list.length) { G.text(GEN, failed ? 'The list did not answer. Try again in a moment.' : 'Nothing yet. Be the first.', x + 12, y + 40, 1); return; }
+            G.textR(GEN, (top + 1) + ' to ' + Math.min(list.length, top + PER) + ' of ' + list.length, x + 428, y + 14, 1); let yy = y + 38;
+            for (const q of list.slice(top, top + PER)) { const lines = G.wrap(GEN, MW.FONT.clean(q.text, 240), 416); const show = lines.slice(0, 3); if (lines.length > 3) show[2] = show[2].replace(/.{0,3}$/, '...');
+              show.forEach((l) => { G.text(GEN, l, x + 12, yy, 1); yy += 12; }); G.textR(GEN, '- ' + MW.FONT.clean(q.name || 'somebody', 15) + (day(q.when) ? ', ' + day(q.when) : ''), x + 428, yy, 1); yy += 12 + 10; } } },
+        { t: 'button', x: 12, y: 266, w: 66, h: 20, label: 'Newer', hidden: () => !list || top === 0, act: () => { top = Math.max(0, top - PER); } },
+        { t: 'button', x: 86, y: 266, w: 66, h: 20, label: 'Older', hidden: () => !list || top + PER >= list.length, act: () => { top += PER; } },
+        { t: 'button', x: 244, y: 266, w: 110, h: 20, label: 'Suggest One...', act: () => { ui.close(); club.request(); } },
+        { t: 'button', x: 362, y: 266, w: 66, h: 20, label: 'OK', def: true, act: () => ui.close() }] });
     }
   };
 })();

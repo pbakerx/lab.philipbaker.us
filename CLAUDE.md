@@ -787,6 +787,24 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       minutes), the watcher logged it dropping off and rejoining, the broker then announced its line dead, and a
       listener on the backup broker heard it there, alone — before it bounced home again. The fixed build: 208
       heartbeats, worst gap 2.6 s, 0.3% CPU.
+  - **The suggestion box is public** (Sep 21 2026). Philip: "Can we make it so that folks can see all the feature requests?"
+    Apple menu > Everyone's Ideas…, a **See the List** button on the form, and the list opens after you send one with
+    yours on top (put there by the page — a CDN cache in between may not know about it yet). `GET ?op=ideas` is open to
+    anybody and returns the idea, the GAME name and the date — **never the contact, never the card's full name** (a
+    request is now `v:2` with `name` = game name and `full`/`contact` for Philip only; an old `v:1` row shows only the
+    first word of its name, because that field may hold a full one). The form says so: "Your idea and game name go on a
+    list all can read" — "everyone" does not fit the 336 px it has.
+    - **Moderation needs no password.** Every request's email to Philip carries a signed link that takes it off the list
+      (`?op=idea&id=&k=&hide=1`, HMAC of the id, the same secret as the unsubscribe links) and the page it lands on offers
+      to put it back. Hidden = a marker object at `mazewars/r/_hidden/<id>.json`; nothing is rewritten. The SENDER gets the
+      same key back in the POST reply, so a "take mine down" can be built on it. `GET ?op=ideabox` mails Philip the whole
+      box with a link per idea — for the ones that arrived before links existed; once a day at most, safe for anybody to call.
+    - New ideas are **visible at once**, not held for approval: the game already shows unmoderated names and live chat,
+      he is emailed the instant one arrives, and a list that does not show your own idea is a list people stop writing
+      to. If that ever goes wrong, the switch is to show only ideas with an `_ok/` marker.
+    - Where a request goes has nothing to do with the form's "Reply to" box, which is only a line in the email. That box is
+      pre-filled from the player's OWN saved card (`prof.email`, in their browser) — Philip saw his own address there and
+      wondered who else could.
   - **The lobby, the queued obituary, and menus that stay live** (Sep 21 2026). Philip, testing Suggest a Feature: "when i'm
     in there typing text, the bot kills me and the dialog box comes on top. I can't access any menu items when the message
     box pops up when i die… I'd like to have the menu always available and maybe a 'go to lobby' button?" Three faults,
@@ -929,7 +947,7 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     listings read from PATHNAMES: `mazewars/s/<b64 public row>.<player hash>.<stamp>.json` (the
     board is one `list()`), `mazewars/p/<hash>.<flags b|o|x>.<stamp>.json` (cards; the flags let an
     announcement find its audience without opening every body), `mazewars/b/` (announcement
-    markers), `mazewars/r/` (requests — readable in the Vercel Blob browser, or
+    markers), `mazewars/r/` (requests — public since Sep 21, see "The suggestion box is public"; also readable in the Vercel Blob browser, or
     `GET ?op=requests` with `x-admin-key` once `MAZEWARS_ADMIN_KEY` is set; `DELETE ?id=` takes a
     row off the board with the same key).
     - **Public vs private.** Name, full name, location and score are the board, so they are public

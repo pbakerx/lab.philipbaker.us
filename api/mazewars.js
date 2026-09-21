@@ -18,6 +18,9 @@
 //   GET  ?op=digest        -> mail Philip yesterday's visits (Central time). Called by Vercel Cron each morning; safe for anyone to
 //                             call, because a marker makes it once per day and the reply carries counts only.
 //   GET  ?op=visits[&day=] (x-admin-key) -> a day's rows
+//   GET  ?op=ideas         -> the feature requests, for everybody: text, game name, date. Never the contact.
+//   GET  ?op=idea&id=&k=&hide=1|0  -> the signed link in each request's email: take one idea off the public list, or put it back
+//   GET  ?op=ideabox       -> mail Philip everything in the box with those links (once a day at most)
 //   GET  ?op=requests      (x-admin-key) -> read the box              } only if
 //   DELETE ?id=<8 hex>     (x-admin-key) -> take a row off the board   } MAZEWARS_ADMIN_KEY is set
 //
@@ -31,7 +34,7 @@ import {
   SCORES, CARDS, BELLS, REQUESTS, BOARD_SIZE, KEEP, BELL_REST_MS, BELL_MAX, GAME, PID_RE, PH_RE, EMAIL_RE,
   seal, playerHash, unsubOk, clean, stamp, stampTime, encodeScore, decodeScore, better, ranked, publicRow,
   cardPath, decodeCard, newestCards, emailOf, listAll, mailReady, sendMail,
-  VISITS, VISITS_SINCE, VID_RE, encodeVisit, decodeVisit, centralDay, digestText,
+  VISITS, VISITS_SINCE, VID_RE, encodeVisit, decodeVisit, centralDay, digestText, IDEA_RE, ideaKey, ideaOk, ideaLink,
 } from "../lib/mazewars.js";
 
 const scoreLimited = rateLimiter({ windowMs: 60_000, max: 20 });
@@ -59,6 +62,34 @@ export default async function handler(req, res) {
   const b = req.body || {};
 
   try {
+    // ── the feature requests, in public ─────────────────────────────────────────────────────
+    // Philip, Sep 21 2026: "Can we make it so that folks can see all the feature requests?" Shown: the idea, the GAME name, the date.
+    // Never the contact, never the card's full name. Hidden ones are marked by an object under _hidden/ (nothing is rewritten).
+    if (req.method === "GET" && (op === "ideas" || op === "ideabox")) {
+      const all = await listAll(REQUESTS), hidden = new Set(), notes = [];
+      for (const x of all) { let m; if ((m = /^mazewars\/r\/_hidden\/([a-z0-9]+)\.json$/.exec(x.pathname))) hidden.add(m[1]); else if ((m = /^mazewars\/r\/([a-z0-9]+)\.json$/.exec(x.pathname))) notes.push({ id: m[1], url: x.url, at: stampTime(m[1]) || new Date(x.uploadedAt).getTime() }); }
+      notes.sort((x, y) => y.at - x.at);
+      const read = async (list) => (await Promise.all(list.map((x) => fetch(x.url).then((r) => r.json()).then((j) => ({ ...x, j })).catch(() => null)))).filter((x) => x && x.j && x.j.text);
+      if (op === "ideabox") {                                                                 // everything in the box, with its links, to Philip — for the ideas that arrived before the links existed
+        if (!mailReady() || !process.env.MAZEWARS_OWNER_EMAIL) return res.status(200).json({ ok: true, sent: false, why: "mail is not set up" });
+        const mark = `${REQUESTS}_boxmail/${new Date().toISOString().slice(0, 10)}.`; if (all.some((x) => x.pathname.startsWith(mark))) return res.status(200).json({ ok: true, sent: false, why: "already sent today" });
+        await put(`${mark}${stamp()}.json`, JSON.stringify({ v: 1, when: new Date().toISOString() }), PUT);
+        const body = (await read(notes.slice(0, 80))).map((x) => `${hidden.has(x.id) ? "[HIDDEN] " : ""}${x.j.text}\n   - ${x.j.name || "somebody"}${x.j.full && x.j.full !== x.j.name ? " (" + x.j.full + ")" : ""}${x.j.contact ? "  <" + x.j.contact + ">" : ""}, ${String(x.j.when).slice(0, 10)}\n   ${hidden.has(x.id) ? "Show it again: " + ideaLink(x.id, false) : "Hide it from the public list: " + ideaLink(x.id, true)}`).join("\n\n");
+        const sent = await sendMail(process.env.MAZEWARS_OWNER_EMAIL, `Maze Wars+: the suggestion box (${notes.length})`, `Everything in the Maze Wars+ suggestion box. All of it is on the public list in the game unless you hide it.\n\n${body || "(empty)"}`);
+        return res.status(200).json({ ok: true, sent: !!sent.sent, ideas: notes.length });
+      }
+      const items = (await read(notes.filter((x) => !hidden.has(x.id)).slice(0, 80))).map((x) => ({ id: x.id, text: clean(x.j.text, 600), name: clean(x.j.v >= 2 ? x.j.name : String(x.j.name || "").split(" ")[0], 15) || "somebody", when: String(x.j.when || "").slice(0, 10) }));
+      res.setHeader("Cache-Control", "public, s-maxage=20, stale-while-revalidate=120");
+      return res.status(200).json({ items, total: items.length });
+    }
+    if (req.method === "GET" && op === "idea") {
+      const id = String(req.query?.id || ""), hide = String(req.query?.hide || "1") !== "0";
+      if (!ideaOk(id, String(req.query?.k || ""))) return page(res, 403, "Maze Wars+", "That link is not one of ours.");
+      const path = `${REQUESTS}_hidden/${id}.json`, there = (await listAll(path)).length > 0;
+      if (hide && !there) await put(path, JSON.stringify({ v: 1, when: new Date().toISOString() }), PUT); else if (!hide && there) await del(path);
+      return page(res, 200, "Maze Wars+", hide ? `That idea is off the public list. <a href="${ideaLink(id, false)}" style="color:#fff">Put it back</a>` : `That idea is back on the public list. <a href="${ideaLink(id, true)}" style="color:#fff">Hide it again</a>`);
+    }
+
     // ── the morning digest of the visit log ──────────────────────────────────────────────
     if (req.method === "GET" && op === "digest") {
       const day = centralDay(1); if (day.date < VISITS_SINCE) return res.status(200).json({ ok: true, sent: false, why: "before the log began" });
@@ -216,14 +247,14 @@ export default async function handler(req, res) {
       if (requestLimited(clientIp(req))) return res.status(429).json({ error: "That is a lot of ideas. Try again in a few minutes." });
       const text = clean(b.text, 600);
       if (text.length < 4) return res.status(400).json({ error: "Say a little more." });
-      const note = { v: 1, text, name: clean(b.name, 40), contact: clean(b.contact, 120), when: new Date().toISOString() };
-      await put(`${REQUESTS}${stamp()}.json`, JSON.stringify(note), PUT);
-      if (process.env.MAZEWARS_OWNER_EMAIL) await sendMail(process.env.MAZEWARS_OWNER_EMAIL, "Maze Wars+ feature request", `${note.text}\n\nFrom: ${note.name || "somebody"}${note.contact ? "  <" + note.contact + ">" : ""}\n${note.when}`);
-      return res.status(201).json({ ok: true });
+      const id = stamp(), note = { v: 2, text, name: clean(b.name, 15), full: clean(b.full, 40), contact: clean(b.contact, 120), when: new Date().toISOString() };   // name = the GAME name (public); full and contact are for Philip only
+      await put(`${REQUESTS}${id}.json`, JSON.stringify(note), PUT);
+      if (process.env.MAZEWARS_OWNER_EMAIL) await sendMail(process.env.MAZEWARS_OWNER_EMAIL, "Maze Wars+ feature request", `${note.text}\n\nFrom: ${note.name || "somebody"}${note.full && note.full !== note.name ? " (" + note.full + ")" : ""}${note.contact ? "  <" + note.contact + ">" : ""}\n${note.when}\n\nIt is on the public list in the game (the idea and the game name only). To take it off:\n${ideaLink(id, true)}`);
+      return res.status(201).json({ ok: true, id, k: ideaKey(id) });                       // the sender may take their own idea down
     }
     if (req.method === "GET" && op === "requests") {
       if (!admin(req)) return res.status(404).json({ error: "Not found." });
-      const blobs = (await listAll(REQUESTS)).sort((x, y) => new Date(y.uploadedAt) - new Date(x.uploadedAt)).slice(0, 100);
+      const blobs = (await listAll(REQUESTS)).filter((x) => /^mazewars\/r\/[a-z0-9]+\.json$/.test(x.pathname)).sort((x, y) => new Date(y.uploadedAt) - new Date(x.uploadedAt)).slice(0, 100);
       const items = []; for (const x of blobs) { try { items.push(await (await fetch(x.url)).json()); } catch { /* skip a bad one */ } }
       res.setHeader("Cache-Control", "no-store");
       return res.status(200).json({ items, total: blobs.length });
