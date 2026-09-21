@@ -817,8 +817,12 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       only. `VISITS_SINCE` stops it reporting on days before the log existed — "nobody came in" would have been a lie.
       Rows older than 120 days are pruned there. `GET ?op=visits&back=N` with `x-admin-key` returns a day's rows and text.
       `digestText()` is pure: run it in `jsc` with sample rows to see an email without sending one.
-    - The instant "just came in" emails are unchanged. Philip was asked whether the digest should replace them and had
-      not said when this was written.
+    - **The instant "just came in" emails stay** — Philip, asked whether the digest should replace them: "i like those
+      notifications". He then asked about getting a TEXT, heard the options (the carriers' free email-to-text gateways
+      are dead or dying — T-Mobile Dec 2024, AT&T Jun 2025, Verizon Mar 2027 — real SMS needs a paid provider and
+      weeks of carrier registration, and the practical route is a push app such as ntfy or Pushover) and decided:
+      **"let's not do any new notifications services. email is fine for now."** Do not re-propose push or SMS unless
+      he raises it.
     - Tested against a stub of the endpoint in the scratchpad `serve.py` (`GET /__mw` reads the bodies back). The test page
       shims `document.hidden` to false, because the Browser pane is a hidden page and hidden seconds are, rightly, not play.
   - **Thumbs, the house AI** (Sep 20 2026). Philip: "if there are no players in the game and a new player shows up, we
