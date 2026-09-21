@@ -316,7 +316,9 @@ function showHome() {
 }
 function showScores() { menuShow(`<div class="panel" style="max-width:510px"><h2>HIGH SCORES</h2>${board()}<p class="muted">${storageOK ? 'Saved on this device and browser.' : 'Storage unavailable. Scores last for this session only.'}</p><div class="actions"><button class="primary" id="back">BACK</button></div></div>`); $('back').onclick = showHome; }
 function startGame() {
-  if (blocked || lostGpu || !world) return; SFX.unlock(true); S.demo = false; S.level = 1; S.score = 0; S.reserve = 0; S.nextBonus = CONFIG.bonusEvery; saved = false; S.mode = 'playing'; beginLevel();
+  if (blocked || lostGpu || !world) return;
+  window.pbTrack && window.pbTrack('game_start', { game_id: 'missile-command-deluxe', game_name: 'Missile Command Deluxe: City Run', game_host: 'lab' });
+  SFX.unlock(true); S.demo = false; S.level = 1; S.score = 0; S.reserve = 0; S.nextBonus = CONFIG.bonusEvery; saved = false; S.mode = 'playing'; beginLevel();
   if (mobile && root.requestFullscreen && !document.fullscreenElement) { try { const f = root.requestFullscreen(); if (f?.then) f.then(() => { try { screen.orientation?.lock?.('landscape').catch(() => {}); } catch (e) {} }).catch(() => {}); } catch (e) {} }
 }
 function finishLevel() {

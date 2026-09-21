@@ -482,7 +482,7 @@ window.MW = window.MW || {};
       A.on = cfg.sound; const warm = MW.art.warm(); ui.busy = true;
       const pump = () => { const t0 = now(); let r; do { r = warm.next(); if (!r.done) bootPct = r.value; } while (!r.done && now() - t0 < 12);
         if (!r.done) { setTimeout(pump, 0); return; }
-        ui.busy = false; phase = 'ready'; const signIn = () => dlgName(() => dlgLook(() => { phase = 'play'; lastInputAt = now(); materialize(); MW.club.entered(); notice('Welcome, ' + me.name + (ui.touch ? '. Left thumb drives, right thumb fires.' : '. F forward, D and G turn, J and L side-step, K or Space fires.')); if (cfg.net) net.connect(cfg.zone); else notice('AppleTalk is off (Options menu).'); }));
+        ui.busy = false; phase = 'ready'; const signIn = () => dlgName(() => dlgLook(() => { phase = 'play'; lastInputAt = now(); materialize(); MW.club.entered(); window.pbTrack && window.pbTrack('game_start', { game_id: 'maze-wars', game_name: 'Maze Wars+', game_host: 'lab' }); notice('Welcome, ' + me.name + (ui.touch ? '. Left thumb drives, right thumb fires.' : '. F forward, D and G turn, J and L side-step, K or Space fires.')); if (cfg.net) net.connect(cfg.zone); else notice('AppleTalk is off (Options menu).'); }));
         if (MW.club.prof.skipHow) signIn(); else MW.club.howTo(signIn); };
       setTimeout(pump, 350);
     }

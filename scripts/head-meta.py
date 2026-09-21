@@ -5,15 +5,22 @@ The lab has no build step and no shared template, so a tag that belongs on
 every page has to be written into every page. Doing that by hand is how a page
 ends up with two copies of a tag, or none. This script is the one place.
 
-    scripts/head-meta.py ga status
-    scripts/head-meta.py ga add G-XXXXXXXXXX
+    scripts/head-meta.py status                 # both blocks, every page
+    scripts/head-meta.py pages                  # the page set, and every omission
+
+    scripts/head-meta.py ga add G-XXXXXXXXXX    # the GA4 tag
     scripts/head-meta.py ga remove
-    scripts/head-meta.py pages          # print the page set and why
+    scripts/head-meta.py ga status
+
+    scripts/head-meta.py events add             # /shared/analytics.js
+    scripts/head-meta.py events remove
+    scripts/head-meta.py events status
 
 Everything it writes is wrapped in a sentinel comment pair, so it can find its
 own work again to count it or take it back out:
 
-    <!-- GA4:START -->  ...  <!-- GA4:END -->
+    <!-- GA4:START -->        ...  <!-- GA4:END -->
+    <!-- LAB-EVENTS:START -->  ...  <!-- LAB-EVENTS:END -->
 
 Discipline, per `00. Technical Notes/Analytics and SEO for a Client Site.md`:
 
@@ -24,13 +31,14 @@ Discipline, per `00. Technical Notes/Analytics and SEO for a Client Site.md`:
     leave a half-written page;
   * files are read and written with no line-ending translation, so a CRLF file
     does not come back with every line changed;
-  * `add` / `remove` / `status`, so the install is reversible and countable.
+  * `add` / `remove` / `status` per block, so each install is reversible and
+    countable on its own.
 
 After any sweep, check all four before committing:
 
     git diff --stat        touches exactly the number of pages you expect
     git diff --numstat     identical insertion counts, zero deletions
-    scripts/head-meta.py ga status     every page reports present, once
+    scripts/head-meta.py status        every page reports present, once
     re-run the same add    reports "already present", modifies 0 files
 """
 
@@ -92,17 +100,16 @@ EXCLUDED = {
 # `vault/player.html` and `vault/play.html` ARE included even though robots.txt
 # disallows them: "do not index this" and "do not measure this" are different
 # questions, and they are how anyone actually plays a Vault game. Without them
-# the numbers cannot answer whether a recovered game was ever played.
+# the numbers cannot answer whether a recovered game was ever played — and it is
+# from those two pages that /shared/analytics.js reports `game_start` for the
+# Vault, which is why the events block has to reach them too.
 
-GA_START = "<!-- GA4:START -->"
-GA_END = "<!-- GA4:END -->"
 GA_ID_RE = re.compile(r"G-[A-Z0-9]{6,}")
 
 
-def ga_block(mid: str, nl: str) -> str:
-    """The tag, with Google Signals and ad personalisation off."""
-    return nl.join([
-        GA_START,
+def ga_body(nl: str, mid: str) -> list[str]:
+    """The GA4 tag, with Google Signals and ad personalisation off."""
+    return [
         f'<script async src="https://www.googletagmanager.com/gtag/js?id={mid}"></script>',
         "<script>",
         "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}",
@@ -110,9 +117,30 @@ def ga_block(mid: str, nl: str) -> str:
         f"gtag('config','{mid}',"
         "{allow_google_signals:false,allow_ad_personalization_signals:false});",
         "</script>",
-        GA_END,
-        "",
-    ])
+    ]
+
+
+def events_body(nl: str, arg: str) -> list[str]:
+    """The lab's own event tracking. See shared/analytics.js for what it sends."""
+    return ['<script src="/shared/analytics.js" defer></script>']
+
+
+BLOCKS = {
+    "ga": {
+        "start": "<!-- GA4:START -->",
+        "end": "<!-- GA4:END -->",
+        "body": ga_body,
+        "needs_arg": True,
+        "what": "GA4 tag",
+    },
+    "events": {
+        "start": "<!-- LAB-EVENTS:START -->",
+        "end": "<!-- LAB-EVENTS:END -->",
+        "body": events_body,
+        "needs_arg": False,
+        "what": "/shared/analytics.js",
+    },
+}
 
 
 def read(path: str) -> str:
@@ -157,16 +185,17 @@ def each_page():
         yield rel, path, text, "ok"
 
 
-def existing_block(text: str):
+def find_block(text: str, spec):
     """(start, end_exclusive, count) of the sentinel block, or None."""
-    count = text.count(GA_START)
+    s0, e0 = spec["start"], spec["end"]
+    count = text.count(s0)
     if count == 0:
         return None
-    s = text.find(GA_START)
-    e = text.find(GA_END, s)
+    s = text.find(s0)
+    e = text.find(e0, s)
     if e == -1:
         return (s, len(text), count)
-    e += len(GA_END)
+    e += len(e0)
     while e < len(text) and text[e] in "\r\n":
         e += 1
     return (s, e, count)
@@ -183,39 +212,45 @@ def cmd_pages() -> int:
     return 0
 
 
-def cmd_status() -> int:
+def cmd_status(names) -> int:
     bad = 0
-    ids: set[str] = set()
-    for rel, _path, text, state in each_page():
-        if state != "ok":
-            print(f"  !! {state:12} {rel}")
-            bad += 1
-            continue
-        blk = existing_block(text)
-        if blk is None:
-            print(f"  -- absent      {rel}")
-            continue
-        _s, _e, count = blk
-        found = GA_ID_RE.findall(text)
-        ids.update(found)
-        uniq = sorted(set(found))
-        note = "" if count == 1 else f"  !! sentinel x{count}"
-        if count != 1:
-            bad += 1
-        print(f"  ok present     {rel}  {','.join(uniq) or '(no id?)'}{note}")
-    print()
-    if len(ids) > 1:
-        print(f"  !! more than one measurement ID across the site: {sorted(ids)}")
-        bad += 1
-    elif ids:
-        print(f"  measurement ID: {sorted(ids)[0]}")
-    print("  clean" if not bad else f"  {bad} problem(s)")
+    for name in names:
+        spec = BLOCKS[name]
+        print(f"\n{name} — {spec['what']}\n")
+        ids: set[str] = set()
+        for rel, _path, text, state in each_page():
+            if state != "ok":
+                print(f"  !! {state:12} {rel}")
+                bad += 1
+                continue
+            blk = find_block(text, spec)
+            if blk is None:
+                print(f"  -- absent      {rel}")
+                continue
+            _s, _e, count = blk
+            note = "" if count == 1 else f"  !! sentinel x{count}"
+            if count != 1:
+                bad += 1
+            extra = ""
+            if name == "ga":
+                found = sorted(set(GA_ID_RE.findall(text)))
+                ids.update(found)
+                extra = "  " + (",".join(found) or "(no id?)")
+            print(f"  ok present     {rel}{extra}{note}")
+        if name == "ga":
+            if len(ids) > 1:
+                print(f"\n  !! more than one measurement ID site-wide: {sorted(ids)}")
+                bad += 1
+            elif ids:
+                print(f"\n  measurement ID: {sorted(ids)[0]}")
+    print("\n  clean" if not bad else f"\n  {bad} problem(s)")
     return 1 if bad else 0
 
 
-def cmd_add(mid: str) -> int:
-    if not GA_ID_RE.fullmatch(mid):
-        print(f"not a GA4 measurement ID: {mid!r} (want G-XXXXXXXXXX)", file=sys.stderr)
+def cmd_add(name: str, arg: str) -> int:
+    spec = BLOCKS[name]
+    if name == "ga" and not GA_ID_RE.fullmatch(arg or ""):
+        print(f"not a GA4 measurement ID: {arg!r} (want G-XXXXXXXXXX)", file=sys.stderr)
         return 2
     changed = present = skipped = 0
     for rel, path, text, state in each_page():
@@ -223,22 +258,23 @@ def cmd_add(mid: str) -> int:
             print(f"  !! skipped ({state}): {rel}", file=sys.stderr)
             skipped += 1
             continue
-        blk = existing_block(text)
+        blk = find_block(text, spec)
         if blk is not None:
-            if mid in text:
-                print(f"  -- already present: {rel}")
-                present += 1
-            else:
+            if name == "ga" and arg not in text:
                 print(f"  !! skipped: {rel} carries a DIFFERENT measurement ID "
                       f"({','.join(sorted(set(GA_ID_RE.findall(text))))}) — "
                       f"run `ga remove` first", file=sys.stderr)
                 skipped += 1
+            else:
+                print(f"  -- already present: {rel}")
+                present += 1
             continue
         nl = newline_of(text)
         idx = text.find(ANCHOR)
         pad = indent_of(text, idx)
         at = idx - len(pad)          # start of the anchor's own line
-        block = "".join(pad + ln + nl for ln in ga_block(mid, nl).split(nl) if ln)
+        lines = [spec["start"]] + spec["body"](nl, arg) + [spec["end"]]
+        block = "".join(pad + ln + nl for ln in lines)
         if at > 0 and text[at - 1] != "\n":
             block = nl + block       # anchor sits mid-line (hello/index.html)
         write_atomic(path, text[:at] + block + text[at:])
@@ -248,7 +284,8 @@ def cmd_add(mid: str) -> int:
     return 1 if skipped else 0
 
 
-def cmd_remove() -> int:
+def cmd_remove(name: str) -> int:
+    spec = BLOCKS[name]
     changed = absent = skipped = 0
     for rel, path, text, state in each_page():
         if state != "ok":
@@ -257,7 +294,7 @@ def cmd_remove() -> int:
             continue
         out = text
         while True:
-            blk = existing_block(out)
+            blk = find_block(out, spec)
             if blk is None:
                 break
             s, e, _c = blk
@@ -276,21 +313,30 @@ def cmd_remove() -> int:
     return 1 if skipped else 0
 
 
+USAGE = """usage:
+  scripts/head-meta.py status
+  scripts/head-meta.py pages
+  scripts/head-meta.py ga add G-XXXXXXXXXX | ga remove | ga status
+  scripts/head-meta.py events add | events remove | events status"""
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) >= 2 and argv[0] == "ga":
-        if argv[1] == "status":
-            return cmd_status()
-        if argv[1] == "remove":
-            return cmd_remove()
-        if argv[1] == "add" and len(argv) == 3:
-            return cmd_add(argv[2])
     if argv[:1] == ["pages"]:
         return cmd_pages()
-    print("usage:\n"
-          "  scripts/head-meta.py ga status\n"
-          "  scripts/head-meta.py ga add G-XXXXXXXXXX\n"
-          "  scripts/head-meta.py ga remove\n"
-          "  scripts/head-meta.py pages", file=sys.stderr)
+    if argv[:1] == ["status"]:
+        return cmd_status(list(BLOCKS))
+    if len(argv) >= 2 and argv[0] in BLOCKS:
+        name, verb = argv[0], argv[1]
+        if verb == "status":
+            return cmd_status([name])
+        if verb == "remove":
+            return cmd_remove(name)
+        if verb == "add":
+            if BLOCKS[name]["needs_arg"] and len(argv) != 3:
+                print(USAGE, file=sys.stderr)
+                return 2
+            return cmd_add(name, argv[2] if len(argv) > 2 else "")
+    print(USAGE, file=sys.stderr)
     return 2
 
 
