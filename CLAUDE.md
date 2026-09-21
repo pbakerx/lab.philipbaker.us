@@ -139,8 +139,9 @@ one place, and never call something installed until you have watched it work on 
 
 | Script | Owns |
 |---|---|
-| `scripts/head-meta.py` | The GA4 tag, in the `<head>` of every swept page. `ga add G-…` / `ga remove` / `ga status` / `pages`. Sentinel-wrapped (`<!-- GA4:START -->`…`<!-- GA4:END -->`), idempotent, atomic, no line-ending translation. `pages` prints the swept set **and** every deliberate omission with its reason. |
+| `scripts/head-meta.py` | Two sentinel blocks in the `<head>` of every swept page: **`ga`** (the GA4 tag, `<!-- GA4:START -->`…`<!-- GA4:END -->`) and **`events`** (`<script src="/shared/analytics.js" defer>`, `<!-- LAB-EVENTS:START -->`…`<!-- LAB-EVENTS:END -->`). `<block> add|remove|status`, plus bare `status` for both and `pages` for the set. Idempotent, atomic, no line-ending translation. `pages` prints the swept set **and** every deliberate omission with its reason. |
 | `scripts/build-sitemap.py` | `sitemap.xml`, derived from the pages' own `<link rel="canonical">`. `--list` / `--check` / `--write`. |
+| `shared/analytics.js` | What the lab counts beyond page views — see "Events" below. |
 
 `build-sitemap.py`'s rule is the whole opt-out mechanism: **a page is in the sitemap iff it
 declares a canonical and does not declare `noindex`.** There is no exception list. A page
@@ -180,6 +181,52 @@ that `second-brain-case-study` established. Types: `VideoGame` for the three gam
 studies, `WebPage` for the two archive pages, and `WebSite` + `Person` + `CollectionPage` on
 the root. The `Person` node (`#philip`) is the entity that name searches match against;
 every other page's author points at its `@id`. Dates come from `git log`, not file mtimes.
+
+**Events — `shared/analytics.js`** (Sep 21 2026). Philip asked whether clicks from the
+landing page were tracked, and whether "a case study got a link on this page" was
+answerable. It was not: **GA4's enhanced measurement sends `click` for OUTBOUND links
+only.** An internal click is not collected at all, so the only evidence a project got
+opened was a later `page_view` you had to attribute by hand from `page_referrer`. One file,
+swept in as the `events` block, sends:
+
+- `select_item` on every **same-origin** link click — `items[0].item_id` is the destination
+  path, `item_name` the link's own text, and `item_list_name` **the page it was clicked
+  from**, which is the dimension that answers the question. Cross-origin links are
+  deliberately skipped: GA4 already sends `click` for those and ours would double-count.
+- `view_item_list` once on the home page, so a click has an impression to be a rate of.
+- `game_start` — the two Missile Commands call `window.pbTrack` from their own `startGame()`
+  (which every route in passes through: START, RESTART, PLAY AGAIN), and **the Vault's two
+  players report it from `analytics.js` itself**, off the `?f=`/`?t=` query string. That
+  counts the game that actually loaded rather than a click on a card, and it is why
+  `vault/player.html` and `vault/play.html` have to be in the swept set.
+
+It also closed two blind spots as a side effect: `/second-brain` and `/mind-harvest` are
+internal hrefs that redirect to other sites, so no outbound click fired and the destination
+carries none of our tags — nobody could tell whether either link had ever been used.
+
+The file loads on pages that are games, so: it never throws (every call wrapped; `gtag` is
+legitimately absent behind an ad blocker), never calls `preventDefault` or
+`stopPropagation`, adds no DOM and draws nothing (so `?shot=1` hashes the same), and
+defines exactly one global. Each game's call is `window.pbTrack && window.pbTrack(…)`, so
+a missing file is a no-op.
+
+**`/maze-wars` is deliberately excluded from the events block** — Philip, Sep 21 2026:
+no edits to the Maze Wars game, **at all**. It keeps the GA4 tag and reports page views like
+every other page; it reports no `select_item` and no `game_start`. `head-meta.py` carries
+that as a per-block `skip` with the reason attached, so `events add` prints "not swept"
+rather than quietly putting it back. **Do not "fix" it.** The earlier attempt touched
+`js/game.js` and bumped the `?v=` stamps; both were reverted and `cmp`-verified
+byte-identical, and `git diff 944ca83 -- maze-wars/` came back empty.
+
+**Verifying a custom event** is not the same as verifying the tag, and the Browser pane
+actively misleads here — its network log shows **same-origin requests only**, and
+`PerformanceResourceTiming.responseStatus` is **0** for a cross-origin resource without
+`Timing-Allow-Origin` (Google sends none). Read the beacon out of the page instead:
+`performance.getEntriesByType('resource').filter(e => /g\/collect/.test(e.name))` — `en=`
+is the event name and the `pr1…prN` parameters spell out the `items` array. To exercise a
+click handler without navigating away, add a **capture-phase** `preventDefault`: capture
+runs first and cancels the navigation, but propagation continues, so the real bubble-phase
+handler still runs.
 
 **Social cards.** Sources in `.claude/og-cards/*.html`, rendered with headless Chrome at
 `--window-size=1200,630 --force-device-scale-factor=1` — see the `--headless=new` never-exits
