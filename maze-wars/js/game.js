@@ -119,7 +119,7 @@ window.MW = window.MW || {};
   }
   function showObit(line, killer, by) {
     if (phase !== 'play') return; const a = GRIPES[rint(GRIPES.length)], b = EXCUSES[rint(EXCUSES.length)];
-    const done = (text) => { ui.close(); if (text && by !== net.id) { net.event({ t: 'm', n: me.name, s: text, to: by }); say(text, me.name); if (MW.thumbs && by === MW.thumbs.ID) MW.thumbs.heard(text); } MW.club.afterDeath(() => { if (!over) materialize(); }); };
+    const done = (text) => { ui.close(); if (text && by !== net.id) { net.event({ t: 'm', n: me.name, s: text, to: by }); say(text, me.name); MW.club.said(); if (MW.thumbs && by === MW.thumbs.ID) MW.thumbs.heard(text); } MW.club.afterDeath(() => { if (!over) materialize(); }); };
     ui.show({ x: 12, y: 32, w: 236, h: 216, escDefault: true, items: [
       { t: 'text', x: 4, y: 5, w: 228, s: line }, { t: 'text', x: 4, y: 58, w: 228, s: killer + ' appreciates your comments:' },
       { t: 'button', x: 4, y: 95, w: 194, h: 20, label: a, act: () => done(a) }, { t: 'button', x: 4, y: 117, w: 194, h: 20, label: b, act: () => done(b) },
@@ -226,7 +226,7 @@ window.MW = window.MW || {};
     ui.show({ x: 28, y: 42, w: 182, h: 168, items, escDefault: true }); }
   function dlgMessage() { if (phase !== 'play' || ui.dialog) return; ui.show({ x: 7, y: 268, w: 261, h: 68, plain: true, items: [
       { t: 'text', x: 7, y: 4, s: 'Message:' }, { t: 'edit', x: 9, y: 29, w: 242, h: 34, multi: true, max: 120, id: 'm' },
-      { t: 'button', x: 118, y: 2, w: 64, h: 20, label: 'OK', def: true, act: () => { const s = ui.field('m').value.trim(); ui.close(); if (s) { say(s, me.name); if (!net.event({ t: 'm', n: me.name, s }) && cfg.net) notice('Not connected: nobody heard that.'); if (MW.thumbs) MW.thumbs.heard(s); } } },
+      { t: 'button', x: 118, y: 2, w: 64, h: 20, label: 'OK', def: true, act: () => { const s = ui.field('m').value.trim(); ui.close(); if (s) { say(s, me.name); if (!net.event({ t: 'm', n: me.name, s }) && cfg.net) notice('Not connected: nobody heard that.'); MW.club.said(); if (MW.thumbs) MW.thumbs.heard(s); } } },
       { t: 'button', x: 192, y: 2, w: 64, h: 20, label: 'Cancel', cancel: true, act: () => ui.close() }] }); }
   function dlgTalk() { let on = cfg.net; ui.show({ x: 7, y: 268, w: 261, h: 68, plain: true, items: [
       { t: 'text', x: 1, y: 4, s: 'Apple Talk:' }, { t: 'radio', x: 90, y: 4, label: 'On', on: () => on, set: () => { on = true; } }, { t: 'radio', x: 136, y: 4, label: 'Off', on: () => !on, set: () => { on = false; } },

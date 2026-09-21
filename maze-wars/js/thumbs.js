@@ -1,4 +1,4 @@
-/* Thumbs — the house AI. When somebody finds the public maze empty, Thumbs joins eight seconds later, plays them like a person
+/* Thumbs — the house AI. When somebody finds the public maze empty, Thumbs joins four seconds later, plays them like a person
    would, and talks. The moment a second real player arrives he says goodbye and leaves: he is here so that nobody's first visit
    is to an empty room, never instead of people.
 
@@ -16,7 +16,7 @@ window.MW = window.MW || {};
 (function () {
   const W = MW.world, A = MW.audio, net = MW.net, game = MW.game, X = game.x, DX = W.DX, DY = W.DY;
   const ID = '~thumbs', NAME = 'Thumbs', LOOK = 2;      // look 2 is the little Macintosh: the house AI is the house computer
-  const JOIN_AFTER = 8000;                               // Philip: "Have him join 08 seconds in"
+  const JOIN_AFTER = 4000;                               // Philip, the morning after: "Make the bot come in at 4 seconds." (It was 8 for his first day.) Players send a heartbeat every 2 s, so 4 is still long enough to have heard anyone who is really here.
   const API = '/api/thumbs';
   const rnd = (a, b) => a + Math.random() * (b - a), chance = (p) => Math.random() < p, now = () => performance.now();
   // Every one of these says "AI". That is the point of their being templates: see api/thumbs.js.

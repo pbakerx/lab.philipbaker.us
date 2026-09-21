@@ -787,11 +787,35 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       minutes), the watcher logged it dropping off and rejoining, the broker then announced its line dead, and a
       listener on the backup broker heard it there, alone — before it bounced home again. The fixed build: 208
       heartbeats, worst gap 2.6 s, 0.3% CPU.
+  - **The visit log and the morning digest** (Sep 21 2026). Philip: "Are [we] able to see who's played and how long they
+    stayed on?" — and then "can we add game play duration?" Until then the only record of a visit was the "just came in"
+    email; play time was sent with a score and thrown away. Now `club.js` keeps a visit's numbers and reports one row:
+    name (and card name/place if they have one), arrival, **stay** (arrival to their last ACTIVE second — a tab left open
+    all night is not a twelve-hour visit), **play** (seconds with the window showing and a hand on the controls, i.e.
+    `!document.hidden` and input within the last minute), score, the most real players seen, whether Thumbs played them,
+    chat lines (`club.said()`, called from the two places a player speaks), phone or desktop, the referrer's HOST only,
+    and whether it was a private line (never which). No IP address, no fingerprint. It is sent when the page is hidden or
+    closed (a beacon) and every two minutes in between, because a phone kills a tab without a word; a report that would say
+    nothing new is not sent, so an abandoned window goes quiet.
+    - Storage follows the scores: `mazewars/v/<YYYYMMDD>/<visit id>.<b64 row>.<stamp>.json`, the row in the PATHNAME so a
+      digest is a listing; each report is put as a new object and the older ones for that visit are then deleted.
+    - `GET /api/mazewars?op=digest` mails Philip yesterday's visits — "yesterday" in CENTRAL time (`centralDay()` finds
+      Central midnight by trying 05:00 and 06:00 UTC; checked across both daylight-saving changes: 24, 25 and 23-hour
+      days). Vercel Cron calls it at 13:00 UTC (`vercel.json` `crons`). It is deliberately safe for anybody to call: a
+      marker (`mazewars/v/_digest/<date>.…`) written BEFORE the mail makes it once per day, and the reply carries counts
+      only. `VISITS_SINCE` stops it reporting on days before the log existed — "nobody came in" would have been a lie.
+      Rows older than 120 days are pruned there. `GET ?op=visits&back=N` with `x-admin-key` returns a day's rows and text.
+      `digestText()` is pure: run it in `jsc` with sample rows to see an email without sending one.
+    - The instant "just came in" emails are unchanged. Philip was asked whether the digest should replace them and had
+      not said when this was written.
+    - Tested against a stub of the endpoint in the scratchpad `serve.py` (`GET /__mw` reads the bodies back). The test page
+      shims `document.hidden` to false, because the Browser pane is a hidden page and hidden seconds are, rightly, not play.
   - **Thumbs, the house AI** (Sep 20 2026). Philip: "if there are no players in the game and a new player shows up, we
     insert an ai-player… it chats just like a real player… If a second real life player shows up, thumbs says
     goodbye… zero visible change to the user interface… His name should be thumbs." (The name is the stray test
-    player above; he liked it.) He joins **8 seconds** after somebody finds the public maze empty — Philip's number —
-    and leaves the moment there is a second player. **Not a robot**: the sidekicks are untouched, and yours sides with
+    player above; he liked it.) He joins **4 seconds** after somebody finds the public maze empty (Philip's number: 8 for
+    the first day, 4 from Sep 21 — still two heartbeats, so anyone really there has been heard) and leaves the moment
+    there is a second player. **Not a robot**: the sidekicks are untouched, and yours sides with
     you against him as it would against anyone.
     - **THE RULE: he never passes as a person.** Philip's first brief was "appears as a real player… an experience
       playing someone real"; he agreed to this instead ("I love it"). Anthropic's usage policy — the key is the one

@@ -14,6 +14,10 @@
 //   POST {op:"forget", pid}              -> delete everything held for that player
 //   POST {op:"request", text, ...}       -> the feature-request box
 //   GET  ?op=unsub&id=&k=                -> the one-click link in every email: all notices off
+//   POST {op:"visit", pid, vid, ...}     -> the visit log: who came, how long they stayed and played. Each report replaces the last.
+//   GET  ?op=digest        -> mail Philip yesterday's visits (Central time). Called by Vercel Cron each morning; safe for anyone to
+//                             call, because a marker makes it once per day and the reply carries counts only.
+//   GET  ?op=visits[&day=] (x-admin-key) -> a day's rows
 //   GET  ?op=requests      (x-admin-key) -> read the box              } only if
 //   DELETE ?id=<8 hex>     (x-admin-key) -> take a row off the board   } MAZEWARS_ADMIN_KEY is set
 //
@@ -27,11 +31,13 @@ import {
   SCORES, CARDS, BELLS, REQUESTS, BOARD_SIZE, KEEP, BELL_REST_MS, BELL_MAX, GAME, PID_RE, PH_RE, EMAIL_RE,
   seal, playerHash, unsubOk, clean, stamp, stampTime, encodeScore, decodeScore, better, ranked, publicRow,
   cardPath, decodeCard, newestCards, emailOf, listAll, mailReady, sendMail,
+  VISITS, VISITS_SINCE, VID_RE, encodeVisit, decodeVisit, centralDay, digestText,
 } from "../lib/mazewars.js";
 
 const scoreLimited = rateLimiter({ windowMs: 60_000, max: 20 });
 const helloLimited = rateLimiter({ windowMs: 600_000, max: 6 });
 const requestLimited = rateLimiter({ windowMs: 600_000, max: 4 });
+const visitLimited = rateLimiter({ windowMs: 600_000, max: 60 });
 const PUT = { access: "public", contentType: "application/json", addRandomSuffix: false, cacheControlMaxAge: 31536000 };
 
 const admin = (req) => !!process.env.MAZEWARS_ADMIN_KEY && req.headers["x-admin-key"] === process.env.MAZEWARS_ADMIN_KEY;
@@ -53,6 +59,27 @@ export default async function handler(req, res) {
   const b = req.body || {};
 
   try {
+    // ── the morning digest of the visit log ──────────────────────────────────────────────
+    if (req.method === "GET" && op === "digest") {
+      const day = centralDay(1); if (day.date < VISITS_SINCE) return res.status(200).json({ ok: true, sent: false, why: "before the log began" });
+      if (!mailReady() || !process.env.MAZEWARS_OWNER_EMAIL) return res.status(200).json({ ok: true, sent: false, why: "mail is not set up" });
+      const mark = `${VISITS}_digest/${day.date}.`; if ((await listAll(mark)).length) return res.status(200).json({ ok: true, sent: false, why: "already sent" });
+      const all = (await listAll(VISITS)).map(decodeVisit).filter(Boolean); const latest = new Map();                       // one row per visit: its newest report
+      for (const v of all) { const cur = latest.get(v.vid); if (!cur || stampTime(v.stamp) > stampTime(cur.stamp)) latest.set(v.vid, v); }
+      const rows = [...latest.values()].filter((v) => v.at >= day.start && v.at < day.end), before = new Set([...latest.values()].filter((v) => v.at < day.start && v.ph).map((v) => v.ph));
+      await put(`${mark}${stamp()}.json`, JSON.stringify({ v: 1, day: day.date, visits: rows.length, when: new Date().toISOString() }), PUT);   // the marker FIRST: a second call must not send a second copy
+      const words = digestText(rows, day, before), sent = await sendMail(process.env.MAZEWARS_OWNER_EMAIL, words.subject, words.text);
+      const old = all.filter((v) => v.at && v.at < Date.now() - 120 * 86_400_000).map((v) => v.pathname); if (old.length) await del(old.slice(0, 500));   // four months is plenty
+      return res.status(200).json({ ok: true, sent: !!sent.sent, visits: rows.length, day: day.date });
+    }
+    if (req.method === "GET" && op === "visits") {
+      if (!admin(req)) return res.status(404).json({ error: "Not found." });
+      const back = Math.max(0, Math.min(120, parseInt(req.query?.back ?? "0", 10) || 0)), day = centralDay(back), latest = new Map();
+      for (const v of (await listAll(VISITS)).map(decodeVisit).filter(Boolean)) { const cur = latest.get(v.vid); if (!cur || stampTime(v.stamp) > stampTime(cur.stamp)) latest.set(v.vid, v); }
+      const rows = [...latest.values()].filter((v) => v.at >= day.start && v.at < day.end).sort((a, b) => a.at - b.at);
+      return res.status(200).json({ day: day.date, visits: rows.map(({ pathname, stamp: _s, ...r }) => r), text: digestText(rows, day).text });
+    }
+
     // ── the board ────────────────────────────────────────────────────────────────────────
     if (req.method === "GET" && (op === "board" || op === "")) {
       const { top } = await board();
@@ -124,6 +151,19 @@ export default async function handler(req, res) {
         await del(all.filter((e) => e.ph === ph).map((e) => e.pathname));
       }
       return res.status(200).json({ ok: true, email: mailReady(), bump: card.bump, online: card.online });
+    }
+
+    // ── the visit log: one row per visit, each report replacing the one before ─────────────
+    if (req.method === "POST" && op === "visit") {
+      if (visitLimited(clientIp(req))) return res.status(429).json({ error: "Easy." });
+      if (!PID_RE.test(String(b.pid || "")) || !VID_RE.test(String(b.vid || ""))) return res.status(400).json({ error: "Malformed." });
+      const num = (x, hi) => Math.max(0, Math.min(hi, Math.round(Number(x)) || 0)), now = Date.now(); let at = Number(b.at) || now; if (at > now + 60_000 || at < now - 36 * 3_600_000) at = now;
+      const stay = num(b.stay, 86_400), ref = String(b.ref || "").toLowerCase();
+      const v = { vid: String(b.vid), ph: playerHash(b.pid), stamp: stamp(), at, stay, play: Math.min(num(b.play, 86_400), stay + 5), name: clean(b.name, 15) || "Nobody", full: clean(b.full, 40), loc: clean(b.loc, 40),
+        kills: num(b.kills, 9999), deaths: num(b.deaths, 9999), humans: num(b.humans, 40), thumbs: b.thumbs ? 1 : 0, chat: num(b.chat, 999), touch: b.touch ? 1 : 0, ref: /^[a-z0-9.-]{1,60}$/.test(ref) ? ref : "", line: b.line ? 1 : 0 };
+      const path = encodeVisit(v); await put(path, JSON.stringify({ v: 1, when: new Date().toISOString() }), PUT);
+      const older = (await listAll(path.slice(0, path.indexOf(v.vid) + v.vid.length + 1))).map((x) => x.pathname).filter((x) => x !== path); if (older.length) await del(older);
+      return res.status(200).json({ ok: true, kept: true });
     }
 
     // ── "I just came in" ─────────────────────────────────────────────────────────────────

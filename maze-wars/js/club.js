@@ -23,6 +23,27 @@ window.MW = window.MW || {};
   const take = (j) => { board.state = 'ok'; board.top = Array.isArray(j.top) ? j.top.slice(0, 10) : []; board.players = j.players | 0; board.email = !!j.email; if (j.you) board.you = j.you; if (j.rank !== undefined) board.rank = j.rank | 0; };
   const refresh = () => { board.state = board.state === 'ok' ? 'ok' : 'loading'; return call(null, '?op=board').then(take, () => { if (board.state !== 'ok') board.state = 'error'; }); };
 
+  // ---------------------------------------------------------------- the visit log
+  // Who came, and for how long: one row per visit, for Philip's morning digest (see lib/mazewars.js). "play" counts only seconds
+  // with the window showing and a hand on the controls; "stay" runs from arriving to the last such second, so a tab left open all
+  // night is not a twelve-hour visit. Reported when the page is hidden or closed — a beacon, since closing is one of the ways a
+  // visit ends — and every two minutes in between, because a phone kills a tab without a word. A report that would say nothing
+  // new is not sent, so an abandoned window goes quiet. No address, no fingerprint: the name they typed and what the game counted.
+  const visit = { id: '', at: 0, tick: 0, play: 0, activeAt: 0, humans: 0, thumbs: 0, chat: 0, sentAt: 0, sentKey: '' };
+  const refHost = (() => { try { const h = new URL(document.referrer).hostname.toLowerCase(); return h && h !== location.hostname ? h.replace(/^www\./, '') : ''; } catch (e) { return ''; } })();
+  function report(leaving) { if (!visit.id) return; const m = me(), now = Date.now();
+    const body = { op: 'visit', pid: prof.pid, vid: visit.id, at: visit.at, stay: Math.round(((visit.activeAt || visit.at) - visit.at) / 1000), play: Math.round(visit.play / 1000), name: m.name, full: prof.full, loc: prof.loc, kills: m.kills, deaths: m.deaths,
+      humans: visit.humans, thumbs: visit.thumbs, chat: visit.chat, touch: ui.touch ? 1 : 0, ref: refHost, line: MW.game.cfg.zone ? 1 : 0 };
+    const key = [body.play, body.kills, body.deaths, body.chat, body.humans, body.thumbs, body.name].join('|'); if (key === visit.sentKey) return; visit.sentKey = key; visit.sentAt = now;
+    const json = JSON.stringify(body); try { if (leaving && navigator.sendBeacon && navigator.sendBeacon(API, new Blob([json], { type: 'application/json' }))) return; } catch (e) { }
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: json, keepalive: true }).catch(() => { }); }
+  function watch() { const now = Date.now(), dt = Math.min(2000, now - visit.tick); visit.tick = now; const g = MW.game;
+    if (!document.hidden && g.x.idleMs() < 60000) { visit.play += dt; visit.activeAt = now; }
+    let h = 0; for (const p of g.others.values()) if (!p.local && p.inMaze) h++; if (h > visit.humans) visit.humans = h; if (MW.thumbs && MW.thumbs.here) visit.thumbs = 1;
+    if (now - visit.sentAt > 120000) report(false); }
+  function arrive() { if (visit.id) return; visit.id = newPid().slice(0, 16); visit.at = visit.tick = visit.activeAt = visit.sentAt = Date.now(); setInterval(watch, 1000);
+    addEventListener('pagehide', () => report(true)); document.addEventListener('visibilitychange', () => { if (document.hidden) report(true); }); }
+
   // A score goes in only when it could matter: the board has room, you would beat the last row, or you are already on it.
   function worthSending() { const m = me(); if (m.kills < 1 || (m.kills === sent.k && m.deaths === sent.d)) return false; if (board.state !== 'ok' || board.top.length < 10) return true;
     if (board.top.some(r => r.id === board.you)) return true; const last = board.top[board.top.length - 1]; return m.kills > last.kills || (m.kills === last.kills && m.deaths < last.deaths); }
@@ -37,7 +58,8 @@ window.MW = window.MW || {};
   const club = MW.club = {
     prof, board,
     // ---------------------------------------------------------------- hooks the game calls
-    entered() { if (!t0) t0 = performance.now(); if (board.state === 'idle') refresh(); if (saidHello) return; saidHello = true;
+    said() { visit.chat++; },
+    entered() { arrive(); if (!t0) t0 = performance.now(); if (board.state === 'idle') refresh(); if (saidHello) return; saidHello = true;
       if (Date.now() - (prof.helloAt || 0) < 20 * 60000) return; prof.helloAt = Date.now(); save(); const m = me();
       call({ op: 'hello', pid: prof.pid, name: m.name, full: prof.full, loc: prof.loc, announce: !!prof.announce }).then((j) => { if (!prof.announce || !j.email) return;
         if (j.announced > 0) say('The others have been told you are here: ' + j.announced + (j.announced === 1 ? ' email.' : ' emails.'));
