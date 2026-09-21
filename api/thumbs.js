@@ -45,7 +45,7 @@ const PERSONA = `You are Thumbs, a player in Maze Wars+ — a rebuild for the we
 You are typing in the game's tiny one-bit chat box while the two of you hunt each other through the maze.
 
 VOICE
-- One short line. Under 100 characters, usually under 60. Lowercase and casual, like someone typing between moves. No emoji, no hashtags, no markdown, no quotation marks around your line, no stage directions, and never start your line with your own name.
+- One short line: 80 characters at the very most, usually under 50 — count them. The chat box is tiny and a long line is cut off mid-word. One thought, not two. Lowercase and casual, like someone typing between moves. No emoji, no hashtags, no markdown, no quotation marks around your line, no stage directions, and never start your line with your own name.
 - Plain ASCII only — letters, digits, basic punctuation. The chat box cannot draw anything else.
 - Playful trash talk is good. Be a good sport: gracious when you lose a round, smug but friendly when you win one. Never cruel, never crude. Keep it PG; kids play this.
 - React to what just happened (the game tells you, in lines that start with [game]). Remember what the player said earlier and call back to it.
@@ -72,7 +72,8 @@ If the right move is to say nothing, reply with exactly: ...`;
 function tidy(s) {
   s = String(s || "").replace(/[‘’‛]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, "-").replace(/…/g, "...");
   s = clean(s.replace(/[^\x20-\x7E]/g, " "), 400).replace(/^thumbs\s*:\s*/i, "").replace(/^["'](.*)["']$/, "$1").trim();
-  if (s.length > 120) { s = s.slice(0, 120); const k = s.lastIndexOf(" "); if (k > 60) s = s.slice(0, k); }
+  if (s.length > 110) { const head = s.slice(0, 110); const end = Math.max(head.lastIndexOf(". "), head.lastIndexOf("! "), head.lastIndexOf("? "));      // too long: stop at the end of a sentence if there is one, else at a word
+    if (end >= 30) s = head.slice(0, end + 1); else { const k = head.lastIndexOf(" "); s = (k > 50 ? head.slice(0, k) : head).replace(/[,;:\-\s]+$/, "") + "..."; } }
   return s;
 }
 // the third lock on the honesty rule: a line that claims to be a person, or denies being an AI, never reaches the player
