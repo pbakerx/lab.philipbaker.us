@@ -157,7 +157,7 @@ window.MW = window.MW || {};
     if (t - lastTalkAt > 150000 && nudges < 2 && X.idleMs() < 20000) { nudges++; lastTalkAt = t; remark('It has been quiet for a couple of minutes. ' + me.name + ' has not said anything. Say something short to get them talking, or taunt them into finding you.', 1); }
     // now and then, the pitch: three times a session at most, eight to twelve minutes apart, never on top of another line, and only while they are actually playing
     if (t >= inviteAt && invites < 3) { if (busy || t - lastLineAt < 20000 || X.idleMs() > 30000) inviteAt = t + 15000;
-      else { invites++; inviteAt = t + rnd(480000, 720000); lastTalkAt = t; ask('event', 'Suggest that ' + me.name + ' invite a friend to play. Tell them how: the File menu, Invite a Friend, which gives them a link to send. Name the File menu. One short friendly line in your own words: it is more fun with real people, and you step aside the moment one arrives.', INVITES[Math.floor(Math.random() * INVITES.length)]); } }
+      else { invites++; inviteAt = t + rnd(480000, 720000); lastTalkAt = t; ask('event', 'Suggest that ' + me.name + ' invite a friend to play. Tell them how: the File menu, Invite a Friend, which gives them a link to send. Name the File menu. One short friendly line in your own words: it is more fun with real people, and you step aside the moment one arrives (so never say you will play along with them).', INVITES[Math.floor(Math.random() * INVITES.length)]); } }
   }
 
   addEventListener('pagehide', () => { if (mode !== 'absent') endTalk(); });
