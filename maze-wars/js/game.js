@@ -158,7 +158,7 @@ window.MW = window.MW || {};
   // ---------------------------------------------------------------- the network
   function clampInt(v, lo, hi) { v = v | 0; return v < lo ? lo : v > hi ? hi : v; }
   function sendState(t) { const r = robot.alive ? [cfg.robotType, robot.level, robot.x, robot.y, robot.dir] : 0;
-    const s = { n: me.name, a: me.look, l: me.level, x: me.x, y: me.y, d: me.dir, k: me.kills, q: me.deaths, v: me.alive && !ride ? 1 : 0, i: me.inMaze ? 1 : 0, o: opts, oc: optClock, r };
+    const s = { n: me.name, a: me.look, l: me.level, x: me.x, y: me.y, d: me.dir, k: me.kills, q: me.deaths, v: me.alive && !ride ? 1 : 0, i: me.inMaze ? 1 : 0, h: document.hidden ? 1 : 0, o: opts, oc: optClock, r };
     const j = JSON.stringify(s); if (j === lastSent && t - lastSentAt < 2000) return; if (net.state(s)) { lastSent = j; lastSentAt = t; stateDirty = false; } }
   net.onState = (id, s) => {
     let o = others.get(id); const t = now(); const fresh = !o;
@@ -166,7 +166,7 @@ window.MW = window.MW || {};
     const name = MW.FONT.clean(s.n, 15).trim() || 'Nobody'; const x = clampInt(s.x, 0, 15), y = clampInt(s.y, 0, 15), l = clampInt(s.l, 0, 3);
     if (W.levels[l].w[y][x] === 15) return;                                                   // nobody stands inside a wall
     if (o.x !== x || o.y !== y || o.level !== l) o.arrived = t;
-    o.name = name; o.look = clampInt(s.a, 0, 4); o.level = l; o.x = x; o.y = y; o.dir = clampInt(s.d, 0, 3); o.kills = clampInt(s.k, 0, 9999); o.deaths = clampInt(s.q, 0, 9999); o.alive = s.v === 1; o.inMaze = s.i === 1; o.seen = t;
+    o.name = name; o.look = clampInt(s.a, 0, 4); o.level = l; o.x = x; o.y = y; o.dir = clampInt(s.d, 0, 3); o.kills = clampInt(s.k, 0, 9999); o.deaths = clampInt(s.q, 0, 9999); o.alive = s.v === 1; o.inMaze = s.i === 1; o.idle = s.h === 1; o.seen = t;
     if (Array.isArray(s.r) && s.r.length === 5) { const rx = clampInt(s.r[2], 0, 15), ry = clampInt(s.r[3], 0, 15), rl = clampInt(s.r[1], 0, 3); if (W.levels[rl].w[ry][rx] !== 15) { const moved = !o.robot || o.robot.x !== rx || o.robot.y !== ry; o.robot = { type: clampInt(s.r[0], 0, 3), level: rl, x: rx, y: ry, dir: clampInt(s.r[4], 0, 3), arrived: moved ? t : o.robot.arrived }; } } else o.robot = null;
     const oc = +s.oc || 0; if (oc > optClock && oc < Date.now() + 60000) { optClock = oc; opts = clampInt(s.o, 0, 15); }
     if (fresh && o.inMaze) { notice(name + ' joined the game.'); A.mail(); stateDirty = true; }
@@ -187,10 +187,18 @@ window.MW = window.MW || {};
     else if (e.t === 'o') { const bit = clampInt(e.c, 0, 15); if (OPT_NAMES[bit]) { const on = (clampInt(e.o, 0, 15) & bit) !== 0; notice(bit === OPT.BLACKOUT && on ? 'Blacked-out by ' + o.name + '.' : OPT_NAMES[bit] + (on ? ' switched on by ' : ' switched off by ') + o.name + '.'); } }
     else if (e.t === 't') { if (clampInt(e.l, 0, 3) === me.level) A.tele(); }
   };
-  net.onStatus = (s) => { if (s === 'on') { notice(net.zone !== 'lobby' ? 'Private line ' + net.zone + ': only callers of that number are here. Phone, HangUp to leave.' : 'AppleTalk is on: the public maze.'); stateDirty = true; lastSent = ''; } else if (s === 'off') { others.clear(); } };
+  let wasBackup = false;
+  net.onStatus = (s) => { if (s === 'on') { if (net.backup) notice('The main network is not answering. This is the backup; few people will be here.'); else if (wasBackup) notice('Back on the main network.');
+      else notice(net.zone !== 'lobby' ? 'Private line ' + net.zone + ': only callers of that number are here. Phone, HangUp to leave.' : 'AppleTalk is on: the public maze.'); wasBackup = net.backup; stateDirty = true; lastSent = ''; } else if (s === 'off') { others.clear(); wasBackup = false; } };
+  // A hidden tab's frames may be a second or a minute apart: tell the others NOW that this player has stopped looking, and now that they are back.
+  document.addEventListener('visibilitychange', () => { stateDirty = true; if (phase === 'play' && net.status === 'on') sendState(now()); });
   const TITLE = document.title; let titleAt = 0, titleN = -1;
   function headcount(t) { if (t - titleAt < 1000) return; titleAt = t; const n = phase === 'play' ? humans() : 0; if (n !== titleN) { titleN = n; document.title = (n ? '(' + (n + 1) + ') ' : '') + TITLE; } }
-  function sweep(t) { for (const [id, o] of others) if (t - o.seen > 9000) { if (o.inMaze) notice(o.name + ' dropped off the network.'); others.delete(id); } }
+  // Silence means gone — but how much silence? A player who left properly said 'bye', and one whose line dropped had it said for them
+  // by the broker, so this is only for the rest. It was 9 s for everybody, and a window in the BACKGROUND (whose heartbeat the browser
+  // slows, to one a minute after five minutes) flickered in and out of everyone's list all evening. A player who told us their page
+  // is hidden gets a long leash; one who should be sending every 2 s gets 20.
+  function sweep(t) { for (const [id, o] of others) if (t - o.seen > (o.idle ? 90000 : 20000)) { if (o.inMaze) notice(o.name + ' dropped off the network.'); others.delete(id); } }
   function setOpt(bit) { opts ^= bit; optClock = Date.now(); stateDirty = true; net.event({ t: 'o', o: opts, c: bit, n: me.name }); if (bit === OPT.MAZES && !mazesOn() && me.inMaze && me.level !== 0) { me.level = 0; materialize(); } }
 
   // ---------------------------------------------------------------- dialogs (laid out from the original's)
@@ -220,7 +228,7 @@ window.MW = window.MW || {};
       { t: 'button', x: 192, y: 2, w: 64, h: 20, label: 'Cancel', cancel: true, act: () => ui.close() }] }); }
   function dlgTalk() { let on = cfg.net; ui.show({ x: 7, y: 268, w: 261, h: 68, plain: true, items: [
       { t: 'text', x: 1, y: 4, s: 'Apple Talk:' }, { t: 'radio', x: 90, y: 4, label: 'On', on: () => on, set: () => { on = true; } }, { t: 'radio', x: 136, y: 4, label: 'Off', on: () => !on, set: () => { on = false; } },
-      { t: 'custom', x: 3, y: 24, w: 190, h: 40, draw: (x, y) => { const st = !cfg.net ? 'AppleTalk is off.' : net.status === 'on' ? 'Apple Talk is on. ' + (humans() + 1) + ' in zone “' + net.zone + '”.' : net.status === 'error' ? 'No answer. Still trying…' : 'Looking for the network…'; G.wrap(GEN, st.replace(/[“”]/g, '"'), 190).forEach((l, k) => G.text(GEN, l, x, y + 10 + k * 13, 1)); } },
+      { t: 'custom', x: 3, y: 24, w: 190, h: 40, draw: (x, y) => { const st = !cfg.net ? 'AppleTalk is off.' : net.status === 'on' ? 'Apple Talk is on. ' + (humans() + 1) + ' in zone “' + net.zone + '”. ' + (net.backup ? 'Backup' : 'Main') + ' exchange (' + net.broker + ').' : net.status === 'error' ? 'No answer. Still trying…' : 'Looking for the network…'; G.wrap(GEN, st.replace(/[“”]/g, '"'), 190).forEach((l, k) => G.text(GEN, l, x, y + 10 + k * 13, 1)); } },
       { t: 'button', x: 204, y: 41, w: 55, h: 20, label: 'OK', def: true, act: () => { ui.close(); if (on !== cfg.net) { cfg.net = on; persist(); if (on) net.connect(cfg.zone); else net.disconnect(); } } }], escDefault: true }); }
   function dlgPhone() { ui.show({ x: 7, y: 268, w: 261, h: 68, plain: true, items: [
       { t: 'text', x: 6, y: 6, s: 'Phone#' }, { t: 'edit', x: 71, y: 6, w: 127, h: 15, max: 16, id: 'z', value: cfg.zone },
@@ -319,7 +327,7 @@ window.MW = window.MW || {};
     let lead = null, top = 0; for (const p of all) if (p.kills > top) { top = p.kills; lead = p; }
     const row = (p, y, first) => { const inv = p === lead; if (inv) G.fill(14, y - 9, 238, 12, 1); const c = inv ? 0 : 1;
       G.text(GEN, G.fit(GEN, p.name, first ? 128 : 118), 17, y, c); G.text(GEN, p.kills + '-' + p.deaths, 207, y, c);
-      if (!first) G.text(GEN, (p.alive ? 'level ' : 'down, ') + (p.level + 1), 140, y, c);   // where to go looking for them
+      if (!first) G.text(GEN, (p.idle ? 'idle, lvl ' : p.alive ? 'level ' : 'shot, lvl ') + (p.level + 1), 140, y, c);   // where to go looking for them; idle = their window is in the background
       if (first) { for (let k = 0; k < 4; k++) G.text(GEN, (opts >> k) & 1 ? '\u25C6' : '\u25C7', 151 + k * 9, y, c); for (let j = 0; j < 11; j++) for (let i = 0; i < 11; i++) if (PAC[j][i] === '#') G.pset(254 + i, 267 + j, 1); } };
     row(all[0], 275, true);
     const rest = all.slice(1).sort((a, b) => b.kills - a.kills); listTop = Math.max(0, Math.min(listTop, rest.length - 5));
@@ -328,6 +336,7 @@ window.MW = window.MW || {};
       const why = cfg.zone && cfg.net ? 'You are on a PRIVATE LINE: only people who dial the same number can see you. To rejoin everyone: Options menu, Phone, HangUp.'
         : !cfg.net ? 'AppleTalk is OFF, so you are playing alone. To join the others: Options menu, AppleTalk, On.'
         : net.status !== 'on' ? 'Looking for the network\u2026'
+        : net.backup ? 'The main network is not answering: this is the backup, and few people will be here. Home is tried again every minute.'
         : 'Nobody else is on the network yet. ' + (cfg.robotOn ? 'Your robot will keep you company.' : 'The Robot menu has a sidekick for you.') + ' File menu: Invite a Friend\u2026';
       G.wrap(GEN, why, 228).slice(0, 4).forEach((l, k) => G.text(GEN, l, 17, 293 + k * 13, 1)); }
   }
@@ -371,6 +380,7 @@ window.MW = window.MW || {};
 
   // ---------------------------------------------------------------- the frame
   function frame(t) {
+    net.tick();
     if (held.__clear) { for (const k in held) delete held[k]; heldOrder = []; peek = 0; padFire = false; }
     if (phase === 'play') {
       if (ride && t - ride.t0 > 1300) { me.level = ride.to; me.dir = W.exitDir(me.level, me.x, me.y); me.arrived = t; ride = null; stateDirty = true; }

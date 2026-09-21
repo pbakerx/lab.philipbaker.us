@@ -719,7 +719,7 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
   - **Network = "AppleTalk".** `js/net.js` is a ~60-line MQTT 3.1.1 client over WSS to a **public
     broker** (broker.emqx.io, fallback broker.hivemq.com; both answered from here). Topic tree
     `pbmazewars/1/<zone>/s/<id>` (state, on change + 2 s heartbeat) and `…/e` (events: fire, hit,
-    chat, option, teleport, bye — `bye` is also the MQTT last-will). Zone `lobby` is everyone;
+    chat, option, teleport, bye — `bye` is also the MQTT last-will — and `home`, which `net.js` keeps to itself). Zone `lobby` is everyone;
     Options ▸ Phone… dials a private zone, mirrored in the URL as `?line=`. Like the original there
     is no server and nobody in charge: **each machine decides when its OWN man or robot is hit**
     and tells the rest (a remote missile pauses 380 ms in an occupied cell to let that ruling
@@ -736,6 +736,56 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     (`net.tz`; the lobby stays `lobby`) — people type real phone numbers into that field, and a topic
     on a public broker is readable by anyone: subscribing to `pbmazewars/1/#` is how the stray
     device was found. To see who is where when debugging, do exactly that from any page's console.
+  - **A window in the background fell off the network — and into an empty one** (Sep 20 2026). Philip had two
+    sessions on one Mac; one saw a visitor ("RCV") and the other said "Nobody else is on the network yet" while
+    connected. With two windows on one screen, one is always hidden, and Chrome slows a hidden page's timers to one
+    a second and, after five minutes, to **one a MINUTE**. Three things in `net.js` then went wrong in a chain:
+    the heartbeat rode on a page timer, so it slowed to one a minute while everyone else forgot a player after 9 s
+    (the flicker: "tom joined / tom dropped off", all evening); the dead-line test was "nothing heard for 50 s",
+    which a once-a-minute clock reads as dead on a perfectly good line; and `fail()` was simply "try the NEXT broker"
+    — so the window hung up on home, connected to the backup and STAYED there, cheerful, alone, and indistinguishable
+    from a quiet evening. A reload looked like a cure (`connect()` starts at home), which is why it read as a cache
+    problem. The rules now, all in `net.js`:
+    - **Home first, always.** `BROKERS[0]` is where people meet. It gets `HOME_TRIES` (3) goes before a backup is
+      tried; a backup that fails sends you straight back to asking home; and while on a backup a second, throwaway
+      connection asks home every 45 s whether it is back (`probe()`). When it answers, the client publishes
+      `{t:'home'}` on the backup — everyone else stranded there looks at once rather than at their own next probe —
+      and moves. `net.backup` / `net.broker` say where you are: the AppleTalk dialog names the exchange, the status
+      notice and the empty-roster hint say so in words, and coming back says "Back on the main network."
+    - **The line is dead only if nothing has arrived since the last ping was SENT** (`net.pinged`, `net.pingAt`,
+      `net.lastRx`) — true however slowly the clock ticks. MQTT keep-alive is 120 s (the broker allows 1.5x).
+      `net.tick()` rides on the game's frame, with a 5 s page timer of its own behind it.
+    - **The hidden-tab tick comes from a Web Worker** (`main.js`): a worker's clock is not slowed the way the page's
+      is. The old page timer stays as the fallback. "A slow timer keeps the heartbeat alive in a background tab" was
+      the comment on the line that did not — it had never been tried for longer than five minutes.
+    - **Hidden is said, not guessed.** State carries `h:1` while `document.hidden`, sent the moment visibility changes
+      (not at the next frame, which may be a minute off). `sweep()` has two leashes: 90 s for a player who said they
+      are hidden, 20 s for one who should be sending every 2 s. A clean exit says `bye` and a dropped line has it said
+      by the broker (the MQTT will), so the sweep is only for the rest. The roster's where-column reads `level 2`,
+      `shot, lvl 2` (was the baffling "down, 2") or `idle, lvl 2`; 65 px is all that column has — measure with
+      `G.textW` before rewording ("away, lvl 4" is exactly 65 and touches the score).
+    - **`performance.now()` counts from page load**, so 0 is not "long ago" on a young page: "do it at the next tick"
+      is `NOW = -1e12`. The scripted test caught this one — a probe armed with `probeAt = 0` would not fire during a
+      page's first 45 seconds.
+    - **How it was found, and the lesson in it:** Claude's own test tab. Signing in on the local mirror joins the REAL
+      lobby — the mirror runs the real network code — and "Thumbs" lay dead on level 1 in Philip's roster for 93
+      minutes after the preview SERVER was stopped (a loaded page does not need its server). Its message log was the
+      flight recorder that solved this, but it should never have been there: **test on a private line (`?line=…`),
+      and close the tab, not just the server.** POSTs to `/api/` 501 on the mirror, so it left no score and sent no mail.
+    - **Testing it** (all three were needed; the first found a bug the others could not): (1) swap `window.WebSocket`
+      for a scripted fake and walk the rules — dial order, keep-alive bytes, the probe's missing will, the `home`
+      event, the two liveness cases; (2) put a gate in front of the REAL WebSocket that refuses home, land on the
+      real backup, open the gate, watch it hop; (3) the real thing: `open -g -n -a "Google Chrome" --args
+      --user-data-dir=<scratch> …` with `about:blank` tabs at BOTH ends of the URL list (whichever end Chrome
+      activates, the game tabs are background tabs), a mirror-only `t-auto.html` that signs itself in (it appends H
+      or V to the name from `document.hidden`), the live build served beside the new one from `git archive HEAD`,
+      and a watcher page logging every state message by arrival time. It takes ten minutes because the heavy
+      throttling takes five to start. `pkill -f` the scratch profile afterwards.
+      **What it showed** (both tabs hidden from load, 6.5 minutes): the live build's heartbeat stretched to one a
+      minute within 90 seconds (Chrome's heavy throttling starts after ~10 s for a page that LOADS hidden, not five
+      minutes), the watcher logged it dropping off and rejoining, the broker then announced its line dead, and a
+      listener on the backup broker heard it there, alone — before it bounced home again. The fixed build: 208
+      heartbeats, worst gap 2.6 s, 0.3% CPU.
   - **The clubhouse** (Sep 19 2026) — the only server-side part, and the game plays without it:
     `api/mazewars.js` + `lib/mazewars.js` on Vercel Blob, `js/club.js` in the page. A How to Play page
     before sign-in; a **high score board** (most kills in one visit, ties to fewer deaths then to

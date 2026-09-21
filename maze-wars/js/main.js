@@ -87,10 +87,15 @@
     if (window.visualViewport) visualViewport.addEventListener('resize', () => fit());
   }
 
-  // rAF draws; a slow timer keeps the network heartbeat alive in a background tab
+  // rAF draws. In a hidden tab rAF stops, so something else has to keep the player's heartbeat going — and it cannot be a timer
+  // of this page's: Chrome slows a hidden page's timers to one a second, and after five minutes to one a MINUTE, which is how a
+  // window left in the background fell off the network (Sep 20 2026). A worker's clock is not slowed, so the tick comes from one;
+  // the page timer stays as the fallback for a browser that will not start a worker.
   let last = 0; const tick = () => { last = performance.now(); game.frame(last); };
   const loop = () => { tick(); requestAnimationFrame(loop); }; requestAnimationFrame(loop);
-  setInterval(() => { if (performance.now() - last > 400) tick(); }, 500);
+  const slow = () => { if (performance.now() - last > 400) tick(); };
+  setInterval(slow, 500);
+  try { const w = new Worker(URL.createObjectURL(new Blob(['setInterval(function () { postMessage(0); }, 500);'], { type: 'text/javascript' }))); w.onmessage = slow; } catch (e) { }
   if (Q.get('shot')) { // social-card pose: 2x, pinned to the top, no chrome
     stage.style.justifyContent = 'flex-start'; canvas.style.width = '1024px'; canvas.style.height = '684px'; canvas.style.borderRadius = '0'; removeEventListener('resize', fit); const hide = document.createElement('style'); hide.textContent = '#pb-menu{display:none!important}'; document.head.appendChild(hide);
     const warm = MW.art.warm(); while (!warm.next().done) { } game.demo(); return; }
