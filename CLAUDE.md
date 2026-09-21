@@ -834,6 +834,24 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       minutes), the watcher logged it dropping off and rejoining, the broker then announced its line dead, and a
       listener on the backup broker heard it there, alone — before it bounced home again. The fixed build: 208
       heartbeats, worst gap 2.6 s, 0.3% CPU.
+  - **The strip under the screen** (Sep 21 2026). Philip: "i love how the entire game is contained in the old mac monitor…
+    add nav below game in modern style… Keep game same. Leave file menu same." Six pills in the dark surround — Invite a
+    friend, High scores, Suggest a feature, Everyone's ideas, Your card, How to play — deliberately NOT a Mac. **The screen
+    is sized first and never gives up a pixel** (`fit()` in `main.js`; measured at seven window sizes, identical to before
+    at every one): the strip goes UNDER the screen if 76px are spare there (`.nav`), BESIDE it with short labels if the
+    window is wide and short, as most laptops are, and 112px are spare at the side (`.navside`, placed from `--cw`), and
+    otherwise nowhere — the Mac's own menus are always there. On a phone: upright only, under the thumb pads, and only if
+    the pad keeps 150px (`fitTouch`); six pills fit across 375px only with the ≤430px rule. Never in `?shot=1`.
+    - Each pill runs **the menu item it names** — `ui.pick(label)` finds it and calls `ui.choose`, so "is it enabled?" and
+      "is a dialog in the way?" are answered exactly as the menu answers them, and there is no second interface to keep in
+      step. **Invite is the exception**, because a browser can do better than a 1986 dialog: the phone's own share sheet
+      (`navigator.share`, touch only), a copied link and a toast elsewhere, and the Mac dialog if the clipboard is refused
+      (it is, for a synthetic click — that is the path a test sees).
+    - Dimmed and `pointer-events: none` until `phase === 'play'` (`html.playing`, toggled from the frame loop). Every click
+      ends with `blur()`: Space is FIRE, and a focused button would press itself again. Tab is already the game's.
+    - The game rewrites `document.title` every second (the head-count) — a headless probe that reports through the title
+      gets its answer overwritten. Report through a `data-` attribute. And zsh does not word-split `$var`: `probe $wh` with
+      `wh="1280 800"` passes ONE argument.
   - **The suggestion box is public** (Sep 21 2026). Philip: "Can we make it so that folks can see all the feature requests?"
     Apple menu > Everyone's Ideas…, a **See the List** button on the form, and the list opens after you send one with
     yours on top (put there by the page — a CDN cache in between may not know about it yet). `GET ?op=ideas` is open to
@@ -973,8 +991,8 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       Every response carries `kept: true|false`, so storage can be checked without the key.
     - **He asks people to bring friends** (Philip, Sep 21 2026: "have him occasionally prompt the user to invite friends to
       play by using the file menu"). It is the point of him — he is there so the room is not empty, and the cure for an
-      empty room is people. First pitch 2.5 to 4 minutes into a session, then 8 to 12 minutes apart, three a session at
-      most; never within 20 s of his last line, never while he is mid-reply, and only while the player is actually
+      empty room is people. First pitch 2.5 to 4 minutes into a session, then 8 to 12 minutes apart, TWO a session at
+      most (it was three; Philip: "once or twice"); never within 20 s of his last line, never while he is mid-reply, and only while the player is actually
       playing (input in the last 30 s) — otherwise it tries again in 15 s. The model words it from a stage direction that
       tells it to name the File menu; `INVITES` in `thumbs.js` are the stand-ins when the model is quiet, capped or off
       (`ask()` takes a fallback line for this) — the invitation must not depend on it. No `>` in those lines: the chat

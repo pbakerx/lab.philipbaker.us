@@ -2,7 +2,7 @@
 (function () {
   const G = MW.gfx, ui = MW.ui, game = MW.game;
   const canvas = document.getElementById('screen'), stage = document.getElementById('stage'), root = document.documentElement;
-  const Q = new URLSearchParams(location.search);
+  const Q = new URLSearchParams(location.search), SHOT = !!Q.get('shot');
   G.attach(canvas);
   ui.touch = Q.get('touch') === '1' || (matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches);   // ?touch=1 shows the phone layout on a desktop
   ui.canvas = canvas; ui.stage = stage;
@@ -21,13 +21,18 @@
     const i = inset(), aw = innerWidth - i.l - i.r, ah = innerHeight - i.t - i.b, land = aw > ah;
     root.classList.toggle('land', land); root.classList.toggle('port', !land);
     const s = size(land ? Math.min((aw - 2 * Math.max(132, Math.min(190, aw * 0.2))) / 512, ah / 342) : Math.min(aw / 512, (ah - 60 - 236) / 342));
-    const dp = land ? Math.min((aw - 512 * s) / 2 - 22, ah - 66) : Math.min(ah - 60 - 342 * s - 82, aw / 2 - 22);
+    const strip = !land && !SHOT && ah - 60 - 342 * s - 82 - 54 >= 150; root.classList.toggle('nav', strip);                  // the strip: upright only, and only if the pad keeps at least 150px
+    const dp = land ? Math.min((aw - 512 * s) / 2 - 22, ah - 66) : Math.min(ah - 60 - 342 * s - 82 - (strip ? 54 : 0), aw / 2 - 22);
     const px = Math.round(Math.max(land ? 108 : 128, Math.min(land ? 200 : 220, dp))); root.style.setProperty('--dp', px + 'px'); root.classList.toggle('snug', px < 140);
     ui.placeIME();
   }
   function fit(force) {
     if (ui.touch) return fitTouch(force === true);
-    size(Math.min(innerWidth / 512, innerHeight / 342));
+    const s = size(Math.min(innerWidth / 512, innerHeight / 342));
+    // The strip: the screen is sized FIRST and never gives any room up. Under it if 76px are spare there; else beside it (a wide, short
+    // laptop window) if 112px are spare there; else not at all — the Mac's own menus are always there.
+    const cw = Math.round(512 * s), below = innerHeight - Math.round(342 * s) >= 76, beside = !below && (innerWidth - cw) / 2 >= 112;
+    root.style.setProperty('--cw', cw + 'px'); root.classList.toggle('nav', !SHOT && below); root.classList.toggle('navside', !SHOT && beside);
   }
   addEventListener('resize', fit); addEventListener('orientationchange', () => fit(true)); fit(true);
 
@@ -87,11 +92,21 @@
     if (window.visualViewport) visualViewport.addEventListener('resize', () => fit());
   }
 
+  // ---- the strip under the screen: modern buttons for the game's own windows. The Mac above is not touched: each button runs the
+  // very menu item it names (ui.pick), so "is it enabled?" and "is a dialog in the way?" are answered exactly as the menu answers them.
+  // Invite is the exception, because a browser can do better than a 1986 dialog: a phone's own share sheet, a copied link elsewhere.
+  const toast = document.getElementById('toast'); let toastT = 0; const say = (s) => { toast.textContent = s; toast.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('on'), 2600); };
+  async function invite() { const url = 'https://lab.philipbaker.us/maze-wars/' + (game.cfg.zone ? '?line=' + game.cfg.zone : ''), text = 'Come and play Maze Wars+ with me: the 1986 Macintosh network shooter, in your browser.';
+    if (ui.touch && navigator.share) { try { await navigator.share({ title: 'Maze Wars+', text, url }); } catch (e) { } return; }
+    try { await navigator.clipboard.writeText(url); say(game.cfg.zone ? 'Private-line link copied. Send it to a friend.' : 'Link copied. Send it to a friend.'); } catch (e) { ui.pick('Invite a Friend'); } }
+  for (const b of document.querySelectorAll('#bar button')) b.addEventListener('click', tap(() => { b.blur(); if (game.dev.phase !== 'play') return; if (b.dataset.go === 'invite') invite(); else ui.pick(b.dataset.go); }));      // blur: Space is FIRE, and must not press this button again
+  let seenPhase = '';
+
   // rAF draws. In a hidden tab rAF stops, so something else has to keep the player's heartbeat going — and it cannot be a timer
   // of this page's: Chrome slows a hidden page's timers to one a second, and after five minutes to one a MINUTE, which is how a
   // window left in the background fell off the network (Sep 20 2026). A worker's clock is not slowed, so the tick comes from one;
   // the page timer stays as the fallback for a browser that will not start a worker.
-  let last = 0; const tick = () => { last = performance.now(); game.frame(last); };
+  let last = 0; const tick = () => { last = performance.now(); game.frame(last); const ph = game.dev.phase; if (ph !== seenPhase) { seenPhase = ph; root.classList.toggle('playing', ph === 'play'); } };
   const loop = () => { tick(); requestAnimationFrame(loop); }; requestAnimationFrame(loop);
   const slow = () => { if (performance.now() - last > 400) tick(); };
   setInterval(slow, 500);

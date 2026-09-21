@@ -49,6 +49,8 @@ window.MW = window.MW || {};
     choose(mi, k) { const it = ui.menus[mi] && ui.menus[mi].items[k]; ui.open = -1; ui.hot = -1; ui.sticky = false; if (!it || it.sep || (it.enabled && !it.enabled()) || !it.action) return;
       for (let n = 0; n < 3 && ui.dialog; n++) { const was = ui.dialog, b = ui.cancelButton() || (was.escDefault ? ui.defaultButton() : null); if (!b) return; ui.pressed = null; ui.activate(b); if (ui.dialog === was) return; }
       if (!ui.dialog) it.action(); },
+    // the strip under the screen: the same item, through the same door (enabled? a dialog in the way?) as choosing it from the menu
+    pick(label) { for (let mi = 0; mi < ui.menus.length; mi++) { const k = ui.menus[mi].items.findIndex((it) => it.label && it.label.indexOf(label) === 0); if (k >= 0) { ui.choose(mi, k); return true; } } return false; },
     // command-key equivalents; returns true if one matched
     cmdKey(ch) { ch = ch.toUpperCase(); for (let i = 0; i < ui.menus.length; i++) for (let k = 0; k < ui.menus[i].items.length; k++) { const it = ui.menus[i].items[k]; if (it.key === ch) { if (!(it.enabled && !it.enabled())) { ui.flash = { i, until: performance.now() + 120 }; it.action && it.action(); } return true; } } return false; },
 

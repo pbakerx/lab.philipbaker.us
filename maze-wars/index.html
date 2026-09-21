@@ -91,6 +91,26 @@
      finger actually tapped. The letters stay invisible because the canvas draws them; 16px stops iOS zooming in on focus. */
   .ime { position: absolute; display: none; z-index: 5; box-sizing: border-box; margin: 0; padding: 0; border: 0; outline: 0; border-radius: 0; background: transparent; color: transparent; caret-color: transparent; font: 16px/1 -apple-system, system-ui, sans-serif; -webkit-appearance: none; appearance: none; -webkit-user-select: text; user-select: text; -webkit-tap-highlight-color: transparent; }
   .ime::selection { background: transparent; }
+  /* ---- the strip under the screen. Philip, Sep 21 2026: "add nav below game in modern style… Keep game same. Leave file menu same."
+     Deliberately NOT a Mac: it lives in the dark surround, the 1986 screen above it is untouched, and every button opens the game's
+     own window for that thing. It is shown only where there is spare room — the screen never shrinks to make space for it. ---- */
+  #bar { display: none; }
+  .nav #bar { display: flex; flex-wrap: nowrap; justify-content: center; gap: 8px; margin-top: 16px; }
+  /* a wide, short window (most laptops) has no room UNDER the screen but plenty beside it: the same buttons, stacked, short labels */
+  .navside #bar { display: flex; flex-direction: column; gap: 8px; position: fixed; top: 50%; left: calc(50% + var(--cw, 512px) / 2 + 20px); transform: translateY(-50%); margin: 0; }
+  .navside #bar .l { display: none; } .navside #bar .s { display: inline; }
+  .touch.nav #bar { grid-area: n; align-self: end; margin: 0 0 10px; }
+  .touch.port.nav #stage { grid-template: "s s" auto "l r" 1fr "n n" auto / 1fr 1fr; }
+  #bar button { margin: 0; padding: 9px 15px; font: 500 13px/1 -apple-system, BLinkMacSystemFont, "Segoe UI", system-ui, sans-serif; letter-spacing: .01em; color: #b9b9b9; background: rgba(255,255,255,.04); border: 1px solid #343434; border-radius: 999px; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; transition: color .15s, border-color .15s, background .15s; }
+  #bar button:hover { color: #fff; border-color: #6a6a6a; background: rgba(255,255,255,.09); }
+  #bar button:active { background: rgba(255,255,255,.16); }
+  #bar button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  html:not(.playing) #bar button { opacity: .35; pointer-events: none; }        /* nothing to open until you are in the game */
+  #bar .s { display: none; }
+  @media (max-width: 640px) { #bar { gap: 6px; } #bar button { padding: 9px 11px; font-size: 12.5px; } #bar .l { display: none; } #bar .s { display: inline; } }
+  @media (max-width: 430px) { #bar { gap: 4px; } #bar button { padding: 9px 8px; font-size: 12px; letter-spacing: 0; } }        /* six pills across a 375px phone */
+  #toast { position: fixed; left: 50%; bottom: 74px; transform: translate(-50%, 8px); padding: 10px 16px; font: 500 13px/1.2 -apple-system, BLinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #111; background: #fff; border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 20; }
+  #toast.on { opacity: 1; transform: translate(-50%, 0); }
   .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   noscript { position: fixed; inset: 0; display: grid; place-items: center; color: #fff; font: 16px/1.5 system-ui, sans-serif; text-align: center; padding: 2em; }
 </style>
@@ -133,22 +153,31 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     </div>
     <button id="fire" data-a="fire"><span>FIRE</span></button>
   </div>
+  <nav id="bar" aria-label="Maze Wars+ shortcuts">
+    <button type="button" data-go="invite"><span class="l">Invite a friend</span><span class="s">Invite</span></button>
+    <button type="button" data-go="High Scores"><span class="l">High scores</span><span class="s">Scores</span></button>
+    <button type="button" data-go="Suggest a Feature"><span class="l">Suggest a feature</span><span class="s">Suggest</span></button>
+    <button type="button" data-go="Everyone"><span class="l">Everyone's ideas</span><span class="s">Ideas</span></button>
+    <button type="button" data-go="High Score Card"><span class="l">Your card</span><span class="s">Card</span></button>
+    <button type="button" data-go="How to Play"><span class="l">How to play</span><span class="s">Help</span></button>
+  </nav>
 </div>
+<div id="toast" role="status" aria-live="polite"></div>
 <input id="ime" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
 <noscript>Maze Wars+ is a game drawn pixel by pixel in JavaScript, so it needs JavaScript switched on.</noscript>
-<script src="/maze-wars/js/levels.js?v=16"></script>
-<script src="/maze-wars/js/fonts.js?v=16"></script>
-<script src="/maze-wars/js/gfx.js?v=16"></script>
-<script src="/maze-wars/js/art.js?v=16"></script>
-<script src="/maze-wars/js/world.js?v=16"></script>
-<script src="/maze-wars/js/hall.js?v=16"></script>
-<script src="/maze-wars/js/ui.js?v=16"></script>
-<script src="/maze-wars/js/net.js?v=16"></script>
-<script src="/maze-wars/js/audio.js?v=16"></script>
-<script src="/maze-wars/js/club.js?v=16"></script>
-<script src="/maze-wars/js/game.js?v=16"></script>
-<script src="/maze-wars/js/thumbs.js?v=16"></script>
-<script src="/maze-wars/js/main.js?v=16"></script>
+<script src="/maze-wars/js/levels.js?v=17"></script>
+<script src="/maze-wars/js/fonts.js?v=17"></script>
+<script src="/maze-wars/js/gfx.js?v=17"></script>
+<script src="/maze-wars/js/art.js?v=17"></script>
+<script src="/maze-wars/js/world.js?v=17"></script>
+<script src="/maze-wars/js/hall.js?v=17"></script>
+<script src="/maze-wars/js/ui.js?v=17"></script>
+<script src="/maze-wars/js/net.js?v=17"></script>
+<script src="/maze-wars/js/audio.js?v=17"></script>
+<script src="/maze-wars/js/club.js?v=17"></script>
+<script src="/maze-wars/js/game.js?v=17"></script>
+<script src="/maze-wars/js/thumbs.js?v=17"></script>
+<script src="/maze-wars/js/main.js?v=17"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>
