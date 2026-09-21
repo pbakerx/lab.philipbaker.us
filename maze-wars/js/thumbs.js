@@ -27,6 +27,12 @@ window.MW = window.MW || {};
     "{n}! welcome. i'm thumbs, the maze's AI. fair warning: i shoot back.",
     "oh good, company. i'm thumbs, the house AI. i'll keep you busy till a real person shows up, {n}."
   ];
+  // Philip, Sep 21 2026: "have him occasionally prompt the user to invite friends to play by using the file menu". It is the point of him:
+  // he is here so the room is not empty, and the cure for an empty room is people. The model words it (so it is never the same line);
+  // these stand in when the model is quiet, capped or off — the invitation must not depend on it. No '>' : the chat font has none.
+  const INVITES = ["this is more fun with real people. File menu, Invite a Friend - it gives you a link to send. i'll step aside.",
+    "know anyone who'd like this? File menu, Invite a Friend. the moment a human shows up, i bow out.",
+    "i'm decent practice, but people are better. File menu, Invite a Friend - send somebody the link."];
   const BYES = ["real people just showed up, so i'm off. have fun, {n}.", "a human! that's my cue. good game, {n}.", "you've got a real opponent now. later, {n}."];
 
   let o = null;                 // his entry in `others`, or null while he is not here
@@ -35,7 +41,7 @@ window.MW = window.MW || {};
   let nextAt = 0, lockedAt = 0, lockedDir = -1, reloadAt = 0, deadUntil = 0, ride = null, mercyUntil = 0, planAt = 0, plan = -1, followAt = 0, shots = 0;
   let typingUntil = 0, dodged = new Set(), anywhere = false;     // anywhere: tests only — lets him onto a private line, so that a test never puts a stray player in the public maze
   // talking
-  let sid = '', seq = 0, hist = [], asked = 0, busy = false, queued = null, lastLineAt = 0, unprompted = 0, lastTalkAt = 0, nudges = 0, spoke = 0, ended = true;
+  let sid = '', seq = 0, hist = [], asked = 0, busy = false, queued = null, lastLineAt = 0, unprompted = 0, lastTalkAt = 0, nudges = 0, spoke = 0, ended = true, inviteAt = 0, invites = 0;
 
   const me = game.me, others = game.others, missiles = game.missiles;
   const realPlayers = () => { let n = 0; for (const p of others.values()) if (!p.local && p.inMaze && !p.idle) n++; return n; };   // someone whose window is in the background is not someone to play
@@ -48,7 +54,7 @@ window.MW = window.MW || {};
   function join(t) {
     o = { name: NAME, look: LOOK, level: 0, x: 0, y: 0, dir: 0, kills: 0, deaths: 0, alive: true, inMaze: true, robot: null, arrived: t, seen: t, msgs: [], idle: false, local: true };
     X.place(o, X.mazesOn() ? me.level : 0); others.set(ID, o); mode = 'here'; joinedAt = t; nextAt = t + rnd(1500, 2600); mercyUntil = t + 5000; ride = null; deadUntil = 0; dodged = new Set();
-    sid = ''; for (let i = 0; i < 20; i++) sid += 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]; seq = 0; hist = []; asked = 0; unprompted = 0; nudges = 0; busy = false; queued = null; lastTalkAt = t; spoke = 0; ended = false;
+    sid = ''; for (let i = 0; i < 20; i++) sid += 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]; seq = 0; hist = []; asked = 0; unprompted = 0; nudges = 0; busy = false; queued = null; lastTalkAt = t; spoke = 0; ended = false; invites = 0; inviteAt = t + rnd(150000, 240000);      // the first pitch comes a few minutes in, once there is a game going
     game.notice(NAME + ' joined the game.'); A.mail();
     const hello = fill(HELLOS[Math.floor(Math.random() * HELLOS.length)]); typingUntil = t + rnd(1600, 2400);
     setTimeout(() => { if (mode === 'here' && o) { speak(hello); post({ kind: 'hello', line: hello }); } }, typingUntil - t);
@@ -70,9 +76,9 @@ window.MW = window.MW || {};
   async function post(body) { if (!o) return null; const h = hist.slice(-13); if (body.kind === 'reply') { for (let i = h.length - 1; i >= 0; i--) if (h[i].w === 'p' && h[i].s === body.text) { h.splice(i, 1); break; } }      // the line being answered travels as `text`, not twice — and it may not be the newest entry: his reply to an EARLIER line can land after it
     try { const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ op: 'say', sid, seq: seq++, name: me.name, ctx: context(), hist: h.slice(-12) }, body)) }); return r.ok ? await r.json() : null; } catch (e) { return null; } }
   // one request at a time; if the player says more while he is "typing", he answers the latest
-  async function ask(kind, text) {
+  async function ask(kind, text, fallback) {
     if (!o || mode !== 'here' || asked >= 60) return; if (busy) { if (kind === 'reply') queued = text; return; }
-    busy = true; asked++; const mine = o, t0 = now(); const r = await post({ kind, text }); const line = r && r.line; if (kind === 'event' && o === mine) hist.push({ w: 'g', s: text });
+    busy = true; asked++; const mine = o, t0 = now(); const r = await post({ kind, text }); const line = (r && r.line) || fallback || null; if (kind === 'event' && o === mine) hist.push({ w: 'g', s: text });
     if (line && o === mine && mode === 'here') { const wait = Math.max(0, Math.min(3800, 700 + line.length * 38) - (now() - t0)); if (kind === 'reply') typingUntil = now() + wait; setTimeout(() => { if (o === mine && mode === 'here') speak(line); }, wait); await new Promise((res) => setTimeout(res, wait + 400)); }
     busy = false; if (queued && o === mine) { const q = queued; queued = null; ask('reply', q); }
   }
@@ -149,9 +155,12 @@ window.MW = window.MW || {};
     if (X.over()) return;
     think(t);
     if (t - lastTalkAt > 150000 && nudges < 2 && X.idleMs() < 20000) { nudges++; lastTalkAt = t; remark('It has been quiet for a couple of minutes. ' + me.name + ' has not said anything. Say something short to get them talking, or taunt them into finding you.', 1); }
+    // now and then, the pitch: three times a session at most, eight to twelve minutes apart, never on top of another line, and only while they are actually playing
+    if (t >= inviteAt && invites < 3) { if (busy || t - lastLineAt < 20000 || X.idleMs() > 30000) inviteAt = t + 15000;
+      else { invites++; inviteAt = t + rnd(480000, 720000); lastTalkAt = t; ask('event', 'Suggest that ' + me.name + ' invite a friend to play. Tell them how: the File menu, Invite a Friend, which gives them a link to send. Name the File menu. One short friendly line in your own words: it is more fun with real people, and you step aside the moment one arrives.', INVITES[Math.floor(Math.random() * INVITES.length)]); } }
   }
 
   addEventListener('pagehide', () => { if (mode !== 'absent') endTalk(); });
   MW.thumbs = { ID, tick, hit, steppedOn, scored, heard, get here() { return mode !== 'absent'; },
-    dev: { set anywhere(v) { anywhere = !!v; }, join: () => { if (mode === 'absent') join(now()); }, leave: () => { if (mode === 'here') leave(now()); }, get state() { return { mode, sid, asked, unprompted, busy, typing: typingUntil > now(), o }; } } };
+    dev: { set anywhere(v) { anywhere = !!v; }, invite: () => { inviteAt = 0; }, join: () => { if (mode === 'absent') join(now()); }, leave: () => { if (mode === 'here') leave(now()); }, get state() { return { mode, sid, asked, unprompted, busy, typing: typingUntil > now(), o }; } } };
 })();

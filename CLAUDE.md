@@ -924,6 +924,14 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       note), the player's name in the BODY only, nothing linking it to a card or an email. Read a day with
       `GET /api/thumbs?op=transcripts[&day=]` and `x-admin-key` (`MAZEWARS_ADMIN_KEY`), or in the Vercel Blob browser.
       Every response carries `kept: true|false`, so storage can be checked without the key.
+    - **He asks people to bring friends** (Philip, Sep 21 2026: "have him occasionally prompt the user to invite friends to
+      play by using the file menu"). It is the point of him — he is there so the room is not empty, and the cure for an
+      empty room is people. First pitch 2.5 to 4 minutes into a session, then 8 to 12 minutes apart, three a session at
+      most; never within 20 s of his last line, never while he is mid-reply, and only while the player is actually
+      playing (input in the last 30 s) — otherwise it tries again in 15 s. The model words it from a stage direction that
+      tells it to name the File menu; `INVITES` in `thumbs.js` are the stand-ins when the model is quiet, capped or off
+      (`ask()` takes a fallback line for this) — the invitation must not depend on it. No `>` in those lines: the chat
+      font has none. `MW.thumbs.dev.invite()` makes the next one due now.
     - **Each talk is mailed to Philip when it ends** (his ask, the same night). `thumbs.js` sends `{op:'end', sid}` from
       `gone()` and on `pagehide` — a beacon, since one way a talk ends is the page closing — once per talk, and only if
       the player said anything (a visitor who never typed already produces the "player came in" notice). The server
