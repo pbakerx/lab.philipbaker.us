@@ -261,10 +261,26 @@ window.MW = window.MW || {};
       { t: 'text', x: 8, y: 184, w: 326, s: 'When the maze is empty, Thumbs plays you. He is an AI, and says so. What you say to him is kept, to make him better.' },
       { t: 'button', x: 137, y: 240, w: 66, h: 20, label: 'OK', def: true, act: () => ui.close() }] }); }
 
+  // A nod to the people who made this, and to the late nights it cost. The history is from Steve Colley's own account (DigiBarn's
+  // Maze War retrospective), Wikipedia and the Macromedia wiki; the last paragraph is Philip's, in his words. The buttons are links.
+  const THANKS = [
+    '1973. At NASA Ames, three high-school students on a work-study program - Steve Colley, Greg Thompson and Howard Palmer - had an Imlac PDS-1, a vector display, and an idea: a maze you were actually inside. Colley drew its halls in perspective on a 16 by 16 grid, the size of the mazes here. They wired two Imlacs together, put each other in, and started shooting. It is remembered as the first first-person shooter. Colley added the peek; Thompson took it to MIT, and soon eight could play across the ARPANET.',
+    '1986. Burt Sloane had begun a Macintosh version at Apple, to show what AppleTalk could do. At MacroMind - later Macromedia - he and Alan McNeil, the man who made Berzerk, turned it into Maze Wars+. This is a rebuild of that game.',
+    "I played it over CompuServe and at friends' houses: countless late nights on a Mac SE, a bad-ass Mac, and the clank of that keyboard. I loved it. Thank you, all of you.   - Philip Baker"];
+  function dlgThanks() { const go = (url) => () => { try { window.open(url, '_blank', 'noopener'); } catch (e) { } };
+    ui.show({ x: 36, y: 32, w: 440, h: 292, escDefault: true, items: [
+      { t: 'custom', x: 0, y: 0, w: 440, h: 230, draw: (x, y) => { G.text(CHI, 'Where this game came from', x + 12, y + 14, 1); G.hline(x + 10, x + 429, y + 21, 1); let yy = y + 38;
+          for (const p of THANKS) { for (const l of G.wrap(GEN, p, 416)) { G.text(GEN, l, x + 12, yy, 1); yy += 12; } yy += 8; } } },
+      { t: 'button', x: 12, y: 236, w: 153, h: 20, label: 'Steve Colley tells it', act: go('https://digibarn.com/history/04-VCF7-MazeWar/stories/colley.html') },
+      { t: 'button', x: 173, y: 236, w: 94, h: 20, label: 'Maze, 1973', act: go('https://en.wikipedia.org/wiki/Maze_(1973_video_game)') },
+      { t: 'button', x: 275, y: 236, w: 92, h: 20, label: 'MacroMind', act: go('https://en.wikipedia.org/wiki/MacroMind') },
+      { t: 'button', x: 12, y: 262, w: 186, h: 20, label: 'Alan McNeil and Berzerk', act: go('https://en.wikipedia.org/wiki/Berzerk_(video_game)') },
+      { t: 'button', x: 368, y: 262, w: 60, h: 20, label: 'OK', def: true, act: () => ui.close() }] }); }
+
   // ---------------------------------------------------------------- menus
   const playing = () => phase === 'play';
   ui.menus = [
-    { title: '', items: [{ label: 'About Maze Wars+…', action: dlgAbout }, { sep: true }, { label: 'How to Play…', action: () => MW.club.howTo(), enabled: playing }, { label: 'Help with Keys…', action: dlgKeys, enabled: playing }, { label: 'Suggest a Feature…', action: () => MW.club.request(), enabled: playing }, { sep: true }, { label: 'Sound', check: () => cfg.sound, action: () => { cfg.sound = !cfg.sound; A.set(cfg.sound); persist(); } }] },
+    { title: '', items: [{ label: 'About Maze Wars+…', action: dlgAbout }, { label: 'Where It Came From…', action: dlgThanks }, { sep: true }, { label: 'How to Play…', action: () => MW.club.howTo(), enabled: playing }, { label: 'Help with Keys…', action: dlgKeys, enabled: playing }, { label: 'Suggest a Feature…', action: () => MW.club.request(), enabled: playing }, { sep: true }, { label: 'Sound', check: () => cfg.sound, action: () => { cfg.sound = !cfg.sound; A.set(cfg.sound); persist(); } }] },
     { title: 'File', items: [{ label: 'New', key: 'N', action: dlgNew, enabled: playing }, { label: 'Invite a Friend\u2026', key: 'I', action: dlgInvite, enabled: playing }, { label: 'High Scores\u2026', key: 'H', action: () => MW.club.scores(), enabled: playing }, { label: 'High Score Card\u2026', action: () => MW.club.card(), enabled: playing }, { label: 'Quit', action: () => { net.disconnect(); location.href = '/'; } }] },
     { title: 'Edit', dim: () => !ui.dialog, items: [{ label: 'Undo', key: 'Z', enabled: () => false }, { sep: true }, { label: 'Cut', key: 'X', enabled: () => false }, { label: 'Copy', key: 'C', enabled: () => false }, { label: 'Paste', key: 'V', enabled: () => false }, { label: 'Clear', enabled: () => false }] },
     { title: 'Options', items: [{ label: 'Message…', key: 'M', action: dlgMessage, enabled: playing }, { label: 'Boss is Looking…', key: 'B', action: () => { boss = true; }, enabled: playing }, { sep: true },

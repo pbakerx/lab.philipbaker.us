@@ -787,6 +787,17 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       minutes), the watcher logged it dropping off and rejoining, the broker then announced its line dead, and a
       listener on the backup broker heard it there, alone — before it bounced home again. The fixed build: 208
       heartbeats, worst gap 2.6 s, 0.3% CPU.
+  - **"Where It Came From…"** (Apple menu, Sep 21 2026) — Philip's homage: "a nod to the original creators. And an homage to a
+    great fun time in the late 80s… don't make it too long." Three short paragraphs and four link buttons
+    (`window.open` inside the click, so no popup blocker). The 1973 paragraph is from Steve Colley's OWN account on
+    DigiBarn — his maze was a 16 by 16 grid with the halls in perspective, which is exactly what this game still is, and
+    he is the one who added the peek. Link `digibarn.com` WITHOUT `www`: the certificate does not cover it. The 1986
+    paragraph: Burt Sloane began the Macintosh version at Apple in 1984 as a network demo; Alan McNeil — the Alan McNeil
+    who made Berzerk (1951–2017) — worked on it at MacroMind, which became Macromedia. **The last paragraph is Philip's
+    memory in his words** (CompuServe, friends' houses, a Mac SE, "the clank of the keyboard"); no source ties Maze Wars+
+    to CompuServe (two players could play by modem), so it is stated as his, not as history. Do not "correct" it.
+    The bitmap fonts have no em dash or curly apostrophe (`MW.FONT.clean` drops them): spaced hyphens and `'`.
+    A `.sr` paragraph in `index.html` carries the same credit for screen readers and crawlers.
   - **The visit log and the morning digest** (Sep 21 2026). Philip: "Are [we] able to see who's played and how long they
     stayed on?" — and then "can we add game play duration?" Until then the only record of a visit was the "just came in"
     email; play time was sent with a score and thrown away. Now `club.js` keeps a visit's numbers and reports one row:
