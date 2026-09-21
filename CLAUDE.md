@@ -690,7 +690,8 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
 
 - **/maze-wars** — Maze Wars+ (MacroMind, 1986; Alan McNeil & Burt Sloane), the Macintosh descendant
   of the 1973 Maze War, rebuilt to play in a browser — online, with chat (Sep 19 2026). A 512×342
-  one-bit framebuffer scaled by whole numbers; no assets, no build, no server of ours.
+  one-bit framebuffer scaled by whole numbers; no assets, no build, and no game server: the only server-side
+  parts are the clubhouse and Thumbs' voice, and the game plays without either.
   `/MaseWars` (Philip's spelling, and the ignored folder this was built from), `/mazewars`,
   `/maze-wars-plus` and friends redirect here.
   - **What is the original's and what is ours.** Philip supplied his own copy (two floppy images,
@@ -786,6 +787,63 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       minutes), the watcher logged it dropping off and rejoining, the broker then announced its line dead, and a
       listener on the backup broker heard it there, alone — before it bounced home again. The fixed build: 208
       heartbeats, worst gap 2.6 s, 0.3% CPU.
+  - **Thumbs, the house AI** (Sep 20 2026). Philip: "if there are no players in the game and a new player shows up, we
+    insert an ai-player… it chats just like a real player… If a second real life player shows up, thumbs says
+    goodbye… zero visible change to the user interface… His name should be thumbs." (The name is the stray test
+    player above; he liked it.) He joins **8 seconds** after somebody finds the public maze empty — Philip's number —
+    and leaves the moment there is a second player. **Not a robot**: the sidekicks are untouched, and yours sides with
+    you against him as it would against anyone.
+    - **THE RULE: he never passes as a person.** Philip's first brief was "appears as a real player… an experience
+      playing someone real"; he agreed to this instead ("I love it"). Anthropic's usage policy — the key is the one
+      Widget Maker runs on — forbids using output "to convince a natural person that they are communicating with a
+      natural person when they are not", and requires a consumer-facing chatbot to say it is an AI at the start of each
+      session; EU AI Act Art. 50 (in force 2 Aug 2026) says the same; the repo is public; and the chats are kept.
+      Three locks, none to be loosened "for immersion": (1) his FIRST line is a fixed template in `thumbs.js`
+      (`HELLOS`, every one contains "AI") — a disclosure must not depend on a model choosing to make it; (2) the
+      system prompt in `api/thumbs.js` forbids denying it and tells him to answer "are you a bot?" plainly, in
+      character; (3) `honest()` replaces any line that claims to be a person or denies being an AI — unit-tested with
+      11 denials and 12 honest lines, and the first version let "i am not an AI" through because the exception for
+      honest lines matched the words "an AI" inside the denial. The About box and How to Play each carry a sentence
+      (the email pitch on How to Play gave up its room: that column holds 15 lines on desktop, 16 on a phone).
+      What makes him feel real is behaviour, not a lie: he turns before he walks, takes a beat before he fires,
+      side-steps most missiles, takes a wrong turn now and then, stands still while he types (shoot him), eases off
+      when he is well ahead, never spawn-camps (6 s of mercy after a kill), leaves an idle player alone.
+    - **Where he lives.** He only exists while exactly one human is present, so nothing about him crosses the
+      network: his body is an entry in `others` (`id '~thumbs'`, `local: true`) that THIS browser moves, and every
+      "the victim's machine decides" rule is decided here. `'~'` cannot arrive over the wire (inbound ids must match
+      `[a-z0-9]{4,12}`), so nobody can send a fake one. Because he is just another entry in `others`, the roster, map,
+      sprites, obituary, tab-title count and robot allegiance all treat him as a player with no interface code at all.
+      `game.js` lends him a few internals as `game.x` and calls him from six places: `tick` in `frame()`; `hit` in
+      `tickMissiles` (a missile reaching a `local` being is ruled on at once instead of waiting 380 ms for a machine
+      that does not exist); `steppedOn` in `step()`; `scored` in `killMe` (nobody else's machine will credit him);
+      `heard` from the message box and from the obituary's comment; and `sweep()` skips `local`. In a lift he is
+      `alive: false` for 1.3 s, exactly as a real player's state says `v:0`.
+    - **Who counts as a second player: anyone real who is not idle.** `h:1` in the state now means hidden OR nobody
+      has touched the keys for 90 s (it was hidden only), because with the heartbeat fix an abandoned tab stays listed
+      forever — and one forgotten window anywhere would otherwise keep Thumbs away from every visitor. The idle player
+      waking up sends him off. He will not join while the visitor's own page is hidden: no greeting for nobody.
+      Public maze only — never on a private line, never with AppleTalk off.
+    - **His voice** is `POST /api/thumbs` (Haiku, `claude-haiku-4-5-20251001`, 100 tokens, 12 s timeout): kinds `reply`,
+      `event` (a `[game]` stage direction — he was shot, he shot you, it has gone quiet; a player cannot type one, a
+      leading `[game]` is rewritten), `bye`, and `hello`, which generates nothing and only records the template. The
+      client sends the last 12 lines as history; the server keeps no session. The line being answered travels as
+      `text` and is removed from the history wherever it sits — his reply to an EARLIER line can land after it. One
+      request at a time; say more while he types and he answers the latest. About a tenth of a cent a reply.
+      `THUMBS_DAILY_LINES` (default 900, roughly $1; counted with one `list()` of the day's prefix, cached 30 s),
+      `THUMBS_OFF=1`, `THUMBS_MODEL` — all optional, and env changes need a redeploy. Past the cap, or on any error,
+      he keeps playing and goes quiet: silence is a better failure than an error dialog. 60 requests a session,
+      30 a minute per IP, 10 unprompted remarks a session and never within 20 s of his last line.
+    - **The record**: `mazewars/t/<YYYYMMDD>/<sid>.<seq>.<stamp>.json`, one new object per exchange (the Vault's Blob
+      note), the player's name in the BODY only, nothing linking it to a card or an email. Read a day with
+      `GET /api/thumbs?op=transcripts[&day=]` and `x-admin-key` (`MAZEWARS_ADMIN_KEY`), or in the Vercel Blob browser.
+      Every response carries `kept: true|false`, so storage can be checked without the key.
+    - **Testing him without haunting the lobby.** `MW.thumbs.dev.anywhere = true` lets him onto a private line (and
+      past the hidden-page check — the Browser pane is a hidden page); `dev.join()`, `dev.leave()`, `dev.state`. The
+      scratchpad `serve.py` grew a stub for `POST /api/thumbs` that echoes and logs every request body (`GET /__thumbs`),
+      which is how the duplicated history was seen. A real arrival is `MW.net.onState('abc123', {…, i:1, h:0})`, a
+      departure `MW.net.onEvent({t:'bye', id:'abc123'})`. Duels: put both in a 7-cell corridor and spin `game.frame()`.
+      And the `//` trap bit a THIRD time here — a comment spliced into the middle of `tick()`'s first line ate the
+      join, and the syntax check had been skipped after a "one-line" edit. Run `jsc` after EVERY edit.
   - **The clubhouse** (Sep 19 2026) — the only server-side part, and the game plays without it:
     `api/mazewars.js` + `lib/mazewars.js` on Vercel Blob, `js/club.js` in the page. A How to Play page
     before sign-in; a **high score board** (most kills in one visit, ties to fewer deaths then to

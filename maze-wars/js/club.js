@@ -61,7 +61,7 @@ window.MW = window.MW || {};
             let ry = para('Police boxes teleport you. The patterned squares on the map are lifts: there are four levels, and the column beside the map counts who is on each.', x + 232, y + 38, 200);
             ry = para(ui.touch ? 'Everyone on your level shows on the map. A message goes to everybody: tap the envelope, or the message box.' : 'Everyone on your level shows on the map. Return sends a message to everybody.', x + 232, ry + 8, 200);
             ry = para('File menu: invite a friend, the high scores, your card. Options menu: Phone opens a private line, for a game among friends.', x + 232, ry + 8, 200);
-            para('Want an email when somebody is in the maze? Fill in your card.', x + 232, ry + 8, 200); } },
+            para('Nobody about? Thumbs, the house AI, plays you, and talks. What you say to him is kept.', x + 232, ry + 8, 200); } },   // the email pitch that stood here lives on the card itself; this column has room for one or the other
         { t: 'check', x: 10, y: 260, label: 'Skip this page next time', on: () => prof.skipHow, set: () => { prof.skipHow = !prof.skipHow; save(); } },
         { t: 'button', x: 204, y: 259, w: 88, h: 20, label: 'High Scores', act: () => club.scores(() => club.howTo(next)) },
         { t: 'button', x: 298, y: 259, w: 66, h: 20, label: 'My Card', act: () => club.card(() => club.howTo(next)) },

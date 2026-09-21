@@ -62,6 +62,7 @@ window.MW = window.MW || {};
     if (W.wall(me.level, me.x, me.y, dirAbs)) { A.bump(); return false; }
     me.x += DX[dirAbs]; me.y += DY[dirAbs]; me.arrived = me.movedAt = now(); A.step(); stateDirty = true;
     if (robot.alive && robot.level === me.level && robot.x === me.x && robot.y === me.y && humans() === 0) killRobot(net.id, 0, null, true);
+    if (MW.thumbs) MW.thumbs.steppedOn(me.level, me.x, me.y);
     const t = W.teleDest(me.level, me.x, me.y);
     if (t) { me.x = t.x; me.y = t.y; me.dir = W.exitDir(me.level, me.x, me.y); me.arrived = now(); poof = now() + 350; A.tele(); net.event({ t: 't', l: me.level, x: me.x, y: me.y }); }
     else { const to = W.elevTo(me.level, me.x, me.y); if (to >= 0 && mazesOn()) { ride = { t0: now(), to }; A.lift(); } }
@@ -91,7 +92,7 @@ window.MW = window.MW || {};
       m.x += DX[m.dir]; m.y += DY[m.dir]; m.stepAt = t + MISSILE_MS;
       if (me.alive && !ride && m.mine !== 1 && m.level === me.level && m.x === me.x && m.y === me.y) { missiles.splice(i, 1); killMe(m.owner, m.ok, m.mid, false); continue; }
       if (robot.alive && m.mine !== 2 && m.level === robot.level && m.x === robot.x && m.y === robot.y) { missiles.splice(i, 1); killRobot(m.owner, m.ok, m.mid, false); continue; }
-      for (const b of beings(false)) if (b.who !== 'myrobot' && b.level === m.level && b.x === m.x && b.y === m.y) { m.holdUntil = t + 380; break; } // their machine gets to call it
+      for (const b of beings(false)) if (b.who !== 'myrobot' && b.level === m.level && b.x === m.x && b.y === m.y) { if (b.o && b.o.local) { if (m.owner !== b.who && b.kind === 0) { missiles.splice(i, 1); MW.thumbs.hit(m); } } else m.holdUntil = t + 380; break; } // their machine gets to call it — except Thumbs, who lives on this one
     }
     for (let i = blasts.length - 1; i >= 0; i--) if (t - blasts[i].t0 > 620) blasts.splice(i, 1);
     for (let i = skulls.length - 1; i >= 0; i--) if (t - skulls[i].t0 > 2200) skulls.splice(i, 1);
@@ -108,6 +109,7 @@ window.MW = window.MW || {};
     net.event({ t: 'h', w: 0, by, bk: byKind, m: mid, how: stomp ? 1 : 0, v: verb, l: me.level, x: me.x, y: me.y }); stateDirty = true;
     const line = obit('You were', verb, by, byKind, stomp); const killer = by === net.id ? 'Your robot' : ((others.get(by) || {}).name || 'Somebody');
     held.__clear = true; MW.club.died(); setTimeout(() => showObit(line, killer, by), 900);
+    const k = others.get(by); if (k && k.local && !byKind) { k.kills++; MW.thumbs.scored(stomp); }
   }
   function killRobot(by, byKind, mid, stomp) {
     if (!robot.alive) return; robot.alive = false; robot.backAt = now() + 4500; const verb = stomp ? STOMPS[rint(STOMPS.length)] : rint(VERBS.length); boom(robot.level, robot.x, robot.y); skulls.push({ level: robot.level, x: robot.x, y: robot.y, t0: now() });
@@ -117,7 +119,7 @@ window.MW = window.MW || {};
   }
   function showObit(line, killer, by) {
     if (phase !== 'play') return; const a = GRIPES[rint(GRIPES.length)], b = EXCUSES[rint(EXCUSES.length)];
-    const done = (text) => { ui.close(); if (text && by !== net.id) { net.event({ t: 'm', n: me.name, s: text, to: by }); say(text, me.name); } MW.club.afterDeath(() => { if (!over) materialize(); }); };
+    const done = (text) => { ui.close(); if (text && by !== net.id) { net.event({ t: 'm', n: me.name, s: text, to: by }); say(text, me.name); if (MW.thumbs && by === MW.thumbs.ID) MW.thumbs.heard(text); } MW.club.afterDeath(() => { if (!over) materialize(); }); };
     ui.show({ x: 12, y: 32, w: 236, h: 216, escDefault: true, items: [
       { t: 'text', x: 4, y: 5, w: 228, s: line }, { t: 'text', x: 4, y: 58, w: 228, s: killer + ' appreciates your comments:' },
       { t: 'button', x: 4, y: 95, w: 194, h: 20, label: a, act: () => done(a) }, { t: 'button', x: 4, y: 117, w: 194, h: 20, label: b, act: () => done(b) },
@@ -158,7 +160,7 @@ window.MW = window.MW || {};
   // ---------------------------------------------------------------- the network
   function clampInt(v, lo, hi) { v = v | 0; return v < lo ? lo : v > hi ? hi : v; }
   function sendState(t) { const r = robot.alive ? [cfg.robotType, robot.level, robot.x, robot.y, robot.dir] : 0;
-    const s = { n: me.name, a: me.look, l: me.level, x: me.x, y: me.y, d: me.dir, k: me.kills, q: me.deaths, v: me.alive && !ride ? 1 : 0, i: me.inMaze ? 1 : 0, h: document.hidden ? 1 : 0, o: opts, oc: optClock, r };
+    const s = { n: me.name, a: me.look, l: me.level, x: me.x, y: me.y, d: me.dir, k: me.kills, q: me.deaths, v: me.alive && !ride ? 1 : 0, i: me.inMaze ? 1 : 0, h: document.hidden || now() - lastInputAt > 90000 ? 1 : 0, o: opts, oc: optClock, r };
     const j = JSON.stringify(s); if (j === lastSent && t - lastSentAt < 2000) return; if (net.state(s)) { lastSent = j; lastSentAt = t; stateDirty = false; } }
   net.onState = (id, s) => {
     let o = others.get(id); const t = now(); const fresh = !o;
@@ -198,7 +200,7 @@ window.MW = window.MW || {};
   // by the broker, so this is only for the rest. It was 9 s for everybody, and a window in the BACKGROUND (whose heartbeat the browser
   // slows, to one a minute after five minutes) flickered in and out of everyone's list all evening. A player who told us their page
   // is hidden gets a long leash; one who should be sending every 2 s gets 20.
-  function sweep(t) { for (const [id, o] of others) if (t - o.seen > (o.idle ? 90000 : 20000)) { if (o.inMaze) notice(o.name + ' dropped off the network.'); others.delete(id); } }
+  function sweep(t) { for (const [id, o] of others) if (!o.local && t - o.seen > (o.idle ? 90000 : 20000)) { if (o.inMaze) notice(o.name + ' dropped off the network.'); others.delete(id); } }
   function setOpt(bit) { opts ^= bit; optClock = Date.now(); stateDirty = true; net.event({ t: 'o', o: opts, c: bit, n: me.name }); if (bit === OPT.MAZES && !mazesOn() && me.inMaze && me.level !== 0) { me.level = 0; materialize(); } }
 
   // ---------------------------------------------------------------- dialogs (laid out from the original's)
@@ -224,7 +226,7 @@ window.MW = window.MW || {};
     ui.show({ x: 28, y: 42, w: 182, h: 168, items, escDefault: true }); }
   function dlgMessage() { if (phase !== 'play' || ui.dialog) return; ui.show({ x: 7, y: 268, w: 261, h: 68, plain: true, items: [
       { t: 'text', x: 7, y: 4, s: 'Message:' }, { t: 'edit', x: 9, y: 29, w: 242, h: 34, multi: true, max: 120, id: 'm' },
-      { t: 'button', x: 118, y: 2, w: 64, h: 20, label: 'OK', def: true, act: () => { const s = ui.field('m').value.trim(); ui.close(); if (s) { say(s, me.name); if (!net.event({ t: 'm', n: me.name, s }) && cfg.net) notice('Not connected: nobody heard that.'); } } },
+      { t: 'button', x: 118, y: 2, w: 64, h: 20, label: 'OK', def: true, act: () => { const s = ui.field('m').value.trim(); ui.close(); if (s) { say(s, me.name); if (!net.event({ t: 'm', n: me.name, s }) && cfg.net) notice('Not connected: nobody heard that.'); if (MW.thumbs) MW.thumbs.heard(s); } } },
       { t: 'button', x: 192, y: 2, w: 64, h: 20, label: 'Cancel', cancel: true, act: () => ui.close() }] }); }
   function dlgTalk() { let on = cfg.net; ui.show({ x: 7, y: 268, w: 261, h: 68, plain: true, items: [
       { t: 'text', x: 1, y: 4, s: 'Apple Talk:' }, { t: 'radio', x: 90, y: 4, label: 'On', on: () => on, set: () => { on = true; } }, { t: 'radio', x: 136, y: 4, label: 'Off', on: () => !on, set: () => { on = false; } },
@@ -252,11 +254,12 @@ window.MW = window.MW || {};
       { t: 'custom', x: 10, y: 122, w: 280, h: 60, draw: (x, y) => { G.wrap(CHI, msg, 280).forEach((l, k) => G.text(CHI, l, x, y + 11 + k * 16, 1)); } },
       { t: 'text', x: 10, y: 176, w: 280, s: () => (cfg.typist ? 'Touch Typist layout.' : 'Standard layout.') + ' Arrow keys move too; Return opens the message box; click the hall to fire.' },
       { t: 'button', x: 117, y: 224, w: 66, h: 20, label: 'Done', def: true, act: () => ui.close() }] }); }
-  function dlgAbout() { const eye = MW.art.big('eyeball', 0, 0.42); ui.show({ x: 86, y: 60, w: 340, h: 216, escDefault: true, items: [
+  function dlgAbout() { const eye = MW.art.big('eyeball', 0, 0.42); ui.show({ x: 86, y: 44, w: 340, h: 266, escDefault: true, items: [
       { t: 'custom', x: 8, y: 6, w: 70, h: 70, draw: (x, y) => G.blit(eye, x, y) },
       { t: 'text', x: 84, y: 8, s: 'Maze Wars+' }, { t: 'text', x: 84, y: 28, w: 250, s: 'A rebuild for the web of the 1986 Macintosh game by MacroMind (Alan McNeil and Burt Sloane), itself a descendant of Maze War, 1973.' },
       { t: 'text', x: 8, y: 98, w: 326, s: 'The four mazes, the rules, the keys and the screen layout follow the original. Every picture was drawn again for this version. AppleTalk is now a public message broker: keep it friendly, and do not type secrets.' },
-      { t: 'button', x: 137, y: 190, w: 66, h: 20, label: 'OK', def: true, act: () => ui.close() }] }); }
+      { t: 'text', x: 8, y: 184, w: 326, s: 'When the maze is empty, Thumbs plays you. He is an AI, and says so. What you say to him is kept, to make him better.' },
+      { t: 'button', x: 137, y: 240, w: 66, h: 20, label: 'OK', def: true, act: () => ui.close() }] }); }
 
   // ---------------------------------------------------------------- menus
   const playing = () => phase === 'play';
@@ -386,6 +389,7 @@ window.MW = window.MW || {};
       if (ride && t - ride.t0 > 1300) { me.level = ride.to; me.dir = W.exitDir(me.level, me.x, me.y); me.arrived = t; ride = null; stateDirty = true; }
       if (canAct() && heldOrder.length && t >= nextActAt) { const a = heldOrder[heldOrder.length - 1]; act(a); nextActAt = t + (a === 'fwd' || a === 'back' || a === 'strafeL' || a === 'strafeR' || a === 'north' || a === 'south' ? STEP_MS : a === 'fire' ? 120 : padHeld ? 340 : TURN_MS); }
       if (padFire && canAct() && t >= padFireAt) { act('fire'); padFireAt = t + 120; }
+      if (MW.thumbs) MW.thumbs.tick(t);
       tickMissiles(t); tickRobot(t); sweep(t); headcount(t);
       if (net.status === 'on' && (stateDirty || t - lastSentAt > 2000) && t - lastSentAt > 70) sendState(t);
     }
@@ -399,6 +403,7 @@ window.MW = window.MW || {};
   function keyAction(e) { const k = e.key.toLowerCase(); return KEYS.arrows[k] || (cfg.typist ? KEYS.typist : KEYS.std)[k]; }
   const game = MW.game = {
     me, cfg, others, robot, missiles, frame, act, say, notice,
+    x: { place, killMe, checkLimit, loud, boom, skull: (l, x, y) => skulls.push({ level: l, x, y, t0: now() }), mazesOn, riding: () => !!ride, phase: () => phase, over: () => over, opts: () => opts, idleMs: () => now() - lastInputAt, OPT, VERBS, STOMPS, rint },   // lent to thumbs.js
     dev: { get opts() { return opts; }, set opts(v) { opts = v & 15; }, get phase() { return phase; }, log },   // for poking at from the console
     keydown(e) {
       A.unlock(); lastInputAt = now(); if (boss) { boss = false; e.preventDefault(); return; }

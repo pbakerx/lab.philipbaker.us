@@ -34,7 +34,9 @@ Home page: https://philipbaker.us
   dither, pixel by pixel in JavaScript. Move with F, turn with D and G, side-step
   with J and L, fire with K or Space, or use the arrow keys; Return opens the
   message box to chat with whoever else is online. Four mazes joined by
-  teleporters and lifts, and a robot to mind.
+  teleporters and lifts, and a robot to mind. When the maze is empty, Thumbs —
+  an AI player, who says that he is one — plays you and talks; what is said to
+  him is kept.
 - [The Vault](https://lab.philipbaker.us/vault/): Shockwave and Flash games
   built in the late 1990s at Ackerman McQueen's New Media Lab, recovered from
   the Wayback Machine and playable again in a browser — Virtual Boomerang,

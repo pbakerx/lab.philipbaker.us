@@ -9,6 +9,9 @@
     },
     "api/mazewars.js": {
       "maxDuration": 60
+    },
+    "api/thumbs.js": {
+      "maxDuration": 30
     }
   },
   "redirects": [
