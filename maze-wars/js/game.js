@@ -23,12 +23,24 @@ window.MW = window.MW || {};
   const store = { get() { try { return JSON.parse(localStorage.getItem('mazewars.v1')) || {}; } catch (e) { return {}; } }, set(o) { try { localStorage.setItem('mazewars.v1', JSON.stringify(o)); } catch (e) { } } };
   const saved = store.get();
   const me = { name: saved.name || '', look: saved.look >= 0 && saved.look < 5 ? saved.look : 1, level: 0, x: 0, y: 0, dir: 0, kills: 0, deaths: 0, alive: false, inMaze: false, arrived: 0, movedAt: 0, reloadAt: 0, shots: 0 };
-  const cfg = { robotOn: saved.robotOn !== false, robotType: saved.robotType >= 0 && saved.robotType < 4 ? saved.robotType : 0, typist: !!saved.typist, allEyes: !!saved.allEyes, sound: saved.sound !== false, net: saved.net !== false, zone: '', limit: 0 };
+  const cfg = { robotOn: saved.robotOn !== false, robotType: saved.robotType >= 0 && saved.robotType < 4 ? saved.robotType : 0, typist: !!saved.typist, allEyes: !!saved.allEyes, sound: saved.sound !== false, net: saved.net !== false, smallMail: !!saved.smallMail, zone: '', limit: 0 };
   const robot = { alive: false, level: 0, x: 0, y: 0, dir: 0, thinkAt: 0, backAt: 0, seenAt: 0, jumpAt: 0, arrived: 0, reloadAt: 0 };
   let opts = OPT.MAZES, optClock = 0;
   const others = new Map();     // id -> remote player
   const missiles = [], blasts = [], skulls = [];
-  const log = [];               // chat + notices, already wrapped to the Mail Box width
+  // ---------------------------------------------------------------- the Mail Box log
+  // Philip, Sep 22 2026: "the messages fly by so fast you cant see them. you should be able to scroll… and/or reduce the size of the
+  // text… Maintain the early essence of the game." The window keeps its 1986 frame and its Chicago; it gained the Macintosh scroll bar the
+  // roster window already had (arrows, a grey track, a thumb), a mouse wheel, a finger drag, PageUp/PageDown/Home/End, and Options > Small
+  // Type in Mail Box (Geneva: five lines where Chicago fits four). Entries are kept raw and wrapped on demand, because the wrap depends
+  // on the type. A reader who has scrolled up is left where they are: new lines pile up below, and the down arrow fills in to say so.
+  const MAIL = { x: 276, w: 212, keep: 200 };
+  const log = [{ s: 'Click this spot to send messages.' }];      // the original's standing instruction is simply the oldest line, and scrolls away like any other
+  const mail = { first: 0, follow: true, flat: [], unseen: false, press: null, acc: 0 };
+  const mailLayout = () => cfg.smallMail ? { f: GEN, y0: 286, p: 12, fit: 5 } : { f: CHI, y0: 288, p: 16, fit: 4 };
+  const mailMax = () => Math.max(0, mail.flat.length - mailLayout().fit);
+  function scrollMail(by) { const max = mailMax(); if (mail.follow) mail.first = max; mail.first = Math.max(0, Math.min(max, mail.first + by)); mail.follow = mail.first >= max; if (mail.follow) mail.unseen = false; }
+  function rewrap() { const L = mailLayout(); mail.flat = []; for (const e of log) { const w = G.wrap(L.f, e.s, MAIL.w); e.n = w.length; mail.flat.push(...w); } scrollMail(0); }
   let phase = 'boot', bootPct = 0, ride = null, poof = 0, peek = 0, boss = false, listTop = 0, lastSent = '', lastSentAt = 0, stateDirty = true, over = false;
   const held = {}; let heldOrder = []; let nextActAt = 0, lastInputAt = 0;
   // THE LOBBY: out of the maze, where nothing can reach you. 0 = in the maze (or dead in it); 1 = stepped out because a form is open,
@@ -37,15 +49,21 @@ window.MW = window.MW || {};
   let lobby = 0, wantOut = false, pendingObit = null;
   let padHeld = false, padFire = false, padFireAt = 0;          // the phone's thumb pad (game.press); never set by a keyboard
 
-  const persist = () => store.set({ name: me.name, look: me.look, robotOn: cfg.robotOn, robotType: cfg.robotType, typist: cfg.typist, allEyes: cfg.allEyes, sound: cfg.sound, net: cfg.net });
+  const persist = () => store.set({ name: me.name, look: me.look, robotOn: cfg.robotOn, robotType: cfg.robotType, typist: cfg.typist, allEyes: cfg.allEyes, sound: cfg.sound, net: cfg.net, smallMail: cfg.smallMail });
   const now = () => performance.now();
   const rint = (n) => Math.floor(Math.random() * n);
   const humans = () => { let n = 0; for (const o of others.values()) if (o.inMaze) n++; return n; };
   const mazesOn = () => (opts & OPT.MAZES) !== 0;
 
   // ---------------------------------------------------------------- the Mail Box log
-  function say(text, from) { const s = from ? from + ': ' + text : text; for (const l of G.wrap(CHI, s, 226)) log.push(l); while (log.length > 60) log.shift(); }
+  function say(text, from) { const e = { s: from ? from + ': ' + text : text }, w = G.wrap(mailLayout().f, e.s, MAIL.w); e.n = w.length; log.push(e); mail.flat.push(...w); if (!mail.follow) mail.unseen = true;
+    while (log.length > MAIL.keep) { const gone = log.shift(); mail.flat.splice(0, gone.n); mail.first = Math.max(0, mail.first - gone.n); } scrollMail(0); }
   function notice(text) { say('• ' + text); }
+  rewrap();
+  // a Macintosh scroll arrow, as the roster window draws its own; `filled` is the "there is more below where you are reading" mark
+  function scrollArrow(x0, y, up, filled) { const pts = up ? [[x0 + 6, y], [x0, y + 6], [x0 + 3, y + 6], [x0 + 3, y + 10], [x0 + 9, y + 10], [x0 + 9, y + 6], [x0 + 12, y + 6]] : [[x0 + 6, y + 10], [x0, y + 4], [x0 + 3, y + 4], [x0 + 3, y], [x0 + 9, y], [x0 + 9, y + 4], [x0 + 12, y + 4]];
+    for (let i = 0; i < pts.length; i++) { const a = pts[i], b = pts[(i + 1) % pts.length]; G.line(a[0], a[1], b[0], b[1], 1); }
+    if (filled) { if (up) { for (let r = 0; r <= 6; r++) G.hline(x0 + 6 - r, x0 + 6 + r, y + r, 1); G.fill(x0 + 3, y + 6, 7, 5, 1); } else { G.fill(x0 + 3, y, 7, 5, 1); for (let r = 0; r <= 6; r++) G.hline(x0 + r, x0 + 12 - r, y + 4 + r, 1); } } }
 
   // ---------------------------------------------------------------- beings
   function beings(includeMe) { // everything a missile or a robot cares about
@@ -65,6 +83,9 @@ window.MW = window.MW || {};
   function step(dirAbs) {
     if (W.wall(me.level, me.x, me.y, dirAbs)) { A.bump(); return false; }
     me.x += DX[dirAbs]; me.y += DY[dirAbs]; me.arrived = me.movedAt = now(); A.step(); stateDirty = true;
+    // A hit used to be ruled only when the MISSILE stepped into your cell. Step into ITS cell — backing into one, say — and nothing looked,
+    // so it passed through you (Philip, Sep 22 2026). Walking into a missile is as fatal as its reaching you.
+    const hitBy = missiles.findIndex((m) => m.mine !== 1 && m.level === me.level && m.x === me.x && m.y === me.y); if (hitBy >= 0) { const m = missiles[hitBy]; missiles.splice(hitBy, 1); killMe(m.owner, m.ok, m.mid, false); return true; }
     if (robot.alive && robot.level === me.level && robot.x === me.x && robot.y === me.y && humans() === 0) killRobot(net.id, 0, null, true);
     if (MW.thumbs) MW.thumbs.steppedOn(me.level, me.x, me.y);
     const t = W.teleDest(me.level, me.x, me.y);
@@ -152,6 +173,7 @@ window.MW = window.MW || {};
   // Alone, it is your opponent. With other people on the wire it is on your side.
   function targets() { const solo = humans() === 0; const out = []; if (solo) { if (me.alive && !ride) out.push({ level: me.level, x: me.x, y: me.y, dir: me.dir }); } else for (const b of beings(false)) if (b.who !== 'myrobot' && b.owner !== net.id) out.push(b); return out.filter(t => t.level === robot.level); }
   function robotStep(d) { if (W.wall(robot.level, robot.x, robot.y, d)) return false; const nx = robot.x + DX[d], ny = robot.y + DY[d]; if (W.isTele(robot.level, nx, ny) || W.elevTo(robot.level, nx, ny) >= 0) return false; robot.dir = d; robot.x = nx; robot.y = ny; robot.arrived = now(); stateDirty = true;
+    const into = missiles.findIndex((m) => m.mine !== 2 && m.level === robot.level && m.x === nx && m.y === ny); if (into >= 0) { const m = missiles[into]; missiles.splice(into, 1); killRobot(m.owner, m.ok, m.mid, false); return true; }   // it walked into one
     if (me.alive && !ride && humans() === 0 && me.level === robot.level && me.x === nx && me.y === ny) killMe(net.id, 1, null, true); return true; }
   function wander() { const ex = W.exits(robot.level, robot.x, robot.y).filter(d => { const nx = robot.x + DX[d], ny = robot.y + DY[d]; return !W.isTele(robot.level, nx, ny) && W.elevTo(robot.level, nx, ny) < 0; }); if (!ex.length) return; const fwd = ex.filter(d => d !== ((robot.dir + 2) & 3)); const pick = fwd.length ? (fwd.includes(robot.dir) && Math.random() < 0.7 ? robot.dir : fwd[rint(fwd.length)]) : ex[0]; robotStep(pick); }
   function tickRobot(t) {
@@ -305,7 +327,7 @@ window.MW = window.MW || {};
     { title: '', items: [{ label: 'About Maze Wars+…', action: dlgAbout }, { label: 'Where It Came From…', action: dlgThanks }, { sep: true }, { label: 'How to Play…', action: () => MW.club.howTo(), enabled: playing }, { label: 'Help with Keys…', action: dlgKeys, enabled: playing }, { label: 'Suggest a Feature…', action: () => MW.club.request(), enabled: playing }, { label: 'Everyone\'s Ideas…', action: () => MW.club.ideas(), enabled: playing }, { sep: true }, { label: 'Sound', check: () => cfg.sound, action: () => { cfg.sound = !cfg.sound; A.set(cfg.sound); persist(); } }] },
     { title: 'File', items: [{ label: 'New', key: 'N', action: dlgNew, enabled: playing }, { label: 'Invite a Friend\u2026', key: 'I', action: dlgInvite, enabled: playing }, { label: 'High Scores\u2026', key: 'H', action: () => MW.club.scores(), enabled: playing }, { label: 'High Score Card\u2026', action: () => MW.club.card(), enabled: playing }, { label: 'Wait in the Lobby', key: 'L', check: () => lobby === 2, action: toggleLobby, enabled: playing }, { sep: true }, { label: 'Quit', action: () => { net.disconnect(); location.href = '/'; } }] },
     { title: 'Edit', dim: () => !ui.dialog, items: [{ label: 'Undo', key: 'Z', enabled: () => false }, { sep: true }, { label: 'Cut', key: 'X', enabled: () => false }, { label: 'Copy', key: 'C', enabled: () => false }, { label: 'Paste', key: 'V', enabled: () => false }, { label: 'Clear', enabled: () => false }] },
-    { title: 'Options', items: [{ label: 'Message…', key: 'M', action: dlgMessage, enabled: playing }, { label: 'Boss is Looking…', key: 'B', action: () => { boss = true; }, enabled: playing }, { sep: true },
+    { title: 'Options', items: [{ label: 'Message…', key: 'M', action: dlgMessage, enabled: playing }, { label: 'Boss is Looking…', key: 'B', action: () => { boss = true; }, enabled: playing }, { label: 'Small Type in Mail Box', check: () => cfg.smallMail, action: () => { cfg.smallMail = !cfg.smallMail; persist(); rewrap(); } }, { sep: true },
         { label: 'Phone…', key: 'P', action: dlgPhone, enabled: playing }, { label: 'AppleTalk…', key: 'A', action: dlgTalk, enabled: playing }, { sep: true },
         { label: '4 Mazes', key: '7', check: () => (opts & 1) !== 0, action: () => setOpt(1), enabled: playing }, { label: 'Maze Black-out', key: '8', check: () => (opts & 2) !== 0, action: () => setOpt(2), enabled: playing }, { label: 'Invisible Neighbors', key: '9', check: () => (opts & 4) !== 0, action: () => setOpt(4), enabled: playing }, { label: 'Stationary Radar', key: '0', check: () => (opts & 8) !== 0, action: () => setOpt(8), enabled: playing }, { sep: true },
         { label: 'Touch Typist', key: 'T', check: () => cfg.typist, action: () => { cfg.typist = !cfg.typist; persist(); } }, { label: 'All Eyes', check: () => cfg.allEyes, action: () => { cfg.allEyes = !cfg.allEyes; persist(); } }] },
@@ -391,9 +413,13 @@ window.MW = window.MW || {};
     G.fill(269, 242, 241, 100, 1); G.fill(270, 243, 238, 97, 0); G.hline(270, 507, 275, 1); G.vline(302, 243, 274, 1); G.vline(475, 243, 274, 1);
     phoneIcon(270, 243, !!cfg.zone && net.status === 'on'); macIcon(476, 243, !cfg.net ? 'off' : net.status === 'on' ? 'on' : 'wait');
     G.text(CHI, '•', 365, 254, 1); G.text(GEN, 'Mail', 377, 254, 1); G.text(CHI, '•', 407, 254, 1); G.text(CHI, '•', 367, 270, 1); G.text(GEN, 'Box', 379, 270, 1); G.text(CHI, '•', 405, 270, 1);
-    G.text(CHI, 'Click this spot to send messages.', 276, 288, 1);
-    const tail = log.slice(-3); tail.forEach((l, k) => G.text(CHI, l, 276, 304 + k * 16, 1));
+    const L = mailLayout(), max = mailMax(); if (mail.follow) mail.first = max;
+    G.clip(270, 276, 493, 340); for (let k = 0; k < L.fit; k++) { const l = mail.flat[mail.first + k]; if (l === undefined) break; G.text(L.f, l, MAIL.x, L.y0 + k * L.p, 1); } G.unclip();
+    // the scroll bar: the thumb appears once there is more than fits; the track goes grey then, as a live Macintosh scroll bar did
+    G.vline(492, 276, 339, 1); G.hline(492, 507, 290, 1); G.hline(492, 507, 325, 1); scrollArrow(494, 278, true, false); scrollArrow(494, 327, false, mail.unseen);
+    if (max > 0) { const th = mailThumb(L, max); G.fill(493, 291, 15, 34, G.P.desk); G.fill(493, th[0], 15, th[1], 1); G.fill(494, th[0] + 1, 13, th[1] - 2, 0); }
   }
+  function mailThumb(L, max) { const h = Math.max(8, Math.round(34 * L.fit / Math.max(1, mail.flat.length))); return [291 + Math.round((34 - h) * (max ? mail.first / max : 0)), h]; }
   function drawHall(t) {
     G.fill(15, 25, 251, 237, 1);
     if (phase === 'boot') { G.fill(16, 26, 249, 235, 0); if (bootPct > 0.04) { G.text(GEN, "Reading MW Cast\u2026 (it's big!)", 30, 60, 1); G.frame(30, 72, 122, 9, 1); G.fill(31, 73, Math.round(120 * bootPct), 7, G.P.desk); } return; }
@@ -445,12 +471,13 @@ window.MW = window.MW || {};
   const game = MW.game = {
     me, cfg, others, robot, missiles, frame, act, say, notice,
     x: { place, killMe, checkLimit, loud, boom, skull: (l, x, y) => skulls.push({ level: l, x, y, t0: now() }), mazesOn, riding: () => !!ride, phase: () => phase, over: () => over, opts: () => opts, idleMs: () => now() - lastInputAt, OPT, VERBS, STOMPS, rint },   // lent to thumbs.js
-    dev: { get opts() { return opts; }, set opts(v) { opts = v & 15; }, get phase() { return phase; }, log },   // for poking at from the console
+    dev: { get opts() { return opts; }, set opts(v) { opts = v & 15; }, get phase() { return phase; }, get log() { return mail.flat; }, get mail() { return { first: mail.first, follow: mail.follow, unseen: mail.unseen, lines: mail.flat.length, fit: mailLayout().fit, small: !!cfg.smallMail }; } },   // for poking at from the console
     keydown(e) {
       A.unlock(); lastInputAt = now(); if (boss) { boss = false; e.preventDefault(); return; }
       if (ui.key(e)) { e.preventDefault(); return; }
       if (phase !== 'play' || ui.dialog || e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); dlgMessage(); return; }
+      if (e.key === 'PageUp' || e.key === 'PageDown' || e.key === 'Home' || e.key === 'End') { e.preventDefault(); const f = mailLayout().fit - 1; scrollMail(e.key === 'PageUp' ? -f : e.key === 'PageDown' ? f : e.key === 'Home' ? -1e9 : 1e9); return; }
       const a = keyAction(e); if (!a) return; e.preventDefault(); if (e.repeat) return;
       if (lobby === 2) { comeIn(); return; }
       if (a === 'peekR') { peek = 1; return; } if (a === 'peekL') { peek = -1; return; }
@@ -461,8 +488,14 @@ window.MW = window.MW || {};
     down(x, y) { A.unlock(); lastInputAt = now(); if (boss) { boss = false; return; } if (ui.down(x, y)) return; if (phase !== 'play') return;
       if (x >= 16 && x <= 264 && y >= 26 && y <= 260) { if (lobby === 2) comeIn(); else act('fire'); }
       else if (x >= 270 && x <= 301 && y >= 243 && y <= 274) dlgPhone(); else if (x >= 476 && x <= 507 && y >= 243 && y <= 274) dlgTalk();
-      else if (x >= 270 && x <= 507 && y >= 276 && y <= 340) dlgMessage();
+      else if (x >= 493 && x <= 507 && y >= 276 && y <= 339) { const L = mailLayout(), max = mailMax(); if (y <= 290) scrollMail(-1); else if (y >= 325) scrollMail(1); else { const th = mailThumb(L, max); if (y < th[0]) scrollMail(1 - L.fit); else if (y >= th[0] + th[1]) scrollMail(L.fit - 1); } }
+      else if (x >= 270 && x <= 492 && y >= 276 && y <= 339) mail.press = { y, first: mail.follow ? mailMax() : mail.first, moved: false };   // a tap sends a message, a drag scrolls: game.up decides
       else if (x >= 252 && x <= 265 && y >= 281 && y <= 294) listTop--; else if (x >= 252 && x <= 265 && y >= 327 && y <= 340) listTop++; },
+    move(x, y) { const p = mail.press; if (!p) return; const dy = y - p.y; if (Math.abs(dy) > 5) p.moved = true; if (p.moved) { const max = mailMax(); mail.first = Math.max(0, Math.min(max, p.first - Math.round(dy / mailLayout().p))); mail.follow = mail.first >= max; if (mail.follow) mail.unseen = false; } },
+    up(x, y, taken) { const p = mail.press; mail.press = null; if (p && !p.moved && !taken) dlgMessage(); },
+    // a mouse wheel over the Mail Box, or over the roster, scrolls it; `true` when it was one of those, so the page does not scroll instead
+    wheel(x, y, dy) { if (phase !== 'play') return false; const inMail = x >= 270 && x <= 507 && y >= 276 && y <= 339, inList = x >= 14 && x <= 265 && y >= 281 && y <= 340; if (!inMail && !inList) return false;
+      mail.acc += dy; while (Math.abs(mail.acc) >= 20) { const d = Math.sign(mail.acc); mail.acc -= 20 * d; if (inMail) scrollMail(d); else listTop += d; } return true; },
     // The phone's thumb pad. A thumb on glass stays down far longer than a finger on a key: on a key's timing (repeat after
     // 260 ms) one tap of a turn arrow was very often TWO turns, and you were facing backwards. So a held turn waits half a second
     // and then goes round slowly, a held step waits a little longer than a key does, and about-face never repeats. FIRE keeps a
@@ -476,7 +509,7 @@ window.MW = window.MW || {};
       Object.assign(me, { level: 0, x: 10, y: 11, dir: 3, alive: true, inMaze: true, kills: 2, deaths: 1 });
       others.set('demo01', { name: 'Bert', look: 1, level: 0, x: 8, y: 11, dir: 1, kills: 3, deaths: 2, alive: true, inMaze: true, robot: { type: 0, level: 0, x: 5, y: 11, dir: 1, arrived: 0 }, arrived: 0, seen: 1e15, msgs: [] });
       others.set('demo02', { name: 'Devorah', look: 4, level: 2, x: 3, y: 3, dir: 0, kills: 1, deaths: 3, alive: true, inMaze: true, robot: null, arrived: 0, seen: 1e15, msgs: [] });
-      log.length = 0; say('There you are.', 'Bert'); say('Not for long.', 'Philip'); },
+      log.splice(1); rewrap(); say('There you are.', 'Bert'); say('Not for long.', 'Philip'); },
     start() {
       try { const z = new URL(location.href).searchParams.get('line'); if (z) cfg.zone = net.cleanZone(z) === 'lobby' ? '' : net.cleanZone(z); } catch (e) { }
       A.on = cfg.sound; const warm = MW.art.warm(); ui.busy = true;

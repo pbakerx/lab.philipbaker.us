@@ -101,6 +101,7 @@ window.MW = window.MW || {};
   function walk(d, t, intoLift) {
     if (W.wall(o.level, o.x, o.y, d)) return false; const nx = o.x + DX[d], ny = o.y + DY[d]; if (!intoLift && (W.isTele(o.level, nx, ny) || W.elevTo(o.level, nx, ny) >= 0)) return false;
     o.x = nx; o.y = ny; o.arrived = t;
+    const into = missiles.findIndex((m) => m.owner !== ID && m.level === o.level && m.x === nx && m.y === ny); if (into >= 0) { const m = missiles[into]; missiles.splice(into, 1); hit(m); return true; }     // he walked into a missile: as fatal as its reaching him
     if (me.alive && !X.riding() && me.level === o.level && me.x === nx && me.y === ny) { X.killMe(ID, 0, null, true); return true; }     // he walked into the cell you were standing in
     const to = W.elevTo(o.level, nx, ny); if (to >= 0 && X.mazesOn()) { ride = { until: t + 1300, to }; o.alive = false; if (o.level === me.level) A.lift(); }     // in the lift: out of the maze for 1.3 s, as a real player's state says (v:0)
     return true;
@@ -162,5 +163,5 @@ window.MW = window.MW || {};
 
   addEventListener('pagehide', () => { if (mode !== 'absent') endTalk(); });
   MW.thumbs = { ID, tick, hit, steppedOn, scored, heard, get here() { return mode !== 'absent'; },
-    dev: { set anywhere(v) { anywhere = !!v; }, invite: () => { inviteAt = 0; }, join: () => { if (mode === 'absent') join(now()); }, leave: () => { if (mode === 'here') leave(now()); }, get state() { return { mode, sid, asked, unprompted, busy, typing: typingUntil > now(), o }; } } };
+    dev: { set anywhere(v) { anywhere = !!v; }, invite: () => { inviteAt = 0; }, walk: (d) => !!o && o.alive && walk(d, now()), join: () => { if (mode === 'absent') join(now()); }, leave: () => { if (mode === 'here') leave(now()); }, get state() { return { mode, sid, asked, unprompted, busy, typing: typingUntil > now(), o }; } } };
 })();

@@ -66,7 +66,11 @@
   .touch #screen { grid-area: s; place-self: center; }
   .touch.port #screen { align-self: start; }
   .touch .pad { display: flex; flex-direction: column; gap: 12px; width: var(--dp, 170px); align-self: center; }
-  .touch #padL { grid-area: l; justify-self: start; margin-left: 14px; }
+  /* the left column is the joystick's grab area, the wheel just its picture: a thumb planted anywhere in it takes the stick */
+  .touch #padL { grid-area: l; justify-self: stretch; align-self: stretch; width: auto; margin: 0; padding-left: 14px; box-sizing: border-box; align-items: flex-start; justify-content: center; touch-action: none; }
+  .touch.land #padL { justify-content: flex-end; padding-bottom: 8px; }
+  .touch #padL > * { flex: none; }
+  .touch #padL .row { width: var(--dp, 170px); }
   .touch #padR { grid-area: r; justify-self: end; margin-right: 14px; }
   .touch.land .pad { align-self: end; margin-bottom: 8px; gap: 10px; }
   .pad .row { display: flex; gap: 10px; }
@@ -84,6 +88,8 @@
   #dpad[data-on="fwd"] .w-fwd, #dpad[data-on="back"] .w-back, #dpad[data-on="left"] .w-left, #dpad[data-on="right"] .w-right { fill: #fff; }
   #dpad[data-on="fwd"] .g-fwd, #dpad[data-on="back"] .g-back, #dpad[data-on="left"] .g-left, #dpad[data-on="right"] .g-right { fill: #000; }
   #dpad[data-on="left"] .a-left, #dpad[data-on="right"] .a-right { stroke: #000; }
+  #dpad .knob { fill: #fff; stroke: #000; stroke-width: 3; transition: transform .14s ease-out; }
+  #dpad.live .knob { transition: none; }
   .pad #fire { flex: none; width: var(--dp, 170px); height: var(--dp, 170px); border: 0; background: none; border-radius: 0; }   /* the whole square fires, not just the drawn button */
   #fire span { display: flex; align-items: center; justify-content: center; width: calc(var(--dp, 170px) * .8); height: calc(var(--dp, 170px) * .8); margin: auto 0 auto auto; border: 3px solid #fff; border-radius: 50%; background: #000; color: #fff; font: 800 17px/1 -apple-system, system-ui, sans-serif; letter-spacing: .12em; text-indent: .12em; pointer-events: none; }
   #fire.on span { background: #fff; color: #000; }
@@ -144,6 +150,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
       <path class="g g-back" d="M100 184L77 150H123Z"/>
       <path class="a a-left" d="M62 130V110Q62 92 46 92H36"/><path class="g g-left" d="M38 76L15 92L38 108Z"/>
       <path class="a a-right" d="M138 130V110Q138 92 154 92H164"/><path class="g g-right" d="M162 76L185 92L162 108Z"/>
+      <circle class="knob" cx="100" cy="100" r="20"/>
     </svg></div>
   </div>
   <canvas id="screen" width="512" height="342" aria-label="Maze Wars+ — a one-bit Macintosh screen: a first-person maze view, an overhead map, a player roster and a message box."></canvas>
@@ -166,19 +173,19 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <div id="toast" role="status" aria-live="polite"></div>
 <input id="ime" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
 <noscript>Maze Wars+ is a game drawn pixel by pixel in JavaScript, so it needs JavaScript switched on.</noscript>
-<script src="/maze-wars/js/levels.js?v=18"></script>
-<script src="/maze-wars/js/fonts.js?v=18"></script>
-<script src="/maze-wars/js/gfx.js?v=18"></script>
-<script src="/maze-wars/js/art.js?v=18"></script>
-<script src="/maze-wars/js/world.js?v=18"></script>
-<script src="/maze-wars/js/hall.js?v=18"></script>
-<script src="/maze-wars/js/ui.js?v=18"></script>
-<script src="/maze-wars/js/net.js?v=18"></script>
-<script src="/maze-wars/js/audio.js?v=18"></script>
-<script src="/maze-wars/js/club.js?v=18"></script>
-<script src="/maze-wars/js/game.js?v=18"></script>
-<script src="/maze-wars/js/thumbs.js?v=18"></script>
-<script src="/maze-wars/js/main.js?v=18"></script>
+<script src="/maze-wars/js/levels.js?v=19"></script>
+<script src="/maze-wars/js/fonts.js?v=19"></script>
+<script src="/maze-wars/js/gfx.js?v=19"></script>
+<script src="/maze-wars/js/art.js?v=19"></script>
+<script src="/maze-wars/js/world.js?v=19"></script>
+<script src="/maze-wars/js/hall.js?v=19"></script>
+<script src="/maze-wars/js/ui.js?v=19"></script>
+<script src="/maze-wars/js/net.js?v=19"></script>
+<script src="/maze-wars/js/audio.js?v=19"></script>
+<script src="/maze-wars/js/club.js?v=19"></script>
+<script src="/maze-wars/js/game.js?v=19"></script>
+<script src="/maze-wars/js/thumbs.js?v=19"></script>
+<script src="/maze-wars/js/main.js?v=19"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>

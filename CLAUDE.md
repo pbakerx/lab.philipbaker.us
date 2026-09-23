@@ -834,6 +834,35 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
       minutes), the watcher logged it dropping off and rejoining, the broker then announced its line dead, and a
       listener on the backup broker heard it there, alone — before it bounced home again. The fixed build: 208
       heartbeats, worst gap 2.6 s, 0.3% CPU.
+  - **Walking into a missile kills you** (Sep 22 2026). Philip: "If i am backing into a missile, the missile passes through me
+    and does not kill me." A hit was ruled only in `tickMissiles`, when the MISSILE stepped into a cell — nothing looked when
+    a body stepped into the missile's cell, so backing (or walking) into one passed straight through. `step()`, the robot's
+    `robotStep()` and Thumbs' `walk()` now each check the cell they arrive in and rule the hit at once (same owner / robot
+    credit rules as `tickMissiles`; your own missile is still harmless to you, his to him). Every machine rules for its own
+    body, so the fix reaches remote players as they pick up the build. Tested backing, walking forward, one's own missile,
+    Thumbs into mine (my kill), into a stranger's (no kill), into his own (nothing); `MW.thumbs.dev.walk(d)` exists for that.
+  - **The round pad is a JOYSTICK** (Sep 22 2026) — supersedes "read by angle from its centre" above. Philip: "make the mobile
+    arrows work as though they're a joystick… i want to just mash it down and drive the character… press and hold and then use
+    the thumb position on the wheel." The whole left column (`#padL`, stretched to the grid cell) is the grab area. A thumb
+    planted on the MIDDLE of the wheel, or anywhere in the column off the wheel, takes the stick at rest: where it landed is
+    neutral, and direction is the push from there (dead zone `max(12px, 0.16R)`, 0.7 of that to let go; a floating stick, as
+    phone games do it). A thumb planted on the wheel's OUTER HALF (`0.5R < d ≤ R+14`) has already pushed the stick that way
+    and acts at once, so a tap on an arrow still works as a button. Angle → four sectors with the same 14° stickiness past
+    the diagonal; the knob (`<circle class="knob">`, moved with a CSS translate in user units) follows the thumb, clamped to
+    0.68R, and springs home on release. Repeat timings are `game.press`'s, unchanged. The first version treated everything
+    beyond 0.5R as the rim — a thumb planted BELOW the wheel walked you backwards at once; the test caught it.
+  - **The Mail Box scrolls** (Sep 22 2026). Philip: "the messages fly by so fast you cant see them. you should be able to
+    scroll… and/or reduce the size of the text… Maintain the early essence of the game." The window keeps its frame and its
+    Chicago (four lines; the original's "Click this spot to send messages." is now simply the OLDEST line and scrolls away
+    like any other) and gained the Macintosh scroll bar the roster already had, at x 493–507: arrows, a 50%-grey track
+    (`G.P.desk`, as a live System 6 scroll bar) and a hollow thumb once there is more than fits. Also: a mouse wheel over the
+    box (and over the roster), a finger drag in the text (a tap still opens the message box — `game.up` decides after
+    `game.move` has seen 5px), PageUp/PageDown/Home/End, and **Options > Small Type in Mail Box** — Geneva, five lines
+    (`cfg.smallMail`, persisted). Entries are kept raw (`log` is `{s, n}` objects; 200 of them) and wrapped per type into
+    `mail.flat`; `rewrap()` on a type change. A reader who has scrolled up is left where they are: new lines pile up below
+    and the DOWN ARROW FILLS IN (`mail.unseen`) until they come back. `MW.game.dev.log` is still the wrapped lines and
+    `dev.mail` the scroll state. The `?shot=1` frame now carries the scroll bar, so it no longer hashes identical to the
+    Sep 21 production frame — that check is spent; `img/og.png` was not regenerated (it is a launch-day photograph).
   - **The strip under the screen** (Sep 21 2026). Philip: "i love how the entire game is contained in the old mac monitor…
     add nav below game in modern style… Keep game same. Leave file menu same." Six pills in the dark surround — Invite a
     friend, High scores, Suggest a feature, Everyone's ideas, Your card, How to play — deliberately NOT a Mac. **The screen

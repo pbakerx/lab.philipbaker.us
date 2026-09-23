@@ -40,9 +40,10 @@
   const tap = (fn) => (e) => { ui.inGesture = true; try { fn(e); } finally { ui.inGesture = false; } };
   const pos = (e) => { const r = canvas.getBoundingClientRect(); return [Math.max(0, Math.min(511, Math.floor((e.clientX - r.left) * 512 / r.width))), Math.max(0, Math.min(341, Math.floor((e.clientY - r.top) * 342 / r.height)))]; };
   canvas.addEventListener('pointerdown', tap((e) => { e.preventDefault(); if (e.pointerType === 'mouse' && e.button !== 0) return; try { canvas.setPointerCapture(e.pointerId); } catch (x) { } const p = pos(e); ui.mouse.x = p[0]; ui.mouse.y = p[1]; game.down(p[0], p[1]); }));
-  canvas.addEventListener('pointermove', (e) => { const p = pos(e); ui.move(p[0], p[1]); });
-  canvas.addEventListener('pointerup', tap((e) => { const p = pos(e); ui.up(p[0], p[1]); }));
-  canvas.addEventListener('pointercancel', () => { ui.mouse.down = false; ui.pressed = null; });
+  canvas.addEventListener('pointermove', (e) => { const p = pos(e); ui.move(p[0], p[1]); game.move(p[0], p[1]); });
+  canvas.addEventListener('pointerup', tap((e) => { const p = pos(e); const taken = ui.up(p[0], p[1]); game.up(p[0], p[1], taken); }));
+  canvas.addEventListener('pointercancel', () => { ui.mouse.down = false; ui.pressed = null; game.up(-1, -1, true); });
+  canvas.addEventListener('wheel', (e) => { const p = pos(e); if (game.wheel(p[0], p[1], e.deltaY)) e.preventDefault(); }, { passive: false });
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
   addEventListener('keydown', (e) => { if (ui.isIme(e.target) && !(e.key === 'Enter' || e.key === 'Escape' || e.key === 'Tab')) return; game.keydown(e); });
   addEventListener('keyup', (e) => game.keyup(e));
@@ -58,23 +59,28 @@
     document.addEventListener('touchend', () => { try { MW.audio.unlock(); } catch (e) { } }, { capture: true, passive: true });
     const buzz = () => { try { if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(8); } catch (e) { } };   // Android; iOS has no vibrate
 
-    // The round pad is read by ANGLE from its centre, not by which arrow was hit: "turn left" is everything to the left, a
-    // target several times the size of a button and impossible to fall between. Slide from one to the next without lifting;
-    // a direction holds until the thumb is 14 degrees past the diagonal, so a thumb resting on the line cannot chatter; the
-    // middle is a rest. Eyes stay on the hall.
-    const dp = document.getElementById('dpad'), ORDER = ['right', 'back', 'left', 'fwd'];
-    let pid = null, cur = null;
-    const sector = (e) => { const r = dp.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-      if (Math.hypot(dx, dy) < r.width * 0.09) return null;
-      let a = Math.atan2(dy, dx) * 180 / Math.PI; if (a < 0) a += 360;
-      if (cur) { let off = Math.abs(a - ORDER.indexOf(cur) * 90); if (off > 180) off = 360 - off; if (off < 59) return cur; }
-      return ORDER[Math.round(a / 90) % 4]; };
+    // THE ROUND PAD IS A JOYSTICK (Philip, Sep 22 2026: "make the mobile arrows work as though they're a joystick… i want to just mash it
+    // down and drive the character… press and hold and then use the thumb position on the wheel"). The whole left column is the grab
+    // area, not only the wheel. A thumb planted on the middle of the wheel — or anywhere in the column — takes hold of the stick at rest:
+    // where it landed is neutral, and pushing from there gives the direction (a floating stick, as most phone games do it). A thumb
+    // planted on the RIM, on an arrow, has already pushed the stick that way and acts at once, so a tap on an arrow still works as a
+    // button. Direction is by angle, and holds until 14 degrees past the diagonal so a thumb lying on the line cannot chatter; letting
+    // the stick back to the middle stops. The knob follows the thumb, so the wheel reads as what it is.
+    const padL = document.getElementById('padL'), dp = document.getElementById('dpad'), knob = dp.querySelector('.knob'), ORDER = ['right', 'back', 'left', 'fwd'];
+    let pid = null, cur = null, ox = 0, oy = 0, R = 80;
     const set = (a) => { if (a === cur) return; if (cur) game.press(cur, false); cur = a; dp.dataset.on = a || ''; if (a) { game.press(a, true); buzz(); } };
-    const end = (e) => { if (e.pointerId !== pid) return; pid = null; set(null); };
-    quiet(dp);
-    dp.addEventListener('pointerdown', (e) => { e.preventDefault(); if (pid !== null) return; pid = e.pointerId; try { dp.setPointerCapture(pid); } catch (x) { } set(sector(e)); });
-    dp.addEventListener('pointermove', (e) => { if (e.pointerId === pid) set(sector(e)); });
-    for (const t of ['pointerup', 'pointercancel', 'lostpointercapture']) dp.addEventListener(t, end);
+    const stick = (e) => { const dx = e.clientX - ox, dy = e.clientY - oy, d = Math.hypot(dx, dy), dead = Math.max(12, R * 0.16); let a = null;
+      if (d >= (cur ? dead * 0.7 : dead)) { let ang = Math.atan2(dy, dx) * 180 / Math.PI; if (ang < 0) ang += 360; a = ORDER[Math.round(ang / 90) % 4];
+        if (cur) { let off = Math.abs(ang - ORDER.indexOf(cur) * 90); if (off > 180) off = 360 - off; if (off < 59) a = cur; } }
+      set(a); const lim = R * 0.68, f = (d > lim ? lim / d : 1) * 100 / R; knob.style.transform = 'translate(' + (dx * f).toFixed(1) + 'px, ' + (dy * f).toFixed(1) + 'px)'; };
+    const grab = (e) => { const r = dp.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2; R = Math.max(40, (r.width - 28) / 2);
+      const d = Math.hypot(e.clientX - cx, e.clientY - cy), onRim = d > R * 0.5 && d <= R + 14;      // on the wheel's outer half: the stick is already pushed that way. Off the wheel: a plain grab.
+      ox = onRim ? cx : e.clientX; oy = onRim ? cy : e.clientY; dp.classList.add('live'); stick(e); };
+    const end = (e) => { if (e.pointerId !== pid) return; pid = null; set(null); dp.classList.remove('live'); knob.style.transform = ''; };
+    quiet(padL);
+    padL.addEventListener('pointerdown', (e) => { if (e.target.closest('button')) return; e.preventDefault(); if (pid !== null) return; pid = e.pointerId; try { padL.setPointerCapture(pid); } catch (x) { } grab(e); });
+    padL.addEventListener('pointermove', (e) => { if (e.pointerId === pid) stick(e); });
+    for (const t of ['pointerup', 'pointercancel', 'lostpointercapture']) padL.addEventListener(t, end);
 
     for (const b of document.querySelectorAll('.pad button[data-a]')) { const a = b.dataset.a;
       // the envelope opens a text field, so it has to be a real click: that is the one moment a phone will raise its keyboard
