@@ -25,8 +25,10 @@ proof shots with `Google Chrome --headless --window-size=W,H --screenshot=…` i
 (`--headless=new` writes the screenshot and then never exits: background it, wait for the
 file, `pkill` it by its `--user-data-dir`.)
 
-**On the Mac mini neither launch config starts** (found Sep 18 2026). It has no Node, so
-`lab-vercel` is out — and `npx vercel --prod` with it, so from that Mac a deploy is a push.
+**On the Mac mini neither launch config starts** (found Sep 18 2026; not re-tested since Node
+arrived there on Sep 23 2026 — Homebrew node 26, installed for AdBuilder). The Vercel CLI is
+still not installed on it and nobody is logged in, so from that Mac a deploy is still a push
+(checked Sep 23 2026).
 And a process started by the preview tool is refused *every* read on the NAS volume, not
 just `os.getcwd()`: a zero-dependency server script placed in this repo — at the root or in
 `.claude/` — dies with "can't open file … Operation not permitted". What works: `rsync` the
