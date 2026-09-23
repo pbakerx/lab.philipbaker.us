@@ -89,6 +89,10 @@ EXCLUDED = {
         "does not get sent to Google Analytics",
     "OKEII-SRA-Deployment/index.html":
         "unlisted client review link — same reason",
+    "okeii-sra-faq/index.html":
+        "unlisted client link, and an iframe embed for the client's Wix site — once it "
+        "is live it loads on every visit to THEIR public page, so no tag of ours belongs "
+        "on it: not GA4, and not the Insights tag either",
     "AcrobatAnt-HNDACR-Fall-Digital/rounds/*/ads/*/*.html":
         "individual ad creatives, served inside an iframe via srcdoc",
     "honda-acura/ads/*/index.html":
