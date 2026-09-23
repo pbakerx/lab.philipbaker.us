@@ -851,6 +851,18 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     the diagonal; the knob (`<circle class="knob">`, moved with a CSS translate in user units) follows the thumb, clamped to
     0.68R, and springs home on release. Repeat timings are `game.press`'s, unchanged. The first version treated everything
     beyond 0.5R as the rim — a thumb planted BELOW the wheel walked you backwards at once; the test caught it.
+    - **The stick is the MAP, not the body** (the same evening). The first joystick pushed relative to your facing — up walked
+      forward, left TURNED left — and Philip, on his phone: "If I jam it left, the player should 'move left', not turn left.
+      Same for right and down. The joy stick is always forward and it mirrors what we see on the radar." So the four sectors
+      are the compass, as on the map: `ORDER = ['east', 'south', 'west', 'north']`, each an `act()` that turns you to face that
+      way and steps (`COMPASS` in `game.js` — north/south were the original's I and , keys already; east/west joined them, and
+      the frame's held-repeat list knows them). Pushing into a wall turns you to face it and bumps, as the compass keys do.
+      Turning in place therefore left the wheel: the two buttons above it are now **TURN ↶ / TURN ↷** (`data-a` left/right,
+      520 ms before a held one repeats, so a tap is one turn) and the wheel's glyphs are four equal straight arrows (`w-n`
+      `w-e` `w-s` `w-w`). The phone has no side-step any more — a compass push IS the lateral move, facing included — and
+      pushing "down" turns you round rather than backing away with your gun up; both are what he asked for, both are noted
+      here in case play says otherwise. Desktop keys are untouched. Tested at a four-way crossroads from each facing, a
+      held push down a corridor (5 cells in 800 ms), both TURN buttons, and a push into a wall.
   - **The Mail Box scrolls** (Sep 22 2026). Philip: "the messages fly by so fast you cant see them. you should be able to
     scroll… and/or reduce the size of the text… Maintain the early essence of the game." The window keeps its frame and its
     Chicago (four lines; the original's "Click this spot to send messages." is now simply the OLDEST line and scrolls away

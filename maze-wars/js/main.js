@@ -66,7 +66,10 @@
     // planted on the RIM, on an arrow, has already pushed the stick that way and acts at once, so a tap on an arrow still works as a
     // button. Direction is by angle, and holds until 14 degrees past the diagonal so a thumb lying on the line cannot chatter; letting
     // the stick back to the middle stops. The knob follows the thumb, so the wheel reads as what it is.
-    const padL = document.getElementById('padL'), dp = document.getElementById('dpad'), knob = dp.querySelector('.knob'), ORDER = ['right', 'back', 'left', 'fwd'];
+    // THE STICK IS THE MAP (Philip, the same evening: "If I jam it left, the player should 'move left', not turn left… The joy stick is
+    // always forward and it mirrors what we see on the radar"). Up is north, left is west, as on the map: every push MOVES you, turning
+    // you to face that way as you go — the original's own compass keys. Turning in place moved to the two buttons above the wheel.
+    const padL = document.getElementById('padL'), dp = document.getElementById('dpad'), knob = dp.querySelector('.knob'), ORDER = ['east', 'south', 'west', 'north'];
     let pid = null, cur = null, ox = 0, oy = 0, R = 80;
     const set = (a) => { if (a === cur) return; if (cur) game.press(cur, false); cur = a; dp.dataset.on = a || ''; if (a) { game.press(a, true); buzz(); } };
     const stick = (e) => { const dx = e.clientX - ox, dy = e.clientY - oy, d = Math.hypot(dx, dy), dead = Math.max(12, R * 0.16); let a = null;

@@ -75,7 +75,7 @@ window.MW = window.MW || {};
         { t: 'custom', x: 0, y: 0, w: 440, h: 250, draw: (x, y) => {
             G.text(CHI, 'Maze Wars+', x + 10, y + 14, 1); G.text(GEN, 'Macintosh, 1986. Rebuilt to play online.', x + 112, y + 14, 1); G.hline(x + 8, x + 431, y + 21, 1);
             let yy = para('You are loose in a maze with whoever else is online, and a robot. Find them before they find you. One hit and you are out, until you rematerialize somewhere else.', x + 10, y + 38, 204);
-            if (ui.touch) { yy = para('Left thumb, the round pad: push up to walk, either side to turn, down to back up. Slide from one to the next without lifting. STEP side-steps: you move over and keep facing the same way.', x + 10, yy + 10, 204);
+            if (ui.touch) { yy = para('Left thumb, the stick: push the way you want to go - up is north on the map, left is west - and you turn to face it as you go. The two buttons above it turn you in place.', x + 10, yy + 10, 204);
               para('Right thumb: FIRE, or tap the hall. The bent arrow is about-face, the envelope sends a message.', x + 10, yy + 8, 204); }
             else { yy += 8; keys.forEach((r, i) => { const ky = yy + 4 + i * 19; let w = keycap(r[0], x + 10, ky); G.text(GEN, r[1], x + 14 + w, ky, 1); w = keycap(r[2], x + 112, ky); G.text(GEN, r[3], x + 116 + w, ky, 1); });
               para('Arrow keys work too. Click the hall to fire. On a phone, use the pad under the screen.', x + 10, yy + 4 + 5 * 19, 204); }

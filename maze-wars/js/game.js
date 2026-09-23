@@ -12,6 +12,7 @@ window.MW = window.MW || {};
   const EXCUSES = ['Blind-sided me', 'Surprised me', 'Stupid mistake', 'Sneaky', 'Sheesh.', 'MEOW!!', 'ARF!!', 'Hiss, Boo!'];
   const ROBOTS = ['Alter-Ego', 'Teleporter', 'Hunter', 'Shadow Master'], ROBOT_KIND = ['dome', 'box', 'heavy', 'shadow'], ROBOT_THINK = [400, 420, 300, 340];
   const OPT = { MAZES: 1, BLACKOUT: 2, INVISIBLE: 4, STATIONARY: 8 }, OPT_NAMES = { 1: '4 Mazes', 2: 'Maze Black-out', 4: 'Invisible Neighbors', 8: 'Stationary Radar' };
+  const COMPASS = { north: 0, east: 1, south: 2, west: 3 };
   const STEP_MS = 165, TURN_MS = 190, MISSILE_MS = 190, RELOAD_MS = 350;
   const KEYS = {
     std: { k: 'fire', ' ': 'fire', t: 'peekR', e: 'peekL', g: 'right', d: 'left', f: 'fwd', r: 'fwd', v: 'back', i: 'north', l: 'strafeR', ',': 'south', j: 'strafeL', a: 'about', u: 'about' },
@@ -103,7 +104,7 @@ window.MW = window.MW || {};
     else if (a === 'back') step((me.dir + 2) & 3);
     else if (a === 'strafeL') step((me.dir + 3) & 3);            // side-step: one cell to your left, still facing the same way
     else if (a === 'strafeR') step((me.dir + 1) & 3);
-    else if (a === 'north' || a === 'south') { const d = a === 'north' ? 0 : 2; me.dir = d; stateDirty = true; step(d); }
+    else if (a in COMPASS) { const d = COMPASS[a]; me.dir = d; stateDirty = true; step(d); }        // the original's compass keys, and the phone's stick: face that way, and go
   }
 
   // ---------------------------------------------------------------- missiles
@@ -454,7 +455,7 @@ window.MW = window.MW || {};
       if (pendingObit && t >= pendingObit.at && !ui.dialog && ui.open < 0) { const p = pendingObit; pendingObit = null; showObit(p.line, p.killer, p.by); }
       if (wantOut) { if (!ui.dialog) wantOut = false; else if (!threatened()) goOut(1); } else if (lobby === 1 && !ui.dialog && ui.open < 0) comeIn();
       if (ride && t - ride.t0 > 1300) { me.level = ride.to; me.dir = W.exitDir(me.level, me.x, me.y); me.arrived = t; ride = null; stateDirty = true; }
-      if (canAct() && heldOrder.length && t >= nextActAt) { const a = heldOrder[heldOrder.length - 1]; act(a); nextActAt = t + (a === 'fwd' || a === 'back' || a === 'strafeL' || a === 'strafeR' || a === 'north' || a === 'south' ? STEP_MS : a === 'fire' ? 120 : padHeld ? 340 : TURN_MS); }
+      if (canAct() && heldOrder.length && t >= nextActAt) { const a = heldOrder[heldOrder.length - 1]; act(a); nextActAt = t + (a === 'fwd' || a === 'back' || a === 'strafeL' || a === 'strafeR' || a in COMPASS ? STEP_MS : a === 'fire' ? 120 : padHeld ? 340 : TURN_MS); }
       if (padFire && canAct() && t >= padFireAt) { act('fire'); padFireAt = t + 120; }
       if (MW.thumbs) MW.thumbs.tick(t);
       tickMissiles(t); tickRobot(t); sweep(t); headcount(t);

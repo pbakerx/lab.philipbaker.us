@@ -84,10 +84,8 @@
   #dpad svg { display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
   #dpad .w { fill: #000; stroke: #fff; stroke-width: 2.5; stroke-linejoin: round; }
   #dpad .g { fill: #fff; }
-  #dpad .a { fill: none; stroke: #fff; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
-  #dpad[data-on="fwd"] .w-fwd, #dpad[data-on="back"] .w-back, #dpad[data-on="left"] .w-left, #dpad[data-on="right"] .w-right { fill: #fff; }
-  #dpad[data-on="fwd"] .g-fwd, #dpad[data-on="back"] .g-back, #dpad[data-on="left"] .g-left, #dpad[data-on="right"] .g-right { fill: #000; }
-  #dpad[data-on="left"] .a-left, #dpad[data-on="right"] .a-right { stroke: #000; }
+  #dpad[data-on="north"] .w-n, #dpad[data-on="east"] .w-e, #dpad[data-on="south"] .w-s, #dpad[data-on="west"] .w-w { fill: #fff; }
+  #dpad[data-on="north"] .g-n, #dpad[data-on="east"] .g-e, #dpad[data-on="south"] .g-s, #dpad[data-on="west"] .g-w { fill: #000; }
   #dpad .knob { fill: #fff; stroke: #000; stroke-width: 3; transition: transform .14s ease-out; }
   #dpad.live .knob { transition: none; }
   .pad #fire { flex: none; width: var(--dp, 170px); height: var(--dp, 170px); border: 0; background: none; border-radius: 0; }   /* the whole square fires, not just the drawn button */
@@ -138,18 +136,15 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <div id="stage">
   <div id="padL" class="pad" aria-hidden="true">
     <div class="row">
-      <button data-a="strafeL"><svg viewBox="0 0 26 20"><path d="M24 10H4M11 3L4 10l7 7"/></svg><span class="lbl">STEP</span></button>
-      <button data-a="strafeR"><span class="lbl">STEP</span><svg viewBox="0 0 26 20"><path d="M2 10h20M15 3l7 7-7 7"/></svg></button>
+      <button data-a="left"><svg viewBox="0 0 26 20"><path d="M16 19v-9a5 5 0 0 0-5-5H5M9 1L5 5l4 4"/></svg><span class="lbl">TURN</span></button>
+      <button data-a="right"><span class="lbl">TURN</span><svg viewBox="0 0 26 20"><path d="M10 19v-9a5 5 0 0 1 5-5h6M17 1l4 4-4 4"/></svg></button>
     </div>
     <div id="dpad"><svg viewBox="0 0 200 200">
-      <path class="w w-fwd" d="M32.1 32.1A96 96 0 0 1 167.9 32.1L118.4 81.6A26 26 0 0 0 81.6 81.6Z"/>
-      <path class="w w-right" d="M167.9 32.1A96 96 0 0 1 167.9 167.9L118.4 118.4A26 26 0 0 0 118.4 81.6Z"/>
-      <path class="w w-back" d="M167.9 167.9A96 96 0 0 1 32.1 167.9L81.6 118.4A26 26 0 0 0 118.4 118.4Z"/>
-      <path class="w w-left" d="M32.1 167.9A96 96 0 0 1 32.1 32.1L81.6 81.6A26 26 0 0 0 81.6 118.4Z"/>
-      <path class="g g-fwd" d="M100 16L128 58H72Z"/>
-      <path class="g g-back" d="M100 184L77 150H123Z"/>
-      <path class="a a-left" d="M62 130V110Q62 92 46 92H36"/><path class="g g-left" d="M38 76L15 92L38 108Z"/>
-      <path class="a a-right" d="M138 130V110Q138 92 154 92H164"/><path class="g g-right" d="M162 76L185 92L162 108Z"/>
+      <path class="w w-n" d="M32.1 32.1A96 96 0 0 1 167.9 32.1L118.4 81.6A26 26 0 0 0 81.6 81.6Z"/>
+      <path class="w w-e" d="M167.9 32.1A96 96 0 0 1 167.9 167.9L118.4 118.4A26 26 0 0 0 118.4 81.6Z"/>
+      <path class="w w-s" d="M167.9 167.9A96 96 0 0 1 32.1 167.9L81.6 118.4A26 26 0 0 0 118.4 118.4Z"/>
+      <path class="w w-w" d="M32.1 167.9A96 96 0 0 1 32.1 32.1L81.6 81.6A26 26 0 0 0 81.6 118.4Z"/>
+      <path class="g g-n" d="M100 18L126 56H74Z"/><path class="g g-e" d="M182 100L144 126V74Z"/><path class="g g-s" d="M100 182L74 144H126Z"/><path class="g g-w" d="M18 100L56 74V126Z"/>
       <circle class="knob" cx="100" cy="100" r="20"/>
     </svg></div>
   </div>
@@ -173,19 +168,19 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <div id="toast" role="status" aria-live="polite"></div>
 <input id="ime" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
 <noscript>Maze Wars+ is a game drawn pixel by pixel in JavaScript, so it needs JavaScript switched on.</noscript>
-<script src="/maze-wars/js/levels.js?v=19"></script>
-<script src="/maze-wars/js/fonts.js?v=19"></script>
-<script src="/maze-wars/js/gfx.js?v=19"></script>
-<script src="/maze-wars/js/art.js?v=19"></script>
-<script src="/maze-wars/js/world.js?v=19"></script>
-<script src="/maze-wars/js/hall.js?v=19"></script>
-<script src="/maze-wars/js/ui.js?v=19"></script>
-<script src="/maze-wars/js/net.js?v=19"></script>
-<script src="/maze-wars/js/audio.js?v=19"></script>
-<script src="/maze-wars/js/club.js?v=19"></script>
-<script src="/maze-wars/js/game.js?v=19"></script>
-<script src="/maze-wars/js/thumbs.js?v=19"></script>
-<script src="/maze-wars/js/main.js?v=19"></script>
+<script src="/maze-wars/js/levels.js?v=20"></script>
+<script src="/maze-wars/js/fonts.js?v=20"></script>
+<script src="/maze-wars/js/gfx.js?v=20"></script>
+<script src="/maze-wars/js/art.js?v=20"></script>
+<script src="/maze-wars/js/world.js?v=20"></script>
+<script src="/maze-wars/js/hall.js?v=20"></script>
+<script src="/maze-wars/js/ui.js?v=20"></script>
+<script src="/maze-wars/js/net.js?v=20"></script>
+<script src="/maze-wars/js/audio.js?v=20"></script>
+<script src="/maze-wars/js/club.js?v=20"></script>
+<script src="/maze-wars/js/game.js?v=20"></script>
+<script src="/maze-wars/js/thumbs.js?v=20"></script>
+<script src="/maze-wars/js/main.js?v=20"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>
