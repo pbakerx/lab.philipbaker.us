@@ -25,10 +25,8 @@ proof shots with `Google Chrome --headless --window-size=W,H --screenshot=…` i
 (`--headless=new` writes the screenshot and then never exits: background it, wait for the
 file, `pkill` it by its `--user-data-dir`.)
 
-**On the Mac mini neither launch config starts** (found Sep 18 2026; not re-tested since Node
-arrived there on Sep 23 2026 — Homebrew node 26, installed for AdBuilder). The Vercel CLI is
-still not installed on it and nobody is logged in, so from that Mac a deploy is still a push
-(checked Sep 23 2026).
+**On the Mac mini neither launch config starts** (found Sep 18 2026). It has no Node, so
+`lab-vercel` is out — and `npx vercel --prod` with it, so from that Mac a deploy is a push.
 And a process started by the preview tool is refused *every* read on the NAS volume, not
 just `os.getcwd()`: a zero-dependency server script placed in this repo — at the root or in
 `.claude/` — dies with "can't open file … Operation not permitted". What works: `rsync` the
@@ -596,27 +594,6 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     omits `contacts.json` (mobile numbers, personal addresses) and the internal
     open-commitments notes, and softens three schedule entries that quoted private email
     verbatim. Those originals stay on the NAS. Keep it that way when regenerating.
-- **/okeii-sra-faq** — **unlisted client link** for OKEII: the Strong Readers Act FAQ for
-  Oklahoma families ("Your questions, answered." — 27 answers under six topics, with a search
-  box), made to be embedded in the client's Wix site. Philip pasted the finished HTML into a
-  session on Sep 23 2026 and asked for it hosted on Vercel; the lab is that hosting, and
-  `https://lab.philipbaker.us/okeii-sra-faq/` is the URL for Wix's "Embed a site" element (the
-  file's own header comment still describes the older paste-the-code-into-Wix route). One file,
-  `index.html`: Inter from Google Fonts, everything else inline, no local assets. **Not on the
-  root index, not in `sitemap.xml`, and it carries `noindex, nofollow`** — the one line added
-  to Philip's file, so that the client's own page and not this copy is what search engines
-  index. Don't "fix" any of that.
-  - **No hamburger, no GA4, no Vercel Insights tag, no events block — on purpose.** Once it is
-    embedded it loads on every visit to the client's public page: the menu would put
-    philipbaker.us navigation inside their site, and any tag here would count their visitors as
-    ours. `scripts/head-meta.py` carries it under `EXCLUDED` with that reason. If "did the
-    client open the review link" is ever wanted, the Insights tag is the least invasive answer
-    — add it for the review period only and take it out before the embed goes live.
-  - **No NAS source yet** (checked Sep 23 2026: nothing named `*faq*` anywhere under
-    `Oklahoma Education Impact Initiative/`), so this folder IS the source. A revision arrives
-    the same way it did: replace `index.html`, keep the `robots` line, commit, push. The path
-    is lowercase with no redirect aliases; Vercel paths are case-exact, so hand the URL over by
-    copy-paste.
 
 - **/missile-command** — one-file tribute to the 1980 arcade game (Sep 18 2026). Canvas, no
   assets, no build. Philip made it phone-only; the desktop layer was added on top, and on a
