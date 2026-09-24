@@ -52,28 +52,43 @@
 </script>
 <style>
 :root{
-  --bg:#0c0e13;--card:#141821;--card2:#1a1f2b;--hair:#262c3a;--ink:#eef1f7;--dim:#9aa3b5;--faint:#5d6679;
+  --bg:#0c0e13;--card:#141821;--card2:#1a1f2b;--hair:#262c3a;--ink:#eef1f7;--dim:#9aa3b5;--faint:#6b7488;
   --lime:#b9ff66;--pink:#ff5fa8;--cyan:#5fd4ff;--amber:#ffc15e;--bad:#ff6b6b;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:70px}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,sans-serif}
 button,input,select,textarea{font:inherit;color:inherit}
 a{color:var(--cyan)}
+b{font-weight:650}
 
-header.top{max-width:1320px;margin:0 auto;padding:40px 20px 8px}
-h1{margin:0;font-size:clamp(2rem,5vw,3.1rem);letter-spacing:-.03em;line-height:1.05}
+header.top{max-width:1320px;margin:0 auto;padding:36px 20px 6px}
+h1{margin:0;font-size:clamp(2rem,5vw,3rem);letter-spacing:-.03em;line-height:1.05}
 h1 span{color:var(--lime)}
-.tag{margin:.4em 0 0;color:var(--dim);max-width:720px}
+.tag{margin:.4em 0 0;color:var(--dim);max-width:760px}
+
+/* guided tour */
+.coach{max-width:1320px;margin:14px auto 0;padding:0 20px}
+.coach-in{background:linear-gradient(135deg,#1a2412,#141821 55%);border:1px solid #33452a;border-radius:16px;padding:14px 18px}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.stp{display:flex;align-items:center;gap:6px;border:1px solid var(--hair);background:var(--card2);border-radius:999px;padding:3px 11px 3px 4px;
+     font-size:13px;color:var(--dim);cursor:pointer}
+.stp i{font-style:normal;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--hair);color:var(--ink);font-size:11px;font-weight:700}
+.stp.done i{background:var(--lime);color:#10140a}
+.stp.now{border-color:var(--lime);color:var(--ink)}
+.stp.now i{background:var(--ink);color:var(--bg)}
+.coach-body{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.coach-text{flex:1 1 360px;font-size:15.5px}
+.coach-text b{color:var(--lime)}
+.coach-nav{display:flex;gap:6px}
 
 /* sticky control bar */
-.bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);
-     border-bottom:1px solid var(--hair)}
-.bar-in{max-width:1320px;margin:0 auto;padding:10px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair);margin-top:14px}
+.bar-in{max-width:1320px;margin:0 auto;padding:9px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .stat{font-family:var(--mono);font-size:13px;color:var(--dim);white-space:nowrap}
 .stat b{color:var(--ink);font-weight:600}
-.mood{margin-left:auto;font-size:14px;color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.narr{flex:1 1 300px;font-size:13px;color:var(--amber);min-width:0}
 
 .btn{border:1px solid var(--hair);background:var(--card2);border-radius:10px;padding:7px 13px;cursor:pointer;white-space:nowrap;
      transition:transform .08s,background .15s,border-color .15s}
@@ -81,65 +96,104 @@ h1 span{color:var(--lime)}
 .btn:active{transform:scale(.97)}
 .btn.go{background:var(--lime);color:#10140a;border-color:var(--lime);font-weight:700;min-width:118px}
 .btn.go.on{background:var(--pink);border-color:var(--pink);color:#1a0610}
+.btn.big{font-size:17px;padding:10px 22px;border-radius:12px}
 .btn.small{padding:4px 10px;font-size:13px;border-radius:8px}
 .btn:disabled{opacity:.45;cursor:default}
 
-main{max-width:1320px;margin:0 auto;padding:18px 20px 60px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
-.card{background:var(--card);border:1px solid var(--hair);border-radius:16px;padding:16px 18px;min-width:0}
+main{max-width:1320px;margin:0 auto;padding:16px 20px 60px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--hair);border-radius:16px;padding:16px 18px;min-width:0;transition:box-shadow .4s,border-color .4s}
+.card.flash{border-color:var(--lime);box-shadow:0 0 0 3px rgba(185,255,102,.25)}
 .s4{grid-column:span 4}.s5{grid-column:span 5}.s7{grid-column:span 7}.s12{grid-column:span 12}
-@media (max-width:1050px){.s4,.s5,.s7{grid-column:span 6}.wide{grid-column:span 12}}
+@media (max-width:1050px){.s4,.s5,.s7{grid-column:span 12}}
 @media (max-width:720px){main{grid-template-columns:1fr;padding:14px 16px 50px}.s4,.s5,.s7,.s12{grid-column:auto}
-  header.top{padding:28px 16px 6px}.bar-in{padding:8px 16px}.mood{margin-left:0;flex-basis:100%}}
-.card h2{margin:0;font-size:1.05rem;display:flex;align-items:baseline;gap:8px}
-.card h2 .n{font-family:var(--mono);color:var(--lime);font-size:.85rem}
-.why{margin:.3em 0 .9em;color:var(--dim);font-size:13.5px}
+  header.top,.coach{padding-left:16px;padding-right:16px}.bar-in{padding:8px 16px;gap:6px 10px}
+  .bar .opt{display:none}.narr{flex-basis:100%;font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
+.card h2{margin:0;font-size:1.12rem}
+.card h2 small{font-weight:400;color:var(--faint);font-size:.8rem;margin-left:6px}
+.why{margin:.3em 0 .8em;color:var(--dim);font-size:14px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
-.lbl{font-size:13px;color:var(--dim)}
-.val{font-family:var(--mono);font-size:12.5px;color:var(--ink);min-width:3.5em;display:inline-block}
+.lbl{font-size:13.5px;color:var(--ink)}
+.val{font-family:var(--mono);font-size:12.5px;color:var(--lime);min-width:3.5em;display:inline-block}
+.meta{font-size:12.3px;color:var(--faint);line-height:1.4;margin:1px 0 8px}
+.meta b{color:var(--dim);font-weight:600}
+
+details.more{margin:10px 0 0;border-top:1px dashed var(--hair);padding-top:8px}
+details.more summary{cursor:pointer;color:var(--cyan);font-size:13.5px;list-style:none}
+details.more summary::before{content:'▸ ';}
+details.more[open] summary::before{content:'▾ ';}
+details.more div{font-size:13.5px;color:var(--dim);margin-top:6px}
+details.more div p{margin:.45em 0}
+details.more div b{color:var(--ink)}
+ol.try{margin:6px 0 4px;padding-left:20px;font-size:13.5px;color:var(--dim)}
+ol.try li{margin:2px 0}
+ol.try b{color:var(--ink)}
 
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--hair);background:var(--card2);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13.5px}
 .chip.sel{border-color:var(--lime);color:var(--lime)}
-textarea{width:100%;height:120px;resize:vertical;background:var(--bg);border:1px solid var(--hair);border-radius:10px;padding:10px;
+textarea{width:100%;height:110px;resize:vertical;background:var(--bg);border:1px solid var(--hair);border-radius:10px;padding:10px;
          font-family:var(--mono);font-size:12.5px;line-height:1.45}
 input[type=text]{width:100%;background:var(--bg);border:1px solid var(--hair);border-radius:10px;padding:8px 10px;font-family:var(--mono)}
 input[type=range]{accent-color:var(--lime);flex:1;min-width:90px}
 select{background:var(--card2);border:1px solid var(--hair);border-radius:8px;padding:4px 8px}
 
-.knobs{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center}
+/* control list: label + slider + value, then a caption line */
+.ctl{display:grid;grid-template-columns:7.2em 1fr auto;gap:0 10px;align-items:center}
+.ctl .meta{grid-column:1/-1}
 
-canvas{display:block;width:100%;border-radius:10px;background:var(--bg)}
-#loss{height:190px}
-#land{height:auto;aspect-ratio:1/1;width:min(100%,520px);margin:0 auto;cursor:crosshair;touch-action:none}
-#emb{height:300px}
-#attn{height:auto;aspect-ratio:1/1;width:min(100%,420px);margin:0 auto}
-#xray{height:220px;image-rendering:pixelated}
-
-.out{font-family:var(--mono);font-size:13px;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--hair);
-     border-radius:10px;padding:10px;min-height:120px;max-height:240px;overflow:auto}
+/* talk (hero) */
+.talk{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:22px}
+@media (max-width:900px){.talk{grid-template-columns:1fr}}
+#prompt{font-size:17px;padding:11px 13px;border-color:#33452a}
+.out{font-family:var(--mono);font-size:14px;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--hair);
+     border-radius:10px;padding:12px;min-height:170px;max-height:300px;overflow:auto;margin-top:10px}
 .out .p{color:var(--faint)}
 .out .cur{display:inline-block;width:.55em;background:var(--lime);animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-.bars{display:grid;grid-template-columns:2.2em 1fr 3.4em;gap:3px 8px;align-items:center;font-family:var(--mono);font-size:12.5px}
-.bars .c{text-align:center;background:var(--card2);border-radius:5px;cursor:pointer;padding:1px 0}
+.bars{display:grid;grid-template-columns:2.4em 1fr 3.6em;gap:4px 8px;align-items:center;font-family:var(--mono);font-size:13px}
+.bars .c{text-align:center;background:var(--card2);border:1px solid var(--hair);border-radius:6px;cursor:pointer;padding:2px 0}
 .bars .c:hover{background:var(--lime);color:#111}
 .bars .bw{display:block;min-width:0}
-.bars .b{display:block;height:12px;border-radius:4px;background:linear-gradient(90deg,var(--cyan),var(--lime));min-width:1px;transition:width .15s}
+.bars .b{display:block;height:14px;border-radius:4px;background:linear-gradient(90deg,var(--cyan),var(--lime));min-width:1px;transition:width .15s}
 .bars .pc{color:var(--dim);text-align:right}
+
+/* training feedback */
+canvas{display:block;width:100%;border-radius:10px;background:var(--bg)}
+#loss{height:180px}
+.reading{font-family:var(--mono);font-size:15px;letter-spacing:.5px;background:var(--bg);border:1px solid var(--hair);border-radius:10px;padding:8px 10px;
+         white-space:pre;overflow:hidden;text-overflow:ellipsis;min-height:2.4em}
+.reading span{border-bottom:3px solid transparent;padding:0 .5px}
+.reading .ok{color:var(--lime);border-color:var(--lime)}
+.reading .no{color:var(--bad);border-color:rgba(255,107,107,.5)}
+.reading .ctx{color:var(--faint)}
+.live{font-family:var(--mono);font-size:13px;color:var(--ink);background:var(--bg);border:1px solid var(--hair);border-radius:10px;padding:8px 10px;
+      white-space:pre-wrap;word-break:break-word;min-height:3.2em;max-height:7.5em;overflow:hidden}
+.sub{font-size:12.5px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 4px}
+
+#land{height:auto;aspect-ratio:1/1;width:min(100%,520px);margin:0 auto;cursor:grab;touch-action:none}
+#land:active{cursor:grabbing}
+#emb{height:300px}
+#attn{height:auto;aspect-ratio:1/1;width:min(100%,420px);margin:0 auto}
+#xray{height:260px;image-rendering:pixelated;cursor:crosshair}
+.ramp{height:10px;border-radius:5px;background:linear-gradient(90deg,#07050f,#2a0f5e,#6a1f86,#c13b75,#f7865a,#fdf2b8);margin-top:8px}
+.ramp-l{display:flex;justify-content:space-between;font-size:12px;color:var(--faint)}
 
 .arch{display:flex;flex-direction:column;gap:5px;margin-top:10px;font-size:12.5px}
 .arch .blk{border:1px solid var(--hair);border-radius:9px;padding:6px 9px;background:var(--card2);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .arch .io{color:var(--dim);text-align:center;font-family:var(--mono)}
 .arch .heads{display:flex;gap:4px}
-.hd{width:22px;height:22px;border-radius:6px;border:1px solid var(--cyan);color:var(--cyan);font-size:11px;display:grid;place-items:center;cursor:pointer;background:transparent;padding:0}
+.hd{width:24px;height:24px;border-radius:6px;border:1px solid var(--cyan);color:var(--cyan);font-size:11px;display:grid;place-items:center;cursor:pointer;background:transparent;padding:0}
 .hd.sel{background:var(--cyan);color:#051018}
 .hd.off{border-color:var(--bad);color:var(--bad);text-decoration:line-through;background:transparent}
 .hd.off.sel{background:var(--bad);color:#200}
 .arch .mlp{margin-left:auto;color:var(--amber);font-family:var(--mono)}
+.headpick{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.headpick .hr{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--dim)}
 
-.hint{font-size:12.5px;color:var(--faint);margin-top:6px}
 .read{font-family:var(--mono);font-size:13px;color:var(--dim)}
 .read b{color:var(--ink)}
+.compare{font-size:13.5px;color:var(--dim);min-height:1.4em}
+.compare b{color:var(--ink)}
 .prog{height:4px;background:var(--hair);border-radius:4px;overflow:hidden;margin-top:6px}
 .prog i{display:block;height:100%;width:0;background:var(--pink)}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--card2);border:1px solid var(--faint);
@@ -147,6 +201,13 @@ canvas{display:block;width:100%;border-radius:10px;background:var(--bg)}
 .toast.show{opacity:1;transform:translateX(-50%)}
 .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--dim);margin-top:6px}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.xdesc{font-size:13.5px;color:var(--dim);margin:6px 0 8px;min-height:2.8em}
+.xdesc b{color:var(--ink)}
+.insight{display:flex;gap:10px;margin:12px 0 2px;padding:10px 12px;border-radius:10px;background:rgba(255,193,94,.07);border:1px solid rgba(255,193,94,.28)}
+.insight .ic{font-size:18px;line-height:1.2}
+.insight div{font-size:13.5px;color:var(--dim)}
+.insight div b:first-child{display:block;color:var(--amber);font-size:12px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
+.insight div b{color:var(--ink)}
 footer{max-width:1320px;margin:0 auto;padding:0 20px 50px;color:var(--faint);font-size:13px}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
@@ -165,128 +226,192 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <body>
 <header class="top">
   <h1>Pocket <span>GPT</span></h1>
-  <p class="tag">A real transformer, millions of times smaller than the chatbots you know, running entirely in your browser. Feed it text, press Train, and watch it go from gibberish to something close to sense. Then poke it.</p>
+  <p class="tag">A real GPT, the same design as the chatbots you know, shrunk until you can watch every part of it work. It lives entirely in this page. It starts out knowing nothing; you'll teach it to write.</p>
 </header>
 
+<section class="coach" aria-label="Guided tour"><div class="coach-in">
+  <div class="steps" id="steps"></div>
+  <div class="coach-body">
+    <div class="coach-text" id="coachText"></div>
+    <div class="coach-nav">
+      <button class="btn go" id="coachGo">Show me</button>
+      <button class="btn small" id="coachNext" title="Skip to the next step">Next ›</button>
+    </div>
+  </div>
+</div></section>
+
 <div class="bar"><div class="bar-in">
-  <button class="btn go" id="go">▶ Train</button>
-  <button class="btn" id="step1" title="Take exactly one gradient-descent step">Step ×1</button>
+  <button class="btn go" id="go" title="Start or pause learning (Space bar)">▶ Train</button>
+  <button class="btn" id="step1" title="Take exactly one learning step">Step ×1</button>
   <span class="stat">step <b id="sStep">0</b></span>
   <span class="stat">loss <b id="sLoss">—</b></span>
-  <span class="stat">params <b id="sParams">—</b></span>
-  <span class="mood" id="mood">Freshly built. Knows nothing.</span>
+  <span class="stat">right <b id="sAcc">—</b></span>
+  <span class="stat opt">numbers <b id="sParams">—</b></span>
+  <span class="narr" id="narr">Brand new: its numbers are random, so it knows nothing yet.</span>
 </div></div>
 
 <main>
-  <!-- 1 FEED -->
-  <section class="card s4">
-    <h2><span class="n">01</span>Feed it</h2>
-    <p class="why">This is everything the model will ever read. It reads one character at a time.</p>
-    <div class="chips" id="presets"></div>
-    <p class="hint" id="blurb"></p>
-    <textarea id="corpus" spellcheck="false"></textarea>
-    <div class="row"><button class="btn small" id="useText">Use this text (new brain)</button><span class="lbl" id="corpusInfo"></span></div>
-  </section>
-
-  <!-- 2 BUILD -->
-  <section class="card s4">
-    <h2><span class="n">02</span>Build it</h2>
-    <p class="why">The skeleton. More of everything = smarter but slower. Changes take effect when you build.</p>
-    <div class="knobs">
-      <span class="lbl">Layers</span><input type="range" id="kL" min="1" max="4" value="2"><span class="val" id="vL"></span>
-      <span class="lbl">Heads</span><input type="range" id="kH" min="0" max="2" value="1"><span class="val" id="vH"></span>
-      <span class="lbl">Width</span><input type="range" id="kD" min="0" max="3" value="2"><span class="val" id="vD"></span>
-      <span class="lbl">Memory</span><input type="range" id="kN" min="8" max="48" step="4" value="24"><span class="val" id="vN"></span>
+  <!-- TALK: the heart of it -->
+  <section class="card s12" id="cTalk">
+    <div class="talk">
+      <div>
+        <h2>✍︎ Talk to it</h2>
+        <p class="why">Type the start of something. Press <b>Write</b> and it continues, one character at a time, each one chosen from its own guesses.</p>
+        <input type="text" id="prompt" value="" spellcheck="false" autocomplete="off" aria-label="Your starting text">
+        <p class="meta">Your starting text. <b>↵</b> means a new line. Characters it has never seen in its training text are ignored.</p>
+        <div class="row">
+          <button class="btn go big" id="gen">✍︎ Write</button>
+          <span class="lbl" style="margin-left:8px">Creativity</span><input type="range" id="temp" min="0.1" max="2" step="0.05" value="0.8" aria-label="Creativity"><span class="val" id="vTemp"></span>
+        </div>
+        <p class="meta"><b>Creativity</b> (the pros call it <i>temperature</i>): low plays it safe and always takes its top guess, so it gets repetitive. High takes long shots, so it gets surprising, then weird, then nonsense.</p>
+        <div class="out" id="out"></div>
+      </div>
+      <div>
+        <h2>Its next-letter guesses</h2>
+        <p class="why">After your text, these are the characters it thinks could come next, and how sure it is. <b>Click one</b> to make that choice for it.</p>
+        <div class="bars" id="bars"></div>
+        <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>Every word a chatbot has ever written came out of bars exactly like these. It looks at the text so far, scores every possible next piece, picks one, and repeats. The big ones score words and word-pieces instead of letters, but that's the whole trick.</div></div>
+      </div>
     </div>
-    <div class="row"><button class="btn small" id="build">Build a new brain</button><span class="lbl" id="buildInfo"></span></div>
-    <div class="arch" id="arch"></div>
-    <p class="hint">Click a head to look through its eyes in <i>Attention</i>.</p>
   </section>
 
-  <!-- 4 TALK -->
-  <section class="card s4 wide">
-    <h2><span class="n">03</span>Talk to it</h2>
-    <p class="why">Type a start. The bars are its guesses for the very next character. Click one to choose for it.</p>
-    <input type="text" id="prompt" value="" spellcheck="false" autocomplete="off">
-    <div class="row">
-      <span class="lbl">Creativity</span><input type="range" id="temp" min="0.1" max="2" step="0.05" value="0.8"><span class="val" id="vTemp"></span>
-      <button class="btn small" id="gen">Write ✍︎</button>
-    </div>
-    <div class="bars" id="bars"></div>
-    <div class="out" id="out" style="margin-top:10px"></div>
-  </section>
-
-  <!-- 3 TRAIN -->
-  <section class="card s7">
-    <h2><span class="n">04</span>Train it</h2>
-    <p class="why">Each step: read a few random snippets, measure how wrong the guesses were (the <b>loss</b>), and nudge every weight downhill.</p>
+  <!-- TRAIN -->
+  <section class="card s7" id="cTrain">
+    <h2>🏋 Train it</h2>
+    <p class="why">Learning is one loop, repeated: read a snippet, guess each next character, see how wrong the guesses were, then nudge every number a tiny bit toward being less wrong.</p>
+    <div class="sub">Right now it's reading</div>
+    <div class="reading" id="reading"><span class="ctx">Press ▶ Train to watch it read.</span></div>
+    <p class="meta">A snippet from its training text. <span style="color:var(--lime)">Green</span> letters it guessed correctly before seeing them; <span style="color:var(--bad)">red</span> ones it got wrong.</p>
+    <div class="sub">Its writing right now <span id="liveStep" style="text-transform:none;font-weight:400;color:var(--faint)"></span></div>
+    <div class="live" id="live">Nothing yet.</div>
+    <p class="meta">A fresh sample every couple of seconds while it trains, so you can watch it improve.</p>
+    <div class="sub">Loss: how wrong it is</div>
     <canvas id="loss"></canvas>
-    <div class="knobs" style="margin-top:10px">
-      <span class="lbl">Step size</span><input type="range" id="lr" min="-4" max="-0.7" step="0.05" value="-2.3"><span class="val" id="vLr"></span>
-      <span class="lbl">Batch</span><input type="range" id="batch" min="1" max="32" value="8"><span class="val" id="vBatch"></span>
-      <span class="lbl">Speed</span><input type="range" id="speed" min="1" max="40" value="12"><span class="val" id="vSpeed"></span>
-    </div>
-    <div class="row">
+    <p class="meta">Lower is better. The dashed line is what random guessing scores. The <span style="color:var(--lime)">green</span> line is the smoothed trend; the faint blue line is each step.</p>
+
+    <div class="ctl" style="margin-top:12px">
+      <span class="lbl">Step size</span><input type="range" id="lr" min="-4" max="-0.7" step="0.05" value="-2.3" aria-label="Step size"><span class="val" id="vLr"></span>
+      <p class="meta">How big each nudge is (the <i>learning rate</i>). Too small and it learns slowly. Too big and it overshoots, and the loss jumps around or explodes. Try dragging it all the way right.</p>
+      <span class="lbl">Batch</span><input type="range" id="batch" min="1" max="32" value="8" aria-label="Batch size"><span class="val" id="vBatch"></span>
+      <p class="meta">How many snippets it reads before each nudge. More snippets give a steadier sense of direction, but each step takes longer.</p>
+      <span class="lbl">Speed</span><input type="range" id="speed" min="1" max="40" value="12" aria-label="Speed"><span class="val" id="vSpeed"></span>
+      <p class="meta">Steps per screen refresh. This only changes how fast you watch; it doesn't change what it learns.</p>
       <span class="lbl">Optimizer</span>
-      <select id="opt"><option value="adam">Adam (smart)</option><option value="momentum">Momentum (rolling ball)</option><option value="sgd">Plain SGD (careful walker)</option></select>
+      <select id="opt" aria-label="Optimizer"><option value="adam">Adam (smart)</option><option value="momentum">Momentum (rolling ball)</option><option value="sgd">Plain SGD (careful walker)</option></select><span></span>
+      <p class="meta" id="optMeta"></p>
+      <span class="lbl">⏳ Time machine</span><input type="range" id="tm" min="0" max="0" value="0" disabled aria-label="Time machine"><span class="val" id="vTm" style="min-width:6.5em">now</span>
+      <p class="meta">It saves a copy of its brain every 25 steps. Drag back to talk to a younger version. Pressing Train from there starts a new timeline.</p>
     </div>
-    <div class="row" style="margin-top:12px">
-      <span class="lbl">⏳ Time machine</span><input type="range" id="tm" min="0" max="0" value="0" disabled><span class="val" id="vTm" style="min-width:7em">now</span>
-    </div>
-    <p class="hint">Scrub back to an earlier brain and talk to it. Press Train to branch a new timeline from there.</p>
+    <p class="meta" style="margin-top:4px"><b>▶ Train</b> runs the loop continuously (Space bar works too). <b>Step ×1</b> runs it exactly once, so you can watch a single nudge.</p>
+    <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>This is how every chatbot was made. Guess the next piece of text, measure how wrong, nudge the numbers. The only difference is scale: they read a large slice of the internet and nudge hundreds of billions of numbers, on thousands of chips for months. You're doing it with about 28,000 numbers in a browser tab.</div></div>
   </section>
 
-  <!-- 5 ATTENTION -->
-  <section class="card s5">
-    <h2><span class="n">05</span>Attention</h2>
-    <p class="why">For your prompt: each row is a character, bright squares are the earlier characters it's looking at. <span id="attnWho"></span></p>
+  <!-- FEED -->
+  <section class="card s5" id="cFeed">
+    <h2>📚 Feed it</h2>
+    <p class="why">Everything it will ever know comes from this text. Nothing else goes in.</p>
+    <div class="chips" id="presets"></div>
+    <p class="meta" id="blurb"></p>
+    <textarea id="corpus" spellcheck="false" aria-label="Training text"></textarea>
+    <div class="row"><button class="btn small" id="useText">Learn from this text</button><span class="meta" style="margin:0" id="corpusInfo"></span></div>
+    <p class="meta">Paste anything: song lyrics, your emails, a recipe book. Using new text starts a fresh brain, because its alphabet changes.</p>
+    <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>A model can only echo what it was fed, which is why what goes into training is the biggest decision there is. Feed it dinosaurs and it dreams in dinosaurs. The big labs spend enormous effort choosing and cleaning their text for exactly this reason.</div></div>
+  </section>
+
+  <!-- BUILD -->
+  <section class="card s5" id="cBuild">
+    <h2>🧩 Build it</h2>
+    <p class="why">The shape of its brain. Change these, then press <b>Build a new brain</b>.</p>
+    <div class="ctl">
+      <span class="lbl">Layers</span><input type="range" id="kL" min="1" max="4" value="2" aria-label="Layers"><span class="val" id="vL"></span>
+      <p class="meta">How many times it re-reads and rethinks the text before guessing. Deeper can learn subtler patterns.</p>
+      <span class="lbl">Heads</span><input type="range" id="kH" min="0" max="2" value="1" aria-label="Heads"><span class="val" id="vH"></span>
+      <p class="meta">Attention heads per layer: separate "spotlights" that can each look back at different earlier letters.</p>
+      <span class="lbl">Width</span><input type="range" id="kD" min="0" max="3" value="2" aria-label="Width"><span class="val" id="vD"></span>
+      <p class="meta">How many numbers describe each character inside its head. Wider holds more detail.</p>
+      <span class="lbl">Memory</span><input type="range" id="kN" min="8" max="48" step="4" value="24" aria-label="Memory"><span class="val" id="vN"></span>
+      <p class="meta">How many recent characters it can see at once (its <i>context window</i>). Anything further back, it has forgotten.</p>
+    </div>
+    <div class="row"><button class="btn small" id="build">Build a new brain</button><span class="meta" style="margin:0" id="buildInfo"></span></div>
+    <p class="meta">Throws away everything it learned and starts over with fresh random numbers, at the size you set.</p>
+    <div class="arch" id="arch"></div>
+    <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>These are the same knobs the labs turn. GPT-3 had 96 layers, 96 heads per layer, a width of 12,288 and 175 billion numbers. Modern chatbots remember hundreds of thousands of word-pieces at once. Yours has a memory of a couple dozen letters.</div></div>
+  </section>
+
+  <!-- ATTENTION -->
+  <section class="card s7" id="cAttn">
+    <h2>🔦 Attention <small id="attnWho"></small></h2>
+    <p class="why">Before guessing, each character can look back at earlier characters for clues. Each <b>head</b> learns its own way of looking. This map shows one head, for the text in your Talk box.</p>
+    <div class="headpick" id="headpick"></div>
     <canvas id="attn"></canvas>
+    <p class="meta">Each row is a character in your text. The bright squares in that row are the earlier characters it's paying attention to. Hover to read the exact amount. The dark top-right half is the future, which it's never allowed to see.</p>
     <div class="row"><button class="btn small" id="snip">✂ Switch this head off</button><span class="read" id="attnRead"></span></div>
+    <div class="compare" id="compare"></div>
+    <p class="meta"><b>Why switch a head off?</b> To find out what it was for. If the guesses get worse without it, that head was doing important work. If nothing changes, it wasn't pulling its weight. Try it on <b>Copycat</b>, where one head does most of the work.</p>
+    <div class="insight"><span class="ic">🧠</span><div><b>How the real ones work</b>This is brain surgery, and it's exactly how researchers study real AI. They switch parts off one at a time (they call it <i>ablation</i>) and see what breaks. Train on <b>Copycat</b> and one head learns to find the earlier copy of a word and look at the letter that came after it. Researchers at Anthropic named that pattern the <b>induction head</b>, and in 2022 showed it's a big part of how large models learn from examples in your prompt. Your tiny model discovers it on its own.</div></div>
   </section>
 
-  <!-- 6 LANDSCAPE -->
-  <section class="card s7">
-    <h2><span class="n">06</span>Push the ball</h2>
-    <p class="why">The model's weights are one point in a space with thousands of dimensions. This is a 2-D slice of it, colored by loss: dark valleys are good. The glowing ball is the model now, the arrow is the downhill direction, the trail is where training took it. <b>Drag the ball</b> to move the model yourself.</p>
+  <!-- LANDSCAPE -->
+  <section class="card s7" id="cLand">
+    <h2>⛳ Push the ball</h2>
+    <p class="why">Its whole brain, every one of its numbers, is a single point in a vast space. Every point in that space is a different possible brain, some good and some terrible. Training is a ball rolling downhill through it.</p>
     <canvas id="land"></canvas>
+    <div class="ramp"></div><div class="ramp-l"><span>low loss: good writer</span><span>high loss: babbler</span></div>
     <div class="prog"><i id="landProg"></i></div>
     <div class="row">
       <button class="btn small" id="mapBtn">🗺 Map the terrain here</button>
-      <span class="lbl">Zoom</span><input type="range" id="zoom" min="0.1" max="2" step="0.05" value="0.6"><span class="val" id="vZoom"></span>
+      <span class="lbl">Zoom</span><input type="range" id="zoom" min="0.1" max="2" step="0.05" value="0.6" aria-label="Zoom"><span class="val" id="vZoom"></span>
     </div>
+    <p class="meta"><b>Map the terrain</b> rebuilds and tests hundreds of slightly different brains around this one and colors each by how wrong it would be. Zoom sets how far out it looks.</p>
+    <div class="sub">Its writing, from where the ball is</div>
+    <div class="live" id="landSample">Map the terrain, then drag the ball.</div>
     <div class="row">
-      <button class="btn small" id="kick">💥 Kick</button><input type="range" id="kickAmt" min="0.02" max="1" step="0.02" value="0.25"><span class="val" id="vKick"></span>
+      <button class="btn small" id="kick">💥 Kick</button><input type="range" id="kickAmt" min="0.02" max="1" step="0.02" value="0.25" aria-label="Kick strength"><span class="val" id="vKick"></span>
       <span class="read" id="landRead"></span>
     </div>
-    <div class="row"><label class="lbl" style="display:flex;gap:6px;align-items:center;cursor:pointer;color:var(--ink)"><input type="checkbox" id="stick" style="accent-color:var(--lime)"> 🧲 Stick to the map</label>
-      <span class="hint" style="margin:0">Off: training may escape sideways through dimensions this slice can't show, and find a new valley without moving on the map. On: the ball must roll.</span></div>
+    <p class="meta"><b>Kick</b> shoves every number in a random direction. The slider sets how hard.</p>
+    <div class="row"><label class="lbl" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="stick" style="accent-color:var(--lime)"> 🧲 Stick to the map</label></div>
+    <p class="meta">Normally training can slip away sideways, through directions this flat map can't show. It finds a new valley without seeming to move. Tick this to keep it on the map, so you can watch the ball roll.</p>
+    <div class="sub">Try this</div>
+    <ol class="try">
+      <li>Train for 20 seconds, then press <b>Map the terrain</b>.</li>
+      <li><b>Drag the ball</b> up a bright hill. Its writing (above) falls apart, because you really did change its brain.</li>
+      <li>Tick <b>Stick to the map</b>, then press <b>▶ Train</b>. Watch it roll back down, and watch its writing recover.</li>
+    </ol>
+    <div class="insight"><span class="ic">🏔</span><div><b>How the real ones work</b>A real chatbot's space has hundreds of billions of directions, and nobody can picture that. So researchers do exactly this: take a flat slice through two random directions and paint the hills. This method comes from a 2018 paper on seeing why some networks train easily and others don't. The <b>green arrow</b> is the downhill direction, what training calls the <i>gradient</i>. Every step of learning is just "go that way a little."</div></div>
   </section>
 
   <!-- EMBEDDINGS -->
-  <section class="card s5">
-    <h2><span class="n">07</span>Letter map</h2>
-    <p class="why">Each character is stored as a list of numbers. Squashed to 2-D, characters the model treats alike drift together while it trains.</p>
+  <section class="card s5" id="cEmb">
+    <h2>🔤 Letter map</h2>
+    <p class="why">Inside, each character is a list of numbers, its own coordinates in a space with many directions. This squashes that space flat so you can see it.</p>
     <canvas id="emb"></canvas>
-    <div class="legend"><span><i style="background:var(--lime)"></i>vowels</span><span><i style="background:var(--cyan)"></i>consonants</span><span><i style="background:var(--pink)"></i>punctuation</span><span><i style="background:var(--faint)"></i>space / newline</span></div>
+    <div class="legend"><span><i style="background:var(--lime)"></i>vowels</span><span><i style="background:var(--cyan)"></i>consonants</span><span><i style="background:var(--pink)"></i>punctuation</span><span><i style="background:var(--faint)"></i>space / new line</span></div>
+    <p class="meta">Nobody tells it what a vowel is. Watch while it trains: characters it treats alike drift together on their own.</p>
+    <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>Big models do this with words, and meaning becomes geometry. In a famous 2013 result, "king" minus "man" plus "woman" landed next to "queen." Related ideas end up neighbors, learned purely from which words appear near which.</div></div>
   </section>
 
   <!-- XRAY -->
-  <section class="card s12">
-    <h2><span class="n">08</span>Weight X-ray</h2>
-    <p class="why">The actual numbers inside one part of the brain. <span style="color:var(--pink)">Pink</span> is positive, <span style="color:var(--cyan)">cyan</span> negative. Switch to "gradients" to see which ones the latest step wants to change.</p>
-    <div class="row"><select id="xsel"></select>
-      <div class="chips"><span class="chip sel" data-x="val">weights</span><span class="chip" data-x="grad">gradients</span></div>
-      <button class="btn small" id="scramble" title="Replace this matrix with random numbers">🎲 Scramble this part</button>
+  <section class="card s12" id="cXray">
+    <h2>🩻 Weight X-ray</h2>
+    <p class="why">These are the actual numbers the model is made of. Each square is one number: <span style="color:var(--pink)">pink</span> positive, <span style="color:var(--cyan)">blue</span> negative, darker near zero. Everything it knows is written in these squares and nowhere else.</p>
+    <div class="row"><select id="xsel" aria-label="Which part to X-ray"></select>
+      <div class="chips"><span class="chip sel" data-x="val">numbers</span><span class="chip" data-x="grad">nudges</span></div>
+      <button class="btn small" id="scramble" title="Replace this part with random numbers">🎲 Scramble this part</button>
+      <span class="read" id="xread"></span>
     </div>
+    <div class="xdesc" id="xdesc"></div>
     <canvas id="xray"></canvas>
+    <p class="meta"><b>Numbers</b> shows what's stored. <b>Nudges</b> shows the <i>gradient</i>: which way the last training step wanted each number to move. Bright squares are the ones being changed the most. Leave it on nudges while it trains and watch the brain being rewritten. <b>Scramble</b> replaces the chosen part with random numbers; then train and watch it heal.</p>
+    <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>There are no rules in here, no dictionary, no list of dinosaurs. Just numbers. That's why AI is hard to explain: a chatbot is hundreds of billions of these squares, and a whole research field (<i>interpretability</i>) is trying to read them. Scrambling a part and watching what breaks is one of its basic tools.</div></div>
   </section>
 </main>
-<footer>Everything runs locally in this page: no server, no API, no library. The model is a real GPT (token + position embeddings, masked multi-head self-attention, MLP, layer norm, residual connections), trained with hand-written backpropagation.</footer>
+<footer>Everything runs in this page: no server, no API, no library. It's a real GPT (token and position embeddings, masked multi-head self-attention, an MLP, layer norm, residual connections), trained with hand-written backpropagation.</footer>
 <div class="toast" id="toast"></div>
 
-<script src="/GPT/js/corpora.js?v=5b1b57d8"></script>
-<script src="/GPT/js/engine.js?v=5b1b57d8"></script>
-<script src="/GPT/js/app.js?v=5b1b57d8"></script>
+<script src="/GPT/js/corpora.js?v=f1d7b99f"></script>
+<script src="/GPT/js/engine.js?v=f1d7b99f"></script>
+<script src="/GPT/js/app.js?v=f1d7b99f"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>

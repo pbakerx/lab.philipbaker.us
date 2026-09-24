@@ -65,28 +65,41 @@
     $('#sParams').textContent = m.size.toLocaleString();
     setRunning(false);
     renderArch(); fillXray(); syncTM(); knobInfo();
-    $('#out').innerHTML = '<span class="p">Press “Write” to let it write something.</span>';
-    mood('Freshly built. Knows nothing. Press ▶ Train.');
+    $('#out').innerHTML = '<span class="p">Press ✍︎ Write. It hasn’t learned anything yet, so expect gibberish.</span>';
+    $('#live').textContent = 'Nothing yet. Press ▶ Train.'; $('#liveStep').textContent = '';
+    $('#reading').innerHTML = '<span class="ctx">Press ▶ Train to watch it read.</span>';
+    $('#landSample').textContent = 'Map the terrain, then drag the ball.';
+    $('#compare').textContent = ''; $('#sAcc').textContent = '—';
+    mood('Brand new: its numbers are random, so it knows nothing yet.');
     touch(...ALL);
   }
 
+  function headButtons(l) {
+    const m = S.model, hs = document.createElement('span'); hs.className = 'heads';
+    for (let h = 0; h < m.cfg.H; h++) {
+      const x = document.createElement('button');
+      x.className = 'hd' + (m.off[l][h] ? ' off' : '') + (S.sel.l === l && S.sel.h === h ? ' sel' : '');
+      x.textContent = h + 1; x.title = `Attention head ${h + 1} of block ${l + 1}` + (m.off[l][h] ? ' (switched off)' : '');
+      x.onclick = () => { S.sel = { l, h }; $('#compare').textContent = ''; renderArch(); touch('talk'); coachDone(4); };
+      hs.appendChild(x);
+    }
+    return hs;
+  }
   function renderArch() {
-    const m = S.model, el = $('#arch');
+    const m = S.model, el = $('#arch'), hp = $('#headpick');
+    hp.textContent = '';
+    m.blocks.forEach((_, l) => {
+      const r = document.createElement('div'); r.className = 'hr';
+      const t = document.createElement('span'); t.textContent = `Block ${l + 1}`; t.style.minWidth = '4.2em';
+      r.append(t, headButtons(l)); hp.appendChild(r);
+    });
     el.textContent = '';
     const io = t => { const d = document.createElement('div'); d.className = 'io'; d.textContent = t; el.appendChild(d); };
     io(`text → ${m.cfg.V} characters → ${m.cfg.d} numbers each`);
     m.blocks.forEach((_, l) => {
       const b = document.createElement('div'); b.className = 'blk';
       const t = document.createElement('span'); t.textContent = `Block ${l + 1}`; b.appendChild(t);
-      const hs = document.createElement('span'); hs.className = 'heads';
-      for (let h = 0; h < m.cfg.H; h++) {
-        const x = document.createElement('button');
-        x.className = 'hd' + (m.off[l][h] ? ' off' : '') + (S.sel.l === l && S.sel.h === h ? ' sel' : '');
-        x.textContent = h + 1; x.title = `Attention head ${h + 1} of block ${l + 1}`;
-        x.onclick = () => { S.sel = { l, h }; renderArch(); touch('talk'); };
-        hs.appendChild(x);
-      }
-      b.appendChild(hs);
+      b.appendChild(headButtons(l));
       const mlp = document.createElement('span'); mlp.className = 'mlp'; mlp.textContent = `MLP ${m.cfg.d}→${4 * m.cfg.d}→${m.cfg.d}`;
       b.appendChild(mlp); el.appendChild(b);
     });
@@ -143,7 +156,13 @@
     [0.3, 'Real words! Mostly.'],
     [0, 'Fluent-ish. Possibly just memorizing now.'],
   ];
-  function mood(t) { $('#mood').textContent = t; }
+  function mood(t) { S.moodText = t; renderNarr(); }
+  function renderNarr() {
+    const m = S.model; let t = S.moodText || '';
+    if (S.running && m && m.lastAcc != null)
+      t = `Each step it reads ${$('#batch').value} snippets, guesses ${m.lastGuesses} next letters (${Math.round(100 * m.lastAcc)}% right just now), and nudges all ${m.size.toLocaleString()} numbers. ${t}`;
+    $('#narr').textContent = t;
+  }
   function updateMood() {
     if (S.ema == null) return;
     if (!isFinite(S.ema)) return mood('It exploded. Build a new brain and use a smaller step size.');
@@ -183,7 +202,7 @@
     x.font = '11px ui-monospace,Menlo,monospace'; x.fillStyle = COL.faint; x.strokeStyle = COL.hair; x.lineWidth = 1;
     for (let v = 0; v <= top; v += top > 3 ? 1 : 0.5) { x.beginPath(); x.moveTo(pad.l, Y(v)); x.lineTo(W - pad.r, Y(v)); x.stroke(); x.fillText(v.toFixed(1), 4, Y(v) + 4); }
     x.setLineDash([5, 4]); x.strokeStyle = COL.amber; x.beginPath(); x.moveTo(pad.l, Y(lnV)); x.lineTo(W - pad.r, Y(lnV)); x.stroke(); x.setLineDash([]);
-    x.fillStyle = COL.amber; x.fillText('random guessing', W - pad.r - 108, Y(lnV) - 5);
+    x.fillStyle = COL.amber; x.fillText('random guessing', pad.l + 6, Y(lnV) - 5);
     if (!h.length) { x.fillStyle = COL.dim; x.font = '13px system-ui'; x.fillText('Loss will appear here when training starts.', pad.l + 10, H / 2 + 20); return; }
     // raw (bucketed) + smoothed
     const px = W - pad.l - pad.r, bucket = Math.max(1, Math.ceil(h.length / px));
@@ -211,7 +230,7 @@
     const topP = r.probs[order[0]];
     for (const j of order) {
       const c = document.createElement('span'); c.className = 'c'; c.textContent = show(S.chars[j]); c.title = 'Pick this one';
-      c.onclick = () => { $('#prompt').value += show(S.chars[j]) === '↵' ? '↵' : S.chars[j]; touch('talk'); };
+      c.onclick = () => { $('#prompt').value += show(S.chars[j]) === '↵' ? '↵' : S.chars[j]; touch('talk'); coachDone(3); };
       const bw = document.createElement('span'); bw.className = 'bw'; const b = document.createElement('span'); b.className = 'b';
       b.style.width = (100 * r.probs[j] / topP).toFixed(1) + '%'; bw.appendChild(b);
       const pc = document.createElement('span'); pc.className = 'pc'; pc.textContent = (100 * r.probs[j]).toFixed(1) + '%';
@@ -268,7 +287,7 @@
     const cur = document.createElement('span'); cur.className = 'cur'; cur.textContent = ' ';
     if (g.left > 0) out.appendChild(cur);
     out.scrollTop = out.scrollHeight;
-    if (g.left <= 0) { S.gen = null; $('#gen').textContent = 'Write ✍︎'; }
+    if (g.left <= 0) { S.gen = null; $('#gen').textContent = '✍︎ Write'; coachDone(0); if (S.step >= 300) coachDone(2); }
   }
 
   // ---------- landscape ----------
@@ -311,6 +330,7 @@
       const was = mp.wasRunning; S.mapping = null;
       $('#mapBtn').disabled = false; $('#landProg').style.width = '0';
       trackPath(false); computeArrow();
+      S.landDue = performance.now();
       if (was) setRunning(true);
       toast('Terrain mapped. Drag the ball somewhere!');
     }
@@ -354,6 +374,7 @@
     m.setFlat(f); m.resetOptimizer();
     S.here = { a, b }; S.path.push(S.here);
     computeArrow(false);
+    if (!S.landDue) S.landDue = performance.now() + 150;
     touch('land', 'talk', 'emb', 'xray');
   }
 
@@ -420,6 +441,7 @@
     const was = S.dragging.wasRunning; S.dragging = false;
     if (S.pending) { const p = S.pending; S.pending = null; teleport(p.a, p.b); landRead(); }
     S.events.push({ step: S.step, type: 'teleport' });
+    refreshLandSample(); coachDone(5);
     if (S.hereLoss != null) toast(`Moved by hand. Loss is now ${S.hereLoss.toFixed(3)}.`);
     S.running = was; touch('loss');
   };
@@ -455,12 +477,26 @@
     if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
     else { const q = [...sel.options].find(o => /Q\/K\/V/.test(o.textContent)); if (q) sel.value = q.value; }
   }
-  function drawXray() {
-    const cv = $('#xray'), [x, W, H] = fit(cv), p = S.model.params[+$('#xsel').value];
+  function xinfo(p) {
+    const n = p.name, V = S.model.cfg.V, d = S.model.cfg.d;
+    if (n === 'token embeddings') return `<b>Token embeddings</b>: one row per character (labeled at left), ${d} numbers each. That row is everything the model "knows" about a character on its own. The Letter map is these rows, squashed flat.`;
+    if (n === 'position embeddings') return `<b>Position embeddings</b>: one row per slot in its memory window. Added to each character so it knows <i>where</i> a letter sits in the snippet, not just which letter it is.`;
+    if (/Q\/K\/V$/.test(n)) return `<b>Attention's three lenses</b>, side by side. <b>Q</b> (query): what is this letter looking for? <b>K</b> (key): what does each earlier letter offer? When a query matches a key, that square lights up in the Attention map, and <b>V</b> (value) is what gets passed along.`;
+    if (/attention output$/.test(n)) return `<b>Attention output</b>: blends what all the heads found back into one list of numbers per letter.`;
+    if (/MLP expand$/.test(n)) return `<b>MLP expand</b>: the "thinking" step. Each letter's ${d} numbers fan out to ${4 * d}, pass through a bend, then get squeezed back. Researchers think much of what a model memorizes lives in layers like this.`;
+    if (/MLP squeeze$/.test(n)) return `<b>MLP squeeze</b>: folds the ${4 * d}-wide thinking back down to ${d} numbers.`;
+    if (n === 'next-char head') return `<b>Next-letter head</b>: the very last step. It turns the final numbers into one score for each of the ${V} characters, and those scores become the bars in Talk to it.`;
+    return '';
+  }
+  function drawXray(hover) {
+    const cv = $('#xray'), [x, W, H] = fit(cv), m = S.model, p = m.params[+$('#xsel').value];
     if (!p) return;
+    $('#xdesc').innerHTML = xinfo(p);
     const src = S.xmode === 'grad' ? p.g : p.d;
-    if (!src) { x.fillStyle = COL.dim; x.font = '13px system-ui'; x.fillText('No gradients yet: take a training step.', 12, 24); return; }
+    if (!src) { x.fillStyle = COL.dim; x.font = '13px system-ui'; x.fillText('No nudges yet: take a training step first.', 12, 24); S.xg = null; return; }
     const tr = p.r > p.c, cw = tr ? p.r : p.c, ch = tr ? p.c : p.r;
+    const charRows = (p === m.wte && !tr) || (p === m.wlm && tr), qkv = /Q\/K\/V$/.test(p.name);
+    const gl = charRows && (H - (qkv ? 16 : 0)) / ch >= 8 ? 18 : 0, gt = qkv ? 18 : 0;
     let mx = 1e-9; for (const v of src) mx = Math.max(mx, Math.abs(v));
     const off = document.createElement('canvas'); off.width = cw; off.height = ch;
     const ox = off.getContext('2d'), im = ox.createImageData(cw, ch), P = hex(COL.pink), N = hex(COL.cyan), B = hex(COL.bg);
@@ -470,8 +506,29 @@
       im.data.set([B[0] + (c[0] - B[0]) * t, B[1] + (c[1] - B[1]) * t, B[2] + (c[2] - B[2]) * t, 255], k * 4);
     }
     ox.putImageData(im, 0, 0);
-    x.imageSmoothingEnabled = false; x.drawImage(off, 0, 0, W, H);
+    x.imageSmoothingEnabled = false; x.drawImage(off, gl, gt, W - gl, H - gt);
+    x.font = '10px ui-monospace,Menlo,monospace'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    if (gl) { x.fillStyle = COL.dim; for (let k = 0; k < ch; k++) x.fillText(show(S.chars[k]), gl / 2, gt + (k + .5) * (H - gt) / ch); }
+    if (qkv) {
+      x.font = '600 11px system-ui'; x.strokeStyle = COL.ink; x.lineWidth = 1.5;
+      ['Q · query', 'K · key', 'V · value'].forEach((t, k) => {
+        x.fillStyle = [COL.lime, COL.amber, COL.cyan][k]; x.fillText(t, gl + (W - gl) * (k + .5) / 3, 9);
+        if (k) { const xx = gl + (W - gl) * k / 3; x.beginPath(); x.moveTo(xx, gt); x.lineTo(xx, H); x.stroke(); }
+      });
+    }
+    x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+    S.xg = { p, tr, cw, ch, gl, gt, W, H };
+    if (hover) {
+      const g = S.xg, col = Math.floor((hover.x - g.gl) / ((g.W - g.gl) / g.cw)), row = Math.floor((hover.y - g.gt) / ((g.H - g.gt) / g.ch));
+      if (col >= 0 && row >= 0 && col < g.cw && row < g.ch) {
+        const i = g.tr ? col : row, j = g.tr ? row : col, v = src[i * p.c + j];
+        const who = charRows ? ` (“${show(S.chars[g.tr ? j : i])}”)` : '';
+        $('#xread').textContent = `row ${i + 1}${who}, column ${j + 1}: ${v >= 0 ? '+' : ''}${v.toFixed(4)}`;
+      }
+    }
   }
+  $('#xray').addEventListener('pointermove', e => { const r = e.currentTarget.getBoundingClientRect(); drawXray({ x: e.clientX - r.left, y: e.clientY - r.top }); });
+  $('#xray').addEventListener('pointerleave', () => { $('#xread').textContent = ''; });
 
   // ---------- misc ui ----------
   let toastT;
@@ -479,7 +536,93 @@
   function stats() {
     $('#sStep').textContent = S.step.toLocaleString();
     $('#sLoss').textContent = S.ema == null ? '—' : S.ema.toFixed(3);
+    if (S.model.lastAcc != null) $('#sAcc').textContent = Math.round(100 * S.model.lastAcc) + '%';
   }
+
+  // ---------- live feedback ----------
+  function sampleText(n, temp) {
+    const m = S.model, ctx = context().ids.slice(); let out = '';
+    for (let i = 0; i < n; i++) { const j = m.sample(m.predict(ctx, temp).probs); ctx.push(j); out += S.chars[j]; }
+    return out;
+  }
+  function withPrompt(el, text) {
+    el.textContent = '';
+    const p = document.createElement('span'); p.style.color = 'var(--faint)'; p.textContent = $('#prompt').value.replace(/↵/g, '\n');
+    el.append(p, text);
+  }
+  function refreshLive() {
+    S.liveAt = performance.now();
+    withPrompt($('#live'), sampleText(70, 0.8));
+    $('#liveStep').textContent = `· after ${S.step.toLocaleString()} steps`;
+  }
+  function refreshLandSample() {
+    S.landAt = performance.now(); S.landDue = 0;
+    withPrompt($('#landSample'), sampleText(60, 0.7));
+  }
+  function drawReading() {
+    const s = S.model.lastSample; if (!s) return;
+    const el = $('#reading'); el.textContent = '';
+    const c0 = document.createElement('span'); c0.className = 'ctx';
+    c0.textContent = S.chars[s.idx[0]] === '\n' ? '↵' : S.chars[s.idx[0]]; el.appendChild(c0);
+    s.tg.forEach((t, i) => {
+      const sp = document.createElement('span'), ok = s.pred[i] === t, ch = S.chars[t];
+      sp.className = ok ? 'ok' : 'no'; sp.textContent = ch === '\n' ? '↵' : ch;
+      sp.title = ok ? `guessed “${show(ch)}” correctly` : `guessed “${show(S.chars[s.pred[i]])}”, but it was “${show(ch)}”`;
+      el.appendChild(sp);
+    });
+  }
+
+  // ---------- guided tour ----------
+  const STEPS = [
+    { t: 'Meet it', card: '#cTalk', go: '✍︎ Write', act: () => { if (!S.gen) $('#gen').click(); },
+      text: () => `This brain is brand new: <b>${S.model.size.toLocaleString()} random numbers</b> that have never read a thing. Press <b>✍︎ Write</b> to hear it babble.` },
+    { t: 'Train it', card: '#cTrain', go: '▶ Train', act: () => setRunning(true),
+      text: () => `Press <b>▶ Train</b>. Watch "Right now it's reading" turn green as it starts guessing letters correctly, and watch its writing change. Give it about 20 seconds.` },
+    { t: 'Write again', card: '#cTalk', go: '✍︎ Write', act: () => { setRunning(false); if (!S.gen) $('#gen').click(); },
+      text: () => `Now press <b>✍︎ Write</b> again and compare it to the gibberish. Same machine, same code. The only thing that changed is the numbers.` },
+    { t: 'Steer it', card: '#cTalk', go: 'Show me',
+      text: () => `Type your own start in the box, or <b>click a bar</b> to pick its next letter for it. Slide <b>Creativity</b> up and down and write again.` },
+    { t: 'Look inside', card: '#cAttn', go: 'Show me',
+      text: () => `In <b>Attention</b>, click through the heads to see what each one looks at. Then <b>switch one off</b>. Did its guesses get worse? That's how researchers work out what each part of a real AI does.` },
+    { t: 'Push the ball', card: '#cLand', go: 'Show me',
+      text: () => `Map the terrain, then <b>drag the ball</b> up a hill and watch its writing fall apart. Train, and watch it roll home.` },
+    { t: 'Make it yours', card: '#cFeed', go: 'Show me',
+      text: () => `Try <b>Copycat</b>, where attention really matters. Or paste your own text, or build a bigger brain.` },
+  ];
+  S.coach = { at: 0, done: new Set() };
+  function flash(sel) {
+    const el = $(sel); el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1800);
+  }
+  function coachRender() {
+    const c = S.coach, st = $('#steps'); st.textContent = '';
+    STEPS.forEach((x, i) => {
+      const b = document.createElement('button');
+      b.className = 'stp' + (c.done.has(i) ? ' done' : '') + (c.at === i ? ' now' : '');
+      const n = document.createElement('i'); n.textContent = c.done.has(i) ? '✓' : i + 1;
+      b.append(n, x.t); b.onclick = () => { c.at = i; coachRender(); flash(x.card); };
+      st.appendChild(b);
+    });
+    const cur = STEPS[c.at];
+    if (cur) { $('#coachText').innerHTML = `<b>Step ${c.at + 1}.</b> ` + cur.text(); $('#coachGo').textContent = cur.go; $('#coachGo').hidden = false; }
+    else { $('#coachText').innerHTML = `<b>That's the tour.</b> Everything here is the real thing, just small. Best trick left: train <b>Copycat</b>, then switch attention heads off one at a time.`; $('#coachGo').hidden = true; }
+  }
+  function coachDone(i) {
+    const c = S.coach; if (!c || c.done.has(i) || !S.booted) return;
+    c.done.add(i);
+    if (c.at === i) { let n = i + 1; while (n < STEPS.length && c.done.has(n)) n++; c.at = n; }
+    coachRender();
+  }
+  $('#coachGo').onclick = () => { const cur = STEPS[S.coach.at]; if (!cur) return; flash(cur.card); if (cur.act) cur.act(); };
+  $('#coachNext').onclick = () => { S.coach.at = (S.coach.at + 1) % (STEPS.length + 1); coachRender(); };
+
+  const OPT = {
+    adam: '<b>Adam</b> isn’t a person. It’s short for <i>adaptive moment estimation</i>, a recipe from 2014 that, in one form or another, trains most big AI today. It gives every number its own step size: bigger for numbers that keep getting pushed the same way, smaller for jittery ones.',
+    momentum: '<b>Momentum</b> treats the numbers like a heavy ball: it builds up speed going downhill and can coast over small bumps. Try it in Push the ball.',
+    sgd: '<b>Plain SGD</b> (stochastic gradient descent) is the simplest rule there is: step straight downhill, by the step size, every time. Slow and honest. It usually needs a bigger step size.',
+  };
+  const optMeta = () => { $('#optMeta').innerHTML = OPT[$('#opt').value]; };
+  $('#opt').addEventListener('change', optMeta); optMeta();
 
   function loadPreset(id) {
     const p = window.CORPORA.find(c => c.id === id); S.preset = id;
@@ -491,39 +634,57 @@
   // ---------- wiring ----------
   window.CORPORA.forEach(c => {
     const b = document.createElement('span'); b.className = 'chip'; b.dataset.id = c.id; b.textContent = c.label;
-    b.onclick = () => loadPreset(c.id); $('#presets').appendChild(b);
+    b.onclick = () => { loadPreset(c.id); coachDone(6); }; $('#presets').appendChild(b);
   });
   $('#useText').onclick = () => {
     const t = $('#corpus').value;
     if (t.length < 60) return toast('Give it at least a few lines of text.');
     document.querySelectorAll('#presets .chip').forEach(c => c.classList.remove('sel'));
     $('#blurb').textContent = 'Your own text.'; $('#prompt').value = '';
-    setText(t); build(); toast('New brain built for your text.');
+    setText(t); build(); coachDone(6); toast('New brain built for your text.');
   };
   ['#kL', '#kH', '#kD', '#kN'].forEach(s => $(s).addEventListener('input', knobInfo));
-  $('#build').onclick = () => { build(); toast('New brain built. It knows nothing yet.'); };
+  $('#build').onclick = () => { build(); coachDone(6); toast('New brain built. It knows nothing yet.'); };
   $('#go').onclick = () => setRunning(!S.running);
   $('#step1').onclick = () => {
     setRunning(false); if (S.viewing >= 0) branch();
-    doStep(); updateMood(); touch(...ALL); toast(`One step downhill. Batch loss ${S.hist[S.hist.length - 1].toFixed(3)}.`);
+    doStep(); updateMood(); drawReading(); refreshLive(); touch(...ALL);
+    const m = S.model;
+    toast(`One step: read ${$('#batch').value} snippets, got ${Math.round(100 * m.lastAcc)}% of ${m.lastGuesses} guesses right, nudged all ${m.size.toLocaleString()} numbers.`);
   };
   const lrLabel = () => { $('#vLr').textContent = lr() < 0.001 ? lr().toExponential(0) : lr().toFixed(lr() < 0.01 ? 4 : 3); };
   $('#lr').addEventListener('input', lrLabel); lrLabel();
   [['#batch', v => v], ['#speed', v => v + '/f'], ['#temp', v => v.toFixed(2)], ['#zoom', v => '±' + v.toFixed(2)], ['#kickAmt', v => v.toFixed(2)]]
     .forEach(([id, f]) => { const el = $(id), v = $({ '#batch': '#vBatch', '#speed': '#vSpeed', '#temp': '#vTemp', '#zoom': '#vZoom', '#kickAmt': '#vKick' }[id]); const u = () => (v.textContent = f(+el.value)); el.addEventListener('input', u); u(); });
   $('#temp').addEventListener('input', () => touch('talk'));
-  $('#prompt').addEventListener('input', () => touch('talk'));
+  $('#prompt').addEventListener('input', () => { touch('talk'); if (S.step >= 100) coachDone(3); });
   $('#gen').onclick = () => {
     if (S.gen) { S.gen.left = 0; return; }
     const ctx = context();
     S.gen = { ctx: ctx.ids.slice(), prompt: $('#prompt').value.replace(/↵/g, '\n'), text: '', left: 280 };
     $('#gen').textContent = 'Stop ■';
   };
+  function topGuess() {
+    const r = S.model.predict(context().ids, 1), p = r.probs; let j = 0;
+    for (let k = 1; k < p.length; k++) if (p[k] > p[j]) j = k;
+    return { ch: show(S.chars[j]), p: p[j] };
+  }
   $('#snip').onclick = () => {
-    const { l, h } = S.sel, m = S.model; m.off[l][h] = !m.off[l][h];
+    const { l, h } = S.sel, m = S.model;
+    const g0 = topGuess(), l0 = m.loss(S.evalBatch);
+    m.off[l][h] = !m.off[l][h];
+    const g1 = topGuess(), l1 = m.loss(S.evalBatch), d = l1 - l0;
     S.events.push({ step: S.step, type: 'snip' });
-    renderArch(); touch('talk', 'loss');
-    toast(m.off[l][h] ? `Block ${l + 1} head ${h + 1} is off. Did the guesses change?` : `Block ${l + 1} head ${h + 1} is back.`);
+    const el = $('#compare'); el.textContent = '';
+    const b = t => { const x = document.createElement('b'); x.textContent = t; return x; };
+    const verdict = !m.off[l][h] ? 'Head back on.'
+      : S.step < 100 ? 'It has barely trained yet, so there is not much to break. Train first, then try again.'
+      : d > 0.05 ? 'Worse without it: this head was doing real work.'
+      : d > 0.01 ? 'A little worse: it helped, but others cover for it.'
+      : 'Barely changed: this head was not pulling much weight.';
+    el.append('Top guess ', b(`“${g0.ch}” ${(100 * g0.p).toFixed(0)}%`), ' → ', b(`“${g1.ch}” ${(100 * g1.p).toFixed(0)}%`),
+      ' · wrongness (loss) ', b(l0.toFixed(2)), ' → ', b(l1.toFixed(2)), '. ', verdict);
+    renderArch(); touch('talk', 'loss'); coachDone(4);
   };
   $('#tm').addEventListener('input', e => {
     const i = +e.target.value;
@@ -532,6 +693,7 @@
     else { S.viewing = i; S.model.setFlat(S.snaps[i].f); $('#vTm').textContent = `step ${S.snaps[i].step}`; }
     S.model.resetOptimizer();
     if (S.land) trackPath(false);
+    refreshLive(); if (S.land && S.land.img) refreshLandSample();
     touch('talk', 'emb', 'xray', 'land');
   });
   $('#mapBtn').onclick = () => { if (S.viewing >= 0) branch(); startMap(); };
@@ -550,6 +712,7 @@
     S.events.push({ step: S.step, type: 'kick' });
     if (S.land) { trackPath(true); computeArrow(false); }
     toast(`💥 Loss ${before.toFixed(2)} → ${after.toFixed(2)}. Train to see if it recovers.`);
+    refreshLive(); if (S.land && S.land.img) refreshLandSample();
     touch(...ALL);
   };
   $('#xsel').addEventListener('change', () => touch('xray'));
@@ -561,7 +724,7 @@
     const p = S.model.params[+$('#xsel').value]; let s = 0; for (const v of p.d) s += v * v;
     const sd = Math.sqrt(s / p.d.length) || 0.1; for (let i = 0; i < p.d.length; i++) p.d[i] = sd * window.TinyGPT.randn();
     S.model.resetOptimizer(); S.events.push({ step: S.step, type: 'scramble' });
-    toast(`Scrambled ${p.name}. Train to heal it.`); touch(...ALL);
+    toast(`Scrambled ${p.name}. Train to heal it.`); refreshLive(); touch(...ALL);
   };
   window.addEventListener('resize', () => touch(...ALL));
   document.addEventListener('keydown', e => {
@@ -583,7 +746,15 @@
       if (S.frame % 4 === 0) touch('xray');
       if (S.land && S.frame % 2 === 0) { touch('land'); landRead(); }
       if (S.frame % 20 === 0) updateMood();
+      if (S.frame % 6 === 0) drawReading();
+      if (S.frame % 10 === 0) renderNarr();
+      if (performance.now() - (S.liveAt || 0) > 1800) refreshLive();
+      else if (S.land && S.land.img && performance.now() - (S.landAt || 0) > 1600) refreshLandSample();
+      if (S.step >= 300) coachDone(1);
     }
+    if (!S.running && S.narrWasRunning) renderNarr();
+    S.narrWasRunning = S.running;
+    if (S.landDue && performance.now() > S.landDue && !S.mapping) refreshLandSample();
     if (S.gen) genWork();
     const d = S.dirty; S.dirty = {};
     if (d.stats) stats();
@@ -596,5 +767,6 @@
   }
 
   loadPreset('dinos');
+  S.booted = true; coachRender();
   requestAnimationFrame(loop);
 })();

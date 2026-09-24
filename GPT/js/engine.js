@@ -157,15 +157,17 @@
   }
 
   function crossEntropy(L, tg) {
-    const n = L.r, V = L.c, l = L.d, P = new Float32Array(n * V), o = out(1, 1);
-    let loss = 0;
+    const n = L.r, V = L.c, l = L.d, P = new Float32Array(n * V), o = out(1, 1), pred = new Array(n);
+    let loss = 0, correct = 0;
     for (let i = 0; i < n; i++) {
       let mx = -Infinity; for (let j = 0; j < V; j++) mx = Math.max(mx, l[i * V + j]);
       let z = 0; for (let j = 0; j < V; j++) { const e = Math.exp(l[i * V + j] - mx); P[i * V + j] = e; z += e; }
-      for (let j = 0; j < V; j++) P[i * V + j] /= z;
+      let best = 0;
+      for (let j = 0; j < V; j++) { P[i * V + j] /= z; if (P[i * V + j] > P[i * V + best]) best = j; }
       loss -= Math.log(P[i * V + tg[i]] + 1e-9);
+      pred[i] = best; if (best === tg[i]) correct++;
     }
-    o.d[0] = loss / n;
+    o.d[0] = loss / n; o.correct = correct; o.pred = pred;
     if (REC) o.back = () => {
       const s = o.g[0] / n, gl = gr(L);
       for (let i = 0; i < n; i++) for (let j = 0; j < V; j++) gl[i * V + j] += s * (P[i * V + j] - (j === tg[i] ? 1 : 0));
@@ -258,11 +260,17 @@
     // forward + backward over a batch; leaves gradients on params
     grad(batch) {
       for (const p of this.params) (p.g ? p.g.fill(0) : gr(p));
-      let tot = 0;
+      let tot = 0, correct = 0, total = 0;
       REC = true;
       try {
-        for (const [idx, tg] of batch) { const r = this.forward(idx, tg); tot += r.loss.d[0]; backward(r.loss, 1 / batch.length); }
+        for (const [idx, tg] of batch) {
+          const r = this.forward(idx, tg);
+          tot += r.loss.d[0]; correct += r.loss.correct; total += tg.length;
+          if (!total || total === tg.length) this.lastSample = { idx, tg, pred: r.loss.pred };
+          backward(r.loss, 1 / batch.length);
+        }
       } finally { REC = false; TAPE = []; }
+      this.lastAcc = correct / total; this.lastGuesses = total;
       let gn = 0; for (const p of this.params) for (let i = 0; i < p.g.length; i++) gn += p.g[i] * p.g[i];
       this.gnorm = Math.sqrt(gn);
       return tot / batch.length;
