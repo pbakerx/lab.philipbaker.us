@@ -7,7 +7,7 @@
   const C = k => css.getPropertyValue('--' + k).trim();
   const COL = { bg: C('bg'), hair: C('hair'), ink: C('ink'), dim: C('dim'), faint: C('faint'), lime: C('lime'), pink: C('pink'), cyan: C('cyan'), amber: C('amber'), bad: C('bad') };
   const HEADS = [1, 2, 4], WIDTHS = [16, 24, 32, 48];
-  const DEFAULT_PROMPT = { dinos: 'tyr', rhymes: 'the little ', fortunes: 'you will ', copycat: 'grok>gr' };
+  const DEFAULT_PROMPT = { dinos: 'tyr', rhymes: 'the little ', tomatoes: 'Tomatoes need ', mornings: 'The best part ' };
 
   const S = {
     preset: 'dinos', chars: [], stoi: {}, data: null, model: null,
