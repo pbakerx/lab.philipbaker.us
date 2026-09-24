@@ -81,7 +81,7 @@
     setRunning(false);
     renderArch(); fillXray(); syncTM(); knobInfo();
     $('#out').innerHTML = '<span class="p">Press ✍︎ See what it writes. It hasn’t learned anything yet, so expect gibberish.</span>';
-    $('#live').textContent = 'Nothing yet. Press ▶ Train.'; $('#liveStep').textContent = '';
+    $('#live').textContent = 'Nothing yet. Press ▶ Train.'; $('#liveStep').textContent = ''; $('#miniLive').textContent = 'Nothing yet. Press ▶ Train.';
     $('#rGuess').textContent = ''; $('#rTrue').innerHTML = '<span class="ctx">Press ▶ Train, or Slow-mo to take one step at a time.</span>';
     S.miles = []; S.firstWrite = null; S.lastWrite = null; S.ballEval = null; S.film = [];
     $('#talkNote').hidden = true;
@@ -214,6 +214,20 @@
   const ATT = [[0, hex('#0c0e13')], [0.35, hex('#155a7a')], [0.7, hex('#5fd4ff')], [1, hex('#b9ff66')]];
 
   // ---------- loss chart ----------
+  // Sparkline of the smoothed loss, for the dock.
+  function drawMiniLoss() {
+    const cv = $('#miniLoss'); if (!cv.offsetParent) return;
+    const [x, W, H] = fit(cv), h = S.hist, lnV = Math.log(S.chars.length), top = lnV * 1.15;
+    x.fillStyle = COL.bg; x.fillRect(0, 0, W, H);
+    const Y = v => 3 + (H - 6) * (1 - Math.min(v, top) / top);
+    x.setLineDash([3, 3]); x.strokeStyle = COL.amber; x.globalAlpha = .6; x.beginPath(); x.moveTo(0, Y(lnV)); x.lineTo(W, Y(lnV)); x.stroke(); x.setLineDash([]); x.globalAlpha = 1;
+    if (h.length < 2) return;
+    const step = Math.max(1, Math.floor(h.length / W)); let e = h[0];
+    x.strokeStyle = COL.lime; x.lineWidth = 1.6; x.beginPath();
+    for (let i = 0; i < h.length; i++) { e = 0.96 * e + 0.04 * h[i]; if (i % step === 0 || i === h.length - 1) { const px = W * i / (h.length - 1); i ? x.lineTo(px, Y(e)) : x.moveTo(px, Y(e)); } }
+    x.stroke();
+    if (S.viewing >= 0) { const px = W * (S.snaps[S.viewing].step - 1) / (h.length - 1); x.strokeStyle = COL.cyan; x.beginPath(); x.moveTo(px, 0); x.lineTo(px, H); x.stroke(); }
+  }
   function drawLoss() {
     const [x, W, H] = fit($('#loss'));
     const lnV = Math.log(S.chars.length), h = S.hist;
@@ -286,6 +300,12 @@
       const pc = document.createElement('span'); pc.className = 'pc'; pc.textContent = (100 * p).toFixed(p < 0.1 ? 1 : 0) + '%';
       const bar = document.createElement('span'); bar.className = 'bar'; bar.style.width = Math.max(4, 100 * p).toFixed(0) + '%'; bar.style.alignSelf = 'flex-start';
       b.append(ch, pc, bar); b.onclick = pick(j); top.appendChild(b);
+    });
+    const mg = $('#miniGuess'); mg.textContent = '';
+    order.slice(0, 5).forEach(j => {
+      const p = r.probs[j], b = document.createElement('button'), i = document.createElement('i');
+      b.style.fontSize = (11 + 17 * Math.sqrt(p)).toFixed(0) + 'px'; b.textContent = show(S.chars[j]); b.title = `Click to type “${show(S.chars[j])}”`;
+      i.textContent = (100 * p).toFixed(0) + '%'; b.appendChild(i); b.onclick = pick(j); mg.appendChild(b);
     });
     order.slice(4, 16).forEach(j => {
       const b = document.createElement('button'); b.className = 'gr'; b.textContent = show(S.chars[j]);
@@ -625,6 +645,7 @@
   function refreshLive() {
     S.liveAt = performance.now();
     if ($('#cAttn').classList.contains('on') || S.mode === 'free') withPrompt($('#attnLive'), sampleText(70, 0.6));
+    withPrompt($('#miniLive'), sampleText(60, 0.7).replace(/\n/g, ' ↵ '));
     withPrompt($('#live'), sampleText(90, 0.7));
     $('#liveStep').textContent = S.viewing >= 0 ? `· at step ${S.snaps[S.viewing].step.toLocaleString()} (rewound)` : S.step ? `· now, after ${S.step.toLocaleString()} steps` : '· before any training';
   }
@@ -688,7 +709,7 @@
         { s: 'Rewind', t: 'Drag the ⏳ slider back in time', how: `See its brain, and read its writing, at any earlier step. Press ▶ Train again whenever you like: it carries on from there.`, focus: '#tmrow', test: () => F('rewound') }] },
     { id: 'again', rail: 'Write again', title: 'Write again', go: 'Let’s hear it ›', cards: ['cTalk', 'cBefore'],
       lead: `Same machine, same code, same text box. The only thing that has changed since it babbled is its numbers.`,
-      enter: () => { setRunning(false); $('#talkNote').hidden = true; renderBA(); },
+      enter: () => { $('#talkNote').hidden = true; renderBA(); },
       subs: [{ s: 'Write', t: 'Press ✍︎ See what it writes', how: `Then compare it with how it wrote before any training, below.`, focus: '#gen', test: () => F('wroteTrained') }] },
     { id: 'steer', rail: 'Steer it', title: 'Steer it', go: 'Take the wheel ›', cards: ['cTalk'],
       lead: `It writes one guess at a time, and every guess is a choice between letters. You can make those choices yourself, or change how adventurous it is when it chooses.`,
@@ -703,7 +724,7 @@
         { s: 'Turn it off', t: 'Turn that head off', how: `Press <b>✂ Turn this head off</b> and read what changed: its top guess, how wrong it is, and its writing with and without that head.`, focus: '#snip', test: () => F('snip') }] },
     { id: 'ball', rail: 'Push the ball', title: 'Push the ball', go: 'Show me the landscape ›', cards: ['cLand'], bare: ['cLand'], trains: true,
       lead: `Its whole brain is one point in a space with thousands of directions. Some points are good writers, most are babblers, and training rolls it downhill toward the good ones. We'll map the hills around it, then you get to push it.`,
-      enter: () => { setRunning(false); if (!S.land && !S.mapping) setTimeout(() => { if (!S.mapping) startMap(); }, 350); },
+      enter: () => { if (!S.land && !S.mapping) setTimeout(() => { if (!S.mapping) startMap(); }, 350); },
       subs: [
         { s: 'Push it', t: 'Drag the ball up a hill', how: `The map shows hundreds of slightly different brains around this one, colored by how wrong each would be: dark is good. The glowing ball is your model. Drag it onto a bright slope and watch "Its writing" fall apart. You really did change its brain.`, focus: '#land', test: () => F('climbed') },
         { s: 'Roll home', t: 'Tick 🧲 Stick to the map, then ▶ Train', how: `Training rolls it back downhill. Watch the ball roll home and its writing recover.`, focus: '#stickRow', test: () => F('climbed') && S.stick && S.land && S.ballEval != null && S.ballEval <= S.land.baseLoss * 1.25 }] },
@@ -745,7 +766,8 @@
     $('#iTitle').innerHTML = st.title;
     $('#iLead').innerHTML = typeof st.lead === 'function' ? st.lead() : st.lead;
     $('#iGo').textContent = st.go;
-    $('#iBack').hidden = !!st.welcome; $('#iFree').hidden = !st.welcome;
+    $('#iBack').hidden = !!st.welcome; $('#iHome').hidden = !!st.welcome;
+    $('#iFree').textContent = st.welcome ? 'Skip the tour and explore everything' : 'Explore everything';
     // lift the step's "How the real ones work" callout onto its intro screen
     const src = (st.cards || []).map(id => $('#' + id + ' .insight')).find(Boolean), box = $('#iIns');
     box.hidden = !src; if (src) box.innerHTML = src.innerHTML;
@@ -803,10 +825,12 @@
     const cards = st.cards || [];
     document.querySelectorAll('main .card').forEach(c => { c.classList.toggle('on', cards.includes(c.id)); c.classList.toggle('bare', (st.bare || []).includes(c.id)); });
     ['two', 'lab', 'talklast'].forEach(c => $('main').classList.toggle(c, st.layout === c));
-    document.body.classList.toggle('trains', !!st.trains);
-    if ((!st.trains || intro) && S.running) setRunning(false);
+    // the dock (and training) stay with you on every step; say which full-size views are already on screen
+    document.body.classList.add('trains');
+    document.body.classList.toggle('has-train', cards.includes('cTrain'));
+    document.body.classList.toggle('has-talk', cards.includes('cTalk'));
     if (!intro && st.enter) st.enter();
-    if (!intro && st.trains && st.id !== 'build' && st.id !== 'lab' && S.step < 200) needRetrain('This brain hasn’t learned much yet. Press ▶ Train for about 20 seconds first.');
+    if (!intro && ['inside', 'ball', 'made'].includes(st.id) && S.step < 200) needRetrain('This brain hasn’t learned much yet. Press ▶ Train for about 20 seconds first.');
     renderRail(); if (intro) renderIntro(); else renderWork();
     save(); touch(...ALL);
     window.scrollTo({ top: 0, behavior: intro ? 'auto' : 'smooth' });
@@ -842,7 +866,7 @@
   function setMode(m) {
     S.mode = m;
     document.body.classList.toggle('wizard', m === 'wizard'); document.body.classList.toggle('free', m === 'free');
-    $('#modeBtn').textContent = m === 'wizard' ? 'Explore everything' : 'Back to the steps';
+    $('#modeBtn').textContent = 'Back to the steps';
     if (m === 'free') {
       document.body.classList.remove('at-intro', 'at-welcome', 'trains');
       document.querySelectorAll('main .card').forEach(c => { c.classList.add('on'); c.classList.remove('bare'); });
@@ -851,7 +875,7 @@
       save(); touch(...ALL);
     } else { $('#tinker').open = false; showStep(S.wiz.i); }
   }
-  $('#modeBtn').onclick = () => { setMode(S.mode === 'wizard' ? 'free' : 'wizard'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  $('#modeBtn').onclick = () => { setMode('wizard'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   $('#iFree').onclick = () => { setMode('free'); window.scrollTo({ top: 0 }); };
   $('#iGo').onclick = () => {
     const st = STEPS[S.wiz.i];
@@ -975,10 +999,11 @@
     loadPreset('dinos'); clearRetrain(); if (S.mode !== 'wizard') setMode('wizard'); showStep(0);
   }
   $('#restart').onclick = restartTour;
-  $('#homeBtn').onclick = () => {
+  $('#homeBtn').onclick = $('#iHome').onclick = () => {
     if (S.step > 0 && !confirm('Start from the beginning? You’ll get a fresh, untrained brain. (Save this one first in Your lab if you want to keep it.)')) return;
     restartTour();
   };
+  $('#freeBtn').onclick = () => { setMode('free'); window.scrollTo({ top: 0 }); };
 
   const OPT = {
     adam: '<b>Adam</b> isn’t a person. It’s short for <i>adaptive moment estimation</i>, a recipe from 2014 that, in one form or another, trains most big AI today. It gives every number its own step size: bigger for numbers that keep getting pushed the same way, smaller for jittery ones.',
@@ -1132,7 +1157,7 @@
     if (S.gen) genWork();
     const d = S.dirty; S.dirty = {};
     if (d.stats) stats();
-    if (d.loss) drawLoss();
+    if (d.loss) { drawLoss(); drawMiniLoss(); }
     if (d.talk) updateTalk();
     if (d.emb) drawEmb();
     if (d.xray) drawXray();

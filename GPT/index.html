@@ -116,6 +116,25 @@ body.wizard .narr{flex:1 1 100%;text-align:center}
 .retrain{flex:1 1 100%;text-align:center;color:#1a1204;background:var(--amber);font-weight:700;font-size:15px;border-radius:10px;padding:8px 12px;animation:amberglow 1.2s ease-in-out infinite}
 @keyframes amberglow{0%,100%{box-shadow:0 0 0 0 rgba(255,193,94,.0)}50%{box-shadow:0 0 0 6px rgba(255,193,94,.3)}}
 .hnav{display:flex;gap:8px;flex-wrap:wrap}
+body.wizard #modeBtn{display:none}
+.fnav{display:flex;gap:8px;flex-wrap:wrap}
+.inav{flex-wrap:wrap;justify-content:center}
+.inav .btn[hidden]{display:none}
+/* mini dashboard: the graph, the next-letter guesses and the writing, on every step */
+.mini{flex:1 1 100%;display:grid;grid-template-columns:190px auto minmax(0,1fr);gap:16px;align-items:end;border-top:1px solid var(--hair);padding-top:8px;margin-top:2px}
+.mcell{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ml{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.07em}
+#miniLoss{width:190px;height:40px;border-radius:7px}
+.miniGuess{display:flex;gap:4px;align-items:flex-end;height:40px}
+.miniGuess button{font-family:var(--mono);display:inline-flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:30px;height:40px;padding:2px 5px;border:1px solid var(--hair);border-radius:7px;background:var(--card2);line-height:1;color:var(--ink);cursor:pointer}
+.miniGuess button:hover{border-color:var(--lime)}
+.miniGuess i{font-style:normal;font-size:9.5px;color:var(--faint);margin-top:2px;font-family:var(--mono)}
+.miniLive{font-family:var(--mono);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;height:40px;line-height:40px;background:var(--bg);border-radius:7px;padding:0 10px}
+body.has-train #mLossCell,body.has-talk #mGuessCell{display:none}
+body.has-train .mini,body.has-talk .mini{grid-template-columns:auto minmax(0,1fr)}
+body.has-train.has-talk .mini{grid-template-columns:minmax(0,1fr)}
+body.free .mini{display:none}
+@media (max-width:720px){.mini,body.has-train .mini,body.has-talk .mini{grid-template-columns:minmax(0,1fr)}#miniLoss{width:100%}.wiz-foot{flex-wrap:wrap}body.wizard .bar{position:static}}
 .kicker:empty{display:none}
 .pr{color:var(--ink);background:rgba(95,212,255,.18);border-bottom:2px solid var(--cyan);border-radius:4px 4px 0 0;padding:0 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .brains{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -375,7 +394,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 </head>
 <body class="wizard">
 <header class="top">
-  <div class="hdr"><h1>Pocket <span>GPT</span></h1><div class="hnav"><button class="btn small" id="homeBtn" title="Back to the welcome screen with a fresh brain">⟲ Start from the beginning</button><button class="btn small" id="modeBtn">Explore everything</button></div></div>
+  <div class="hdr"><h1>Pocket <span>GPT</span></h1><div class="hnav"><button class="btn small" id="modeBtn">Back to the steps</button></div></div>
   <p class="tag">A real GPT, the same design as the chatbots you know, shrunk until you can watch every part of it work. It lives entirely in this page, starts out knowing nothing, and you'll teach it to write.</p>
 </header>
 
@@ -385,7 +404,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <p class="ilead" id="iLead"></p>
   <div class="insight iins" id="iIns" hidden></div>
   <button class="btn go huge" id="iGo"></button>
-  <div class="inav"><button class="linkbtn" id="iBack">‹ Back</button><button class="linkbtn" id="iFree">Skip the tour and explore everything</button></div>
+  <div class="inav"><button class="btn" id="iBack">‹ Back</button><button class="btn" id="iHome" title="Back to the welcome screen with a fresh brain">⟲ Start from the beginning</button><button class="btn" id="iFree">Explore everything</button></div>
 </section>
 
 <section id="wiz" aria-label="Steps">
@@ -406,6 +425,11 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <span class="stat">right <b id="sAcc">—</b></span>
   <span class="stat opt">numbers <b id="sParams">—</b></span>
   <span class="narr" id="narr">Brand new: its numbers are random, so it knows nothing yet.</span>
+  <div class="mini" id="mini">
+    <div class="mcell" id="mLossCell"><span class="ml">How wrong</span><canvas id="miniLoss"></canvas></div>
+    <div class="mcell" id="mGuessCell"><span class="ml">Next letter</span><div class="miniGuess" id="miniGuess"></div></div>
+    <div class="mcell mwide"><span class="ml">Its writing</span><div class="miniLive" id="miniLive">Nothing yet.</div></div>
+  </div>
   <div class="retrain" id="retrain" hidden></div>
 </div></div>
 
@@ -633,13 +657,13 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <div class="row" style="margin-top:12px"><button class="btn small" id="restart">Start the tour over</button></div>
   </section>
 </main>
-<nav class="wiz-foot" id="wizFoot"><button class="btn" id="wBack">‹ Back</button><span class="meta" id="wHint" style="margin:0"></span><button class="btn go big" id="wNext">Next ›</button></nav>
+<nav class="wiz-foot" id="wizFoot"><div class="fnav"><button class="btn" id="wBack">‹ Back</button><button class="btn" id="homeBtn" title="Back to the welcome screen with a fresh brain">⟲ Start from the beginning</button><button class="btn" id="freeBtn">Explore everything</button></div><span class="meta" id="wHint" style="margin:0"></span><button class="btn go big" id="wNext">Next ›</button></nav>
 <footer>Everything runs in this page: no server, no API, no library. It's a real GPT (token and position embeddings, masked multi-head self-attention, an MLP, layer norm, residual connections), trained with hand-written backpropagation.</footer>
 <div class="toast" id="toast"></div>
 
-<script src="/GPT/js/corpora.js?v=1843bbc7"></script>
-<script src="/GPT/js/engine.js?v=1843bbc7"></script>
-<script src="/GPT/js/app.js?v=1843bbc7"></script>
+<script src="/GPT/js/corpora.js?v=92581365"></script>
+<script src="/GPT/js/engine.js?v=92581365"></script>
+<script src="/GPT/js/app.js?v=92581365"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>
