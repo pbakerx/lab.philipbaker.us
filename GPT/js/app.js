@@ -69,13 +69,15 @@
     $('#sParams').textContent = m.size.toLocaleString();
     setRunning(false);
     renderArch(); fillXray(); syncTM(); knobInfo();
-    $('#out').innerHTML = '<span class="p">Press ✍︎ Write. It hasn’t learned anything yet, so expect gibberish.</span>';
+    $('#out').innerHTML = '<span class="p">Press ✍︎ See what it writes. It hasn’t learned anything yet, so expect gibberish.</span>';
     $('#live').textContent = 'Nothing yet. Press ▶ Train.'; $('#liveStep').textContent = '';
     $('#rGuess').textContent = ''; $('#rTrue').innerHTML = '<span class="ctx">Press ▶ Train, or Slow-mo to take one step at a time.</span>';
-    S.miles = []; S.firstWrite = null; S.lastWrite = null; S.ballEval = null;
+    S.miles = []; S.firstWrite = null; S.lastWrite = null; S.ballEval = null; S.film = [];
+    $('#talkNote').hidden = true;
     $('#landSample').textContent = 'Map the terrain, then drag the ball.';
     $('#compare').textContent = ''; $('#sAcc').textContent = '—';
     mood('Brand new: its numbers are random, so it knows nothing yet.');
+    filmShot();
     touch(...ALL);
   }
 
@@ -86,6 +88,7 @@
       x.className = 'hd' + (m.off[l][h] ? ' off' : '') + (S.sel.l === l && S.sel.h === h ? ' sel' : '');
       x.textContent = h + 1; x.title = `Attention head ${h + 1} of block ${l + 1}` + (m.off[l][h] ? ' (switched off)' : '');
       x.onclick = () => { S.sel = { l, h }; $('#compare').textContent = ''; renderArch(); touch('talk'); flag('head'); };
+      x.textContent = h + 1;
       hs.appendChild(x);
     }
     return hs;
@@ -109,7 +112,7 @@
       b.appendChild(mlp); el.appendChild(b);
     });
     io(`→ a guess for the next character`);
-    $('#snip').textContent = m.off[S.sel.l][S.sel.h] ? '✚ Switch this head back on' : '✂ Switch this head off';
+    $('#snip').textContent = m.off[S.sel.l][S.sel.h] ? '✚ Turn this head back on' : '✂ Turn this head off';
   }
 
   // ---------- training ----------
@@ -122,6 +125,7 @@
     S.ema = S.ema == null ? L : 0.96 * S.ema + 0.04 * L;
     if (S.step > 30) S.best = Math.min(S.best, S.ema);
     if (S.step % 25 === 0) snapshot();
+    if (FILM_AT.has(S.step)) filmShot();
     if (S.land && !stick && S.step % 2 === 0) trackPath(true);
   }
   function snapshot() {
@@ -146,6 +150,7 @@
       S.step = snap.step; S.hist.length = snap.step;
       S.snaps = S.snaps.slice(0, S.viewing + 1);
       S.events = S.events.filter(e => e.step <= snap.step);
+      S.film = S.film.filter(f => f.step <= snap.step); renderFilm();
       S.events.push({ step: snap.step, type: 'branch' });
       S.ema = snap.loss; S.best = Infinity;
       toast(`New timeline, branching from step ${snap.step}.`);
@@ -258,17 +263,23 @@
     const m = S.model, ctx = context(), temp = +$('#temp').value;
     const r = m.predict(ctx.ids, temp);
     S.last = { ...r, empty: ctx.empty };
-    const order = Array.from(r.probs.keys()).sort((a, b) => r.probs[b] - r.probs[a]).slice(0, 8);
-    const bars = $('#bars'); bars.textContent = '';
-    const topP = r.probs[order[0]];
-    for (const j of order) {
-      const c = document.createElement('span'); c.className = 'c'; c.textContent = show(S.chars[j]); c.title = 'Pick this one';
-      c.onclick = () => { $('#prompt').value += show(S.chars[j]) === '↵' ? '↵' : S.chars[j]; touch('talk'); flag('bar'); };
-      const bw = document.createElement('span'); bw.className = 'bw'; const b = document.createElement('span'); b.className = 'b';
-      b.style.width = (100 * r.probs[j] / topP).toFixed(1) + '%'; bw.appendChild(b);
-      const pc = document.createElement('span'); pc.className = 'pc'; pc.textContent = (100 * r.probs[j]).toFixed(1) + '%';
-      bars.append(c, bw, pc);
-    }
+    const order = Array.from(r.probs.keys()).sort((a, b) => r.probs[b] - r.probs[a]);
+    const pick = j => () => { $('#prompt').value += show(S.chars[j]) === '↵' ? '↵' : S.chars[j]; touch('talk'); flag('bar'); };
+    const top = $('#gTop'), rest = $('#gRest'); top.textContent = ''; rest.textContent = '';
+    // the top four: letter size follows how sure it is, so a confident guess is visibly big
+    order.slice(0, 4).forEach(j => {
+      const p = r.probs[j], b = document.createElement('button'); b.className = 'gt'; b.title = `Click to type “${show(S.chars[j])}”`;
+      const ch = document.createElement('span'); ch.className = 'ch'; ch.textContent = show(S.chars[j]);
+      ch.style.fontSize = (16 + 50 * Math.sqrt(p)).toFixed(0) + 'px';
+      const pc = document.createElement('span'); pc.className = 'pc'; pc.textContent = (100 * p).toFixed(p < 0.1 ? 1 : 0) + '%';
+      const bar = document.createElement('span'); bar.className = 'bar'; bar.style.width = Math.max(4, 100 * p).toFixed(0) + '%'; bar.style.alignSelf = 'flex-start';
+      b.append(ch, pc, bar); b.onclick = pick(j); top.appendChild(b);
+    });
+    order.slice(4, 16).forEach(j => {
+      const b = document.createElement('button'); b.className = 'gr'; b.textContent = show(S.chars[j]);
+      const i = document.createElement('i'); i.textContent = (100 * r.probs[j]).toFixed(1) + '%'; b.appendChild(i);
+      b.onclick = pick(j); b.title = `Click to type “${show(S.chars[j])}”`; rest.appendChild(b);
+    });
     const u = [...ctx.unknown].map(show).join(' ');
     $('#attnRead').textContent = u ? `ignoring unseen: ${u}` : '';
     drawAttn();
@@ -308,8 +319,16 @@
     drawAttn({ i: Math.floor((e.clientY - r.top - g.lab) / g.cell), j: Math.floor((e.clientX - r.left - g.lab) / g.cell) });
   });
 
+  const rec0 = () => ({ prompt: S.gen0.prompt, text: S.gen0.text, step: S.viewing >= 0 ? S.snaps[S.viewing].step : S.step });
+  function noteAfterWrite(rec) {
+    const n = $('#talkNote');
+    if (S.mode === 'wizard' && STEPS[S.wiz.i].id === 'meet' && rec.step < 30) {
+      n.innerHTML = `<b>Gibberish, and that's exactly right.</b> Its numbers are random, so it has no idea which letters go together. Look at its guesses: no letter stands out, and each of its ${S.chars.length} characters is about equally likely. Training is what changes that. Press <b>Next</b>.`;
+      n.hidden = false;
+    }
+  }
   function genWork() {
-    const g = S.gen, m = S.model, temp = +$('#temp').value;
+    const g = S.gen, m = S.model, temp = +$('#temp').value; S.gen0 = g;
     for (let k = 0; k < 3 && g.left > 0; k++, g.left--) {
       const { probs } = m.predict(g.ctx, temp), j = m.sample(probs);
       g.ctx.push(j); g.text += S.chars[j];
@@ -321,8 +340,8 @@
     if (g.left > 0) out.appendChild(cur);
     out.scrollTop = out.scrollHeight;
     if (g.left <= 0) {
-      S.gen = null; $('#gen').textContent = '✍︎ Write'; flag('wrote');
-      const rec = { prompt: g.prompt, text: g.text, step: S.viewing >= 0 ? S.snaps[S.viewing].step : S.step };
+      S.gen = null; $('#gen').textContent = '✍︎ See what it writes'; flag('wrote'); noteAfterWrite(rec0());
+      const rec = rec0();
       if (rec.step < 30 && !S.firstWrite) S.firstWrite = rec;
       if (rec.step >= 200) { S.lastWrite = rec; flag('wroteTrained'); }
       const t = +$('#temp').value; if (t < 0.4) flag('lowT'); if (t > 1.3) flag('highT');
@@ -526,7 +545,7 @@
     if (/attention output$/.test(n)) return `<b>Attention output</b>: blends what all the heads found back into one list of numbers per letter.`;
     if (/MLP expand$/.test(n)) return `<b>MLP expand</b>: the "thinking" step. Each letter's ${d} numbers fan out to ${4 * d}, pass through a bend, then get squeezed back. Researchers think much of what a model memorizes lives in layers like this.`;
     if (/MLP squeeze$/.test(n)) return `<b>MLP squeeze</b>: folds the ${4 * d}-wide thinking back down to ${d} numbers.`;
-    if (n === 'next-char head') return `<b>Next-letter head</b>: the very last step. It turns the final numbers into one score for each of the ${V} characters, and those scores become the bars in Talk to it.`;
+    if (n === 'next-char head') return `<b>Next-letter head</b>: the very last step. It turns the final numbers into one score for each of the ${V} characters, and those scores become its next-letter guesses in Talk to it.`;
     return '';
   }
   function drawXray(hover) {
@@ -593,8 +612,25 @@
   }
   function refreshLive() {
     S.liveAt = performance.now();
-    withPrompt($('#live'), sampleText(70, 0.8));
-    $('#liveStep').textContent = `· after ${S.step.toLocaleString()} steps`;
+    withPrompt($('#live'), sampleText(90, 0.7));
+    $('#liveStep').textContent = S.viewing >= 0 ? `· at step ${S.snaps[S.viewing].step.toLocaleString()} (rewound)` : S.step ? `· now, after ${S.step.toLocaleString()} steps` : '· before any training';
+  }
+  // Filmstrip: one sample saved at each milestone step, so "getting closer" is visible at a glance.
+  const FILM_AT = new Set([50, 100, 200, 400, 800, 1600, 3200, 6400, 12800]);
+  function filmShot() {
+    S.film.push({ step: S.step, loss: S.step ? S.ema : Math.log(S.chars.length), text: sampleText(48, 0.5).replace(/\n/g, ' ↵ ') });
+    renderFilm();
+  }
+  function renderFilm() {
+    const ol = $('#film'); ol.textContent = '';
+    if (!S.film.length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = 'Samples appear here as it trains: step 0, 50, 100, 200, 400…'; ol.appendChild(li); return; }
+    for (const f of S.film) {
+      const li = document.createElement('li'); li.title = `Go back to its brain at step ${f.step}`;
+      const a = document.createElement('span'); a.className = 'st'; a.textContent = 'step ' + f.step.toLocaleString();
+      const b = document.createElement('span'); b.className = 'ls'; b.textContent = f.loss.toFixed(2);
+      const c = document.createElement('span'); c.className = 'tx'; c.textContent = f.text;
+      li.append(a, b, c); li.onclick = () => travelToStep(f.step); ol.appendChild(li);
+    }
   }
   function refreshLandSample() {
     S.landAt = performance.now(); S.landDue = 0;
@@ -621,32 +657,33 @@
   const F = k => !!S.flags[k];
   const STEPS = [
     { id: 'feed', rail: 'Feed it', title: 'Feed it', cards: ['cFeed'],
-      lead: `Everything this model will ever know comes from <b>one piece of text</b>. It reads it one character at a time, and nothing else goes in. <b>Dinosaurs</b> is picked for you (it learns to invent dinosaur names). Choose another, or paste your own.`,
+      lead: `Everything this model will ever know comes from <b>one piece of text</b>. It reads it one character at a time, and nothing else goes in. <b>Dinosaurs</b> is picked for you (it learns to invent new dinosaur names). You can also click another ready-made text, <b>paste</b> your own into the box, or <b>upload</b> a text file.`,
       goals: [{ t: 'Choose what it will read (Dinosaurs is a fine start)', test: () => F('fed') }] },
     { id: 'meet', rail: 'Meet it', title: 'Meet it', cards: ['cTalk'],
-      lead: () => `This brain is brand new: <b>${S.model.size.toLocaleString()} random numbers</b> that have never read a thing. Ask it to write, and hear what knowing nothing sounds like.`,
-      goals: [{ t: 'Press ✍︎ Write', test: () => F('wrote') }] },
+      lead: () => `Its whole brain is <b>${S.model.size.toLocaleString()} numbers</b>. Every guess it makes is calculated from them, and training does nothing but adjust them (the pros call them <i>parameters</i> or <i>weights</i>). Right now they're random, like a freshly shuffled deck. Press <b>See what it writes</b> and hear what knowing nothing sounds like.`,
+      enter: () => { $('#talkNote').hidden = true; },
+      goals: [{ t: 'Press ✍︎ See what it writes', test: () => F('wrote') }] },
     { id: 'train', rail: 'Train it', title: 'Train it', cards: ['cTrain'], trains: true,
-      lead: `Press <b>▶ Train</b>, top left. Each step it reads a snippet, <b>guesses every next letter</b>, checks, and nudges its numbers. Watch the guesses under "Right now it's reading" turn green, its writing come alive, and the loss line fall. Afterwards, <b>click the graph</b> to rewind its brain to any moment.`,
+      lead: `Press <b>▶ Train</b>, top left. Each step it reads a snippet, <b>guesses every next letter</b>, checks, and nudges its numbers. Watch its guesses turn green, the "how wrong" line fall, and its writing get closer and closer to the real thing. Then drag the <b>⏳ slider</b> back to hear it at any age.`,
       goals: [
         { t: 'Beat random guessing (the green line drops below the dashed one)', test: () => S.ema != null && S.ema < 0.9 * lnV(), mile: 'beat random' },
         { t: 'Guess half the letters right', test: () => S.model.lastAcc >= 0.5, mile: '50% right' },
         { t: 'Guess 6 in 10 right: now its writing looks like the text', test: () => S.model.lastAcc >= 0.6, mile: '60% right' }] },
     { id: 'again', rail: 'Write again', title: 'Write again', cards: ['cTalk', 'cBefore'],
-      lead: `Same machine, same code, same box. Press <b>✍︎ Write</b> and compare with how it wrote before any training.`,
-      enter: () => { setRunning(false); renderBA(); },
-      goals: [{ t: 'Press ✍︎ Write with the trained brain', test: () => F('wroteTrained') }] },
+      lead: `Same machine, same code, same box. Press <b>See what it writes</b> and compare with how it wrote before any training.`,
+      enter: () => { setRunning(false); $('#talkNote').hidden = true; renderBA(); },
+      goals: [{ t: 'Press ✍︎ See what it writes, with the trained brain', test: () => F('wroteTrained') }] },
     { id: 'steer', rail: 'Steer it', title: 'Steer it', cards: ['cTalk'],
-      lead: `It writes one guess at a time, and you can take the wheel. <b>Click a bar</b> to choose its next letter yourself. Then try <b>Creativity</b> at both ends: low plays it safe, high takes long shots.`,
+      lead: `It writes one guess at a time, and you can take the wheel. Under <b>Its next-letter guesses</b>, <b>click any letter</b>: it's typed into the box and its next guesses change to match. Then try <b>Creativity</b> at both ends: low plays it safe, high takes long shots.`,
       goals: [
-        { t: 'Click one of its guesses to choose for it', test: () => F('bar') },
+        { t: 'Click one of its guessed letters to type it', test: () => F('bar') },
         { t: 'Write with Creativity low (under 0.4)', test: () => F('lowT') },
         { t: 'Write with Creativity high (over 1.3)', test: () => F('highT') }] },
-    { id: 'inside', rail: 'Look inside', title: 'Look inside', cards: ['cAttn'], trains: true,
-      lead: `Before each guess, every letter can look back at earlier letters for clues. Each <b>attention head</b> learns its own way of looking. Click through them, then switch one off: if the guesses get worse, that head mattered. It's how researchers study real AI.`,
+    { id: 'inside', rail: 'Look inside', title: 'Look inside', cards: ['cAttn', 'cTalk'], layout: 'talklast', trains: true,
+      lead: `Before each guess, every letter looks back at earlier letters for clues. It does that with several <b>heads</b>, spotlights that each learned their own way of looking. The small <b>numbered buttons</b> are its heads: <b>click a number</b> to see where that head looks. Then press <b>✂ Turn this head off</b> and watch its guesses and writing change. If they get worse, that head mattered. This is how researchers study real AI.`,
       goals: [
-        { t: 'Look through a different head', test: () => F('head') },
-        { t: 'Switch a head off and read the verdict', test: () => F('snip') }] },
+        { t: 'Click a head number to look through it', test: () => F('head') },
+        { t: 'Turn a head off and read what changed', test: () => F('snip') }] },
     { id: 'ball', rail: 'Push the ball', title: 'Push the ball', cards: ['cLand'], trains: true,
       lead: `Its whole brain is one point in a space with thousands of directions, and training rolls it downhill. Now you push it: <b>shove it up a hill and watch its writing fall apart</b>, then let it roll home.`,
       enter: () => setRunning(false),
@@ -659,14 +696,15 @@
       goals: [
         { t: 'Set the X-ray to "nudges" and watch it train', test: () => S.xmode === 'grad' && S.running },
         { t: 'Scramble a part, then train until it recovers', test: () => F('scrambled') && S.step >= S.scrambleAt + 150 }] },
-    { id: 'build', rail: 'Build it', title: 'Build a bigger brain', cards: ['cBuild', 'cTrain'], layout: 'two', trains: true,
-      lead: `Change its shape: more layers, more heads, wider, a longer memory. <b>A new shape means a brand-new brain</b> that starts from random numbers, so it has to learn from zero. Train it and compare how fast it learns.`,
+    { id: 'build', rail: 'Build it', title: 'Build a bigger brain', cards: ['cTalk', 'cBuild', 'cTrain'], layout: 'two', trains: true,
+      lead: `Change its shape: more layers, more heads, wider, a longer memory. <b>A new shape means a brand-new brain</b> that starts from random numbers, so it has to learn from zero. Train it, then see what it writes, and compare.`,
       goals: [
         { t: 'Change one of the sliders', test: () => F('shape') },
         { t: 'Press Build a new brain', test: () => F('built') },
         { t: 'Train the new brain past random guessing', test: () => F('built') && S.ema != null && S.ema < 0.9 * lnV() }] },
-    { id: 'end', rail: 'Done', title: 'You trained a GPT', cards: ['cFinale'], goals: [],
-      lead: `Nine ideas, every one of them true of the big ones too.` },
+    { id: 'lab', rail: 'Your lab', title: 'Your lab', cards: ['cFinale', 'cTalk', 'cBuild', 'cTrain'], layout: 'lab', trains: true, goals: [],
+      enter: () => { renderHub(); $('#tinker').open = true; },
+      lead: `You trained a GPT. Everything is here now: write with it, keep training it, tune how it learns, change its shape, or jump back into any step to look closer.` },
   ];
   S.wiz = { i: 0, met: {} };
   const stepDone = st => st.goals.every((_, gi) => S.wiz.met[st.id + ':' + gi]);
@@ -681,11 +719,12 @@
   }
   function renderStep() {
     const st = STEPS[S.wiz.i], last = S.wiz.i === STEPS.length - 1;
-    $('#wKick').textContent = last ? 'Finished' : `Step ${S.wiz.i + 1} of ${STEPS.length - 1}`;
+    $('#wKick').textContent = last ? 'Tour complete' : `Step ${S.wiz.i + 1} of ${STEPS.length - 1}`;
+    $('#goalsL').hidden = !st.goals.length;
     $('#wTitle').textContent = st.title;
     $('#wLead').innerHTML = typeof st.lead === 'function' ? st.lead() : st.lead;
     const ul = $('#goals'); ul.textContent = '';
-    st.goals.forEach((g, gi) => { const li = document.createElement('li'); li.textContent = g.t; if (S.wiz.met[st.id + ':' + gi]) li.className = 'met'; ul.appendChild(li); });
+    st.goals.forEach((g, gi) => { const li = document.createElement('li'); const sp = document.createElement('span'); sp.textContent = g.t; li.appendChild(sp); if (S.wiz.met[st.id + ':' + gi]) li.className = 'met'; ul.appendChild(li); });
     const done = stepDone(st), nx = $('#wNext');
     nx.hidden = last; $('#wBack').disabled = S.wiz.i === 0;
     nx.textContent = S.wiz.i === STEPS.length - 2 ? (done ? 'Nice, finish ›' : 'Finish ›') : (done ? 'Nice, next ›' : 'Next ›');
@@ -707,7 +746,7 @@
     S.wiz.i = Math.max(0, Math.min(STEPS.length - 1, i));
     const st = STEPS[S.wiz.i];
     document.querySelectorAll('main .card').forEach(c => c.classList.toggle('on', st.cards.includes(c.id)));
-    $('main').classList.toggle('two', st.layout === 'two');
+    ['two', 'lab', 'talklast'].forEach(c => $('main').classList.toggle(c, st.layout === c));
     document.body.classList.toggle('trains', !!st.trains);
     if (!st.trains && S.running) setRunning(false);
     if (st.enter) st.enter();
@@ -742,12 +781,35 @@
     $('#modeBtn').textContent = m === 'wizard' ? 'Explore everything' : 'Back to the steps';
     if (m === 'free') {
       document.querySelectorAll('main .card').forEach(c => c.classList.add('on'));
-      $('main').classList.remove('two'); document.body.classList.remove('trains'); $('#tinker').open = true;
+      $('main').classList.remove('two', 'lab', 'talklast'); document.body.classList.remove('trains'); $('#tinker').open = true;
       save(); touch(...ALL);
     } else { $('#tinker').open = false; showStep(S.wiz.i, false); }
   }
   $('#modeBtn').onclick = () => { setMode(S.mode === 'wizard' ? 'free' : 'wizard'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  $('#toFree').onclick = () => { setMode('free'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const HUB = { feed: 'Change what it reads', meet: 'A brand-new brain', train: 'Watch it learn', again: 'Before and after', steer: 'Pick its letters',
+    inside: 'Attention heads', ball: 'The loss landscape', made: 'Its raw numbers', build: 'Change its shape' };
+  function renderHub() {
+    const hub = $('#hub'); hub.textContent = '';
+    STEPS.slice(0, -1).forEach((st, i) => {
+      const b = document.createElement('button'), t = document.createElement('b'), d = document.createElement('span');
+      t.textContent = `${i + 1} · ${st.title}`; d.textContent = HUB[st.id] || ''; b.append(t, d); b.onclick = () => showStep(i); hub.appendChild(b);
+    });
+  }
+  $('#upload').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    if (f.size > 400000) return toast('That file is big. Try one under 400 KB: a few pages is plenty.');
+    const rd = new FileReader();
+    rd.onload = () => {
+      const t = String(rd.result).replace(/\r\n?/g, '\n');
+      if (t.length < 60) return toast('That file is too short to learn from.');
+      $('#corpus').value = t; $('#useText').click();
+      const v = new Set(t).size; if (v > 90) toast(`Loaded “${f.name}”. It uses ${v} different characters, so it will learn more slowly.`);
+      else toast(`Loaded “${f.name}”: ${t.length.toLocaleString()} characters. New brain built for it.`);
+    };
+    rd.onerror = () => toast('Could not read that file.');
+    rd.readAsText(f);
+  });
   $('#restart').onclick = () => { S.wiz.met = {}; S.flags = {}; S.stick = false; $('#stick').checked = false; loadPreset('dinos'); showStep(0); };
   $('#wBack').onclick = () => showStep(S.wiz.i - 1);
   $('#wNext').onclick = () => { if (STEPS[S.wiz.i].id === 'feed') { flag('fed'); checkGoals(); } showStep(S.wiz.i + 1); };
@@ -812,9 +874,9 @@
   }
   $('#snip').onclick = () => {
     const { l, h } = S.sel, m = S.model;
-    const g0 = topGuess(), l0 = m.loss(S.evalBatch);
+    const g0 = topGuess(), l0 = m.loss(S.evalBatch), w0 = sampleText(44, 0.3);
     m.off[l][h] = !m.off[l][h];
-    const g1 = topGuess(), l1 = m.loss(S.evalBatch), d = l1 - l0;
+    const g1 = topGuess(), l1 = m.loss(S.evalBatch), d = l1 - l0, w1 = sampleText(44, 0.3);
     S.events.push({ step: S.step, type: 'snip' });
     const el = $('#compare'); el.textContent = '';
     const b = t => { const x = document.createElement('b'); x.textContent = t; return x; };
@@ -825,6 +887,9 @@
       : 'Barely changed: this head was not pulling much weight.';
     el.append('Top guess ', b(`“${g0.ch}” ${(100 * g0.p).toFixed(0)}%`), ' → ', b(`“${g1.ch}” ${(100 * g1.p).toFixed(0)}%`),
       ' · wrongness (loss) ', b(l0.toFixed(2)), ' → ', b(l1.toFixed(2)), '. ', verdict);
+    const ww = (lbl, t) => { const d = document.createElement('div'); d.className = 'cw'; const s = document.createElement('span'); s.textContent = lbl; d.append(s, t.replace(/\n/g, ' ↵ ')); return d; };
+    el.append(ww(m.off[l][h] ? 'Writing with it:' : 'Writing without it:', w0), ww(m.off[l][h] ? 'Without it:' : 'With it back:', w1));
+    refreshLive();
     renderArch(); touch('talk', 'loss'); flag('snip');
   };
   // Load the saved brain nearest to a step. Saving "now" first means the latest point is always reachable.
@@ -837,7 +902,7 @@
     $('#vTm').textContent = now ? 'now' : `step ${S.snaps[i].step}`;
     if (S.land) trackPath(false);
     refreshLive(); if (S.land && S.land.img) refreshLandSample();
-    mood(now ? 'Back to its latest brain.' : `Rewound to its brain at step ${S.snaps[i].step.toLocaleString()}. Press ✍︎ Write to hear it then, or ▶ Train to carry on from here.`);
+    mood(now ? 'Back to its latest brain.' : `Rewound to its brain at step ${S.snaps[i].step.toLocaleString()}. Press ✍︎ See what it writes to hear it then, or ▶ Train to carry on from here.`);
     touch('talk', 'emb', 'xray', 'land', 'loss');
   }
   $('#tm').addEventListener('input', e => { const sn = S.snaps[+e.target.value]; if (sn) travelToStep(sn.step); });
