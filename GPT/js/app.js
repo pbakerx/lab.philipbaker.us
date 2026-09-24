@@ -22,10 +22,20 @@
   // ---------- text ----------
   const show = ch => ch === ' ' ? '␣' : ch === '\n' ? '↵' : ch === '\t' ? '⇥' : ch;
   function setText(text) {
+    S.corpusText = text;
     S.chars = [...new Set(text)].sort();
     S.stoi = Object.fromEntries(S.chars.map((c, i) => [c, i]));
     S.data = Int32Array.from(text, c => S.stoi[c]);
     $('#corpusInfo').textContent = `${text.length.toLocaleString()} chars · ${S.chars.length} different ones`;
+    feedDirty();
+  }
+  // Typing in the box does nothing until "Learn from this text", so say so, loudly.
+  function feedDirty() {
+    const dirty = $('#corpus').value !== S.corpusText;
+    $('#feedWarn').hidden = !dirty;
+    const b = $('#useText'); b.classList.toggle('go', dirty);
+    if (dirty && !b.classList.contains('pulse')) { b.classList.add('pulse'); setTimeout(() => b.classList.remove('pulse'), 3200); }
+    return dirty;
   }
   // "↵" in the prompt box stands for a newline, since a text input can't hold one
   function encode(str) {
@@ -58,6 +68,7 @@
 
   function build() {
     const k = knobs();
+    S.baseSteps = 0;
     window.TinyGPT.reseed((Math.random() * 2 ** 32) >>> 0);
     const m = new GPT({ V: S.chars.length, d: k.d, n: k.n, L: k.L, H: k.H });
     Object.assign(S, {
@@ -608,11 +619,12 @@
   }
   function withPrompt(el, text, prompt = $('#prompt').value.replace(/↵/g, '\n')) {
     el.textContent = '';
-    const p = document.createElement('span'); p.style.color = 'var(--faint)'; p.textContent = prompt;
-    el.append(p, text);
+    if (prompt) { const p = document.createElement('span'); p.className = 'pr'; p.title = 'what you typed'; p.textContent = prompt; el.appendChild(p); }
+    el.append(text);
   }
   function refreshLive() {
     S.liveAt = performance.now();
+    if ($('#cAttn').classList.contains('on') || S.mode === 'free') withPrompt($('#attnLive'), sampleText(70, 0.6));
     withPrompt($('#live'), sampleText(90, 0.7));
     $('#liveStep').textContent = S.viewing >= 0 ? `· at step ${S.snaps[S.viewing].step.toLocaleString()} (rewound)` : S.step ? `· now, after ${S.step.toLocaleString()} steps` : '· before any training';
   }
@@ -690,11 +702,10 @@
         { s: 'Pick a head', t: 'Click a head number', how: `Each small numbered button is one head. The map shows where that head looks: each row is a letter, bright squares are the earlier letters it's watching.`, focus: '#headpick', test: () => F('head') },
         { s: 'Turn it off', t: 'Turn that head off', how: `Press <b>✂ Turn this head off</b> and read what changed: its top guess, how wrong it is, and its writing with and without that head.`, focus: '#snip', test: () => F('snip') }] },
     { id: 'ball', rail: 'Push the ball', title: 'Push the ball', go: 'Show me the landscape ›', cards: ['cLand'], bare: ['cLand'], trains: true,
-      lead: `Its whole brain is one point in a space with thousands of directions. Some points are good writers, most are babblers, and training rolls it downhill toward the good ones. Now you get to push it.`,
-      enter: () => setRunning(false),
+      lead: `Its whole brain is one point in a space with thousands of directions. Some points are good writers, most are babblers, and training rolls it downhill toward the good ones. We'll map the hills around it, then you get to push it.`,
+      enter: () => { setRunning(false); if (!S.land && !S.mapping) setTimeout(() => { if (!S.mapping) startMap(); }, 350); },
       subs: [
-        { s: 'Map it', t: 'Press 🗺 Map the terrain', how: `It tests hundreds of slightly different brains around this one and colors each by how wrong it would be. Dark is good. The glowing ball is your model.`, focus: '#mapBtn', test: () => !!(S.land && S.land.img) },
-        { s: 'Push it', t: 'Drag the ball up a hill', how: `Grab the ball and drag it onto a bright slope. Watch "Its writing" fall apart: you really did change its brain.`, focus: '#land', test: () => F('climbed') },
+        { s: 'Push it', t: 'Drag the ball up a hill', how: `The map shows hundreds of slightly different brains around this one, colored by how wrong each would be: dark is good. The glowing ball is your model. Drag it onto a bright slope and watch "Its writing" fall apart. You really did change its brain.`, focus: '#land', test: () => F('climbed') },
         { s: 'Roll home', t: 'Tick 🧲 Stick to the map, then ▶ Train', how: `Training rolls it back downhill. Watch the ball roll home and its writing recover.`, focus: '#stickRow', test: () => F('climbed') && S.stick && S.land && S.ballEval != null && S.ballEval <= S.land.baseLoss * 1.25 }] },
     { id: 'made', rail: 'Its numbers', title: "What it's made of", go: 'Show me the numbers ›', cards: ['cEmb', 'cXray'], trains: true,
       lead: `Inside there are no rules, no dictionary, no list of dinosaurs. Only numbers. Here you can watch them being rewritten as it learns, and break some to see it heal.`,
@@ -707,7 +718,7 @@
         { s: 'Reshape', t: 'Change one of the sliders', how: `Try more layers or a longer memory. The card turns amber: nothing changes until you build.`, focus: '#cBuild .ctl', test: () => F('shape') },
         { s: 'Build', t: 'Press Build a new brain', how: `Its old numbers are thrown away. It knows nothing again.`, focus: '#build', test: () => F('built') },
         { s: 'Retrain', t: 'Press ▶ Train to teach the new brain', how: `Train it past random guessing, then see what it writes.`, focus: '#go', test: () => F('built') && S.ema != null && S.ema < 0.9 * lnV() }] },
-    { id: 'lab', rail: 'Your lab', title: 'Your lab', go: 'Open your lab ›', cards: ['cFinale', 'cTalk', 'cBuild', 'cTrain'], layout: 'lab', trains: true, subs: [],
+    { id: 'lab', rail: 'Your lab', title: 'Your lab', go: 'Open your lab ›', cards: ['cFinale', 'cTalk', 'cBuild', 'cTrain', 'cBrains'], layout: 'lab', trains: true, subs: [],
       workTitle: 'Keep going', workLead: `Write with it, keep training it, tune how it learns, change its shape, or jump back into any step.`,
       lead: `You trained a GPT from nothing. From here everything is yours: keep training it, change its text or its shape, and jump back into any step to look closer.`,
       enter: () => { renderHub(); $('#tinker').open = true; } },
@@ -717,7 +728,6 @@
   const subMet = (st, k) => !!S.wiz.met[st.id + ':' + k];
   const stepDone = st => st.subs.every((_, k) => subMet(st, k));
   const firstUnmet = st => { const k = st.subs.findIndex((_, j) => !subMet(st, j)); return k < 0 ? st.subs.length : k; };
-  const tag = k => String.fromCharCode(97 + k);
 
   function renderRail() {
     const rail = $('#rail'); rail.textContent = '';
@@ -731,7 +741,7 @@
   }
   function renderIntro() {
     const st = STEPS[S.wiz.i];
-    $('#iKick').textContent = st.welcome ? '' : S.wiz.i === LAST ? 'Tour complete' : `Step ${S.wiz.i} of ${LAST - 1}`;
+    $('#iKick').textContent = S.wiz.i === LAST ? 'Tour complete' : '';
     $('#iTitle').innerHTML = st.title;
     $('#iLead').innerHTML = typeof st.lead === 'function' ? st.lead() : st.lead;
     $('#iGo').textContent = st.go;
@@ -742,15 +752,15 @@
   }
   function renderWork() {
     const st = STEPS[S.wiz.i], n = S.wiz.i, many = st.subs.length > 1;
-    $('#wKick').textContent = n === LAST ? 'Your lab' : `Step ${n} of ${LAST - 1} · ${st.title}`;
+    $('#wKick').textContent = n === LAST ? 'Your lab' : st.title;
     const subs = $('#subs'); subs.textContent = ''; subs.hidden = !many;
     st.subs.forEach((sb, k) => {
-      const b = document.createElement('button'); b.textContent = `${n}${tag(k)} · ${sb.s}`;
+      const b = document.createElement('button'); b.textContent = sb.s;
       b.className = (k === S.wiz.sub ? 'now' : '') + (subMet(st, k) ? ' met' : '');
       b.onclick = () => setSub(k); subs.appendChild(b);
     });
     const sb = st.subs[S.wiz.sub];
-    if (sb) { $('#wTitle').textContent = (many ? `${n}${tag(S.wiz.sub)} · ` : '') + sb.t; $('#wLead').innerHTML = sb.how; }
+    if (sb) { $('#wTitle').textContent = sb.t; $('#wLead').innerHTML = sb.how; }
     else if (st.subs.length) { $('#wTitle').textContent = '✓ All done here'; $('#wLead').innerHTML = `Keep playing as long as you like, or press <b>Next</b>.`; }
     else { $('#wTitle').textContent = st.workTitle || st.title; $('#wLead').innerHTML = st.workLead || ''; }
     const done = stepDone(st), nx = $('#wNext');
@@ -780,7 +790,7 @@
     renderRail(); renderWork(); applyFocus(false);
     if (curMet) {
       const i = S.wiz.i, done = stepDone(st);
-      toast(done ? '✓ Step done. Press Next when you’re ready.' : `✓ ${i}${tag(S.wiz.sub)} done`);
+      toast(done ? '✓ All done here. Press Next when you’re ready.' : '✓ Nice. On to the next part.');
       setTimeout(() => { if (S.wiz.i === i && subMet(st, S.wiz.sub)) setSub(firstUnmet(st)); }, 1100);
     }
   }
@@ -850,7 +860,11 @@
   };
   $('#iBack').onclick = () => { const p = S.wiz.i - 1; showStep(p, { intro: !!STEPS[p].welcome }); };
   $('#wBack').onclick = () => showStep(S.wiz.i);
-  $('#wNext').onclick = () => { if (STEPS[S.wiz.i].id === 'feed') { flag('fed'); checkGoals(); } showStep(S.wiz.i + 1); };
+  $('#wNext').onclick = () => {
+    if (STEPS[S.wiz.i].id === 'feed') { if (feedDirty()) $('#useText').click(); flag('fed'); checkGoals(); }
+    showStep(S.wiz.i + 1);
+  };
+  $('#corpus').addEventListener('input', feedDirty);
 
   const HUB = { feed: 'Change what it reads', meet: 'A brand-new brain', train: 'Watch it learn', again: 'Before and after', steer: 'Pick its letters',
     inside: 'Attention heads', ball: 'The loss landscape', made: 'Its raw numbers', build: 'Change its shape' };
@@ -859,9 +873,88 @@
     STEPS.forEach((st, i) => {
       if (st.welcome || i === LAST) return;
       const b = document.createElement('button'), t = document.createElement('b'), d = document.createElement('span');
-      t.textContent = `${i} · ${st.title}`; d.textContent = HUB[st.id] || ''; b.append(t, d); b.onclick = () => showStep(i); hub.appendChild(b);
+      t.textContent = st.title; d.textContent = HUB[st.id] || ''; b.append(t, d); b.onclick = () => showStep(i); hub.appendChild(b);
     });
   }
+  // ---------- saved brains ----------
+  // A brain is its numbers plus the alphabet they line up with, its shape, and (so it can keep
+  // learning) the text it read. Saved in this browser, or downloaded as a file to share.
+  const BRAIN_KEY = 'pocketgpt-brains-v1', BRAIN_MAX = 8;
+  const toB64 = f => { const u = new Uint8Array(f.buffer, f.byteOffset, f.byteLength); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
+  const fromB64 = s => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return new Float32Array(u.buffer); };
+  const slug = t => (t || 'brain').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'brain';
+  function brainName() { return ($('#brainName').value.trim() || `${(window.CORPORA.find(c => c.id === S.preset) || { label: 'My' }).label} brain`).slice(0, 40); }
+  function packBrain() {
+    const c = S.model.cfg;
+    return { app: 'pocket-gpt', v: 1, name: brainName(), saved: new Date().toISOString(), steps: (S.baseSteps || 0) + S.step,
+      cfg: { d: c.d, n: c.n, L: c.L, H: c.H }, chars: S.chars.slice(), text: S.corpusText.length <= 300000 ? S.corpusText : S.corpusText.slice(0, 300000),
+      weights: toB64(S.model.flat()) };
+  }
+  function listBrains() { try { const l = JSON.parse(localStorage.getItem(BRAIN_KEY)); return Array.isArray(l) ? l : []; } catch (e) { return []; } }
+  function storeBrains(l) { try { localStorage.setItem(BRAIN_KEY, JSON.stringify(l)); return true; } catch (e) { return false; } }
+  function loadBrain(pk) {
+    if (!pk || pk.app !== 'pocket-gpt' || !Array.isArray(pk.chars) || !pk.cfg || typeof pk.weights !== 'string') throw new Error('That isn’t a Pocket GPT brain file.');
+    const { d, n, L, H } = pk.cfg;
+    if (!WIDTHS.includes(d) || !HEADS.includes(H) || !(L >= 1 && L <= 4) || !(n >= 8 && n <= 48) || !pk.chars.length || pk.chars.length > 400 || !pk.chars.every(c => typeof c === 'string'))
+      throw new Error('This brain has a shape this page can’t build.');
+    let w; try { w = fromB64(pk.weights); } catch (e) { throw new Error('This brain file is damaged.'); }
+    const V = pk.chars.length;
+    if (w.length !== estParams({ L, d, n }, V) || !w.every(Number.isFinite)) throw new Error('This brain file is damaged.');
+    // its alphabet is the saved one, so every number still lines up with the right character
+    const text = typeof pk.text === 'string' && pk.text.length >= 20 ? pk.text : pk.chars.join('').repeat(4);
+    setRunning(false);
+    S.chars = pk.chars.slice(); S.stoi = Object.fromEntries(S.chars.map((c, i) => [c, i]));
+    S.corpusText = text; S.data = Int32Array.from([...text].filter(c => c in S.stoi), c => S.stoi[c]);
+    $('#corpus').value = text; $('#corpusInfo').textContent = `${text.length.toLocaleString()} chars · ${V} different ones`; feedDirty();
+    $('#kL').value = L; $('#kH').value = HEADS.indexOf(H); $('#kD').value = WIDTHS.indexOf(d); $('#kN').value = n;
+    document.querySelectorAll('#presets .chip').forEach(c => c.classList.remove('sel'));
+    build();
+    S.model.setFlat(w); S.snaps[0].f = S.model.flat(); S.baseSteps = +pk.steps || 0;
+    S.film = []; filmShot();
+    const nm = String(pk.name || 'a saved brain').slice(0, 40);
+    $('#blurb').textContent = `Loaded “${nm}”.`; $('#talkNote').hidden = true; clearRetrain();
+    mood(`Loaded “${nm}”, trained for ${S.baseSteps.toLocaleString()} steps before it was saved.`);
+    refreshLive(); touch(...ALL);
+    return nm;
+  }
+  function renderBrains() {
+    const ul = $('#brains'), l = listBrains(); ul.textContent = '';
+    if (!l.length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = 'No saved brains yet. Train one, name it, and press Save this brain.'; ul.appendChild(li); return; }
+    l.forEach((pk, i) => {
+      const li = document.createElement('li'), b = document.createElement('b'), m = document.createElement('span');
+      b.textContent = String(pk.name).slice(0, 40); m.className = 'meta';
+      m.textContent = `${(+pk.steps || 0).toLocaleString()} steps · ${pk.chars.length} characters · ${pk.cfg.L} layers · saved ${new Date(pk.saved).toLocaleDateString()}`;
+      const ld = document.createElement('button'); ld.className = 'btn small go'; ld.textContent = 'Load';
+      ld.onclick = () => { try { toast(`Loaded “${loadBrain(pk)}”. Press ▶ Train to keep teaching it.`); } catch (e) { toast(e.message); } };
+      const dl = document.createElement('button'); dl.className = 'btn small'; dl.textContent = '⬇'; dl.title = 'Download as a file'; dl.onclick = () => downloadBrain(pk);
+      const rm = document.createElement('button'); rm.className = 'btn small'; rm.textContent = '✕'; rm.title = 'Remove from this browser';
+      rm.onclick = () => { const k = listBrains(); k.splice(i, 1); storeBrains(k); renderBrains(); };
+      li.append(b, m, ld, dl, rm); ul.appendChild(li);
+    });
+  }
+  function downloadBrain(pk) {
+    const a = document.createElement('a'), url = URL.createObjectURL(new Blob([JSON.stringify(pk)], { type: 'application/json' }));
+    a.href = url; a.download = `${slug(pk.name)}.pocketgpt.json`; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+  $('#saveBrain').onclick = () => {
+    if (S.step === 0 && !S.baseSteps) return toast('Train it first. There’s nothing learned to save yet.');
+    const pk = packBrain(), l = listBrains().filter(x => x.name !== pk.name);
+    l.unshift(pk); while (l.length > BRAIN_MAX) l.pop();
+    if (!storeBrains(l)) return toast('This browser’s storage is full. Use Download as a file instead.');
+    renderBrains(); toast(`Saved “${pk.name}” in this browser.`);
+  };
+  $('#dlBrain').onclick = () => { if (S.step === 0 && !S.baseSteps) return toast('Train it first. There’s nothing learned to save yet.'); downloadBrain(packBrain()); };
+  $('#brainFile').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    if (f.size > 5e6) return toast('That file is too big to be a Pocket GPT brain.');
+    const rd = new FileReader();
+    rd.onload = () => { try { toast(`Loaded “${loadBrain(JSON.parse(String(rd.result)))}”. Press ▶ Train to keep teaching it.`); } catch (err) { toast(err instanceof SyntaxError ? 'That isn’t a Pocket GPT brain file.' : err.message); } };
+    rd.readAsText(f);
+  });
+  renderBrains();
+
   $('#upload').addEventListener('change', e => {
     const f = e.target.files && e.target.files[0]; e.target.value = '';
     if (!f) return;
@@ -877,11 +970,14 @@
     rd.onerror = () => toast('Could not read that file.');
     rd.readAsText(f);
   });
-  $('#restart').onclick = () => { S.wiz.met = {}; S.flags = {}; S.stick = false; $('#stick').checked = false; loadPreset('dinos'); clearRetrain(); showStep(0); };
-  $('#tryCopycat').onclick = () => {
-    loadPreset('copycat'); flag('fed');
-    $('#speed').value = 40; $('#speed').dispatchEvent(new Event('input'));
-    setRunning(true); toast('Copycat loaded and training. Watch “right” climb past 60%, then look through the heads.');
+  function restartTour() {
+    S.wiz.met = {}; S.flags = {}; S.stick = false; $('#stick').checked = false;
+    loadPreset('dinos'); clearRetrain(); if (S.mode !== 'wizard') setMode('wizard'); showStep(0);
+  }
+  $('#restart').onclick = restartTour;
+  $('#homeBtn').onclick = () => {
+    if (S.step > 0 && !confirm('Start from the beginning? You’ll get a fresh, untrained brain. (Save this one first in Your lab if you want to keep it.)')) return;
+    restartTour();
   };
 
   const OPT = {
@@ -908,7 +1004,7 @@
     const t = $('#corpus').value;
     if (t.length < 60) return toast('Give it at least a few lines of text.');
     document.querySelectorAll('#presets .chip').forEach(c => c.classList.remove('sel'));
-    $('#blurb').textContent = 'Your own text.'; $('#prompt').value = '';
+    $('#blurb').textContent = 'Your own text.'; $('#prompt').value = (t.trim().match(/^\S{1,10}/) || [''])[0];
     setText(t); build(); flag('fed'); afterUserBuild(); toast('New brain built for your text.');
   };
   ['#kL', '#kH', '#kD', '#kN'].forEach(s => $(s).addEventListener('input', knobInfo));
@@ -922,6 +1018,8 @@
   };
   const lrLabel = () => { $('#vLr').textContent = lr() < 0.001 ? lr().toExponential(0) : lr().toFixed(lr() < 0.01 ? 4 : 3); };
   $('#lr').addEventListener('input', lrLabel); lrLabel();
+  const howChanged = () => { if (!S.running) needRetrain('You changed how it learns. Press ▶ Train to see what that does.'); };
+  ['#lr', '#batch'].forEach(id => $(id).addEventListener('change', howChanged)); $('#opt').addEventListener('change', howChanged);
   [['#batch', v => v], ['#speed', v => v + '/f'], ['#temp', v => v.toFixed(2)], ['#zoom', v => '±' + v.toFixed(2)], ['#kickAmt', v => v.toFixed(2)]]
     .forEach(([id, f]) => { const el = $(id), v = $({ '#batch': '#vBatch', '#speed': '#vSpeed', '#temp': '#vTemp', '#zoom': '#vZoom', '#kickAmt': '#vKick' }[id]); const u = () => (v.textContent = f(+el.value)); el.addEventListener('input', u); u(); });
   $('#temp').addEventListener('input', () => touch('talk'));

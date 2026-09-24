@@ -113,7 +113,18 @@ body.wizard .bar{background:transparent;backdrop-filter:none;border:0;margin-top
 body.wizard .bar-in{max-width:1000px;justify-content:center;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(10px);border:1px solid var(--hair);border-radius:16px;padding:10px 16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
 body.wizard .bar .btn.go{font-size:16px;padding:9px 26px}
 body.wizard .narr{flex:1 1 100%;text-align:center}
-.retrain{flex:1 1 100%;text-align:center;color:var(--amber);font-weight:600;font-size:14px}
+.retrain{flex:1 1 100%;text-align:center;color:#1a1204;background:var(--amber);font-weight:700;font-size:15px;border-radius:10px;padding:8px 12px;animation:amberglow 1.2s ease-in-out infinite}
+@keyframes amberglow{0%,100%{box-shadow:0 0 0 0 rgba(255,193,94,.0)}50%{box-shadow:0 0 0 6px rgba(255,193,94,.3)}}
+.hnav{display:flex;gap:8px;flex-wrap:wrap}
+.kicker:empty{display:none}
+.pr{color:var(--ink);background:rgba(95,212,255,.18);border-bottom:2px solid var(--cyan);border-radius:4px 4px 0 0;padding:0 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.brains{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.brains li{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--hair);border-radius:10px;background:var(--card2)}
+.brains li b{font-size:14px}
+.brains li .meta{margin:0;flex:1 1 200px}
+.brains li.empty{color:var(--faint);font-size:13.5px;background:none;border-style:dashed}
+.btn.small.go#useText{font-weight:700}
+body.wizard main.lab #cBrains{grid-column:1/-1}
 .attngrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
 @media (max-width:900px){.attngrid{grid-template-columns:minmax(0,1fr)}}
 #attn{width:min(100%,380px)}
@@ -144,7 +155,7 @@ body.wizard #cBuild{order:-1}
 body.wizard .bar{display:none}
 body.wizard.trains .bar{display:block}
 body.free #wiz,body.free .wiz-foot,body.free .wiz-only{display:none}
-body.free .copyrow{display:none}
+
 
 /* step content */
 .ba{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -166,6 +177,7 @@ body.free .copyrow{display:none}
 #rGuess span:not(.ok):not(.no):not(.ctx){color:var(--faint)}
 details.tinker{margin-top:14px;border:1px solid var(--hair);border-radius:12px;padding:10px 12px;background:var(--card2)}
 details.tinker summary{cursor:pointer;font-size:14px;color:var(--ink)}
+.warn[hidden]{display:none}
 .warn{margin:0 0 10px;padding:9px 12px;border-radius:10px;background:rgba(255,193,94,.1);border:1px solid rgba(255,193,94,.45);color:var(--amber);font-size:13.5px}
 .card.pending{border-color:rgba(255,193,94,.7)}
 .landgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
@@ -239,7 +251,7 @@ select{background:var(--card2);border:1px solid var(--hair);border-radius:8px;pa
 #prompt{font-size:17px;padding:11px 13px;border-color:#33452a}
 .out{font-family:var(--mono);font-size:14px;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--hair);
      border-radius:10px;padding:12px;min-height:170px;max-height:300px;overflow:auto;margin-top:10px}
-.out .p{color:var(--faint)}
+.out .p{color:var(--ink);background:rgba(95,212,255,.18);border-bottom:2px solid var(--cyan);border-radius:4px 4px 0 0;padding:0 3px}
 .out .cur{display:inline-block;width:.55em;background:var(--lime);animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
 .bars{display:grid;grid-template-columns:2.4em 1fr 3.6em;gap:4px 8px;align-items:center;font-family:var(--mono);font-size:13px}
@@ -363,7 +375,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 </head>
 <body class="wizard">
 <header class="top">
-  <div class="hdr"><h1>Pocket <span>GPT</span></h1><button class="btn small" id="modeBtn">Explore everything</button></div>
+  <div class="hdr"><h1>Pocket <span>GPT</span></h1><div class="hnav"><button class="btn small" id="homeBtn" title="Back to the welcome screen with a fresh brain">⟲ Start from the beginning</button><button class="btn small" id="modeBtn">Explore everything</button></div></div>
   <p class="tag">A real GPT, the same design as the chatbots you know, shrunk until you can watch every part of it work. It lives entirely in this page, starts out knowing nothing, and you'll teach it to write.</p>
 </header>
 
@@ -432,6 +444,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <div class="chips" id="presets"></div>
     <p class="meta" id="blurb"></p>
     <textarea id="corpus" spellcheck="false" aria-label="Training text"></textarea>
+    <div class="warn" id="feedWarn" hidden>✎ You changed the text. Press <b>Learn from this text</b> to use it. Until you do, it keeps reading the old one.</div>
     <div class="row"><button class="btn small" id="useText">Learn from this text</button><label class="btn small" for="upload">📄 Upload a text file</label><input type="file" id="upload" accept=".txt,.md,.csv,.text,text/plain" hidden><span class="meta" style="margin:0" id="corpusInfo"></span></div>
     <p class="meta"><b>Three ways to feed it:</b> click one of the ready-made texts above, <b>paste</b> your own into the box (song lyrics, a recipe book, your emails) and press <b>Learn from this text</b>, or <b>upload</b> a plain-text file (.txt). A few pages is plenty. New text means a fresh brain, because its alphabet changes.</p>
     <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>A model can only echo what it was fed, which is why what goes into training is the biggest decision there is. Feed it dinosaurs and it dreams in dinosaurs. The big labs spend enormous effort choosing and cleaning their text for exactly this reason.</div></div>
@@ -514,7 +527,6 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <section class="card s7" id="cAttn" data-steps="6">
     <h2>🔦 Attention <small id="attnWho"></small></h2>
     <p class="why">Before guessing, each letter can look back at earlier letters for clues. Each <b>head</b> is one "spotlight" that learned its own way of looking. This map shows one head at a time, for the text in the box below.</p>
-    <div class="row copyrow"><button class="btn small" id="tryCopycat">🐈 Try it on Copycat</button><span class="meta" style="margin:0">Loads the copying game and starts training. Attention matters most there: give it about a minute, until <b>right</b> passes 60%.</span></div>
     <div class="attngrid"><div>
     <canvas id="attn"></canvas>
     <p class="read" id="attnRead" style="min-height:1.4em;margin:4px 0 0"></p>
@@ -525,7 +537,9 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <div class="sub">2 · Turn it off and see what happens</div>
     <div class="row"><button class="btn go" id="snip">✂ Turn this head off</button></div>
     <div class="compare" id="compare"></div>
-    <p class="meta">If its guesses and writing get worse, that head was doing important work. If nothing changes, it wasn't pulling its weight. Try it on <b>Copycat</b>, where one head does most of the work.</p>
+    <div class="sub">Its writing right now</div>
+    <div class="live" id="attnLive">Turn a head off or on and watch this change.</div>
+    <p class="meta">If its guesses and writing get worse, that head was doing important work. If nothing changes, it wasn't pulling its weight. Tip: choose <b>Copycat</b> in Feed it, train for a minute, and come back. One head does most of the work there.</p>
     </div></div>
     <div class="insight"><span class="ic">🧠</span><div><b>How the real ones work</b>This is brain surgery, and it's exactly how researchers study real AI. They switch parts off one at a time (they call it <i>ablation</i>) and see what breaks. Train on <b>Copycat</b> and one head learns to find the earlier copy of a word and look at the letter that came after it. Researchers at Anthropic named that pattern the <b>induction head</b>, and in 2022 showed it's a big part of how large models learn from examples in your prompt. Your tiny model discovers it on its own.</div></div>
   </section>
@@ -585,6 +599,20 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <p class="meta"><b>Numbers</b> shows what's stored. <b>Nudges</b> shows the <i>gradient</i>: which way the last training step wanted each number to move. Bright squares are the ones being changed the most. Leave it on nudges while it trains and watch the brain being rewritten. <b>Scramble</b> replaces the chosen part with random numbers; then train and watch it heal.</p>
     <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>There are no rules in here, no dictionary, no list of dinosaurs. Just numbers. That's why AI is hard to explain: a chatbot is hundreds of billions of these squares, and a whole research field (<i>interpretability</i>) is trying to read them. Scrambling a part and watching what breaks is one of its basic tools.</div></div>
   </section>
+  <!-- SAVED BRAINS -->
+  <section class="card s12" id="cBrains" data-steps="10">
+    <h2>🧠 Saved brains</h2>
+    <p class="why">Keep a brain you trained, come back to it later, or send it to a friend as a file.</p>
+    <div class="row">
+      <input type="text" id="brainName" placeholder="Name this brain, e.g. dino-genius" maxlength="40" style="max-width:300px" aria-label="Brain name">
+      <button class="btn go" id="saveBrain">Save this brain</button>
+      <button class="btn" id="dlBrain">⬇ Download as a file</button>
+      <label class="btn" for="brainFile">📂 Load a brain file</label><input type="file" id="brainFile" accept=".json,application/json" hidden>
+    </div>
+    <p class="meta">Saved brains live in this browser only. A downloaded file holds its numbers, its alphabet, its shape and the text it learned from, so anyone can load it here and carry on training where you left off.</p>
+    <ul class="brains" id="brains"></ul>
+  </section>
+
   <!-- YOUR LAB (final step) -->
   <section class="card s12 wiz-only" id="cFinale" data-steps="10">
     <h2>🧪 Your lab</h2>
@@ -609,9 +637,9 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <footer>Everything runs in this page: no server, no API, no library. It's a real GPT (token and position embeddings, masked multi-head self-attention, an MLP, layer norm, residual connections), trained with hand-written backpropagation.</footer>
 <div class="toast" id="toast"></div>
 
-<script src="/GPT/js/corpora.js?v=e2a981c5"></script>
-<script src="/GPT/js/engine.js?v=e2a981c5"></script>
-<script src="/GPT/js/app.js?v=e2a981c5"></script>
+<script src="/GPT/js/corpora.js?v=659250fc"></script>
+<script src="/GPT/js/engine.js?v=659250fc"></script>
+<script src="/GPT/js/app.js?v=659250fc"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>
