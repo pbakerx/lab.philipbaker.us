@@ -74,6 +74,7 @@ PAGES = [
     "90s-web-ackerman-mcqueen/index.html",
     "staplegun/index.html",
     "paste-plain/index.html",
+    "GPT/index.html",
     "honda-acura/index.html",
     "hello/index.html",
 ]

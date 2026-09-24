@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pocket GPT — a transformer you can poke</title>
+<meta name="description" content="A real, tiny GPT that trains in your browser. Feed it text, train it, talk to it, watch its attention, and shove it around its own loss landscape.">
+<link rel="canonical" href="https://lab.philipbaker.us/GPT/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PB Productions Lab">
+<meta property="og:title" content="Pocket GPT — a transformer you can poke">
+<meta property="og:description" content="A real, tiny GPT that trains in your browser. Feed it text, train it, talk to it, watch its attention, and shove it around its own loss landscape.">
+<meta property="og:url" content="https://lab.philipbaker.us/GPT/">
+<meta property="og:image" content="https://lab.philipbaker.us/GPT/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pocket GPT: a loss landscape with the model's trail rolling into the valley, and an attention heatmap.">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pocket GPT — a transformer you can poke">
+<meta name="twitter:description" content="A real, tiny GPT that trains in your browser. Feed it text, train it, talk to it, watch its attention, and shove it around its own loss landscape.">
+<meta name="twitter:image" content="https://lab.philipbaker.us/GPT/img/og.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://lab.philipbaker.us/GPT/#app",
+      "name": "Pocket GPT",
+      "description": "A real, tiny GPT that trains in your browser. Feed it text, train it, talk to it, watch its attention, and shove it around its own loss landscape.",
+      "url": "https://lab.philipbaker.us/GPT/",
+      "image": "https://lab.philipbaker.us/GPT/img/og.png",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any modern web browser",
+      "browserRequirements": "Requires JavaScript",
+      "isAccessibleForFree": true,
+      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+      "featureList": ["Character-level GPT trained in the browser with hand-written backpropagation", "Next-character probabilities you can click to choose", "Attention heatmaps per head, and switching heads off", "A 2-D loss landscape you can drag the model around", "Time machine through training checkpoints", "Embedding map and weight X-ray"],
+      "inLanguage": "en-US",
+      "datePublished": "2026-09-23",
+      "dateModified": "2026-09-23",
+      "author": {"@type":"Person","@id":"https://lab.philipbaker.us/#philip","name":"Philip Baker","url":"https://philipbaker.us","sameAs":["https://philipbaker.us","https://aechtech.com/"]},
+      "publisher": {"@type": "Organization", "name": "PB Productions", "url": "https://philipbaker.us"}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [{"@type": "ListItem", "position": 1, "name": "lab", "item": "https://lab.philipbaker.us/"}, {"@type": "ListItem", "position": 2, "name": "Pocket GPT", "item": "https://lab.philipbaker.us/GPT/"}]
+    }
+  ]
+}
+</script>
+<style>
+:root{
+  --bg:#0c0e13;--card:#141821;--card2:#1a1f2b;--hair:#262c3a;--ink:#eef1f7;--dim:#9aa3b5;--faint:#5d6679;
+  --lime:#b9ff66;--pink:#ff5fa8;--cyan:#5fd4ff;--amber:#ffc15e;--bad:#ff6b6b;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--cyan)}
+
+header.top{max-width:1320px;margin:0 auto;padding:40px 20px 8px}
+h1{margin:0;font-size:clamp(2rem,5vw,3.1rem);letter-spacing:-.03em;line-height:1.05}
+h1 span{color:var(--lime)}
+.tag{margin:.4em 0 0;color:var(--dim);max-width:720px}
+
+/* sticky control bar */
+.bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);
+     border-bottom:1px solid var(--hair)}
+.bar-in{max-width:1320px;margin:0 auto;padding:10px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.stat{font-family:var(--mono);font-size:13px;color:var(--dim);white-space:nowrap}
+.stat b{color:var(--ink);font-weight:600}
+.mood{margin-left:auto;font-size:14px;color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+
+.btn{border:1px solid var(--hair);background:var(--card2);border-radius:10px;padding:7px 13px;cursor:pointer;white-space:nowrap;
+     transition:transform .08s,background .15s,border-color .15s}
+.btn:hover{border-color:var(--faint)}
+.btn:active{transform:scale(.97)}
+.btn.go{background:var(--lime);color:#10140a;border-color:var(--lime);font-weight:700;min-width:118px}
+.btn.go.on{background:var(--pink);border-color:var(--pink);color:#1a0610}
+.btn.small{padding:4px 10px;font-size:13px;border-radius:8px}
+.btn:disabled{opacity:.45;cursor:default}
+
+main{max-width:1320px;margin:0 auto;padding:18px 20px 60px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--hair);border-radius:16px;padding:16px 18px;min-width:0}
+.s4{grid-column:span 4}.s5{grid-column:span 5}.s7{grid-column:span 7}.s12{grid-column:span 12}
+@media (max-width:1050px){.s4,.s5,.s7{grid-column:span 6}.wide{grid-column:span 12}}
+@media (max-width:720px){main{grid-template-columns:1fr;padding:14px 16px 50px}.s4,.s5,.s7,.s12{grid-column:auto}
+  header.top{padding:28px 16px 6px}.bar-in{padding:8px 16px}.mood{margin-left:0;flex-basis:100%}}
+.card h2{margin:0;font-size:1.05rem;display:flex;align-items:baseline;gap:8px}
+.card h2 .n{font-family:var(--mono);color:var(--lime);font-size:.85rem}
+.why{margin:.3em 0 .9em;color:var(--dim);font-size:13.5px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.lbl{font-size:13px;color:var(--dim)}
+.val{font-family:var(--mono);font-size:12.5px;color:var(--ink);min-width:3.5em;display:inline-block}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--hair);background:var(--card2);border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13.5px}
+.chip.sel{border-color:var(--lime);color:var(--lime)}
+textarea{width:100%;height:120px;resize:vertical;background:var(--bg);border:1px solid var(--hair);border-radius:10px;padding:10px;
+         font-family:var(--mono);font-size:12.5px;line-height:1.45}
+input[type=text]{width:100%;background:var(--bg);border:1px solid var(--hair);border-radius:10px;padding:8px 10px;font-family:var(--mono)}
+input[type=range]{accent-color:var(--lime);flex:1;min-width:90px}
+select{background:var(--card2);border:1px solid var(--hair);border-radius:8px;padding:4px 8px}
+
+.knobs{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:center}
+
+canvas{display:block;width:100%;border-radius:10px;background:var(--bg)}
+#loss{height:190px}
+#land{height:auto;aspect-ratio:1/1;width:min(100%,520px);margin:0 auto;cursor:crosshair;touch-action:none}
+#emb{height:300px}
+#attn{height:auto;aspect-ratio:1/1;width:min(100%,420px);margin:0 auto}
+#xray{height:220px;image-rendering:pixelated}
+
+.out{font-family:var(--mono);font-size:13px;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--hair);
+     border-radius:10px;padding:10px;min-height:120px;max-height:240px;overflow:auto}
+.out .p{color:var(--faint)}
+.out .cur{display:inline-block;width:.55em;background:var(--lime);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.bars{display:grid;grid-template-columns:2.2em 1fr 3.4em;gap:3px 8px;align-items:center;font-family:var(--mono);font-size:12.5px}
+.bars .c{text-align:center;background:var(--card2);border-radius:5px;cursor:pointer;padding:1px 0}
+.bars .c:hover{background:var(--lime);color:#111}
+.bars .bw{display:block;min-width:0}
+.bars .b{display:block;height:12px;border-radius:4px;background:linear-gradient(90deg,var(--cyan),var(--lime));min-width:1px;transition:width .15s}
+.bars .pc{color:var(--dim);text-align:right}
+
+.arch{display:flex;flex-direction:column;gap:5px;margin-top:10px;font-size:12.5px}
+.arch .blk{border:1px solid var(--hair);border-radius:9px;padding:6px 9px;background:var(--card2);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.arch .io{color:var(--dim);text-align:center;font-family:var(--mono)}
+.arch .heads{display:flex;gap:4px}
+.hd{width:22px;height:22px;border-radius:6px;border:1px solid var(--cyan);color:var(--cyan);font-size:11px;display:grid;place-items:center;cursor:pointer;background:transparent;padding:0}
+.hd.sel{background:var(--cyan);color:#051018}
+.hd.off{border-color:var(--bad);color:var(--bad);text-decoration:line-through;background:transparent}
+.hd.off.sel{background:var(--bad);color:#200}
+.arch .mlp{margin-left:auto;color:var(--amber);font-family:var(--mono)}
+
+.hint{font-size:12.5px;color:var(--faint);margin-top:6px}
+.read{font-family:var(--mono);font-size:13px;color:var(--dim)}
+.read b{color:var(--ink)}
+.prog{height:4px;background:var(--hair);border-radius:4px;overflow:hidden;margin-top:6px}
+.prog i{display:block;height:100%;width:0;background:var(--pink)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--card2);border:1px solid var(--faint);
+       padding:9px 16px;border-radius:12px;opacity:0;transition:.25s;z-index:50;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--dim);margin-top:6px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:middle}
+footer{max-width:1320px;margin:0 auto;padding:0 20px 50px;color:var(--faint);font-size:13px}
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+<!-- LAB-EVENTS:START -->
+<script src="/shared/analytics.js" defer></script>
+<!-- LAB-EVENTS:END -->
+<!-- GA4:START -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X8JTH9PN21"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
+gtag('js',new Date());
+gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalization_signals:false});
+</script>
+<!-- GA4:END -->
+</head>
+<body>
+<header class="top">
+  <h1>Pocket <span>GPT</span></h1>
+  <p class="tag">A real transformer, millions of times smaller than the chatbots you know, running entirely in your browser. Feed it text, press Train, and watch it go from gibberish to something close to sense. Then poke it.</p>
+</header>
+
+<div class="bar"><div class="bar-in">
+  <button class="btn go" id="go">▶ Train</button>
+  <button class="btn" id="step1" title="Take exactly one gradient-descent step">Step ×1</button>
+  <span class="stat">step <b id="sStep">0</b></span>
+  <span class="stat">loss <b id="sLoss">—</b></span>
+  <span class="stat">params <b id="sParams">—</b></span>
+  <span class="mood" id="mood">Freshly built. Knows nothing.</span>
+</div></div>
+
+<main>
+  <!-- 1 FEED -->
+  <section class="card s4">
+    <h2><span class="n">01</span>Feed it</h2>
+    <p class="why">This is everything the model will ever read. It reads one character at a time.</p>
+    <div class="chips" id="presets"></div>
+    <p class="hint" id="blurb"></p>
+    <textarea id="corpus" spellcheck="false"></textarea>
+    <div class="row"><button class="btn small" id="useText">Use this text (new brain)</button><span class="lbl" id="corpusInfo"></span></div>
+  </section>
+
+  <!-- 2 BUILD -->
+  <section class="card s4">
+    <h2><span class="n">02</span>Build it</h2>
+    <p class="why">The skeleton. More of everything = smarter but slower. Changes take effect when you build.</p>
+    <div class="knobs">
+      <span class="lbl">Layers</span><input type="range" id="kL" min="1" max="4" value="2"><span class="val" id="vL"></span>
+      <span class="lbl">Heads</span><input type="range" id="kH" min="0" max="2" value="1"><span class="val" id="vH"></span>
+      <span class="lbl">Width</span><input type="range" id="kD" min="0" max="3" value="2"><span class="val" id="vD"></span>
+      <span class="lbl">Memory</span><input type="range" id="kN" min="8" max="48" step="4" value="24"><span class="val" id="vN"></span>
+    </div>
+    <div class="row"><button class="btn small" id="build">Build a new brain</button><span class="lbl" id="buildInfo"></span></div>
+    <div class="arch" id="arch"></div>
+    <p class="hint">Click a head to look through its eyes in <i>Attention</i>.</p>
+  </section>
+
+  <!-- 4 TALK -->
+  <section class="card s4 wide">
+    <h2><span class="n">03</span>Talk to it</h2>
+    <p class="why">Type a start. The bars are its guesses for the very next character. Click one to choose for it.</p>
+    <input type="text" id="prompt" value="" spellcheck="false" autocomplete="off">
+    <div class="row">
+      <span class="lbl">Creativity</span><input type="range" id="temp" min="0.1" max="2" step="0.05" value="0.8"><span class="val" id="vTemp"></span>
+      <button class="btn small" id="gen">Write ✍︎</button>
+    </div>
+    <div class="bars" id="bars"></div>
+    <div class="out" id="out" style="margin-top:10px"></div>
+  </section>
+
+  <!-- 3 TRAIN -->
+  <section class="card s7">
+    <h2><span class="n">04</span>Train it</h2>
+    <p class="why">Each step: read a few random snippets, measure how wrong the guesses were (the <b>loss</b>), and nudge every weight downhill.</p>
+    <canvas id="loss"></canvas>
+    <div class="knobs" style="margin-top:10px">
+      <span class="lbl">Step size</span><input type="range" id="lr" min="-4" max="-0.7" step="0.05" value="-2.3"><span class="val" id="vLr"></span>
+      <span class="lbl">Batch</span><input type="range" id="batch" min="1" max="32" value="8"><span class="val" id="vBatch"></span>
+      <span class="lbl">Speed</span><input type="range" id="speed" min="1" max="40" value="12"><span class="val" id="vSpeed"></span>
+    </div>
+    <div class="row">
+      <span class="lbl">Optimizer</span>
+      <select id="opt"><option value="adam">Adam (smart)</option><option value="momentum">Momentum (rolling ball)</option><option value="sgd">Plain SGD (careful walker)</option></select>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <span class="lbl">⏳ Time machine</span><input type="range" id="tm" min="0" max="0" value="0" disabled><span class="val" id="vTm" style="min-width:7em">now</span>
+    </div>
+    <p class="hint">Scrub back to an earlier brain and talk to it. Press Train to branch a new timeline from there.</p>
+  </section>
+
+  <!-- 5 ATTENTION -->
+  <section class="card s5">
+    <h2><span class="n">05</span>Attention</h2>
+    <p class="why">For your prompt: each row is a character, bright squares are the earlier characters it's looking at. <span id="attnWho"></span></p>
+    <canvas id="attn"></canvas>
+    <div class="row"><button class="btn small" id="snip">✂ Switch this head off</button><span class="read" id="attnRead"></span></div>
+  </section>
+
+  <!-- 6 LANDSCAPE -->
+  <section class="card s7">
+    <h2><span class="n">06</span>Push the ball</h2>
+    <p class="why">The model's weights are one point in a space with thousands of dimensions. This is a 2-D slice of it, colored by loss: dark valleys are good. The glowing ball is the model now, the arrow is the downhill direction, the trail is where training took it. <b>Drag the ball</b> to move the model yourself.</p>
+    <canvas id="land"></canvas>
+    <div class="prog"><i id="landProg"></i></div>
+    <div class="row">
+      <button class="btn small" id="mapBtn">🗺 Map the terrain here</button>
+      <span class="lbl">Zoom</span><input type="range" id="zoom" min="0.1" max="2" step="0.05" value="0.6"><span class="val" id="vZoom"></span>
+    </div>
+    <div class="row">
+      <button class="btn small" id="kick">💥 Kick</button><input type="range" id="kickAmt" min="0.02" max="1" step="0.02" value="0.25"><span class="val" id="vKick"></span>
+      <span class="read" id="landRead"></span>
+    </div>
+    <div class="row"><label class="lbl" style="display:flex;gap:6px;align-items:center;cursor:pointer;color:var(--ink)"><input type="checkbox" id="stick" style="accent-color:var(--lime)"> 🧲 Stick to the map</label>
+      <span class="hint" style="margin:0">Off: training may escape sideways through dimensions this slice can't show, and find a new valley without moving on the map. On: the ball must roll.</span></div>
+  </section>
+
+  <!-- EMBEDDINGS -->
+  <section class="card s5">
+    <h2><span class="n">07</span>Letter map</h2>
+    <p class="why">Each character is stored as a list of numbers. Squashed to 2-D, characters the model treats alike drift together while it trains.</p>
+    <canvas id="emb"></canvas>
+    <div class="legend"><span><i style="background:var(--lime)"></i>vowels</span><span><i style="background:var(--cyan)"></i>consonants</span><span><i style="background:var(--pink)"></i>punctuation</span><span><i style="background:var(--faint)"></i>space / newline</span></div>
+  </section>
+
+  <!-- XRAY -->
+  <section class="card s12">
+    <h2><span class="n">08</span>Weight X-ray</h2>
+    <p class="why">The actual numbers inside one part of the brain. <span style="color:var(--pink)">Pink</span> is positive, <span style="color:var(--cyan)">cyan</span> negative. Switch to "gradients" to see which ones the latest step wants to change.</p>
+    <div class="row"><select id="xsel"></select>
+      <div class="chips"><span class="chip sel" data-x="val">weights</span><span class="chip" data-x="grad">gradients</span></div>
+      <button class="btn small" id="scramble" title="Replace this matrix with random numbers">🎲 Scramble this part</button>
+    </div>
+    <canvas id="xray"></canvas>
+  </section>
+</main>
+<footer>Everything runs locally in this page: no server, no API, no library. The model is a real GPT (token + position embeddings, masked multi-head self-attention, MLP, layer norm, residual connections), trained with hand-written backpropagation.</footer>
+<div class="toast" id="toast"></div>
+
+<script src="/GPT/js/corpora.js?v=5b1b57d8"></script>
+<script src="/GPT/js/engine.js?v=5b1b57d8"></script>
+<script src="/GPT/js/app.js?v=5b1b57d8"></script>
+<script src="/shared/menu.js" defer></script>
+</body>
+</html>

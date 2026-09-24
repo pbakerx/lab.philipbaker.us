@@ -2,46 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lab.philipbaker.us/</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/90s-web-ackerman-mcqueen/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-21</lastmod>
+  </url>
+  <url>
+    <loc>https://lab.philipbaker.us/GPT/</loc>
+    <lastmod>2026-09-23</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/ai-solves-billing/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/maze-wars/</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-09-22</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/missile-command-deluxe/</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/missile-command/</loc>
-    <lastmod>2026-09-19</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/paste-plain/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/second-brain-case-study/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/staplegun/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/vault/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
   <url>
     <loc>https://lab.philipbaker.us/widget-maker/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-21</lastmod>
   </url>
 </urlset>

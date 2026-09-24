@@ -280,6 +280,31 @@
       "source": "/mazewar/",
       "destination": "/maze-wars/",
       "permanent": true
+    },
+    {
+      "source": "/gpt",
+      "destination": "/GPT/",
+      "permanent": true
+    },
+    {
+      "source": "/gpt/",
+      "destination": "/GPT/",
+      "permanent": true
+    },
+    {
+      "source": "/pocket-gpt",
+      "destination": "/GPT/",
+      "permanent": true
+    },
+    {
+      "source": "/pocket-gpt/",
+      "destination": "/GPT/",
+      "permanent": true
+    },
+    {
+      "source": "/gpt/:path+",
+      "destination": "/GPT/:path+",
+      "permanent": true
     }
   ],
   "rewrites": [
