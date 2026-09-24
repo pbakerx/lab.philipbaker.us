@@ -72,7 +72,57 @@ h1 span{color:var(--lime)}
 .hdr{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between}
 
 /* wizard */
-#wiz{max-width:1040px;margin:26px auto 0;padding:0 20px}
+#wiz{max-width:1040px;margin:18px auto 0;padding:0 20px}
+body.wizard header.top{padding-top:14px;padding-bottom:0}
+body.wizard header.top h1{font-size:1.25rem;letter-spacing:-.01em}
+body.wizard header.top .tag{display:none}
+/* intro screens: centered, one thing to read, one button */
+.intro{display:none;min-height:calc(100vh - 90px);max-width:760px;margin:0 auto;padding:30px 20px 60px;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+body.wizard.at-intro .intro{display:flex}
+body.wizard.at-intro #wiz,body.wizard.at-intro main,body.wizard.at-intro .bar,body.wizard.at-intro .wiz-foot,body.wizard.at-intro footer{display:none !important}
+body.wizard.at-welcome header.top{display:none}
+.ititle{margin:6px 0 14px;font-size:clamp(2.2rem,6vw,3.6rem);letter-spacing:-.03em;line-height:1.05}
+body.at-welcome .ititle{font-size:clamp(3rem,10vw,6rem)}
+.ititle span{color:var(--lime)}
+.ilead{margin:0 0 30px;font-size:18px;line-height:1.6;color:var(--dim)}
+.ilead b{color:var(--ink)}
+.btn.huge{font-size:20px;padding:15px 34px;border-radius:14px}
+.inav{display:flex;gap:18px;margin-top:26px}
+.linkbtn{background:none;border:0;color:var(--faint);cursor:pointer;font-size:13.5px;padding:4px}
+.linkbtn:hover{color:var(--ink)}
+.linkbtn[hidden]{display:none}
+/* sub-steps: 6a, 6b ... one instruction at a time */
+.subs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}
+.subs[hidden],.retrain[hidden],.note[hidden],.insight[hidden]{display:none}
+/* in the tour, each card's "How the real ones work" is shown on the step's intro screen instead */
+body.wizard main .card .insight{display:none}
+body.wizard .free-only{display:none}
+.insight.iins{text-align:left;margin:0 0 30px;max-width:640px}
+.iins div{font-size:14.5px}
+.subs button{border:1px solid var(--hair);background:var(--card2);border-radius:999px;padding:3px 12px;font-size:12.5px;color:var(--faint);cursor:pointer}
+.subs button.now{border-color:var(--lime);color:var(--ink)}
+.subs button.met{color:var(--lime)}
+.subs button.met::before{content:'✓ '}
+#wTitle{margin:0 0 6px;font-size:clamp(1.4rem,3.2vw,2rem);letter-spacing:-.02em;line-height:1.15}
+#wLead{margin:0;max-width:760px;font-size:16px;color:var(--dim);line-height:1.55}
+#wLead b{color:var(--ink)}
+.focus{outline:2px solid var(--lime);outline-offset:5px;border-radius:12px;animation:focuspulse 1.4s ease-in-out 4}
+@keyframes focuspulse{0%,100%{outline-color:rgba(185,255,102,.9)}50%{outline-color:rgba(185,255,102,.25)}}
+/* the train dock: centered, and it says when retraining is needed */
+body.wizard .bar{background:transparent;backdrop-filter:none;border:0;margin-top:14px;position:sticky;top:8px}
+body.wizard .bar-in{max-width:1000px;justify-content:center;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(10px);border:1px solid var(--hair);border-radius:16px;padding:10px 16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+body.wizard .bar .btn.go{font-size:16px;padding:9px 26px}
+body.wizard .narr{flex:1 1 100%;text-align:center}
+.retrain{flex:1 1 100%;text-align:center;color:var(--amber);font-weight:600;font-size:14px}
+.attngrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.attngrid{grid-template-columns:minmax(0,1fr)}}
+#attn{width:min(100%,380px)}
+.tmrow{padding:8px 12px;border:1px solid var(--hair);border-radius:12px;background:var(--card2);margin-top:10px}
+.tmrow input[type=range]{height:22px}
+.tmrow .lbl{white-space:nowrap}
+.progress .live.big{margin-bottom:10px}
+body.wizard .card.bare > h2,body.wizard .card.bare > .why{display:none}
+body.wizard main .card{padding:20px 22px}
 .rail{list-style:none;margin:0 0 26px;padding:0;display:flex;gap:4px;flex-wrap:wrap}
 .rail li{flex:1 1 0;min-width:0}
 .rail button{width:100%;background:none;border:0;padding:0;cursor:pointer;text-align:left;color:var(--faint);font-size:12px}
@@ -81,18 +131,8 @@ h1 span{color:var(--lime)}
 .rail .now button{color:var(--ink);font-weight:600}
 .rail .now button::before{background:var(--lime)}
 .rail span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media (max-width:720px){.rail span{display:none}.rail .now{flex:4}.rail .now span{display:block}}
+@media (max-width:720px){.tmrow .lbl{font-size:12.5px}.ctl{grid-template-columns:6em minmax(0,1fr) auto}.rail span{display:none}.rail .now{flex:4}.rail .now span{display:block}}
 .kicker{font-family:var(--mono);font-size:13px;color:var(--lime);letter-spacing:.06em;text-transform:uppercase}
-#wTitle{margin:4px 0 8px;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.02em;line-height:1.1}
-#wLead{margin:0;max-width:760px;font-size:17px;color:var(--dim);line-height:1.55}
-#wLead b{color:var(--ink)}
-.goals{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}
-.goals-l{margin:20px 0 4px;font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
-.goals li{display:flex;gap:10px;align-items:baseline;font-size:15px;color:var(--dim);cursor:default}
-.goals li::before{content:'→';flex:0 0 1.1em;color:var(--faint);font-weight:600}
-.goals li.met{color:var(--ink)}
-.goals li.met::before{content:'✓';color:var(--lime)}
-.goals li.met span{text-decoration:line-through;text-decoration-color:rgba(185,255,102,.45)}
 .wiz-foot{max-width:1040px;margin:0 auto;padding:6px 20px 70px;display:flex;align-items:center;gap:12px;justify-content:space-between}
 .wiz-foot .btn.go:not(.ready){background:var(--card2);color:var(--ink);border-color:var(--hair);font-weight:600}
 body.wizard main{max-width:1040px;grid-template-columns:minmax(0,1fr);gap:22px;padding-top:26px}
@@ -189,7 +229,8 @@ input[type=range]{accent-color:var(--lime);flex:1;min-width:90px}
 select{background:var(--card2);border:1px solid var(--hair);border-radius:8px;padding:4px 8px}
 
 /* control list: label + slider + value, then a caption line */
-.ctl{display:grid;grid-template-columns:7.2em 1fr auto;gap:0 10px;align-items:center}
+.ctl{display:grid;grid-template-columns:7.2em minmax(0,1fr) auto;gap:0 10px;align-items:center}
+.ctl input[type=range],.ctl select{min-width:0;width:100%}
 .ctl .meta{grid-column:1/-1}
 
 /* talk (hero) */
@@ -239,6 +280,8 @@ canvas{display:block;width:100%;border-radius:10px;background:var(--bg)}
 .hd.off.sel{background:var(--bad);color:#200}
 .arch .mlp{margin-left:auto;color:var(--amber);font-family:var(--mono)}
 .headpick{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.headpick .heads{display:flex;gap:6px}
+.headpick .hd{width:34px;height:34px;font-size:14px;border-radius:9px}
 .headpick .hr{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--dim)}
 
 .read{font-family:var(--mono);font-size:13px;color:var(--dim)}
@@ -280,7 +323,8 @@ canvas{display:block;width:100%;border-radius:10px;background:var(--bg)}
 .progress{border:1px solid var(--hair);border-radius:14px;padding:12px 14px;margin-top:14px;background:linear-gradient(180deg,rgba(185,255,102,.03),transparent 40%)}
 .progress .sub:first-child{margin-top:0}
 .tmrow{display:flex;align-items:center;gap:10px;margin-top:8px}
-.tmrow .val{min-width:7.5em}
+.tmrow .val{min-width:3.6em}
+.tmrow input[type=range]{min-width:0;flex:1 1 100px}
 .live.big{font-size:14px;min-height:5em}
 .film{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
 .film li{display:grid;grid-template-columns:5.2em 3.6em minmax(0,1fr);gap:8px;align-items:baseline;font-size:13px;padding:5px 8px;border-radius:8px;background:var(--bg);border:1px solid var(--hair);cursor:pointer}
@@ -323,14 +367,22 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <p class="tag">A real GPT, the same design as the chatbots you know, shrunk until you can watch every part of it work. It lives entirely in this page, starts out knowing nothing, and you'll teach it to write.</p>
 </header>
 
+<section class="intro" id="intro" aria-live="polite">
+  <div class="kicker" id="iKick"></div>
+  <h1 class="ititle" id="iTitle"></h1>
+  <p class="ilead" id="iLead"></p>
+  <div class="insight iins" id="iIns" hidden></div>
+  <button class="btn go huge" id="iGo"></button>
+  <div class="inav"><button class="linkbtn" id="iBack">‹ Back</button><button class="linkbtn" id="iFree">Skip the tour and explore everything</button></div>
+</section>
+
 <section id="wiz" aria-label="Steps">
   <ol class="rail" id="rail"></ol>
   <div class="wiz-head">
     <div class="kicker" id="wKick"></div>
+    <div class="subs" id="subs"></div>
     <h2 id="wTitle"></h2>
     <p id="wLead"></p>
-    <div class="goals-l" id="goalsL">What to do</div>
-    <ul class="goals" id="goals"></ul>
   </div>
 </section>
 
@@ -342,6 +394,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <span class="stat">right <b id="sAcc">—</b></span>
   <span class="stat opt">numbers <b id="sParams">—</b></span>
   <span class="narr" id="narr">Brand new: its numbers are random, so it knows nothing yet.</span>
+  <div class="retrain" id="retrain" hidden></div>
 </div></div>
 
 <main>
@@ -407,12 +460,14 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <div class="progress">
       <div class="sub subrow">How wrong it is, over time <span class="read" id="lossRead"></span></div>
       <canvas id="loss"></canvas>
-      <div class="tmrow"><span class="lbl">⏳ Its brain at</span><input type="range" id="tm" min="0" max="0" value="0" disabled aria-label="See its brain at any step"><span class="val" id="vTm">now</span></div>
+      <div class="tmrow" id="tmrow"><span class="lbl">⏳ See its brain at step</span><input type="range" id="tm" min="0" max="0" value="0" disabled aria-label="See its brain at any step"><span class="val" id="vTm">now</span></div>
       <p class="meta">Lower is better; the dashed line is what random guessing scores. <b>Drag the slider (or click the graph) to see its brain at any step.</b> Press ▶ Train from an earlier step to start a new timeline.</p>
       <div class="sub">Its writing <span id="liveStep" style="text-transform:none;font-weight:400;color:var(--faint)"></span></div>
       <div class="live big" id="live">Nothing yet. Press ▶ Train.</div>
-      <div class="sub">Getting closer <span style="text-transform:none;font-weight:400;color:var(--faint)">(a sample saved at each milestone; click one to go back there)</span></div>
-      <ol class="film" id="film"><li class="empty">Samples appear here as it trains: step 0, 50, 100, 200, 400…</li></ol>
+      <details class="tinker" id="filmBox"><summary>🎞 Getting closer: a writing sample from each milestone <span id="filmCount"></span></summary>
+      <p class="meta" style="margin-top:8px">Saved automatically at step 0, 50, 100, 200, 400… Click one to take its brain back there.</p>
+      <ol class="film" id="film"><li class="empty">Samples appear here as it trains.</li></ol>
+      </details>
     </div>
 
     <details class="tinker" id="tinker"><summary>🔧 Tinker with training: step size, batch, speed, optimizer</summary>
@@ -460,15 +515,18 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <h2>🔦 Attention <small id="attnWho"></small></h2>
     <p class="why">Before guessing, each letter can look back at earlier letters for clues. Each <b>head</b> is one "spotlight" that learned its own way of looking. This map shows one head at a time, for the text in the box below.</p>
     <div class="row copyrow"><button class="btn small" id="tryCopycat">🐈 Try it on Copycat</button><span class="meta" style="margin:0">Loads the copying game and starts training. Attention matters most there: give it about a minute, until <b>right</b> passes 60%.</span></div>
+    <div class="attngrid"><div>
+    <canvas id="attn"></canvas>
+    <p class="read" id="attnRead" style="min-height:1.4em;margin:4px 0 0"></p>
+    <p class="meta">Each row is a letter of the text in the Talk box. Bright squares are the earlier letters it's looking at. The dark top-right is the future, which it's never allowed to see.</p>
+    </div><div>
     <div class="sub">1 · Pick a head to look through</div>
     <div class="headpick" id="headpick"></div>
-    <canvas id="attn"></canvas>
-    <p class="meta">Each row is a character in your text. The bright squares in that row are the earlier characters it's paying attention to. Hover to read the exact amount. The dark top-right half is the future, which it's never allowed to see.</p>
-    <p class="read" id="attnRead" style="min-height:1.4em;margin:4px 0 0"></p>
     <div class="sub">2 · Turn it off and see what happens</div>
     <div class="row"><button class="btn go" id="snip">✂ Turn this head off</button></div>
     <div class="compare" id="compare"></div>
-    <p class="meta">Its guesses and writing below update the moment you switch. If they get worse, that head was doing important work. If nothing changes, it wasn't pulling its weight. Try it on <b>Copycat</b>, where one head does most of the work.</p>
+    <p class="meta">If its guesses and writing get worse, that head was doing important work. If nothing changes, it wasn't pulling its weight. Try it on <b>Copycat</b>, where one head does most of the work.</p>
+    </div></div>
     <div class="insight"><span class="ic">🧠</span><div><b>How the real ones work</b>This is brain surgery, and it's exactly how researchers study real AI. They switch parts off one at a time (they call it <i>ablation</i>) and see what breaks. Train on <b>Copycat</b> and one head learns to find the earlier copy of a word and look at the letter that came after it. Researchers at Anthropic named that pattern the <b>induction head</b>, and in 2022 showed it's a big part of how large models learn from examples in your prompt. Your tiny model discovers it on its own.</div></div>
   </section>
 
@@ -477,13 +535,11 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <h2>⛳ Push the ball</h2>
     <p class="why">Its whole brain, every one of its numbers, is a single point in a vast space. Every point in that space is a different possible brain, some good and some terrible. Training is a ball rolling downhill through it.</p>
     <div class="landgrid"><div>
+    <div class="row maprow"><button class="btn go big" id="mapBtn">🗺 Map the terrain</button>
+      <span class="lbl">Zoom</span><input type="range" id="zoom" min="0.1" max="2" step="0.05" value="0.6" aria-label="Zoom"><span class="val" id="vZoom"></span></div>
     <canvas id="land"></canvas>
     <div class="ramp"></div><div class="ramp-l"><span>low loss: good writer</span><span>high loss: babbler</span></div>
     <div class="prog"><i id="landProg"></i></div>
-    <div class="row">
-      <button class="btn small" id="mapBtn">🗺 Map the terrain here</button>
-      <span class="lbl">Zoom</span><input type="range" id="zoom" min="0.1" max="2" step="0.05" value="0.6" aria-label="Zoom"><span class="val" id="vZoom"></span>
-    </div>
     <p class="meta"><b>Map the terrain</b> rebuilds and tests hundreds of slightly different brains around this one and colors each by how wrong it would be. Zoom sets how far out it looks.</p>
     </div><div>
     <div class="sub">Its writing, from where the ball is</div>
@@ -493,10 +549,10 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
       <span class="read" id="landRead"></span>
     </div>
     <p class="meta"><b>Kick</b> shoves every number in a random direction. The slider sets how hard.</p>
-    <div class="row"><label class="lbl" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="stick" style="accent-color:var(--lime)"> 🧲 Stick to the map</label></div>
+    <div class="row" id="stickRow"><label class="lbl" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="stick" style="accent-color:var(--lime)"> 🧲 Stick to the map</label></div>
     <p class="meta">Normally training can slip away sideways, through directions this flat map can't show. It finds a new valley without seeming to move. Tick this to keep it on the map, so you can watch the ball roll.</p>
-    <div class="sub">Try this</div>
-    <ol class="try">
+    <div class="sub free-only">Try this</div>
+    <ol class="try free-only">
       <li>Train for 20 seconds, then press <b>Map the terrain</b>.</li>
       <li><b>Drag the ball</b> up a bright hill. Its writing (above) falls apart, because you really did change its brain.</li>
       <li>Tick <b>Stick to the map</b>, then press <b>▶ Train</b>. Watch it roll back down, and watch its writing recover.</li>
@@ -553,9 +609,9 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <footer>Everything runs in this page: no server, no API, no library. It's a real GPT (token and position embeddings, masked multi-head self-attention, an MLP, layer norm, residual connections), trained with hand-written backpropagation.</footer>
 <div class="toast" id="toast"></div>
 
-<script src="/GPT/js/corpora.js?v=10a2bb63"></script>
-<script src="/GPT/js/engine.js?v=10a2bb63"></script>
-<script src="/GPT/js/app.js?v=10a2bb63"></script>
+<script src="/GPT/js/corpora.js?v=e2a981c5"></script>
+<script src="/GPT/js/engine.js?v=e2a981c5"></script>
+<script src="/GPT/js/app.js?v=e2a981c5"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>

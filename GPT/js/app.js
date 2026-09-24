@@ -140,6 +140,7 @@
   }
   function setRunning(on) {
     if (on && S.viewing >= 0) branch();
+    if (on) clearRetrain();
     S.running = on;
     $('#go').textContent = on ? '❚❚ Pause' : '▶ Train';
     $('#go').classList.toggle('on', on);
@@ -651,108 +652,155 @@
   $('#slowmo').onclick = () => $('#step1').click();
 
   // ---------- the steps ----------
+  // Each step opens on a centered intro screen (one idea, one button), then walks through its
+  // sub-steps (6a, 6b ...) one instruction at a time, highlighting the control to use.
   const lnV = () => Math.log(S.chars.length);
   S.flags = {};
   const flag = k => { S.flags[k] = true; };
   const F = k => !!S.flags[k];
   const STEPS = [
-    { id: 'feed', rail: 'Feed it', title: 'Feed it', cards: ['cFeed'],
-      lead: `Everything this model will ever know comes from <b>one piece of text</b>. It reads it one character at a time, and nothing else goes in. <b>Dinosaurs</b> is picked for you (it learns to invent new dinosaur names). You can also click another ready-made text, <b>paste</b> your own into the box, or <b>upload</b> a text file.`,
-      goals: [{ t: 'Choose what it will read (Dinosaurs is a fine start)', test: () => F('fed') }] },
-    { id: 'meet', rail: 'Meet it', title: 'Meet it', cards: ['cTalk'],
-      lead: () => `Its whole brain is <b>${S.model.size.toLocaleString()} numbers</b>. Every guess it makes is calculated from them, and training does nothing but adjust them (the pros call them <i>parameters</i> or <i>weights</i>). Right now they're random, like a freshly shuffled deck. Press <b>See what it writes</b> and hear what knowing nothing sounds like.`,
+    { id: 'welcome', welcome: true, title: 'Pocket <span>GPT</span>', go: 'Let’s build one ›', subs: [],
+      lead: `A real GPT, the same design as the chatbots you know, shrunk small enough to watch every part of it think. In nine short steps you'll <b>feed it</b>, <b>train it from nothing</b>, and <b>look inside its brain</b>. About ten minutes, and it all runs right here in your browser.` },
+    { id: 'feed', rail: 'Feed it', title: 'Feed it', go: 'Choose its reading ›', cards: ['cFeed'], bare: ['cFeed'],
+      lead: `Everything this model will ever know comes from <b>one piece of text</b>. It reads it one character at a time, and nothing else goes in. Feed it dinosaur names and it will dream up dinosaurs.`,
+      subs: [{ s: 'Choose', t: 'Choose what it will read', how: `Click a ready-made text, <b>paste</b> your own into the box and press <b>Learn from this text</b>, or <b>upload</b> a text file. Dinosaurs is a fine start: just press Next.`, focus: '#presets', test: () => F('fed') }] },
+    { id: 'meet', rail: 'Meet it', title: 'Meet it', go: 'Meet it ›', cards: ['cTalk'],
+      lead: () => `Its whole brain is <b>${S.model.size.toLocaleString()} numbers</b>. Every guess it makes is calculated from them, and training does nothing but adjust them (the pros call them <i>parameters</i> or <i>weights</i>). Right now they're random, like a freshly shuffled deck.`,
       enter: () => { $('#talkNote').hidden = true; },
-      goals: [{ t: 'Press ✍︎ See what it writes', test: () => F('wrote') }] },
-    { id: 'train', rail: 'Train it', title: 'Train it', cards: ['cTrain'], trains: true,
-      lead: `Press <b>▶ Train</b>, top left. Each step it reads a snippet, <b>guesses every next letter</b>, checks, and nudges its numbers. Watch its guesses turn green, the "how wrong" line fall, and its writing get closer and closer to the real thing. Then drag the <b>⏳ slider</b> back to hear it at any age.`,
-      goals: [
-        { t: 'Beat random guessing (the green line drops below the dashed one)', test: () => S.ema != null && S.ema < 0.9 * lnV(), mile: 'beat random' },
-        { t: 'Guess half the letters right', test: () => S.model.lastAcc >= 0.5, mile: '50% right' },
-        { t: 'Guess 6 in 10 right: now its writing looks like the text', test: () => S.model.lastAcc >= 0.6, mile: '60% right' }] },
-    { id: 'again', rail: 'Write again', title: 'Write again', cards: ['cTalk', 'cBefore'],
-      lead: `Same machine, same code, same box. Press <b>See what it writes</b> and compare with how it wrote before any training.`,
+      subs: [{ s: 'Write', t: 'Press ✍︎ See what it writes', how: `It carries on from the text in the box, one letter at a time. Expect nonsense.`, focus: '#gen', test: () => F('wrote') }] },
+    { id: 'train', rail: 'Train it', title: 'Train it', go: '▶ Start training', goAct: () => setRunning(true), cards: ['cTrain'], bare: ['cTrain'], trains: true,
+      lead: `Now it learns. Each step it reads a snippet of its text, <b>guesses every next letter</b>, checks how wrong it was, and nudges all of its numbers a tiny bit toward being less wrong. Then it does it again, hundreds of times a second.`,
+      subs: [
+        { s: 'Watch it read', t: 'Watch its guesses turn green', how: `Top row: its guess for each next letter. Bottom row: the real one. Wait for the green line on the graph to drop below the dashed one: then it's beating random guessing.`, focus: '#reading', test: () => S.ema != null && S.ema < 0.9 * lnV(), mile: 'beat random' },
+        { s: 'Watch it write', t: 'Watch its writing get closer', how: `"Its writing" refreshes every couple of seconds. Keep going until it gets <b>6 in 10</b> letters right (the <b>right</b> number in the dock above).`, focus: '#live', test: () => S.model.lastAcc >= 0.6, mile: '60% right' },
+        { s: 'Rewind', t: 'Drag the ⏳ slider back in time', how: `See its brain, and read its writing, at any earlier step. Press ▶ Train again whenever you like: it carries on from there.`, focus: '#tmrow', test: () => F('rewound') }] },
+    { id: 'again', rail: 'Write again', title: 'Write again', go: 'Let’s hear it ›', cards: ['cTalk', 'cBefore'],
+      lead: `Same machine, same code, same text box. The only thing that has changed since it babbled is its numbers.`,
       enter: () => { setRunning(false); $('#talkNote').hidden = true; renderBA(); },
-      goals: [{ t: 'Press ✍︎ See what it writes, with the trained brain', test: () => F('wroteTrained') }] },
-    { id: 'steer', rail: 'Steer it', title: 'Steer it', cards: ['cTalk'],
-      lead: `It writes one guess at a time, and you can take the wheel. Under <b>Its next-letter guesses</b>, <b>click any letter</b>: it's typed into the box and its next guesses change to match. Then try <b>Creativity</b> at both ends: low plays it safe, high takes long shots.`,
-      goals: [
-        { t: 'Click one of its guessed letters to type it', test: () => F('bar') },
-        { t: 'Write with Creativity low (under 0.4)', test: () => F('lowT') },
-        { t: 'Write with Creativity high (over 1.3)', test: () => F('highT') }] },
-    { id: 'inside', rail: 'Look inside', title: 'Look inside', cards: ['cAttn', 'cTalk'], layout: 'talklast', trains: true,
-      lead: `Before each guess, every letter looks back at earlier letters for clues. It does that with several <b>heads</b>, spotlights that each learned their own way of looking. The small <b>numbered buttons</b> are its heads: <b>click a number</b> to see where that head looks. Then press <b>✂ Turn this head off</b> and watch its guesses and writing change. If they get worse, that head mattered. This is how researchers study real AI.`,
-      goals: [
-        { t: 'Click a head number to look through it', test: () => F('head') },
-        { t: 'Turn a head off and read what changed', test: () => F('snip') }] },
-    { id: 'ball', rail: 'Push the ball', title: 'Push the ball', cards: ['cLand'], trains: true,
-      lead: `Its whole brain is one point in a space with thousands of directions, and training rolls it downhill. Now you push it: <b>shove it up a hill and watch its writing fall apart</b>, then let it roll home.`,
+      subs: [{ s: 'Write', t: 'Press ✍︎ See what it writes', how: `Then compare it with how it wrote before any training, below.`, focus: '#gen', test: () => F('wroteTrained') }] },
+    { id: 'steer', rail: 'Steer it', title: 'Steer it', go: 'Take the wheel ›', cards: ['cTalk'],
+      lead: `It writes one guess at a time, and every guess is a choice between letters. You can make those choices yourself, or change how adventurous it is when it chooses.`,
+      subs: [
+        { s: 'Pick a letter', t: 'Click one of its guessed letters', how: `Under <b>Its next-letter guesses</b>, click any letter. It's typed into the box, and its next guesses change to match.`, focus: '#gTop', test: () => F('bar') },
+        { s: 'Play it safe', t: 'Slide Creativity low and write', how: `Below 0.4 it almost always takes its top guess: safe, but repetitive. Then press <b>See what it writes</b>.`, focus: '#temp', test: () => F('lowT') },
+        { s: 'Take long shots', t: 'Slide Creativity high and write', how: `Above 1.3 it takes long shots: surprising, then weird, then nonsense.`, focus: '#temp', test: () => F('highT') }] },
+    { id: 'inside', rail: 'Look inside', title: 'Look inside', go: 'Look inside ›', cards: ['cAttn'], bare: ['cAttn'], trains: true,
+      lead: `Before each guess, every letter looks back at earlier letters for clues. It does that with several <b>heads</b>: spotlights that each learned their own way of looking. Switching one off and seeing what breaks is exactly how researchers study real AI.`,
+      subs: [
+        { s: 'Pick a head', t: 'Click a head number', how: `Each small numbered button is one head. The map shows where that head looks: each row is a letter, bright squares are the earlier letters it's watching.`, focus: '#headpick', test: () => F('head') },
+        { s: 'Turn it off', t: 'Turn that head off', how: `Press <b>✂ Turn this head off</b> and read what changed: its top guess, how wrong it is, and its writing with and without that head.`, focus: '#snip', test: () => F('snip') }] },
+    { id: 'ball', rail: 'Push the ball', title: 'Push the ball', go: 'Show me the landscape ›', cards: ['cLand'], bare: ['cLand'], trains: true,
+      lead: `Its whole brain is one point in a space with thousands of directions. Some points are good writers, most are babblers, and training rolls it downhill toward the good ones. Now you get to push it.`,
       enter: () => setRunning(false),
-      goals: [
-        { t: 'Map the terrain around it', test: () => !!(S.land && S.land.img) },
-        { t: 'Drag the ball up a hill, making it at least 50% worse', test: () => F('climbed') },
-        { t: 'Tick 🧲 Stick to the map, press ▶ Train, and let it roll home', test: () => F('climbed') && S.stick && S.land && S.ballEval != null && S.ballEval <= S.land.baseLoss * 1.25 }] },
-    { id: 'made', rail: 'Its numbers', title: "What it's made of", cards: ['cEmb', 'cXray'], trains: true,
-      lead: `Inside there are no rules and no dictionary, only numbers. The Letter map shows how it files each character. The X-ray shows the raw numbers. Watch them being rewritten as it trains, then break something and let it heal.`,
-      goals: [
-        { t: 'Set the X-ray to "nudges" and watch it train', test: () => S.xmode === 'grad' && S.running },
-        { t: 'Scramble a part, then train until it recovers', test: () => F('scrambled') && S.step >= S.scrambleAt + 150 }] },
-    { id: 'build', rail: 'Build it', title: 'Build a bigger brain', cards: ['cTalk', 'cBuild', 'cTrain'], layout: 'two', trains: true,
-      lead: `Change its shape: more layers, more heads, wider, a longer memory. <b>A new shape means a brand-new brain</b> that starts from random numbers, so it has to learn from zero. Train it, then see what it writes, and compare.`,
-      goals: [
-        { t: 'Change one of the sliders', test: () => F('shape') },
-        { t: 'Press Build a new brain', test: () => F('built') },
-        { t: 'Train the new brain past random guessing', test: () => F('built') && S.ema != null && S.ema < 0.9 * lnV() }] },
-    { id: 'lab', rail: 'Your lab', title: 'Your lab', cards: ['cFinale', 'cTalk', 'cBuild', 'cTrain'], layout: 'lab', trains: true, goals: [],
-      enter: () => { renderHub(); $('#tinker').open = true; },
-      lead: `You trained a GPT. Everything is here now: write with it, keep training it, tune how it learns, change its shape, or jump back into any step to look closer.` },
+      subs: [
+        { s: 'Map it', t: 'Press 🗺 Map the terrain', how: `It tests hundreds of slightly different brains around this one and colors each by how wrong it would be. Dark is good. The glowing ball is your model.`, focus: '#mapBtn', test: () => !!(S.land && S.land.img) },
+        { s: 'Push it', t: 'Drag the ball up a hill', how: `Grab the ball and drag it onto a bright slope. Watch "Its writing" fall apart: you really did change its brain.`, focus: '#land', test: () => F('climbed') },
+        { s: 'Roll home', t: 'Tick 🧲 Stick to the map, then ▶ Train', how: `Training rolls it back downhill. Watch the ball roll home and its writing recover.`, focus: '#stickRow', test: () => F('climbed') && S.stick && S.land && S.ballEval != null && S.ballEval <= S.land.baseLoss * 1.25 }] },
+    { id: 'made', rail: 'Its numbers', title: "What it's made of", go: 'Show me the numbers ›', cards: ['cEmb', 'cXray'], trains: true,
+      lead: `Inside there are no rules, no dictionary, no list of dinosaurs. Only numbers. Here you can watch them being rewritten as it learns, and break some to see it heal.`,
+      subs: [
+        { s: 'Watch nudges', t: 'Switch the X-ray to "nudges" and train', how: `Each square is one number. "Nudges" shows which way the latest step pushed each one. Press ▶ Train and watch.`, focus: '[data-x="grad"]', test: () => S.xmode === 'grad' && S.running },
+        { s: 'Break it', t: 'Scramble a part, then train until it heals', how: `Press <b>🎲 Scramble this part</b>, see its writing suffer, then press ▶ Train and let it recover.`, focus: '#scramble', test: () => F('scrambled') && S.step >= S.scrambleAt + 150 }] },
+    { id: 'build', rail: 'Build it', title: 'Build a bigger brain', go: 'Let’s build ›', cards: ['cTalk', 'cBuild', 'cTrain'], layout: 'two', trains: true,
+      lead: `More layers, more heads, wider, a longer memory: these are the same knobs the big labs turn. But <b>a new shape means a brand-new brain</b> that starts from random numbers, so it has to learn everything again.`,
+      subs: [
+        { s: 'Reshape', t: 'Change one of the sliders', how: `Try more layers or a longer memory. The card turns amber: nothing changes until you build.`, focus: '#cBuild .ctl', test: () => F('shape') },
+        { s: 'Build', t: 'Press Build a new brain', how: `Its old numbers are thrown away. It knows nothing again.`, focus: '#build', test: () => F('built') },
+        { s: 'Retrain', t: 'Press ▶ Train to teach the new brain', how: `Train it past random guessing, then see what it writes.`, focus: '#go', test: () => F('built') && S.ema != null && S.ema < 0.9 * lnV() }] },
+    { id: 'lab', rail: 'Your lab', title: 'Your lab', go: 'Open your lab ›', cards: ['cFinale', 'cTalk', 'cBuild', 'cTrain'], layout: 'lab', trains: true, subs: [],
+      workTitle: 'Keep going', workLead: `Write with it, keep training it, tune how it learns, change its shape, or jump back into any step.`,
+      lead: `You trained a GPT from nothing. From here everything is yours: keep training it, change its text or its shape, and jump back into any step to look closer.`,
+      enter: () => { renderHub(); $('#tinker').open = true; } },
   ];
-  S.wiz = { i: 0, met: {} };
-  const stepDone = st => st.goals.every((_, gi) => S.wiz.met[st.id + ':' + gi]);
+  const LAST = STEPS.length - 1;
+  S.wiz = { i: 0, sub: -1, met: {} };
+  const subMet = (st, k) => !!S.wiz.met[st.id + ':' + k];
+  const stepDone = st => st.subs.every((_, k) => subMet(st, k));
+  const firstUnmet = st => { const k = st.subs.findIndex((_, j) => !subMet(st, j)); return k < 0 ? st.subs.length : k; };
+  const tag = k => String.fromCharCode(97 + k);
+
   function renderRail() {
     const rail = $('#rail'); rail.textContent = '';
     STEPS.forEach((st, i) => {
+      if (st.welcome) return;
       const li = document.createElement('li');
-      if (i === S.wiz.i) li.className = 'now'; else if (st.goals.length && stepDone(st)) li.className = 'done';
-      const b = document.createElement('button'); const sp = document.createElement('span'); sp.textContent = st.rail;
+      if (i === S.wiz.i) li.className = 'now'; else if (st.subs.length && stepDone(st)) li.className = 'done';
+      const b = document.createElement('button'), sp = document.createElement('span'); sp.textContent = st.rail;
       b.title = st.title; b.appendChild(sp); b.onclick = () => showStep(i); li.appendChild(b); rail.appendChild(li);
     });
   }
-  function renderStep() {
-    const st = STEPS[S.wiz.i], last = S.wiz.i === STEPS.length - 1;
-    $('#wKick').textContent = last ? 'Tour complete' : `Step ${S.wiz.i + 1} of ${STEPS.length - 1}`;
-    $('#goalsL').hidden = !st.goals.length;
-    $('#wTitle').textContent = st.title;
-    $('#wLead').innerHTML = typeof st.lead === 'function' ? st.lead() : st.lead;
-    const ul = $('#goals'); ul.textContent = '';
-    st.goals.forEach((g, gi) => { const li = document.createElement('li'); const sp = document.createElement('span'); sp.textContent = g.t; li.appendChild(sp); if (S.wiz.met[st.id + ':' + gi]) li.className = 'met'; ul.appendChild(li); });
-    const done = stepDone(st), nx = $('#wNext');
-    nx.hidden = last; $('#wBack').disabled = S.wiz.i === 0;
-    nx.textContent = S.wiz.i === STEPS.length - 2 ? (done ? 'Nice, finish ›' : 'Finish ›') : (done ? 'Nice, next ›' : 'Next ›');
-    nx.classList.toggle('ready', done);
-    $('#wHint').textContent = done || last ? '' : 'You can skip ahead any time.';
-  }
-  function checkGoals() {
-    if (S.mode !== 'wizard') return;
-    const st = STEPS[S.wiz.i]; let changed = false;
-    st.goals.forEach((g, gi) => {
-      const k = st.id + ':' + gi;
-      if (S.wiz.met[k] || !g.test()) return;
-      S.wiz.met[k] = true; changed = true;
-      if (g.mile) { S.miles.push({ step: S.step, label: g.mile }); touch('loss'); }
-    });
-    if (changed) { renderStep(); renderRail(); if (stepDone(st)) toast('✓ ' + (st.goals.length > 1 ? 'All done here. Press Next when you’re ready.' : 'Done. Press Next when you’re ready.')); }
-  }
-  function showStep(i, scroll = true) {
-    S.wiz.i = Math.max(0, Math.min(STEPS.length - 1, i));
+  function renderIntro() {
     const st = STEPS[S.wiz.i];
-    document.querySelectorAll('main .card').forEach(c => c.classList.toggle('on', st.cards.includes(c.id)));
+    $('#iKick').textContent = st.welcome ? '' : S.wiz.i === LAST ? 'Tour complete' : `Step ${S.wiz.i} of ${LAST - 1}`;
+    $('#iTitle').innerHTML = st.title;
+    $('#iLead').innerHTML = typeof st.lead === 'function' ? st.lead() : st.lead;
+    $('#iGo').textContent = st.go;
+    $('#iBack').hidden = !!st.welcome; $('#iFree').hidden = !st.welcome;
+    // lift the step's "How the real ones work" callout onto its intro screen
+    const src = (st.cards || []).map(id => $('#' + id + ' .insight')).find(Boolean), box = $('#iIns');
+    box.hidden = !src; if (src) box.innerHTML = src.innerHTML;
+  }
+  function renderWork() {
+    const st = STEPS[S.wiz.i], n = S.wiz.i, many = st.subs.length > 1;
+    $('#wKick').textContent = n === LAST ? 'Your lab' : `Step ${n} of ${LAST - 1} · ${st.title}`;
+    const subs = $('#subs'); subs.textContent = ''; subs.hidden = !many;
+    st.subs.forEach((sb, k) => {
+      const b = document.createElement('button'); b.textContent = `${n}${tag(k)} · ${sb.s}`;
+      b.className = (k === S.wiz.sub ? 'now' : '') + (subMet(st, k) ? ' met' : '');
+      b.onclick = () => setSub(k); subs.appendChild(b);
+    });
+    const sb = st.subs[S.wiz.sub];
+    if (sb) { $('#wTitle').textContent = (many ? `${n}${tag(S.wiz.sub)} · ` : '') + sb.t; $('#wLead').innerHTML = sb.how; }
+    else if (st.subs.length) { $('#wTitle').textContent = '✓ All done here'; $('#wLead').innerHTML = `Keep playing as long as you like, or press <b>Next</b>.`; }
+    else { $('#wTitle').textContent = st.workTitle || st.title; $('#wLead').innerHTML = st.workLead || ''; }
+    const done = stepDone(st), nx = $('#wNext');
+    nx.hidden = n === LAST; $('#wBack').disabled = false;
+    nx.textContent = n === LAST - 1 ? (done ? 'Nice, finish ›' : 'Finish ›') : (done ? 'Nice, next ›' : 'Next ›');
+    nx.classList.toggle('ready', done);
+    $('#wHint').textContent = done || n === LAST ? '' : 'You can skip ahead any time.';
+  }
+  function applyFocus(scroll) {
+    document.querySelectorAll('.focus').forEach(e => e.classList.remove('focus'));
+    const st = STEPS[S.wiz.i], sb = st.subs[S.wiz.sub];
+    if (!sb || !sb.focus || subMet(st, S.wiz.sub) || S.mode !== 'wizard' || document.body.classList.contains('at-intro')) return;
+    const el = $(sb.focus); if (!el) return;
+    void el.offsetWidth; el.classList.add('focus');
+    if (scroll) { const r = el.getBoundingClientRect(); if (r.top < 90 || r.bottom > innerHeight - 20) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  }
+  function setSub(k) { S.wiz.sub = k; renderWork(); applyFocus(true); }
+  function checkGoals() {
+    if (S.mode !== 'wizard' || document.body.classList.contains('at-intro')) return;
+    const st = STEPS[S.wiz.i]; let changed = false, curMet = false;
+    st.subs.forEach((sb, k) => {
+      if (subMet(st, k) || !sb.test()) return;
+      S.wiz.met[st.id + ':' + k] = true; changed = true; if (k === S.wiz.sub) curMet = true;
+      if (sb.mile) { S.miles.push({ step: S.step, label: sb.mile }); touch('loss'); }
+    });
+    if (!changed) return;
+    renderRail(); renderWork(); applyFocus(false);
+    if (curMet) {
+      const i = S.wiz.i, done = stepDone(st);
+      toast(done ? '✓ Step done. Press Next when you’re ready.' : `✓ ${i}${tag(S.wiz.sub)} done`);
+      setTimeout(() => { if (S.wiz.i === i && subMet(st, S.wiz.sub)) setSub(firstUnmet(st)); }, 1100);
+    }
+  }
+  function showStep(i, opts = {}) {
+    S.wiz.i = Math.max(0, Math.min(LAST, i));
+    const st = STEPS[S.wiz.i], intro = opts.intro !== false;
+    S.wiz.sub = intro ? -1 : firstUnmet(st);
+    document.body.classList.toggle('at-intro', intro);
+    document.body.classList.toggle('at-welcome', intro && !!st.welcome);
+    const cards = st.cards || [];
+    document.querySelectorAll('main .card').forEach(c => { c.classList.toggle('on', cards.includes(c.id)); c.classList.toggle('bare', (st.bare || []).includes(c.id)); });
     ['two', 'lab', 'talklast'].forEach(c => $('main').classList.toggle(c, st.layout === c));
     document.body.classList.toggle('trains', !!st.trains);
-    if (!st.trains && S.running) setRunning(false);
-    if (st.enter) st.enter();
-    renderRail(); renderStep(); save();
-    touch(...ALL);
-    if (scroll) window.scrollTo({ top: Math.max(0, $('#wiz').offsetTop - 12), behavior: 'smooth' });
+    if ((!st.trains || intro) && S.running) setRunning(false);
+    if (!intro && st.enter) st.enter();
+    if (!intro && st.trains && st.id !== 'build' && st.id !== 'lab' && S.step < 200) needRetrain('This brain hasn’t learned much yet. Press ▶ Train for about 20 seconds first.');
+    renderRail(); if (intro) renderIntro(); else renderWork();
+    save(); touch(...ALL);
+    window.scrollTo({ top: 0, behavior: intro ? 'auto' : 'smooth' });
+    if (!intro) setTimeout(() => applyFocus(true), 450);
   }
   function renderBA() {
     if (!S.firstWrite) {
@@ -766,13 +814,19 @@
       $('#baNowLbl').textContent = `After ${S.lastWrite.step.toLocaleString()} steps of training`;
     }
   }
-  function afterUserBuild() {
-    mood('New brain: it knows nothing again. Press ▶ Train to teach it.');
+  // The dock says when the brain needs training again, and the Train button pulses until it gets it.
+  function needRetrain(msg) {
+    const r = $('#retrain'); r.textContent = '↑ ' + msg; r.hidden = false;
     const g = $('#go'); g.classList.remove('pulse'); void g.offsetWidth; g.classList.add('pulse');
+  }
+  function clearRetrain() { $('#retrain').hidden = true; }
+  function afterUserBuild() {
+    mood('New brain: it knows nothing again.');
+    needRetrain('New brain: it knows nothing yet. Press ▶ Train to teach it.');
   }
 
   // Remembered per browser: which mode, which step. The model itself is not saved.
-  const UI_KEY = 'pocketgpt-ui-v1';
+  const UI_KEY = 'pocketgpt-ui-v2';
   function save() { try { localStorage.setItem(UI_KEY, JSON.stringify({ mode: S.mode, i: S.wiz.i })); } catch (e) { /* storage blocked */ } }
   function loadUI() { try { return JSON.parse(localStorage.getItem(UI_KEY)) || {}; } catch (e) { return {}; } }
   function setMode(m) {
@@ -780,19 +834,32 @@
     document.body.classList.toggle('wizard', m === 'wizard'); document.body.classList.toggle('free', m === 'free');
     $('#modeBtn').textContent = m === 'wizard' ? 'Explore everything' : 'Back to the steps';
     if (m === 'free') {
-      document.querySelectorAll('main .card').forEach(c => c.classList.add('on'));
-      $('main').classList.remove('two', 'lab', 'talklast'); document.body.classList.remove('trains'); $('#tinker').open = true;
+      document.body.classList.remove('at-intro', 'at-welcome', 'trains');
+      document.querySelectorAll('main .card').forEach(c => { c.classList.add('on'); c.classList.remove('bare'); });
+      document.querySelectorAll('.focus').forEach(e => e.classList.remove('focus'));
+      $('main').classList.remove('two', 'lab', 'talklast'); $('#tinker').open = true;
       save(); touch(...ALL);
-    } else { $('#tinker').open = false; showStep(S.wiz.i, false); }
+    } else { $('#tinker').open = false; showStep(S.wiz.i); }
   }
   $('#modeBtn').onclick = () => { setMode(S.mode === 'wizard' ? 'free' : 'wizard'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  $('#iFree').onclick = () => { setMode('free'); window.scrollTo({ top: 0 }); };
+  $('#iGo').onclick = () => {
+    const st = STEPS[S.wiz.i];
+    if (st.welcome) return showStep(1);
+    showStep(S.wiz.i, { intro: false }); if (st.goAct) st.goAct();
+  };
+  $('#iBack').onclick = () => { const p = S.wiz.i - 1; showStep(p, { intro: !!STEPS[p].welcome }); };
+  $('#wBack').onclick = () => showStep(S.wiz.i);
+  $('#wNext').onclick = () => { if (STEPS[S.wiz.i].id === 'feed') { flag('fed'); checkGoals(); } showStep(S.wiz.i + 1); };
+
   const HUB = { feed: 'Change what it reads', meet: 'A brand-new brain', train: 'Watch it learn', again: 'Before and after', steer: 'Pick its letters',
     inside: 'Attention heads', ball: 'The loss landscape', made: 'Its raw numbers', build: 'Change its shape' };
   function renderHub() {
     const hub = $('#hub'); hub.textContent = '';
-    STEPS.slice(0, -1).forEach((st, i) => {
+    STEPS.forEach((st, i) => {
+      if (st.welcome || i === LAST) return;
       const b = document.createElement('button'), t = document.createElement('b'), d = document.createElement('span');
-      t.textContent = `${i + 1} · ${st.title}`; d.textContent = HUB[st.id] || ''; b.append(t, d); b.onclick = () => showStep(i); hub.appendChild(b);
+      t.textContent = `${i} · ${st.title}`; d.textContent = HUB[st.id] || ''; b.append(t, d); b.onclick = () => showStep(i); hub.appendChild(b);
     });
   }
   $('#upload').addEventListener('change', e => {
@@ -810,9 +877,7 @@
     rd.onerror = () => toast('Could not read that file.');
     rd.readAsText(f);
   });
-  $('#restart').onclick = () => { S.wiz.met = {}; S.flags = {}; S.stick = false; $('#stick').checked = false; loadPreset('dinos'); showStep(0); };
-  $('#wBack').onclick = () => showStep(S.wiz.i - 1);
-  $('#wNext').onclick = () => { if (STEPS[S.wiz.i].id === 'feed') { flag('fed'); checkGoals(); } showStep(S.wiz.i + 1); };
+  $('#restart').onclick = () => { S.wiz.met = {}; S.flags = {}; S.stick = false; $('#stick').checked = false; loadPreset('dinos'); clearRetrain(); showStep(0); };
   $('#tryCopycat').onclick = () => {
     loadPreset('copycat'); flag('fed');
     $('#speed').value = 40; $('#speed').dispatchEvent(new Event('input'));
@@ -898,7 +963,7 @@
     let i = 0; S.snaps.forEach((sn, k) => { if (Math.abs(sn.step - step) <= Math.abs(S.snaps[i].step - step)) i = k; });
     S.model.setFlat(S.snaps[i].f); S.model.resetOptimizer();
     const now = i === S.snaps.length - 1 && S.snaps[i].step === S.step;
-    S.viewing = now ? -1 : i; $('#tm').value = i;
+    S.viewing = now ? -1 : i; $('#tm').value = i; if (!now) flag('rewound');
     $('#vTm').textContent = now ? 'now' : `step ${S.snaps[i].step}`;
     if (S.land) trackPath(false);
     refreshLive(); if (S.land && S.land.img) refreshLandSample();
@@ -921,7 +986,7 @@
     const after = m.loss(S.evalBatch);
     S.events.push({ step: S.step, type: 'kick' });
     if (S.land) { trackPath(true); computeArrow(false); }
-    toast(`💥 Loss ${before.toFixed(2)} → ${after.toFixed(2)}. Train to see if it recovers.`);
+    toast(`💥 Loss ${before.toFixed(2)} → ${after.toFixed(2)}. Train to see if it recovers.`); needRetrain('Knocked off course. Press ▶ Train to see if it recovers.');
     refreshLive(); if (S.land && S.land.img) refreshLandSample();
     touch(...ALL);
   };
@@ -934,7 +999,7 @@
     const p = S.model.params[+$('#xsel').value]; let s = 0; for (const v of p.d) s += v * v;
     const sd = Math.sqrt(s / p.d.length) || 0.1; for (let i = 0; i < p.d.length; i++) p.d[i] = sd * window.TinyGPT.randn();
     S.model.resetOptimizer(); S.events.push({ step: S.step, type: 'scramble' }); flag('scrambled'); S.scrambleAt = S.step;
-    toast(`Scrambled ${p.name}. Train to heal it.`); refreshLive(); touch(...ALL);
+    toast(`Scrambled ${p.name}. Train to heal it.`); refreshLive(); needRetrain('Part of its brain is scrambled. Press ▶ Train to heal it.'); touch(...ALL);
   };
   window.addEventListener('resize', () => touch(...ALL));
   document.addEventListener('keydown', e => {
@@ -979,6 +1044,6 @@
 
   loadPreset('dinos');
   S.booted = true;
-  { const ui = loadUI(); S.wiz.i = Math.max(0, Math.min(STEPS.length - 1, ui.i | 0)); setMode(ui.mode === 'free' ? 'free' : 'wizard'); }
+  { const ui = loadUI(); S.wiz.i = Math.max(0, Math.min(LAST, ui.i | 0)); setMode(ui.mode === 'free' ? 'free' : 'wizard'); }
   requestAnimationFrame(loop);
 })();
