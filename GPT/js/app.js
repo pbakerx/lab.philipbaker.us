@@ -48,8 +48,12 @@
   const estParams = ({ L, d, n }, V) => V * d + n * d + L * (12 * d * d + 13 * d) + 2 * d + d * V + V;
   function knobInfo() {
     const k = knobs(), est = estParams(k, S.chars.length);
-    const m = S.model && S.model.cfg, same = m && m.L === k.L && m.H === k.H && m.d === k.d && m.n === k.n;
-    $('#buildInfo').textContent = same ? '' : `≈ ${est.toLocaleString()} params — press Build`;
+    const m = S.model && S.model.cfg, same = !m || (m.L === k.L && m.H === k.H && m.d === k.d && m.n === k.n);
+    $('#buildInfo').textContent = same ? '' : `≈ ${est.toLocaleString()} numbers`;
+    const w = $('#buildWarn'); w.hidden = same;
+    if (!same) w.textContent = `⚠ Not applied yet. Press Build a new brain: it starts from zero, about ${est.toLocaleString()} random numbers, so you'll train it again.`;
+    $('#cBuild').classList.toggle('pending', !same); $('#build').classList.toggle('go', !same);
+    if (!same && S.booted) flag('shape');
   }
 
   function build() {
@@ -67,7 +71,8 @@
     renderArch(); fillXray(); syncTM(); knobInfo();
     $('#out').innerHTML = '<span class="p">Press ✍︎ Write. It hasn’t learned anything yet, so expect gibberish.</span>';
     $('#live').textContent = 'Nothing yet. Press ▶ Train.'; $('#liveStep').textContent = '';
-    $('#reading').innerHTML = '<span class="ctx">Press ▶ Train to watch it read.</span>';
+    $('#rGuess').textContent = ''; $('#rTrue').innerHTML = '<span class="ctx">Press ▶ Train, or Slow-mo to take one step at a time.</span>';
+    S.miles = []; S.firstWrite = null; S.lastWrite = null; S.ballEval = null;
     $('#landSample').textContent = 'Map the terrain, then drag the ball.';
     $('#compare').textContent = ''; $('#sAcc').textContent = '—';
     mood('Brand new: its numbers are random, so it knows nothing yet.');
@@ -80,7 +85,7 @@
       const x = document.createElement('button');
       x.className = 'hd' + (m.off[l][h] ? ' off' : '') + (S.sel.l === l && S.sel.h === h ? ' sel' : '');
       x.textContent = h + 1; x.title = `Attention head ${h + 1} of block ${l + 1}` + (m.off[l][h] ? ' (switched off)' : '');
-      x.onclick = () => { S.sel = { l, h }; $('#compare').textContent = ''; renderArch(); touch('talk'); coachDone(4); };
+      x.onclick = () => { S.sel = { l, h }; $('#compare').textContent = ''; renderArch(); touch('talk'); flag('head'); };
       hs.appendChild(x);
     }
     return hs;
@@ -216,9 +221,37 @@
     const mark = { kick: ['💥', COL.pink], teleport: ['✋', COL.cyan], scramble: ['🎲', COL.amber], branch: ['⑂', COL.amber], snip: ['✂', COL.bad] };
     x.font = '12px system-ui'; x.textAlign = 'center';
     for (const ev of S.events) { if (ev.step > h.length) continue; const xx = X(Math.max(0, ev.step - 1)); x.strokeStyle = mark[ev.type][1]; x.globalAlpha = .5; x.beginPath(); x.moveTo(xx, pad.t); x.lineTo(xx, H - pad.b); x.stroke(); x.globalAlpha = 1; x.fillText(mark[ev.type][0], xx, pad.t + 10); }
+    // milestone flags: one row each, stacked under the random-guessing line so labels never collide
+    (S.miles || []).forEach((ms, k) => {
+      if (ms.step > h.length) return;
+      const xx = X(Math.max(0, ms.step - 1)), yy = Y(lnV) + 16 + k * 15;
+      x.strokeStyle = COL.lime; x.globalAlpha = .5; x.beginPath(); x.moveTo(xx, H - pad.b); x.lineTo(xx, yy - 10); x.stroke(); x.globalAlpha = 1;
+      x.font = '600 11px system-ui'; x.textAlign = xx > W - 110 ? 'right' : 'left';
+      const lx = xx + (x.textAlign === 'right' ? -4 : 4), tw = x.measureText('⚑ ' + ms.label).width;
+      x.fillStyle = 'rgba(12,14,19,.85)'; x.fillRect(x.textAlign === 'right' ? lx - tw - 2 : lx - 2, yy - 10, tw + 4, 14);
+      x.fillStyle = COL.lime; x.fillText('⚑ ' + ms.label, lx, yy);
+    });
+    if (S.viewing >= 0) {
+      const st = S.snaps[S.viewing].step, xx = X(Math.max(0, st - 1));
+      x.strokeStyle = COL.cyan; x.lineWidth = 2; x.beginPath(); x.moveTo(xx, pad.t); x.lineTo(xx, H - pad.b); x.stroke(); x.lineWidth = 1;
+      x.fillStyle = COL.cyan; x.font = '600 12px system-ui'; x.textAlign = xx > W - 150 ? 'right' : 'left';
+      x.fillText(`◀ its brain at step ${st}`, xx + (x.textAlign === 'right' ? -6 : 6), H - pad.b - 8);
+    }
     x.textAlign = 'left'; x.fillStyle = COL.faint; x.font = '11px ui-monospace,Menlo,monospace';
     x.fillText(`step ${h.length}`, W - pad.r - 70, H - 5);
+    S.lossG = { x0: pad.l, x1: W - pad.r, n: h.length };
   }
+  function lossStepAt(e) {
+    const g = S.lossG; if (!g || g.n < 2) return null;
+    const r = $('#loss').getBoundingClientRect(), f = Math.max(0, Math.min(1, (e.clientX - r.left - g.x0) / (g.x1 - g.x0)));
+    return Math.round(f * (g.n - 1)) + 1;
+  }
+  $('#loss').addEventListener('pointermove', e => {
+    const st = lossStepAt(e); if (st == null) return;
+    $('#lossRead').textContent = `step ${st.toLocaleString()} · loss ${S.hist[st - 1].toFixed(2)} · click to rewind here`;
+  });
+  $('#loss').addEventListener('pointerleave', () => { $('#lossRead').textContent = ''; });
+  $('#loss').addEventListener('click', e => { const st = lossStepAt(e); if (st != null) travelToStep(st); });
 
   // ---------- talk ----------
   function updateTalk() {
@@ -230,7 +263,7 @@
     const topP = r.probs[order[0]];
     for (const j of order) {
       const c = document.createElement('span'); c.className = 'c'; c.textContent = show(S.chars[j]); c.title = 'Pick this one';
-      c.onclick = () => { $('#prompt').value += show(S.chars[j]) === '↵' ? '↵' : S.chars[j]; touch('talk'); coachDone(3); };
+      c.onclick = () => { $('#prompt').value += show(S.chars[j]) === '↵' ? '↵' : S.chars[j]; touch('talk'); flag('bar'); };
       const bw = document.createElement('span'); bw.className = 'bw'; const b = document.createElement('span'); b.className = 'b';
       b.style.width = (100 * r.probs[j] / topP).toFixed(1) + '%'; bw.appendChild(b);
       const pc = document.createElement('span'); pc.className = 'pc'; pc.textContent = (100 * r.probs[j]).toFixed(1) + '%';
@@ -287,7 +320,14 @@
     const cur = document.createElement('span'); cur.className = 'cur'; cur.textContent = ' ';
     if (g.left > 0) out.appendChild(cur);
     out.scrollTop = out.scrollHeight;
-    if (g.left <= 0) { S.gen = null; $('#gen').textContent = '✍︎ Write'; coachDone(0); if (S.step >= 300) coachDone(2); }
+    if (g.left <= 0) {
+      S.gen = null; $('#gen').textContent = '✍︎ Write'; flag('wrote');
+      const rec = { prompt: g.prompt, text: g.text, step: S.viewing >= 0 ? S.snaps[S.viewing].step : S.step };
+      if (rec.step < 30 && !S.firstWrite) S.firstWrite = rec;
+      if (rec.step >= 200) { S.lastWrite = rec; flag('wroteTrained'); }
+      const t = +$('#temp').value; if (t < 0.4) flag('lowT'); if (t > 1.3) flag('highT');
+      if (S.mode === 'wizard' && STEPS[S.wiz.i].id === 'again') renderBA();
+    }
   }
 
   // ---------- landscape ----------
@@ -330,7 +370,7 @@
       const was = mp.wasRunning; S.mapping = null;
       $('#mapBtn').disabled = false; $('#landProg').style.width = '0';
       trackPath(false); computeArrow();
-      S.landDue = performance.now();
+      S.landDue = performance.now(); S.land.baseLoss = S.hereLoss;
       if (was) setRunning(true);
       toast('Terrain mapped. Drag the ball somewhere!');
     }
@@ -374,6 +414,7 @@
     m.setFlat(f); m.resetOptimizer();
     S.here = { a, b }; S.path.push(S.here);
     computeArrow(false);
+    if (L.baseLoss && S.hereLoss >= 1.5 * L.baseLoss) flag('climbed');
     if (!S.landDue) S.landDue = performance.now() + 150;
     touch('land', 'talk', 'emb', 'xray');
   }
@@ -441,7 +482,7 @@
     const was = S.dragging.wasRunning; S.dragging = false;
     if (S.pending) { const p = S.pending; S.pending = null; teleport(p.a, p.b); landRead(); }
     S.events.push({ step: S.step, type: 'teleport' });
-    refreshLandSample(); coachDone(5);
+    refreshLandSample();
     if (S.hereLoss != null) toast(`Moved by hand. Loss is now ${S.hereLoss.toFixed(3)}.`);
     S.running = was; touch('loss');
   };
@@ -545,9 +586,9 @@
     for (let i = 0; i < n; i++) { const j = m.sample(m.predict(ctx, temp).probs); ctx.push(j); out += S.chars[j]; }
     return out;
   }
-  function withPrompt(el, text) {
+  function withPrompt(el, text, prompt = $('#prompt').value.replace(/↵/g, '\n')) {
     el.textContent = '';
-    const p = document.createElement('span'); p.style.color = 'var(--faint)'; p.textContent = $('#prompt').value.replace(/↵/g, '\n');
+    const p = document.createElement('span'); p.style.color = 'var(--faint)'; p.textContent = prompt;
     el.append(p, text);
   }
   function refreshLive() {
@@ -561,60 +602,160 @@
   }
   function drawReading() {
     const s = S.model.lastSample; if (!s) return;
-    const el = $('#reading'); el.textContent = '';
-    const c0 = document.createElement('span'); c0.className = 'ctx';
-    c0.textContent = S.chars[s.idx[0]] === '\n' ? '↵' : S.chars[s.idx[0]]; el.appendChild(c0);
-    s.tg.forEach((t, i) => {
-      const sp = document.createElement('span'), ok = s.pred[i] === t, ch = S.chars[t];
-      sp.className = ok ? 'ok' : 'no'; sp.textContent = ch === '\n' ? '↵' : ch;
-      sp.title = ok ? `guessed “${show(ch)}” correctly` : `guessed “${show(S.chars[s.pred[i]])}”, but it was “${show(ch)}”`;
-      el.appendChild(sp);
+    const g = $('#rGuess'), t = $('#rTrue'); g.textContent = ''; t.textContent = '';
+    const vis = c => c === '\n' ? '↵' : c === ' ' ? '·' : c;
+    const cell = (el, ch, cls, title) => { const sp = document.createElement('span'); sp.textContent = ch; if (cls) sp.className = cls; if (title) sp.title = title; el.appendChild(sp); };
+    cell(g, ' ', ''); cell(t, vis(S.chars[s.idx[0]]), 'first', 'the letter it started from');
+    s.tg.forEach((tt, i) => {
+      const ok = s.pred[i] === tt, gc = S.chars[s.pred[i]], tc = S.chars[tt];
+      const title = ok ? `guessed “${show(tc)}”: right` : `guessed “${show(gc)}”, but it was “${show(tc)}”`;
+      cell(g, vis(gc), ok ? 'ok' : 'no', title); cell(t, vis(tc), ok ? 'ok' : 'no', title);
     });
+  }
+  $('#slowmo').onclick = () => $('#step1').click();
+
+  // ---------- the steps ----------
+  const lnV = () => Math.log(S.chars.length);
+  S.flags = {};
+  const flag = k => { S.flags[k] = true; };
+  const F = k => !!S.flags[k];
+  const STEPS = [
+    { id: 'feed', rail: 'Feed it', title: 'Feed it', cards: ['cFeed'],
+      lead: `Everything this model will ever know comes from <b>one piece of text</b>. It reads it one character at a time, and nothing else goes in. <b>Dinosaurs</b> is picked for you (it learns to invent dinosaur names). Choose another, or paste your own.`,
+      goals: [{ t: 'Choose what it will read (Dinosaurs is a fine start)', test: () => F('fed') }] },
+    { id: 'meet', rail: 'Meet it', title: 'Meet it', cards: ['cTalk'],
+      lead: () => `This brain is brand new: <b>${S.model.size.toLocaleString()} random numbers</b> that have never read a thing. Ask it to write, and hear what knowing nothing sounds like.`,
+      goals: [{ t: 'Press ✍︎ Write', test: () => F('wrote') }] },
+    { id: 'train', rail: 'Train it', title: 'Train it', cards: ['cTrain'], trains: true,
+      lead: `Press <b>▶ Train</b>, top left. Each step it reads a snippet, <b>guesses every next letter</b>, checks, and nudges its numbers. Watch the guesses under "Right now it's reading" turn green, its writing come alive, and the loss line fall. Afterwards, <b>click the graph</b> to rewind its brain to any moment.`,
+      goals: [
+        { t: 'Beat random guessing (the green line drops below the dashed one)', test: () => S.ema != null && S.ema < 0.9 * lnV(), mile: 'beat random' },
+        { t: 'Guess half the letters right', test: () => S.model.lastAcc >= 0.5, mile: '50% right' },
+        { t: 'Guess 6 in 10 right: now its writing looks like the text', test: () => S.model.lastAcc >= 0.6, mile: '60% right' }] },
+    { id: 'again', rail: 'Write again', title: 'Write again', cards: ['cTalk', 'cBefore'],
+      lead: `Same machine, same code, same box. Press <b>✍︎ Write</b> and compare with how it wrote before any training.`,
+      enter: () => { setRunning(false); renderBA(); },
+      goals: [{ t: 'Press ✍︎ Write with the trained brain', test: () => F('wroteTrained') }] },
+    { id: 'steer', rail: 'Steer it', title: 'Steer it', cards: ['cTalk'],
+      lead: `It writes one guess at a time, and you can take the wheel. <b>Click a bar</b> to choose its next letter yourself. Then try <b>Creativity</b> at both ends: low plays it safe, high takes long shots.`,
+      goals: [
+        { t: 'Click one of its guesses to choose for it', test: () => F('bar') },
+        { t: 'Write with Creativity low (under 0.4)', test: () => F('lowT') },
+        { t: 'Write with Creativity high (over 1.3)', test: () => F('highT') }] },
+    { id: 'inside', rail: 'Look inside', title: 'Look inside', cards: ['cAttn'], trains: true,
+      lead: `Before each guess, every letter can look back at earlier letters for clues. Each <b>attention head</b> learns its own way of looking. Click through them, then switch one off: if the guesses get worse, that head mattered. It's how researchers study real AI.`,
+      goals: [
+        { t: 'Look through a different head', test: () => F('head') },
+        { t: 'Switch a head off and read the verdict', test: () => F('snip') }] },
+    { id: 'ball', rail: 'Push the ball', title: 'Push the ball', cards: ['cLand'], trains: true,
+      lead: `Its whole brain is one point in a space with thousands of directions, and training rolls it downhill. Now you push it: <b>shove it up a hill and watch its writing fall apart</b>, then let it roll home.`,
+      enter: () => setRunning(false),
+      goals: [
+        { t: 'Map the terrain around it', test: () => !!(S.land && S.land.img) },
+        { t: 'Drag the ball up a hill, making it at least 50% worse', test: () => F('climbed') },
+        { t: 'Tick 🧲 Stick to the map, press ▶ Train, and let it roll home', test: () => F('climbed') && S.stick && S.land && S.ballEval != null && S.ballEval <= S.land.baseLoss * 1.25 }] },
+    { id: 'made', rail: 'Its numbers', title: "What it's made of", cards: ['cEmb', 'cXray'], trains: true,
+      lead: `Inside there are no rules and no dictionary, only numbers. The Letter map shows how it files each character. The X-ray shows the raw numbers. Watch them being rewritten as it trains, then break something and let it heal.`,
+      goals: [
+        { t: 'Set the X-ray to "nudges" and watch it train', test: () => S.xmode === 'grad' && S.running },
+        { t: 'Scramble a part, then train until it recovers', test: () => F('scrambled') && S.step >= S.scrambleAt + 150 }] },
+    { id: 'build', rail: 'Build it', title: 'Build a bigger brain', cards: ['cBuild', 'cTrain'], layout: 'two', trains: true,
+      lead: `Change its shape: more layers, more heads, wider, a longer memory. <b>A new shape means a brand-new brain</b> that starts from random numbers, so it has to learn from zero. Train it and compare how fast it learns.`,
+      goals: [
+        { t: 'Change one of the sliders', test: () => F('shape') },
+        { t: 'Press Build a new brain', test: () => F('built') },
+        { t: 'Train the new brain past random guessing', test: () => F('built') && S.ema != null && S.ema < 0.9 * lnV() }] },
+    { id: 'end', rail: 'Done', title: 'You trained a GPT', cards: ['cFinale'], goals: [],
+      lead: `Nine ideas, every one of them true of the big ones too.` },
+  ];
+  S.wiz = { i: 0, met: {} };
+  const stepDone = st => st.goals.every((_, gi) => S.wiz.met[st.id + ':' + gi]);
+  function renderRail() {
+    const rail = $('#rail'); rail.textContent = '';
+    STEPS.forEach((st, i) => {
+      const li = document.createElement('li');
+      if (i === S.wiz.i) li.className = 'now'; else if (st.goals.length && stepDone(st)) li.className = 'done';
+      const b = document.createElement('button'); const sp = document.createElement('span'); sp.textContent = st.rail;
+      b.title = st.title; b.appendChild(sp); b.onclick = () => showStep(i); li.appendChild(b); rail.appendChild(li);
+    });
+  }
+  function renderStep() {
+    const st = STEPS[S.wiz.i], last = S.wiz.i === STEPS.length - 1;
+    $('#wKick').textContent = last ? 'Finished' : `Step ${S.wiz.i + 1} of ${STEPS.length - 1}`;
+    $('#wTitle').textContent = st.title;
+    $('#wLead').innerHTML = typeof st.lead === 'function' ? st.lead() : st.lead;
+    const ul = $('#goals'); ul.textContent = '';
+    st.goals.forEach((g, gi) => { const li = document.createElement('li'); li.textContent = g.t; if (S.wiz.met[st.id + ':' + gi]) li.className = 'met'; ul.appendChild(li); });
+    const done = stepDone(st), nx = $('#wNext');
+    nx.hidden = last; $('#wBack').disabled = S.wiz.i === 0;
+    nx.textContent = S.wiz.i === STEPS.length - 2 ? (done ? 'Nice, finish ›' : 'Finish ›') : (done ? 'Nice, next ›' : 'Next ›');
+    nx.classList.toggle('ready', done);
+    $('#wHint').textContent = done || last ? '' : 'You can skip ahead any time.';
+  }
+  function checkGoals() {
+    if (S.mode !== 'wizard') return;
+    const st = STEPS[S.wiz.i]; let changed = false;
+    st.goals.forEach((g, gi) => {
+      const k = st.id + ':' + gi;
+      if (S.wiz.met[k] || !g.test()) return;
+      S.wiz.met[k] = true; changed = true;
+      if (g.mile) { S.miles.push({ step: S.step, label: g.mile }); touch('loss'); }
+    });
+    if (changed) { renderStep(); renderRail(); if (stepDone(st)) toast('✓ ' + (st.goals.length > 1 ? 'All done here. Press Next when you’re ready.' : 'Done. Press Next when you’re ready.')); }
+  }
+  function showStep(i, scroll = true) {
+    S.wiz.i = Math.max(0, Math.min(STEPS.length - 1, i));
+    const st = STEPS[S.wiz.i];
+    document.querySelectorAll('main .card').forEach(c => c.classList.toggle('on', st.cards.includes(c.id)));
+    $('main').classList.toggle('two', st.layout === 'two');
+    document.body.classList.toggle('trains', !!st.trains);
+    if (!st.trains && S.running) setRunning(false);
+    if (st.enter) st.enter();
+    renderRail(); renderStep(); save();
+    touch(...ALL);
+    if (scroll) window.scrollTo({ top: Math.max(0, $('#wiz').offsetTop - 12), behavior: 'smooth' });
+  }
+  function renderBA() {
+    if (!S.firstWrite) {
+      const now = S.model.flat(); S.model.setFlat(S.snaps[0].f);
+      S.firstWrite = { prompt: $('#prompt').value.replace(/↵/g, '\n'), text: sampleText(140, 0.8), step: 0 };
+      S.model.setFlat(now);
+    }
+    withPrompt($('#baThen'), S.firstWrite.text, S.firstWrite.prompt);
+    if (S.lastWrite) {
+      withPrompt($('#baNow'), S.lastWrite.text, S.lastWrite.prompt);
+      $('#baNowLbl').textContent = `After ${S.lastWrite.step.toLocaleString()} steps of training`;
+    }
+  }
+  function afterUserBuild() {
+    mood('New brain: it knows nothing again. Press ▶ Train to teach it.');
+    const g = $('#go'); g.classList.remove('pulse'); void g.offsetWidth; g.classList.add('pulse');
   }
 
-  // ---------- guided tour ----------
-  const STEPS = [
-    { t: 'Meet it', card: '#cTalk', go: '✍︎ Write', act: () => { if (!S.gen) $('#gen').click(); },
-      text: () => `This brain is brand new: <b>${S.model.size.toLocaleString()} random numbers</b> that have never read a thing. Press <b>✍︎ Write</b> to hear it babble.` },
-    { t: 'Train it', card: '#cTrain', go: '▶ Train', act: () => setRunning(true),
-      text: () => `Press <b>▶ Train</b>. Watch "Right now it's reading" turn green as it starts guessing letters correctly, and watch its writing change. Give it about 20 seconds.` },
-    { t: 'Write again', card: '#cTalk', go: '✍︎ Write', act: () => { setRunning(false); if (!S.gen) $('#gen').click(); },
-      text: () => `Now press <b>✍︎ Write</b> again and compare it to the gibberish. Same machine, same code. The only thing that changed is the numbers.` },
-    { t: 'Steer it', card: '#cTalk', go: 'Show me',
-      text: () => `Type your own start in the box, or <b>click a bar</b> to pick its next letter for it. Slide <b>Creativity</b> up and down and write again.` },
-    { t: 'Look inside', card: '#cAttn', go: 'Show me',
-      text: () => `In <b>Attention</b>, click through the heads to see what each one looks at. Then <b>switch one off</b>. Did its guesses get worse? That's how researchers work out what each part of a real AI does.` },
-    { t: 'Push the ball', card: '#cLand', go: 'Show me',
-      text: () => `Map the terrain, then <b>drag the ball</b> up a hill and watch its writing fall apart. Train, and watch it roll home.` },
-    { t: 'Make it yours', card: '#cFeed', go: 'Show me',
-      text: () => `Try <b>Copycat</b>, where attention really matters. Or paste your own text, or build a bigger brain.` },
-  ];
-  S.coach = { at: 0, done: new Set() };
-  function flash(sel) {
-    const el = $(sel); el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1800);
+  // Remembered per browser: which mode, which step. The model itself is not saved.
+  const UI_KEY = 'pocketgpt-ui-v1';
+  function save() { try { localStorage.setItem(UI_KEY, JSON.stringify({ mode: S.mode, i: S.wiz.i })); } catch (e) { /* storage blocked */ } }
+  function loadUI() { try { return JSON.parse(localStorage.getItem(UI_KEY)) || {}; } catch (e) { return {}; } }
+  function setMode(m) {
+    S.mode = m;
+    document.body.classList.toggle('wizard', m === 'wizard'); document.body.classList.toggle('free', m === 'free');
+    $('#modeBtn').textContent = m === 'wizard' ? 'Explore everything' : 'Back to the steps';
+    if (m === 'free') {
+      document.querySelectorAll('main .card').forEach(c => c.classList.add('on'));
+      $('main').classList.remove('two'); document.body.classList.remove('trains'); $('#tinker').open = true;
+      save(); touch(...ALL);
+    } else { $('#tinker').open = false; showStep(S.wiz.i, false); }
   }
-  function coachRender() {
-    const c = S.coach, st = $('#steps'); st.textContent = '';
-    STEPS.forEach((x, i) => {
-      const b = document.createElement('button');
-      b.className = 'stp' + (c.done.has(i) ? ' done' : '') + (c.at === i ? ' now' : '');
-      const n = document.createElement('i'); n.textContent = c.done.has(i) ? '✓' : i + 1;
-      b.append(n, x.t); b.onclick = () => { c.at = i; coachRender(); flash(x.card); };
-      st.appendChild(b);
-    });
-    const cur = STEPS[c.at];
-    if (cur) { $('#coachText').innerHTML = `<b>Step ${c.at + 1}.</b> ` + cur.text(); $('#coachGo').textContent = cur.go; $('#coachGo').hidden = false; }
-    else { $('#coachText').innerHTML = `<b>That's the tour.</b> Everything here is the real thing, just small. Best trick left: train <b>Copycat</b>, then switch attention heads off one at a time.`; $('#coachGo').hidden = true; }
-  }
-  function coachDone(i) {
-    const c = S.coach; if (!c || c.done.has(i) || !S.booted) return;
-    c.done.add(i);
-    if (c.at === i) { let n = i + 1; while (n < STEPS.length && c.done.has(n)) n++; c.at = n; }
-    coachRender();
-  }
-  $('#coachGo').onclick = () => { const cur = STEPS[S.coach.at]; if (!cur) return; flash(cur.card); if (cur.act) cur.act(); };
-  $('#coachNext').onclick = () => { S.coach.at = (S.coach.at + 1) % (STEPS.length + 1); coachRender(); };
+  $('#modeBtn').onclick = () => { setMode(S.mode === 'wizard' ? 'free' : 'wizard'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  $('#toFree').onclick = () => { setMode('free'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  $('#restart').onclick = () => { S.wiz.met = {}; S.flags = {}; S.stick = false; $('#stick').checked = false; loadPreset('dinos'); showStep(0); };
+  $('#wBack').onclick = () => showStep(S.wiz.i - 1);
+  $('#wNext').onclick = () => { if (STEPS[S.wiz.i].id === 'feed') { flag('fed'); checkGoals(); } showStep(S.wiz.i + 1); };
+  $('#tryCopycat').onclick = () => {
+    loadPreset('copycat'); flag('fed');
+    $('#speed').value = 40; $('#speed').dispatchEvent(new Event('input'));
+    setRunning(true); toast('Copycat loaded and training. Watch “right” climb past 60%, then look through the heads.');
+  };
 
   const OPT = {
     adam: '<b>Adam</b> isn’t a person. It’s short for <i>adaptive moment estimation</i>, a recipe from 2014 that, in one form or another, trains most big AI today. It gives every number its own step size: bigger for numbers that keep getting pushed the same way, smaller for jittery ones.',
@@ -634,17 +775,17 @@
   // ---------- wiring ----------
   window.CORPORA.forEach(c => {
     const b = document.createElement('span'); b.className = 'chip'; b.dataset.id = c.id; b.textContent = c.label;
-    b.onclick = () => { loadPreset(c.id); coachDone(6); }; $('#presets').appendChild(b);
+    b.onclick = () => { loadPreset(c.id); flag('fed'); afterUserBuild(); }; $('#presets').appendChild(b);
   });
   $('#useText').onclick = () => {
     const t = $('#corpus').value;
     if (t.length < 60) return toast('Give it at least a few lines of text.');
     document.querySelectorAll('#presets .chip').forEach(c => c.classList.remove('sel'));
     $('#blurb').textContent = 'Your own text.'; $('#prompt').value = '';
-    setText(t); build(); coachDone(6); toast('New brain built for your text.');
+    setText(t); build(); flag('fed'); afterUserBuild(); toast('New brain built for your text.');
   };
   ['#kL', '#kH', '#kD', '#kN'].forEach(s => $(s).addEventListener('input', knobInfo));
-  $('#build').onclick = () => { build(); coachDone(6); toast('New brain built. It knows nothing yet.'); };
+  $('#build').onclick = () => { build(); flag('built'); afterUserBuild(); toast('New brain built. It knows nothing yet.'); };
   $('#go').onclick = () => setRunning(!S.running);
   $('#step1').onclick = () => {
     setRunning(false); if (S.viewing >= 0) branch();
@@ -657,7 +798,7 @@
   [['#batch', v => v], ['#speed', v => v + '/f'], ['#temp', v => v.toFixed(2)], ['#zoom', v => '±' + v.toFixed(2)], ['#kickAmt', v => v.toFixed(2)]]
     .forEach(([id, f]) => { const el = $(id), v = $({ '#batch': '#vBatch', '#speed': '#vSpeed', '#temp': '#vTemp', '#zoom': '#vZoom', '#kickAmt': '#vKick' }[id]); const u = () => (v.textContent = f(+el.value)); el.addEventListener('input', u); u(); });
   $('#temp').addEventListener('input', () => touch('talk'));
-  $('#prompt').addEventListener('input', () => { touch('talk'); if (S.step >= 100) coachDone(3); });
+  $('#prompt').addEventListener('input', () => touch('talk'));
   $('#gen').onclick = () => {
     if (S.gen) { S.gen.left = 0; return; }
     const ctx = context();
@@ -684,18 +825,22 @@
       : 'Barely changed: this head was not pulling much weight.';
     el.append('Top guess ', b(`“${g0.ch}” ${(100 * g0.p).toFixed(0)}%`), ' → ', b(`“${g1.ch}” ${(100 * g1.p).toFixed(0)}%`),
       ' · wrongness (loss) ', b(l0.toFixed(2)), ' → ', b(l1.toFixed(2)), '. ', verdict);
-    renderArch(); touch('talk', 'loss'); coachDone(4);
+    renderArch(); touch('talk', 'loss'); flag('snip');
   };
-  $('#tm').addEventListener('input', e => {
-    const i = +e.target.value;
-    if (S.viewing < 0) { setRunning(false); if (S.snaps[S.snaps.length - 1].step !== S.step) snapshot(); e.target.value = i; }
-    if (i === S.snaps.length - 1 && S.viewing >= 0) { S.model.setFlat(S.snaps[i].f); S.viewing = -1; $('#vTm').textContent = 'now'; }
-    else { S.viewing = i; S.model.setFlat(S.snaps[i].f); $('#vTm').textContent = `step ${S.snaps[i].step}`; }
-    S.model.resetOptimizer();
+  // Load the saved brain nearest to a step. Saving "now" first means the latest point is always reachable.
+  function travelToStep(step) {
+    if (S.viewing < 0) { setRunning(false); if (S.snaps[S.snaps.length - 1].step !== S.step) snapshot(); }
+    let i = 0; S.snaps.forEach((sn, k) => { if (Math.abs(sn.step - step) <= Math.abs(S.snaps[i].step - step)) i = k; });
+    S.model.setFlat(S.snaps[i].f); S.model.resetOptimizer();
+    const now = i === S.snaps.length - 1 && S.snaps[i].step === S.step;
+    S.viewing = now ? -1 : i; $('#tm').value = i;
+    $('#vTm').textContent = now ? 'now' : `step ${S.snaps[i].step}`;
     if (S.land) trackPath(false);
     refreshLive(); if (S.land && S.land.img) refreshLandSample();
-    touch('talk', 'emb', 'xray', 'land');
-  });
+    mood(now ? 'Back to its latest brain.' : `Rewound to its brain at step ${S.snaps[i].step.toLocaleString()}. Press ✍︎ Write to hear it then, or ▶ Train to carry on from here.`);
+    touch('talk', 'emb', 'xray', 'land', 'loss');
+  }
+  $('#tm').addEventListener('input', e => { const sn = S.snaps[+e.target.value]; if (sn) travelToStep(sn.step); });
   $('#mapBtn').onclick = () => { if (S.viewing >= 0) branch(); startMap(); };
   $('#stick').addEventListener('change', e => {
     S.stick = e.target.checked;
@@ -723,7 +868,7 @@
     if (S.viewing >= 0) branch();
     const p = S.model.params[+$('#xsel').value]; let s = 0; for (const v of p.d) s += v * v;
     const sd = Math.sqrt(s / p.d.length) || 0.1; for (let i = 0; i < p.d.length; i++) p.d[i] = sd * window.TinyGPT.randn();
-    S.model.resetOptimizer(); S.events.push({ step: S.step, type: 'scramble' });
+    S.model.resetOptimizer(); S.events.push({ step: S.step, type: 'scramble' }); flag('scrambled'); S.scrambleAt = S.step;
     toast(`Scrambled ${p.name}. Train to heal it.`); refreshLive(); touch(...ALL);
   };
   window.addEventListener('resize', () => touch(...ALL));
@@ -750,8 +895,9 @@
       if (S.frame % 10 === 0) renderNarr();
       if (performance.now() - (S.liveAt || 0) > 1800) refreshLive();
       else if (S.land && S.land.img && performance.now() - (S.landAt || 0) > 1600) refreshLandSample();
-      if (S.step >= 300) coachDone(1);
+      if (S.land && S.land.img && S.stick && S.frame % 30 === 0) S.ballEval = S.model.loss(S.evalBatch);
     }
+    if (S.frame % 10 === 0) checkGoals();
     if (!S.running && S.narrWasRunning) renderNarr();
     S.narrWasRunning = S.running;
     if (S.landDue && performance.now() > S.landDue && !S.mapping) refreshLandSample();
@@ -767,6 +913,7 @@
   }
 
   loadPreset('dinos');
-  S.booted = true; coachRender();
+  S.booted = true;
+  { const ui = loadUI(); S.wiz.i = Math.max(0, Math.min(STEPS.length - 1, ui.i | 0)); setMode(ui.mode === 'free' ? 'free' : 'wizard'); }
   requestAnimationFrame(loop);
 })();
