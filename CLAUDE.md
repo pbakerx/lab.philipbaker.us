@@ -1207,6 +1207,61 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     `--window-size=1200,630 --force-device-scale-factor=1`. Bump the `?v=` stamps in `index.html`
     whenever a script changes.
 
+- **/GPT** — **Pocket GPT** (Sep 23–24 2026): a real character-level GPT (token + position
+  embeddings, masked multi-head self-attention, MLP, layer norm, residuals) with hand-written
+  backprop and Adam/momentum/SGD, trained live in the page. No server, no library, no build.
+  `js/engine.js` is the model (a tape-based autograd over Float32Array matrices; `grad()`,
+  `update()`, `predict()`, `embedPCA()`, `direction()` for the loss-landscape slice),
+  `js/corpora.js` the three texts (nursery rhymes, public domain; the tomato guide and the
+  mornings essay were supplied by Philip — **Dinosaurs was removed at his request, do not bring
+  it back**), `js/holo.js` the holographic tooltip/readout panel (written by a Sonnet subagent to a
+  spec; API `Holo.open({anchor,title,html,wide})`, `Holo.close()`, `Holo.isOpen()`,
+  `Holo.tip(el, text)`), `js/app.js` everything else. Gradient check that proved the engine:
+  perturb a few hundred random parameters by ±1e-2 under Node (`global.window = global;
+  require('engine.js')`) and compare to `flatGrad()` — worst relative error 0.5%.
+  - **The flow is `STEPS` in `app.js`**, not the markup: welcome → Feed it → Meet it → Train it
+    (the only step with an intro screen; `noIntro` on the rest) → Your lab. Each step names the
+    cards it shows; `data-steps` attributes in the HTML are decorative. Philip's calls, in order
+    of arrival: no step numbers or letters anywhere; no "tour" language; training **never pauses
+    when you change screens**; the welcome screen is the home and the start-over place; Explore
+    everything / free mode is unreachable (code kept); the objective chips and mission line are
+    gone from the console; the X-ray opens on **nudges**; there is no upload button (paste only);
+    "How the real ones work" lives behind ⓘ buttons that open a Holo panel, never inline.
+  - **The console (`#cDash`)**: a slim bar (Train/Pause, inline stats, Step ×1 / Tune / Rebuild
+    with Holo hover tips, **Save to lab**), then widgets: Snapshot (a 200-char sample every 20 s,
+    typed out large — the focus of the page; Creativity slider lives here and drives `#temp`),
+    Telemetry (loss graph = the time machine, click or drag ⏳ to rewind to a checkpoint; milestone
+    flags), Its writing (short sample every ~2 s), Reading (guess row over actual row), Next
+    letter (tiles sized by probability; the `#dGhost` mirror shows the typed text with the
+    predicted letter inline — an input can't colour part of itself, so the input is transparent
+    over a mirror div and `scrollLeft` is synced), Attention (the lens sizes each letter by how
+    hard the LAST letter attends to it; L1/L2 head buttons; ✂ Head off shows the verdict),
+    Landscape (maps itself at step 300; drag the ball, Kick, Stick to map), Letter map (hover =
+    3 nearest neighbours by cosine in the full embedding, click = type it), X-ray (Q/K/V stacked).
+    Tune and Rebuild are slide-in `.sheet` drawers. `needRetrain()` puts the amber banner up and
+    pulses Train after a rebuild, scramble, kick or optimizer change. `updateMood()` says
+    "Learning has flattened out … save it to your lab" once the EMA loss moves <2% over 300 steps.
+  - **Saved brains** (`pocketgpt-brains-v1` in localStorage, max 8; ⬇ Download gives the same
+    JSON): `{app:'pocket-gpt', v:1, name, saved, steps, cfg:{d,n,L,H}, chars, text, weights}` with
+    the weights base64 Float32. `loadBrain()` refuses anything whose shape the page can't build,
+    whose weight count ≠ `estParams()`, or whose numbers aren't finite; **the alphabet travels with
+    the weights** or nothing would line up. A public shelf of other people's brains was discussed
+    and not built (needs a server + moderation, like the widget gallery).
+  - **Testing from this Mac**: the preview server cannot read the NAS, so `rsync` `GPT/` to the
+    scratchpad and serve that with `/usr/bin/python3 -m http.server 8931` (port is arbitrary);
+    the missing `/shared/*` and `/_vercel/*` files 404 there and that is fine. The Browser pane
+    is a hidden page, so shim `requestAnimationFrame = cb => setTimeout(cb, 16)` before anything
+    time-based; jump to a step with `localStorage.setItem('pocketgpt-ui-v2',
+    JSON.stringify({mode:'wizard', i:3}))` + reload (0 welcome, 1 feed, 2 meet, 3 train, 4 lab);
+    `Holo.tip` fires on `mouseenter`, so dispatch that to test a tip. Proof shots: headless Chrome
+    with `--virtual-time-budget=14000` on a `shot.html` copy that sets the step and clicks
+    `#iGo` on load — **budgets over ~15 s stall or never write the PNG**, because every virtual
+    second is real training compute; keep the run short and wait up to 4 minutes for the file.
+    Phone check: walk every screen at 375 px and assert `scrollWidth === innerWidth`.
+  - Cache stamp: every `js/*.js` reference carries `?v=<first 8 of shasum of cat js/*.js>`;
+    restamp with the sed in this session's history whenever a script changes.
+  - Analytics: swept (`scripts/head-meta.py` lists `GPT/index.html`); the JSON-LD is a
+    `WebApplication` in the house style; `/gpt`, `/pocket-gpt` redirect here (`vercel.json`).
 - **/hello** — the original example.
 
 ## The master archive (not in this repo)

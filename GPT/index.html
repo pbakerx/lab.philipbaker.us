@@ -103,10 +103,10 @@ body.wizard .free-only{display:none}
 .subs button.now{border-color:var(--lime);color:var(--ink)}
 .subs button.met{color:var(--lime)}
 .subs button.met::before{content:'✓ '}
-#wTitle{margin:0 0 6px;font-size:clamp(1.4rem,3.2vw,2rem);letter-spacing:-.02em;line-height:1.15}
+#wTitle{margin:0 0 6px;display:flex;align-items:center;gap:10px;font-size:clamp(1.4rem,3.2vw,2rem);letter-spacing:-.02em;line-height:1.15}
 #wLead{margin:0;max-width:760px;font-size:16px;color:var(--dim);line-height:1.55}
 #wLead b{color:var(--ink)}
-.focus{outline:2px solid var(--lime);outline-offset:5px;border-radius:12px;animation:focuspulse 1.4s ease-in-out 4}
+.subs{display:none!important}
 @keyframes focuspulse{0%,100%{outline-color:rgba(185,255,102,.9)}50%{outline-color:rgba(185,255,102,.25)}}
 /* the train dock: centered, and it says when retraining is needed */
 body.wizard .bar{background:transparent;backdrop-filter:none;border:0;margin-top:14px;position:sticky;top:8px}
@@ -115,7 +115,6 @@ body.wizard .bar .btn.go{font-size:16px;padding:9px 26px}
 body.wizard .narr{flex:1 1 100%;text-align:center}
 .retrain{flex:1 1 100%;text-align:center;color:#1a1204;background:var(--amber);font-weight:700;font-size:15px;border-radius:10px;padding:8px 12px;animation:amberglow 1.2s ease-in-out infinite}
 @keyframes amberglow{0%,100%{box-shadow:0 0 0 0 rgba(255,193,94,.0)}50%{box-shadow:0 0 0 6px rgba(255,193,94,.3)}}
-.hnav{display:flex;gap:8px;flex-wrap:wrap}
 .kicker:empty{display:none}
 .pr{color:var(--ink);background:rgba(95,212,255,.18);border-bottom:2px solid var(--cyan);border-radius:4px 4px 0 0;padding:0 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .brains{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -365,37 +364,32 @@ footer{max-width:1320px;margin:0 auto;padding:0 20px 50px;color:var(--faint);fon
 body.wizard main .card.dash{padding:16px}
 .dash::after{content:'';position:absolute;inset:0;border-radius:16px;pointer-events:none;
   background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px)}
-/* the console */
-.console{display:grid;grid-template-columns:auto 1fr auto;gap:10px 18px;align-items:center;padding:4px 4px 12px;border-bottom:1px solid var(--holo);margin-bottom:14px}
-.reactor{position:relative;width:92px;height:92px;border-radius:50%;border:0;padding:0;cursor:pointer;background:none;grid-row:span 2}
-.reactor .ring{position:absolute;inset:0;border-radius:50%;
-  background:conic-gradient(from 0deg,var(--lime),rgba(185,255,102,.05) 30%,var(--cyan) 55%,rgba(95,212,255,.05) 80%,var(--lime));
-  -webkit-mask:radial-gradient(circle,transparent 58%,#000 60%,#000 67%,transparent 69%);mask:radial-gradient(circle,transparent 58%,#000 60%,#000 67%,transparent 69%);opacity:.8}
-.reactor .core{position:absolute;inset:14px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
-  background:radial-gradient(circle at 50% 35%,#d9ff9f,var(--lime) 45%,#6fae2a);color:#0c1404;font:800 12px/1 var(--mono);letter-spacing:.14em;
-  box-shadow:0 0 22px rgba(185,255,102,.45),inset 0 -4px 10px rgba(0,0,0,.25);transition:background .3s,box-shadow .3s}
-.reactor .glyph{font-size:17px;letter-spacing:0}
-.reactor:hover .core{box-shadow:0 0 34px rgba(185,255,102,.7),inset 0 -4px 10px rgba(0,0,0,.25)}
-.reactor:active .core{transform:scale(.96)}
-.reactor.on .ring{animation:spin 1.6s linear infinite;opacity:1}
-.reactor.on .core{background:radial-gradient(circle at 50% 35%,#ffc4de,var(--pink) 45%,#b82f6c);color:#22040f;box-shadow:0 0 30px rgba(255,95,168,.55),inset 0 -4px 10px rgba(0,0,0,.25)}
-.reactor.pulse .core{animation:reactorpulse 1s ease-in-out 3}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes reactorpulse{50%{box-shadow:0 0 0 10px rgba(255,193,94,.35),0 0 40px rgba(255,193,94,.6)}}
-.gauges{display:flex;gap:8px;flex-wrap:wrap}
-.gauge{min-width:92px;padding:6px 10px 5px;border:1px solid var(--holo);border-radius:10px;background:rgba(95,212,255,.04)}
-.gauge span{display:block;font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
-.gauge b{display:block;font:600 19px/1.25 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
-.ctrls{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+/* the console: one slim bar */
+.dash-intro{margin:2px 4px 12px}
+.dash-intro h2{margin:0;font:700 12px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#9fdcf2}
+.dash-intro p{margin:6px 0 0;font-size:14px;line-height:1.5;color:var(--dim);max-width:980px}
+.dash-intro b{color:var(--ink)}
+.console{display:flex;align-items:center;gap:12px 16px;flex-wrap:wrap;padding:8px 4px 12px;border-bottom:1px solid var(--holo);margin-bottom:14px}
+.tbtn{font:700 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#0c1404;background:var(--lime);border:1px solid var(--lime);
+  border-radius:999px;padding:11px 20px;min-width:118px;cursor:pointer;box-shadow:0 0 18px rgba(185,255,102,.28);transition:background .2s,box-shadow .2s,transform .08s}
+.tbtn:hover{box-shadow:0 0 26px rgba(185,255,102,.5)}
+.tbtn:active{transform:scale(.97)}
+.tbtn.on{background:var(--pink);border-color:var(--pink);color:#22040f;box-shadow:0 0 18px rgba(255,95,168,.35)}
+.tbtn.pulse{animation:pulse 1s ease-in-out 3}
+.stats{display:flex;gap:14px;flex-wrap:wrap;font:11.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.stats b{color:var(--ink);font-weight:600;font-size:13px;letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
+.ctrls{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
 .hb{font:600 11.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);background:rgba(95,212,255,.06);
   border:1px solid var(--holo2);border-radius:8px;padding:8px 11px;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}
 .hb:hover{background:rgba(95,212,255,.16);color:#dff6ff;box-shadow:0 0 14px rgba(95,212,255,.25)}
 .hb.sm{padding:5px 8px;font-size:10px}
 .hb.go{color:#0c1404;background:var(--lime);border-color:var(--lime)}
-.log{grid-column:2 / -1;font:13px/1.4 var(--mono);color:var(--amber);min-height:1.4em;display:flex;gap:8px}
+.hb.save{color:#0c1404;background:var(--lime);border-color:var(--lime);box-shadow:0 0 12px rgba(185,255,102,.25)}
+.hb.save:hover{color:#0c1404;background:#d2ff99;box-shadow:0 0 20px rgba(185,255,102,.45)}
+.log{flex:1 1 100%;font:12.5px/1.4 var(--mono);color:var(--amber);min-height:1.4em;display:flex;gap:8px}
 .log-p{color:var(--lime)}
-.console .retrain{grid-column:1 / -1}
-@media (max-width:760px){.console{grid-template-columns:auto 1fr}.reactor{grid-row:span 1}.ctrls{grid-column:1 / -1;justify-content:flex-start}.log{grid-column:1 / -1}}
+.console .retrain{flex:1 1 100%}
+@media (max-width:760px){.ctrls{margin-left:0}}
 /* the widgets */
 .wgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;grid-auto-flow:row dense}
 .w{position:relative;min-width:0;background:linear-gradient(180deg,rgba(20,26,36,.92),rgba(13,17,24,.92));border:1px solid var(--holo);border-radius:12px;padding:10px 12px 12px}
@@ -410,19 +404,30 @@ body.running .dot{background:var(--lime);box-shadow:0 0 8px var(--lime);animatio
 @keyframes blinkdot{50%{opacity:.35}}
 .info{width:20px;height:20px;border-radius:50%;border:1px solid var(--holo2);background:transparent;color:var(--cyan);font:italic 700 12px/1 Georgia,serif;cursor:pointer;flex:none}
 .info:hover,.info.open{background:var(--cyan);color:#051018}
-.w-tele{grid-column:span 12}
+.w-snap{grid-column:span 12;background:radial-gradient(80% 120% at 50% 0%,rgba(185,255,102,.06),transparent 60%),linear-gradient(180deg,rgba(20,26,36,.92),rgba(13,17,24,.92))}
+.w-tele{grid-column:span 7}
+.w-live{grid-column:span 5}
 .w-read,.w-next,.w-attn,.w-land,.w-emb,.w-xray{grid-column:span 4}
-@media (max-width:1000px){.w-read,.w-next,.w-land,.w-emb{grid-column:span 6}.w-attn,.w-xray{grid-column:span 12}}
+@media (max-width:1000px){.w-tele,.w-live{grid-column:span 12}.w-read,.w-next,.w-land,.w-emb{grid-column:span 6}.w-attn,.w-xray{grid-column:span 12}}
 @media (max-width:640px){.w-read,.w-next,.w-land,.w-emb{grid-column:span 12}}
-.telegrid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;align-items:stretch}
-@media (max-width:800px){.telegrid{grid-template-columns:minmax(0,1fr)}}
-.teleout{display:flex;flex-direction:column;min-width:0}
-.teleout .wsub{margin-top:0}
-.dash .teleout #live{flex:1;display:block;font-size:21px;line-height:1.45;text-align:center;white-space:pre-wrap;overflow:hidden;
-  min-height:7.5em;max-height:9.5em;padding:14px 16px;text-shadow:0 0 18px rgba(185,255,102,.12)}
-.dash #live .pr{font-size:.95em}
-.temprow{display:flex;align-items:center;gap:10px;margin-top:8px}
+/* the snapshot: the output, large and centered */
+.snap{font:22px/1.55 var(--mono);text-align:center;color:var(--ink);white-space:pre-wrap;word-break:break-word;padding:22px 28px;min-height:5.2em;max-height:11em;overflow:hidden;
+  background:rgba(0,0,0,.3);border:1px solid var(--holo);border-radius:12px;text-shadow:0 0 22px rgba(185,255,102,.14)}
+.snap .pr{font-size:.92em}
+@media (max-width:720px){.snap{font-size:17px;padding:16px}}
+.snapfoot{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:10px}
+.snapbar{flex:1 1 180px;height:3px;border-radius:2px;background:var(--hair);overflow:hidden}
+.snapbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--lime))}
+.temprow{display:flex;align-items:center;gap:10px;flex:1 1 240px}
 .temprow input{flex:1;min-width:60px}
+.dash .w-live #live{font-size:13px;line-height:1.5;min-height:6.4em;max-height:8em;overflow:hidden}
+.dash #live .pr{font-size:.95em}
+/* next letter: the typed text with its predicted next letter shown inline */
+.ghostbox{position:relative;flex:1;min-width:0}
+.ghostbox input{position:relative;width:100%;background:transparent!important;color:transparent;caret-color:var(--ink)}
+.ghost{position:absolute;inset:0;padding:5px 8px;font:14px var(--mono);line-height:normal;white-space:pre;overflow:hidden;pointer-events:none;color:var(--ink);
+  background:rgba(0,0,0,.35);border:1px solid var(--holo);border-radius:8px}
+.ghost i{font-style:normal;color:var(--lime);text-shadow:0 0 10px rgba(185,255,102,.65)}
 .dash .w-attn #attnLive,.dash .w-land #landSample,.dash .compare .cw{display:none}
 .dash #loss{height:170px;background:rgba(0,0,0,.35)}
 .dash .tmrow{margin-top:6px;padding:4px 10px;background:rgba(95,212,255,.04);border-color:var(--holo)}
@@ -498,21 +503,141 @@ details.drawer .film{margin-top:8px}
 .sheet .ctl{grid-template-columns:6.4em minmax(0,1fr) auto}
 .sheet.pending{border-left-color:var(--amber)}
 /* text that arrives like a readout */
-.wipe{animation:wipe .7s steps(28) both}
-@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 /* the train step: compact header, objectives as chips */
 body.dashstep #wiz{display:none}
-body.wizard .hnav{display:none}
-body.free .hnav #homeBtn{display:none}
-body.dashstep .rail{margin-bottom:12px}
-body.dashstep #wTitle{font:600 15px/1.3 var(--mono);color:var(--lime);letter-spacing:.02em;margin:2px 0 0}
-body.dashstep #wTitle::before{content:'MISSION › ';color:var(--faint)}
-body.dashstep #wLead{font-size:13.5px;margin-top:2px}
-body.dashstep .subs button{font-size:11px;padding:2px 10px}
 body.dashstep main{padding-top:12px}
 #wLead:empty{display:none}
 body.dashstep main,body.dashstep #wiz{max-width:1240px}
 body.wizard main.lab #cDash{grid-column:1/-1;order:-1}
+
+/* ===== holographic overlay (js/holo.js) ===== */
+/* Holo — holographic glass overlay styles (Minority Report look). Pair with holo.js.
+   --cyan/--lime/--amber/--mono are defined by the host page on :root; fallbacks here
+   let this file work standalone. --lime doubles as the particle color read by holo.js. */
+
+/* panel: fixed glass card, scales+fades in via .holo-in, fades out via .holo-out */
+.holo {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 380px;
+  max-width: calc(100vw - 24px);
+  max-height: 70vh;
+  padding: 16px 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(8,20,30,.62), rgba(5,12,20,.72));
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid rgba(95,212,255,.55);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6), 0 0 28px rgba(95,212,255,.18), inset 0 0 0 1px rgba(255,255,255,.04);
+  color: #d3f0fb;
+  font: 13.5px/1.55 system-ui, Inter, sans-serif;
+  z-index: 70;
+  opacity: 0;
+  transform: scale(.96);
+  transition: opacity .22s ease-out, transform .22s ease-out;
+}
+.holo.wide { width: 540px; }
+.holo.holo-in { opacity: 1; transform: scale(1); }
+.holo.holo-out { opacity: 0; transform: scale(.98); transition-duration: .15s; }
+
+/* kicker: small uppercase monospace label above the body */
+.holo-kicker {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  font: 700 10.5px/1 var(--mono, ui-monospace, Menlo, monospace);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--amber, #ffc15e);
+  margin-bottom: 8px;
+}
+
+/* body: the innerHTML readout; scrolls on its own when it exceeds max-height */
+.holo-body { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; overflow: auto; }
+.holo-body b, .holo-body strong { color: #fff; }
+.holo-body i { color: #ffe9b0; font-style: normal; }
+
+/* fx canvas: fills the panel, sits behind the kicker/body text */
+.holo-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+
+/* corner brackets: two bordered sides each, grown in from 0 via a width/height transition */
+.holo-br {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 0 solid var(--cyan, #5fd4ff);
+  transition: width .22s ease-out, height .22s ease-out;
+  z-index: 2;
+}
+.holo.holo-in .holo-br { width: 14px; height: 14px; }
+.holo-br.tl { top: 6px; left: 6px; border-top-width: 1.5px; border-left-width: 1.5px; }
+.holo-br.tr { top: 6px; right: 6px; border-top-width: 1.5px; border-right-width: 1.5px; }
+.holo-br.bl { bottom: 6px; left: 6px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.holo-br.br { bottom: 6px; right: 6px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+/* close button: top-right circle; cyan hairline, white glyph on hover, lime focus ring */
+.holo-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(95,212,255,.55);
+  color: #d3f0fb;
+  font: 13px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+.holo-close:hover { background: rgba(95,212,255,.18); color: #fff; }
+.holo-close:focus-visible { outline: 2px solid var(--lime, #9dff6b); outline-offset: 2px; }
+
+/* scanline: one-shot top-to-bottom sweep; holo.js adds this element and removes it after */
+.holo-scan {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--cyan, #5fd4ff);
+  box-shadow: 0 0 8px 1px var(--cyan, #5fd4ff);
+  z-index: 2;
+  pointer-events: none;
+  animation: holo-scan .7s ease-out 1;
+}
+@keyframes holo-scan {
+  from { top: 0; opacity: 1; }
+  to { top: 100%; opacity: .2; }
+}
+
+/* hover tooltip: same glass look, smaller and quicker; no brackets, canvas or scanline */
+.holo-tip {
+  position: fixed;
+  box-sizing: border-box;
+  max-width: 280px;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, rgba(8,20,30,.62), rgba(5,12,20,.72));
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid rgba(95,212,255,.55);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6), 0 0 28px rgba(95,212,255,.18), inset 0 0 0 1px rgba(255,255,255,.04);
+  color: #d3f0fb;
+  font: 12.5px/1.5 system-ui, Inter, sans-serif;
+  z-index: 71;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s ease-out;
+}
+.holo-tip.holo-in { opacity: 1; }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- LAB-EVENTS:START -->
@@ -529,7 +654,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 </head>
 <body class="wizard">
 <header class="top">
-  <div class="hdr"><h1>Pocket <span>GPT</span></h1><div class="hnav"><button class="btn small" id="homeBtn" title="Back to the welcome screen with a fresh brain">⟲ Start from the beginning</button><button class="btn small" id="modeBtn">Explore everything</button></div></div>
+  <div class="hdr"><h1>Pocket <span>GPT</span></h1></div>
   <p class="tag">A real GPT, the same design as the chatbots you know, shrunk until you can watch every part of it work. It lives entirely in this page, starts out knowing nothing, and you'll teach it to write.</p>
 </header>
 
@@ -537,9 +662,8 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <div class="kicker" id="iKick"></div>
   <h2 class="ititle" id="iTitle"></h2>
   <p class="ilead" id="iLead"></p>
-  <div class="insight iins" id="iIns" hidden></div>
   <button class="btn go huge" id="iGo"></button>
-  <div class="inav"><button class="linkbtn" id="iBack">‹ Back</button><button class="linkbtn" id="iFree">Skip the tour and explore everything</button></div>
+  <div class="inav"><button class="linkbtn" id="iBack">‹ Back</button></div>
 </section>
 
 <section id="wiz" aria-label="Steps">
@@ -559,12 +683,12 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <section class="card s12" id="cTalk" data-steps="2 4">
     <div class="talk">
       <div>
-        <h2>✍︎ Talk to it</h2>
-        <p class="why">Type the start of something. Press <b>See what it writes</b> and it carries on from there, one character at a time, each one picked from its own guesses.</p>
-        <input type="text" id="prompt" value="" spellcheck="false" autocomplete="off" aria-label="Your starting text">
+        <h2>💬 Chat</h2>
+        <p class="why">Type anything and send it. It picks up where you leave off, one letter at a time, each one chosen from its own guesses.</p>
+        <input type="text" id="prompt" value="" spellcheck="false" autocomplete="off" placeholder="Say something…" aria-label="Your message">
         <p class="meta">Your starting text. <b>↵</b> means a new line. Characters it has never seen in its training text are ignored.</p>
         <div class="row">
-          <button class="btn go big" id="gen">✍︎ See what it writes</button>
+          <button class="btn go big" id="gen">Send ›</button>
           <span class="lbl" style="margin-left:8px">Creativity</span><input type="range" id="temp" min="0.1" max="2" step="0.05" value="0.8" aria-label="Creativity"><span class="val" id="vTemp"></span>
         </div>
         <p class="meta"><b>Creativity</b> (the pros call it <i>temperature</i>): low plays it safe and always takes its top guess, so it gets repetitive. High takes long shots, so it gets surprising, then weird, then nonsense.</p>
@@ -577,7 +701,6 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
         <div class="gtop" id="gTop"></div>
         <div class="grest-l">Less likely</div>
         <div class="grest" id="gRest"></div>
-        <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>Every word a chatbot has ever written came out of guesses exactly like these. It looks at the text so far, scores every possible next piece, picks one, and repeats. The big ones score words and word-pieces instead of letters, but that's the whole trick.</div></div>
       </div>
     </div>
   </section>
@@ -585,51 +708,59 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <!-- FEED -->
   <section class="card s5" id="cFeed" data-steps="1">
     <h2>📚 Feed it</h2>
-    <p class="why">Everything it will ever know comes from this text. Nothing else goes in.</p>
+    <p class="why">Pick what it will learn from. Everything it will ever know comes from this one text.</p>
     <div class="chips" id="presets"></div>
     <p class="meta" id="blurb"></p>
     <textarea id="corpus" spellcheck="false" aria-label="Training text"></textarea>
     <div class="warn" id="feedWarn" hidden>✎ You changed the text. Press <b>Learn from this text</b> to use it. Until you do, it keeps reading the old one.</div>
-    <div class="row"><button class="btn small" id="useText">Learn from this text</button><label class="btn small" for="upload">📄 Upload a text file</label><input type="file" id="upload" accept=".txt,.md,.csv,.text,text/plain" hidden><span class="meta" style="margin:0" id="corpusInfo"></span></div>
-    <p class="meta"><b>Three ways to feed it:</b> click one of the ready-made texts above, <b>paste</b> your own into the box (song lyrics, a recipe book, your emails) and press <b>Learn from this text</b>, or <b>upload</b> a plain-text file (.txt). A few pages is plenty. New text means a fresh brain, because its alphabet changes.</p>
-    <div class="insight"><span class="ic">💡</span><div><b>How the real ones work</b>A model can only echo what it was fed, which is why what goes into training is the biggest decision there is. Feed it dinosaurs and it dreams in dinosaurs. The big labs spend enormous effort choosing and cleaning their text for exactly this reason.</div></div>
+    <div class="row"><button class="btn go" id="useText">Learn from this text</button><span class="meta" style="margin:0" id="corpusInfo"></span></div>
+    <p class="meta">Pick a text above, or paste your own: song lyrics, a recipe, your emails. A few pages is plenty. Press <b>Learn from this text</b> when the box holds what you want it to learn.</p>
   </section>
 
   <!-- TRAIN IT: the master dashboard -->
   <section class="card s12 dash" id="cDash" data-steps="3 4">
+    <div class="dash-intro">
+      <h2>Train it</h2>
+      <p>It learns from the text you fed it. Every step it reads a snippet, covers the next letter, guesses, peeks, and nudges its numbers a little. Press <b>Train</b> and watch static turn into your text's voice. Pause whenever you like, and <b>save it to your lab</b> when its writing makes you smile.</p>
+    </div>
     <div class="console" id="bar">
-      <button class="reactor" id="go" title="Start or pause learning (Space bar)"><span class="ring"></span><span class="core"><span class="glyph">▶</span><span id="goLabel">TRAIN</span></span></button>
-      <div class="gauges">
-        <div class="gauge"><span>Step</span><b id="sStep">0</b></div>
-        <div class="gauge"><span>Loss</span><b id="sLoss">—</b></div>
-        <div class="gauge"><span>Right</span><b id="sAcc">—</b></div>
-        <div class="gauge"><span>Numbers</span><b id="sParams">—</b></div>
-      </div>
+      <button class="tbtn" id="go" data-tip="Start or pause learning. The space bar works too.">▶ Train</button>
+      <div class="stats"><span>step <b id="sStep">0</b></span><span>loss <b id="sLoss">—</b></span><span>right <b id="sAcc">—</b></span><span><b id="sParams">—</b> numbers</span></div>
       <div class="ctrls">
-        <button class="hb" id="step1" title="Take exactly one learning step">Step ×1</button>
-        <button class="hb" data-sheet="sheetTune" title="Change how it learns">⚙ Tune</button>
-        <button class="hb" data-sheet="cBuild" title="Change the shape of its brain">⬡ Rebuild</button>
+        <button class="hb" id="step1" data-tip="One learning step, in slow motion: read a batch of snippets, guess every next letter, check, and nudge each number once.">Step ×1</button>
+        <button class="hb" data-sheet="sheetTune" data-tip="Change how it learns: step size, batch size, speed and optimizer. Applies instantly, even mid-training.">⚙ Tune</button>
+        <button class="hb" data-sheet="cBuild" data-tip="Change the shape of its brain: layers, heads, width and memory. A new shape is a brand-new brain that learns from zero.">⬡ Rebuild</button>
+        <button class="hb save" id="saveLab" data-tip="Keep this brain. It goes into your lab, where you can reload it, download it, or send it to a friend.">💾 Save to lab</button>
       </div>
       <div class="log"><span class="log-p">›</span><span id="narr">Brand new: its numbers are random, so it knows nothing yet.</span></div>
       <div class="retrain" id="retrain" hidden></div>
     </div>
 
     <div class="wgrid">
-      <!-- telemetry: the graph, the time slider and its writing, one unit -->
+      <!-- snapshot: the output, large, every 20 seconds -->
+      <div class="w w-snap">
+        <header><h3><i class="dot"></i>Snapshot <small id="snapCap">of its writing, every 20 seconds</small></h3><button class="hb sm" id="snapNow">Snap now</button><button class="info" data-info="snap" title="How the real ones work">i</button></header>
+        <div class="snap readout" id="snap">Press ▶ Train. The first snapshot lands in a moment.</div>
+        <div class="snapfoot">
+          <div class="snapbar" title="time to the next snapshot"><i id="snapBar"></i></div>
+          <div class="temprow"><span class="ml">Creativity</span><input type="range" id="dTemp" min="0.1" max="2" step="0.05" value="0.8" aria-label="Creativity"><span class="val" id="vdTemp">0.80</span></div>
+        </div>
+      </div>
+
+      <!-- telemetry: the graph and the time slider -->
       <div class="w w-tele">
         <header><h3><i class="dot"></i>Telemetry <small>how wrong it is</small></h3><span class="read" id="lossRead"></span><button class="info" data-info="train" title="How the real ones work">i</button></header>
-        <div class="telegrid">
-          <div class="telegraph"><canvas id="loss"></canvas></div>
-          <div class="teleout">
-            <div class="wsub">Its writing <span id="liveStep"></span></div>
-            <div class="live readout" id="live">Nothing yet. Press TRAIN.</div>
-            <div class="temprow"><span class="ml">Creativity</span><input type="range" id="dTemp" min="0.1" max="2" step="0.05" value="0.8" aria-label="Creativity"><span class="val" id="vdTemp">0.80</span></div>
-          </div>
-        </div>
+        <canvas id="loss"></canvas>
         <div class="tmrow" id="tmrow"><span class="lbl">⏳</span><input type="range" id="tm" min="0" max="0" value="0" disabled aria-label="See its brain at any step"><span class="val" id="vTm">now</span></div>
         <details class="drawer" id="filmBox"><summary>Flight log <span id="filmCount"></span></summary>
           <ol class="film" id="film"><li class="empty">Samples appear here as it trains.</li></ol>
         </details>
+      </div>
+
+      <!-- its writing, live -->
+      <div class="w w-live">
+        <header><h3><i class="dot"></i>Its writing <small id="liveStep"></small></h3><button class="info" data-info="live" title="How the real ones work">i</button></header>
+        <div class="live readout" id="live">Nothing yet. Press ▶ Train.</div>
       </div>
 
       <!-- reading -->
@@ -644,7 +775,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
       <!-- next letter -->
       <div class="w w-next">
         <header><h3><i class="dot"></i>Next letter</h3><button class="info" data-info="next" title="How the real ones work">i</button></header>
-        <div class="ctxrow"><span class="ml">after</span><input type="text" id="dPrompt" spellcheck="false" autocomplete="off" aria-label="Text it continues from"></div>
+        <div class="ctxrow"><span class="ml">after</span><div class="ghostbox"><div class="ghost" id="dGhost" aria-hidden="true"></div><input type="text" id="dPrompt" spellcheck="false" autocomplete="off" aria-label="Text it continues from"></div></div>
         <div class="dtop" id="dTop"></div>
         <div class="grest dsm" id="dRest"></div>
       </div>
@@ -689,7 +820,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
       <!-- x-ray -->
       <div class="w w-xray">
         <header><h3><i class="dot"></i>X-ray</h3><select id="xsel" aria-label="Which part to X-ray"></select><button class="info" data-info="xray" title="How the real ones work">i</button></header>
-        <div class="xrow"><span class="chip sel" data-x="val">numbers</span><span class="chip" data-x="grad">nudges</span><button class="hb sm" id="scramble" title="Replace this part with random numbers">Scramble</button><span class="read" id="xread"></span></div>
+        <div class="xrow"><span class="chip" data-x="val">numbers</span><span class="chip sel" data-x="grad">nudges</span><button class="hb sm" id="scramble" title="Replace this part with random numbers">Scramble</button><span class="read" id="xread"></span></div>
         <canvas id="xray"></canvas>
         <div class="xdesc" id="xdesc"></div>
       </div>
@@ -749,7 +880,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <!-- YOUR LAB (final step) -->
   <section class="card s12 wiz-only" id="cFinale" data-steps="4">
     <h2>🧪 Your lab</h2>
-    <p class="why">Everything is here now. Keep writing, keep training, change its text or its shape, and jump back into any step to look closer.</p>
+    <p class="why">Keep training, keep chatting, save the brains you like, or start again with a new text.</p>
     <div class="hub" id="hub"></div>
     <details class="more"><summary>What you learned, in nine lines</summary><div>
     <ol class="recap">
@@ -763,16 +894,17 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
       <li><b>Everything it knows is just numbers</b>: no rules, no dictionary.</li>
       <li><b>A bigger brain is a new brain</b>: it has to learn from zero.</li>
     </ol></div></details>
-    <div class="row" style="margin-top:12px"><button class="btn small" id="restart">Start the tour over</button></div>
+    <div class="row" style="margin-top:12px"><button class="btn small" id="restart">⟲ Start over</button></div>
   </section>
 </main>
 <nav class="wiz-foot" id="wizFoot"><button class="btn" id="wBack">‹ Back</button><span class="meta" id="wHint" style="margin:0"></span><button class="btn go big" id="wNext">Next ›</button></nav>
 <footer>Everything runs in this page: no server, no API, no library. It's a real GPT (token and position embeddings, masked multi-head self-attention, an MLP, layer norm, residual connections), trained with hand-written backpropagation.</footer>
 <div class="toast" id="toast"></div>
 
-<script src="/GPT/js/corpora.js?v=c414e6ec"></script>
-<script src="/GPT/js/engine.js?v=c414e6ec"></script>
-<script src="/GPT/js/app.js?v=c414e6ec"></script>
+<script src="/GPT/js/corpora.js?v=a591a465"></script>
+<script src="/GPT/js/holo.js?v=a591a465"></script>
+<script src="/GPT/js/engine.js?v=a591a465"></script>
+<script src="/GPT/js/app.js?v=a591a465"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>
