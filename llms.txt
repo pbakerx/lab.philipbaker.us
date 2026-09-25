@@ -89,7 +89,9 @@ Home page: https://philipbaker.us
   offices pulled out of the site's own Shockwave movies with a decompiler, a
   first-person account of what working in that building was like and who taught
   him, and a screening room of the agency's Oklahoma Tourism television spots
-  from the same years, which the page is explicit he did not produce.
+  from the same years, which the page is explicit he did not produce. At the
+  bottom, anyone who worked in or with the agency can post a story or a photo;
+  posts are public.
 - [STAPLEGUN, 2001–2020](https://lab.philipbaker.us/staplegun/): The Oklahoma
   City advertising agency that started in a kid's bedroom and grew to three
   floors of City Place Tower. Twenty years, 48 people, 111 films, all the work.

@@ -509,6 +509,32 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     references are absolute (`/vault/movies/…`). The Speed Zone, Tulsa Convention Center
     and OG&E films were cut in Aug 2026; only `brunswick_video_SpeedZone_HIGH.mp4`
     survives, because the Vault still plays it.
+  - **Were You There?** (Sep 25 2026, under the Screening Room; the footer also got a
+    "Back to the lab" link). Philip: "a call to action for folks to tell their story or add
+    a photo. Make it public." Visitors post a name, a "when, and what you did" line, a story
+    and/or one photo; **it is public the moment it's sent** — his call, same as the Maze Wars
+    suggestion box. `api/amstories.js` + `lib/amstories.js`, on the Blob store the rest of
+    the lab uses, per the Vault's Blob note: `amstories/s/<id>.json` per story (never
+    rewritten), `amstories/p/<id>-<random>.jpg` per photo, `amstories/_hidden/<id>.json` as
+    the take-down marker.
+    - **Moderation needs no password.** Each post emails Philip (the clubhouse's Resend
+      account and inbox: `RESEND_API_KEY`, the address in `MAZEWARS_MAIL_FROM`,
+      `MAZEWARS_OWNER_EMAIL`; `AMSTORIES_OWNER_EMAIL` overrides the inbox) with a signed
+      "take it off the page" link, and the page that link opens offers "put it back". The
+      poster's browser keeps its own key (`localStorage["amstories-mine"]`) and shows
+      "Remove mine", which deletes the story and photo for good. A hidden photo is still a
+      public URL to anyone who saved it — for something that must be gone, delete the blob
+      (`npx vercel blob del … --rw-token "$TOKEN"`, see /widget-maker).
+    - Photos are shrunk to 1600px and re-encoded as JPEG **in the browser** (which also
+      drops the camera metadata, GPS included) and must arrive as JPEG bytes, magic number
+      checked, ≤2.6 MB. Nothing that could render as a document ever reaches the store.
+    - Guards: origin check, 4 posts per 10 minutes per IP (per warm instance), a honeypot
+      field (`website`) that is thanked and dropped, 500 visible stories at most. Text is
+      cleaned server-side (`line`/`prose`: no control characters, no angle brackets,
+      paragraphs kept) and only ever set with `textContent` on the page.
+    - `GET /api/amstories` is CDN-cached 15 s, so a new post can take that long to show for
+      everyone else; the poster sees theirs at once because the page inserts the reply.
+    - GA gets a `story_post` event (`has_photo`, `has_text`) through `pbTrack`.
 - **/vault** — "The 90s Vault" (renamed from "The Vault" on Sep 25 2026 — title, h1, share
   card, JSON-LD, `llms.txt`, the players' tab titles; on the index it sits under Case Studies
   & Stories): the '90s Shockwave/Flash games plus the few non-game pieces

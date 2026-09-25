@@ -104,6 +104,33 @@ footer hr.hairline{margin-bottom:16px}
 footer .back{margin:26px 0 0;font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase}
 footer .back a{text-decoration:none;color:var(--dim)}
 footer .back a:hover{color:var(--teal)}
+/* Were You There? — the visitors' wall. Posts go to /api/amstories and are public at once. */
+.tell{display:grid;gap:16px;max-width:640px;margin:8px 0 56px}
+.tell .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.tell .row{grid-template-columns:1fr}}
+.tell label{display:grid;gap:7px;font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.tell input[type=text],.tell textarea{width:100%;font:16px/1.5 Georgia,'Times New Roman',serif;letter-spacing:0;text-transform:none;color:var(--ink);background:#060909;border:1px solid var(--line);border-radius:0;padding:10px 12px}
+.tell input[type=text]:focus,.tell textarea:focus{outline:none;border-color:var(--teal)}
+.tell textarea{min-height:150px;resize:vertical}
+.tell .photo{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tell .pick{position:relative;display:inline-block;border:1px solid var(--line);padding:11px 16px;color:var(--teal);cursor:pointer}
+.tell .pick:hover,.tell .pick:focus-within{border-color:var(--teal)}
+.tell .pick input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.tell .preview{height:64px;width:auto;border:1px solid #222}
+.tell .unpick{background:none;border:0;padding:0;color:var(--dim);font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;text-decoration:underline}
+.tell .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.tell .send{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.tell button[type=submit]{font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#000;background:var(--teal);border:0;padding:13px 22px;cursor:pointer}
+.tell button[type=submit]:disabled{opacity:.5;cursor:default}
+.tell .status{font-size:14px;color:var(--dim)}
+.tell .fine{margin:0;font-size:13px;color:var(--dim)}
+.wall{display:grid;gap:44px;max-width:640px}
+.story .ph{display:block;line-height:0}
+.story img{width:100%;height:auto;display:block;border:1px solid #222;background:#0a0a0a}
+.story .txt{margin:14px 0 10px;white-space:pre-line}
+.story .by{margin:0;font-family:Verdana,Geneva,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.story .mine{margin-left:14px;background:none;border:0;padding:0;color:var(--dim);font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;text-decoration:underline}
+.wall .empty{color:var(--dim);margin:0}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- GA4:START -->
@@ -198,12 +225,133 @@ rooms, as they were photographed for the site. Click any frame for full size.</p
 <figure><video controls preload="metadata" src="/vault/movies/OK-Tourism_Spot-5_Tulsa_30sec.mp4"></video><figcaption>Feature: Tulsa (:30)</figcaption></figure>
 </div>
 
+<h2 id="stories">Were You There?</h2>
+<hr class="hairline">
+<div class="lede" style="max-width:640px">
+<p>If you worked in that building &mdash; or worked with it &mdash; tell your story, or add a photo. It goes up right here, for everyone to read.</p>
+</div>
+<form class="tell" id="tell" novalidate>
+<div class="row">
+<label>Your name<input type="text" name="name" maxlength="60" autocomplete="name" required></label>
+<label>When, and what you did<input type="text" name="role" maxlength="80" placeholder="Art director, 1993&ndash;1998"></label>
+</div>
+<label>Your story<textarea name="text" maxlength="2000" placeholder="What you remember."></textarea></label>
+<div class="photo">
+<label class="pick">Add a photo<input type="file" name="photo" accept="image/*"></label>
+<img class="preview" alt="The photo you picked" hidden>
+<button type="button" class="unpick" hidden>Remove photo</button>
+</div>
+<div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+<div class="send"><button type="submit">Post it</button><span class="status" role="status" aria-live="polite"></span></div>
+<p class="fine">Posts are public the moment you send them. Share only photos you have the right to share.</p>
+</form>
+<div class="wall" id="wall"></div>
+
 <footer>
 <hr class="hairline">
 <p>Captured by the Internet Archive between 1997 and 1999; screenshots rendered from the archived pages in 2026. In 2000 this design gave way to the all-Shockwave site — some of which now runs again in <a href="/vault/">the vault</a>.</p>
 <p class="back"><a href="/">&larr; Back to the lab</a></p>
 </footer>
 </div>
+<script>
+/* Were You There? — posts go to /api/amstories and are public at once. Every string that comes
+   back from the server is set with textContent: nothing received is ever parsed as markup. */
+(function () {
+  "use strict";
+  var API = "/api/amstories", form = document.getElementById("tell"), wall = document.getElementById("wall");
+  if (!form || !wall || !window.fetch) return;
+  var f = form.elements, status = form.querySelector(".status"), btn = form.querySelector("button[type=submit]");
+  var file = f.namedItem("photo"), preview = form.querySelector(".preview"), unpick = form.querySelector(".unpick");
+  var photo = null, MINE = "amstories-mine", BLOB = /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//;
+  function mine() { try { return JSON.parse(localStorage.getItem(MINE) || "{}") || {}; } catch (e) { return {}; } }
+  function keep(id, k) { try { var m = mine(); m[id] = k; localStorage.setItem(MINE, JSON.stringify(m)); } catch (e) {} }
+  function forget(id) { try { var m = mine(); delete m[id]; localStorage.setItem(MINE, JSON.stringify(m)); } catch (e) {} }
+  function day(iso) { var d = new Date(iso); return isNaN(d) ? "" : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
+  function card(it) {
+    var a = document.createElement("article"); a.className = "story";
+    if (it.photo && BLOB.test(String(it.photo.url))) {
+      var l = document.createElement("a"); l.className = "ph"; l.href = it.photo.url; l.target = "_blank"; l.rel = "noopener";
+      var img = document.createElement("img"); img.src = it.photo.url; img.alt = "A photo from " + it.name; img.loading = "lazy"; img.decoding = "async";
+      if (it.photo.w > 0 && it.photo.h > 0) { img.width = it.photo.w; img.height = it.photo.h; }
+      l.appendChild(img); a.appendChild(l);
+    }
+    if (it.text) { var p = document.createElement("p"); p.className = "txt"; p.textContent = it.text; a.appendChild(p); }
+    var by = document.createElement("p"); by.className = "by";
+    by.textContent = "— " + it.name + (it.role ? " · " + it.role : "") + (day(it.when) ? " · " + day(it.when) : "");
+    if (mine()[it.id]) {
+      var x = document.createElement("button"); x.type = "button"; x.className = "mine"; x.textContent = "Remove mine";
+      x.addEventListener("click", function () { remove(it.id, a, x); });
+      by.appendChild(x);
+    }
+    a.appendChild(by);
+    return a;
+  }
+  function empty() { var e = document.createElement("p"); e.className = "empty"; e.textContent = "Nobody has posted yet. Be the first."; wall.appendChild(e); }
+  function render(items) { wall.textContent = ""; if (!items.length) return empty(); items.forEach(function (it) { wall.appendChild(card(it)); }); }
+  function remove(id, el, x) {
+    var k = mine()[id]; if (!k || !confirm("Take your post down for good?")) return;
+    x.disabled = true;
+    fetch(API + "?op=remove", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: id, k: k }) })
+      .then(function (r) { if (!r.ok) throw new Error(); forget(id); el.remove(); if (!wall.querySelector(".story")) { wall.textContent = ""; empty(); } })
+      .catch(function () { x.disabled = false; alert("That didn't work. Try again?"); });
+  }
+  // shrink to 1600px and re-encode as JPEG in the browser: small enough to send, and the
+  // camera's metadata (where it was taken, and when) stays on the visitor's machine
+  function shrink(src) {
+    return new Promise(function (ok, bad) {
+      var url = URL.createObjectURL(src), img = new Image();
+      img.onload = function () {
+        try {
+          var s = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+          var w = Math.max(1, Math.round(img.naturalWidth * s)), h = Math.max(1, Math.round(img.naturalHeight * s));
+          var c = document.createElement("canvas"); c.width = w; c.height = h;
+          var g = c.getContext("2d"); g.fillStyle = "#000"; g.fillRect(0, 0, w, h); g.drawImage(img, 0, 0, w, h);
+          var q = 0.85, data = c.toDataURL("image/jpeg", q);
+          while (data.length > 3200000 && q > 0.45) { q -= 0.1; data = c.toDataURL("image/jpeg", q); }
+          URL.revokeObjectURL(url); ok({ data: data, w: w, h: h });
+        } catch (e) { URL.revokeObjectURL(url); bad(e); }
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); bad(new Error("unreadable")); };
+      img.src = url;
+    });
+  }
+  function clearPhoto() { photo = null; file.value = ""; preview.hidden = true; preview.removeAttribute("src"); unpick.hidden = true; }
+  file.addEventListener("change", function () {
+    var pick = file.files && file.files[0]; photo = null; preview.hidden = true; unpick.hidden = true; status.textContent = "";
+    if (!pick) return;
+    status.textContent = "Getting the photo ready…";
+    shrink(pick).then(function (p) { photo = p; preview.src = p.data; preview.hidden = false; unpick.hidden = false; status.textContent = ""; })
+      .catch(function () { clearPhoto(); status.textContent = "That photo wouldn't open here. A JPEG or PNG works best."; });
+  });
+  unpick.addEventListener("click", clearPhoto);
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = f.namedItem("name").value.trim(), text = f.namedItem("text").value.trim();
+    if (!name) { status.textContent = "Your name, please."; f.namedItem("name").focus(); return; }
+    if (!text && !photo) { status.textContent = "A story, a photo, or both."; return; }
+    var body = { name: name, role: f.namedItem("role").value.trim(), text: text, website: f.namedItem("website").value };
+    if (photo) { body.photo = photo.data; body.w = photo.w; body.h = photo.h; }
+    btn.disabled = true; status.textContent = "Posting…";
+    fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || "That didn't go through. Try again?"); return j; }); })
+      .then(function (j) {
+        if (j.item) {
+          if (j.key) keep(j.item.id, j.key);
+          var none = wall.querySelector(".empty"); if (none) none.remove();
+          wall.insertBefore(card(j.item), wall.firstChild);
+        }
+        if (window.pbTrack) window.pbTrack("story_post", { has_photo: !!body.photo, has_text: !!body.text });
+        form.reset(); clearPhoto(); status.textContent = "Posted. Thank you.";
+      })
+      .catch(function (err) { status.textContent = err.message || "That didn't go through. Try again?"; })
+      .then(function () { btn.disabled = false; });
+  });
+  fetch(API, { headers: { Accept: "application/json" } })
+    .then(function (r) { return r.ok ? r.json() : { items: [] }; })
+    .then(function (j) { render(Array.isArray(j.items) ? j.items : []); })
+    .catch(function () { render([]); });
+})();
+</script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>
