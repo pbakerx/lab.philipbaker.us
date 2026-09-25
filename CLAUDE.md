@@ -337,6 +337,10 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
   - **Share card:** `shared/og.jpg` is the hero itself (brand bar, flask, the big "lab", the fire),
     rendered from `.claude/og-cards/lab-home.html` — re-render it when the hero changes. The old
     `shared/og.png` (brown, listing /second-brain) is unused and left in place.
+  - **Three fires, three jobs** (learned Sep 25 2026, when hovered titles lost their first letters):
+    `--fire` starts near-black red and is for glow only; `--fire-hi` (bright orange to amber) goes
+    under dark text (pills, the count box); `--fire-text` is for gradient text, bright on night and
+    deep red on paper. Set gradient text with `background-image`, not the `background` shorthand.
   - The lab hamburger is restyled on this page only — a bordered square in the page's ink,
     since its stock cream lines vanish on orange — and seated on the content edge.
   - The words are Philip's: each description is the old index's line with the name moved

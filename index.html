@@ -76,9 +76,10 @@
 :root{
   --night:#070605;--paper:#f3eee6;--hot:#ff5a00;--on-fire:#0c0a08;
   --fire:linear-gradient(115deg,#3a0500 0%,#8a0d00 16%,#d93000 34%,#ff5a00 50%,#ff8200 66%,#ffb01f 84%,#ffd27a 100%);
+  --fire-hi:linear-gradient(115deg,#e23a00 0%,#ff5a00 32%,#ff8200 64%,#ffb01f 100%);   /* under dark text: pills, the count box */
   --bg:var(--night);--fg:var(--paper);
   --mute:rgba(243,238,230,.66);--faint:rgba(243,238,230,.14);--line:rgba(243,238,230,.2);
-  --fire-text:var(--fire);--card:rgba(9,7,6,.62);--rib:.55;
+  --fire-text:linear-gradient(100deg,#ff6a10 0%,#ff8a1a 50%,#ffb62e 100%);--card:rgba(9,7,6,.62);--rib:.55;
   --sans:"Inter Tight",Inter,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
   --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --gut:clamp(16px,2.6vw,40px);
@@ -88,7 +89,7 @@
 :root[data-polarity="light"]{
   --bg:var(--paper);--fg:#0c0a08;
   --mute:rgba(12,10,8,.7);--faint:rgba(12,10,8,.12);--line:rgba(12,10,8,.22);
-  --fire-text:linear-gradient(115deg,#4d0600 0%,#9a1000 32%,#d23000 64%,#f05000 100%);--card:rgba(243,238,230,.66);--rib:.3;
+  --fire-text:linear-gradient(100deg,#9e1400 0%,#c42800 50%,#e04800 100%);--card:rgba(243,238,230,.66);--rib:.3;
   color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -136,7 +137,7 @@ body::after{z-index:-1;opacity:var(--rib);mix-blend-mode:overlay;
   background:repeating-linear-gradient(90deg,rgba(255,255,255,.34) 0 1px,rgba(255,255,255,0) 2px 10px,rgba(0,0,0,.42) 18px 21px,rgba(255,255,255,0) 22px 24px),
              url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .intro .top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--in)}
-.count{background:var(--fire);color:var(--on-fire);padding:10px 12px 11px;width:min(190px,44%);display:grid;gap:5px}
+.count{background:var(--fire-hi);color:var(--on-fire);padding:10px 12px 11px;width:min(190px,44%);display:grid;gap:5px}
 .count b{font:300 54px/.9 var(--sans);letter-spacing:-.04em}
 .count .k{color:inherit;opacity:.72;font-size:9.5px}
 .count .segs{display:flex;gap:3px;height:4px;margin-top:3px}
@@ -164,7 +165,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
 input[type=range]::-moz-range-thumb{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;background:var(--bg)}
 input[type=range]:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 button.pill{background:none;color:inherit;cursor:pointer;padding:8px 14px 7px}
-button.pill:hover,button.pill:focus-visible{background:var(--fire);color:var(--on-fire);border-color:transparent;outline:none}
+button.pill:hover,button.pill:focus-visible{background:var(--fire-hi);color:var(--on-fire);border-color:transparent;outline:none}
 
 /* ── shelves ──────────────────────────────────────────────────────────── */
 .shelf{padding-top:clamp(48px,6vw,96px)}
@@ -191,8 +192,8 @@ button.pill:hover,button.pill:focus-visible{background:var(--fire);color:var(--o
 .card.out .go::after{content:"↗"}
 /* hover: the card catches the fire — a glow from the top, the title burns, the pill fills */
 .card:hover,.card:focus-within{background-image:linear-gradient(170deg,rgba(255,90,0,.2) 0%,rgba(138,13,0,.1) 42%,rgba(0,0,0,0) 78%)}
-.card:hover h3 a,.card:focus-within h3 a{background:var(--fire-text);-webkit-background-clip:text;background-clip:text;color:transparent}
-.card:hover .go,.card:focus-within .go{background:var(--fire);color:var(--on-fire);border-color:transparent}
+.card:hover h3 a,.card:focus-within h3 a{background-image:var(--fire-text);background-size:100% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.card:hover .go,.card:focus-within .go{background:var(--fire-hi);color:var(--on-fire);border-color:transparent}
 .card:hover .go::after,.card:focus-within .go::after{transform:translateX(3px)}
 .card.out:hover .go::after,.card.out:focus-within .go::after{transform:translate(2px,-2px)}
 .card:focus-within{outline:2px solid var(--hot);outline-offset:-5px}
