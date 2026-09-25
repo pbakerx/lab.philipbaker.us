@@ -1251,8 +1251,8 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     scratchpad and serve that with `/usr/bin/python3 -m http.server 8931` (port is arbitrary);
     the missing `/shared/*` and `/_vercel/*` files 404 there and that is fine. The Browser pane
     is a hidden page, so shim `requestAnimationFrame = cb => setTimeout(cb, 16)` before anything
-    time-based; jump to a step with `localStorage.setItem('pocketgpt-ui-v2',
-    JSON.stringify({mode:'wizard', i:3}))` + reload (0 welcome, 1 feed, 2 meet, 3 train, 4 lab);
+    time-based; jump to a step with `?step=3` in the URL (0 welcome, 1 feed, 2 meet, 3 train, 4 lab; the
+    page otherwise always opens on the welcome screen, since a reload also forgets the brain);
     `Holo.tip` fires on `mouseenter`, so dispatch that to test a tip. Proof shots: headless Chrome
     with `--virtual-time-budget=14000` on a `shot.html` copy that sets the step and clicks
     `#iGo` on load — **budgets over ~15 s stall or never write the PNG**, because every virtual

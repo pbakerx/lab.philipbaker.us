@@ -1232,6 +1232,8 @@
 
   loadPreset('rhymes');
   S.booted = true;
-  { const ui = loadUI(); S.wiz.i = Math.max(0, Math.min(LAST, ui.i | 0)); setMode('wizard'); }
+  // Always open on the welcome screen: the brain is not remembered across a reload, so the step
+  // should not be either. `?step=3` jumps straight to a screen, for testing.
+  { const q = +(new URLSearchParams(location.search).get('step') || 0); S.wiz.i = Math.max(0, Math.min(LAST, q | 0)); setMode('wizard'); }
   requestAnimationFrame(loop);
 })();
