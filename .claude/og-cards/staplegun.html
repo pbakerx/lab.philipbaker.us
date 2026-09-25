@@ -1,39 +1,21 @@
 <!doctype html>
 <!-- Source for /staplegun/img/og.jpg (1200x630). Render: see vault.html; then JPEG q84 with sips.
-     The photos are the page's own (staplegun/img/office/sg-office-01.jpg, the 20th floor of
-     City Place Tower; sg-office-04.jpg, the conference room). The wordmark and the gunner guy
-     are rendered from Philip's "sg logo.pdf" / gunnerguy.pdf (white art) into staplegun/.
-     Every figure here is on the page itself: twenty years, 48 people, 111 films. -->
+     Philip's brief (Sep 25 2026): one photo, full frame; the gunner guy on top, to one side, in
+     white; nothing else. The photo is the page's own (staplegun/img/office/sg-office-01.jpg, the
+     20th floor of City Place Tower); the gunner guy is rendered from Philip's gunnerguy.pdf
+     (white art) into staplegun/gunner-guy.png. -->
 <html><head><meta charset="utf-8">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
 html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#141417}
-body{font-family:Inter,-apple-system,system-ui,sans-serif;position:relative;color:#fff}
-.panel{position:absolute;left:0;top:0;bottom:0;width:548px;background:#d93a49;overflow:hidden}
-.photos{position:absolute;left:548px;right:0;top:0;bottom:0;display:grid;grid-template-rows:1fr 1fr;gap:6px;background:#141417}
-.photos div{background-size:cover;background-position:center}
-.p1{background-image:url(../../staplegun/img/office/sg-office-01.jpg);background-position:30% 55%}
-.p2{background-image:url(../../staplegun/img/office/sg-office-04.jpg)}
-.eyebrow{position:absolute;left:58px;top:58px;font:500 16px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:5px;text-transform:uppercase;color:rgba(255,255,255,.78)}
-.logo{position:absolute;left:54px;top:96px;width:430px}
-.years{position:absolute;left:58px;top:182px;font:500 25px/1.25 Inter,sans-serif;letter-spacing:-.3px;color:rgba(255,255,255,.9)}
-.guy{position:absolute;right:50px;bottom:47px;height:338px}
-.stats{position:absolute;left:58px;bottom:96px;display:flex;gap:34px}
-.stat .n{font:700 44px/1 Inter,sans-serif;letter-spacing:-1.5px}
-.stat .l{margin-top:8px;font:500 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2.4px;text-transform:uppercase;color:rgba(255,255,255,.8)}
-.url{position:absolute;left:58px;bottom:50px;font:500 17px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.4px;color:rgba(255,255,255,.72)}
+.photo{position:absolute;inset:0;background:url(../../staplegun/img/office/sg-office-01.jpg) 50% 50%/cover no-repeat}
+/* the art is white on transparent, so the monitor's screen and its chin button are holes;
+   fill them dark so the >> reads, the way it does on the original's black */
+.guy{position:absolute;right:92px;bottom:38px;height:452px;aspect-ratio:648/1100;filter:drop-shadow(0 6px 22px rgba(0,0,0,.45))}
+.guy i{position:absolute;background:#16161a}
+.guy .screen{left:6.9%;top:3.9%;width:86.2%;height:24.5%;border-radius:1.5%}
+.guy .button{left:82.2%;top:31.3%;width:9.9%;height:6.2%;border-radius:50%}
+.guy img{position:relative;display:block;width:100%;height:100%}
 </style></head><body>
-<div class="panel">
-  <div class="eyebrow">My first startup</div>
-  <img class="logo" src="staplegun/sg-logo.png" alt="">
-  <div class="years">2001&ndash;2020 &middot; Oklahoma City</div>
-  <div class="stats">
-    <div class="stat"><div class="n">20</div><div class="l">years</div></div>
-    <div class="stat"><div class="n">48</div><div class="l">people</div></div>
-    <div class="stat"><div class="n">111</div><div class="l">films</div></div>
-  </div>
-  <div class="url">lab.philipbaker.us/staplegun</div>
-  <img class="guy" src="staplegun/gunner-guy.png" alt="">
-</div>
-<div class="photos"><div class="p1"></div><div class="p2"></div></div>
+<div class="photo"></div>
+<div class="guy"><i class="screen"></i><i class="button"></i><img src="staplegun/gunner-guy.png" alt=""></div>
 </body></html>
