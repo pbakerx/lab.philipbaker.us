@@ -5,43 +5,37 @@
        --screenshot=<out>.png "file://<abs path to this file>"
      (--headless=new writes the file then never exits: background it, wait for the
       file, pkill it by its --user-data-dir.)
-     The three thumbnails are the real game captures in vault/shots/ — a card made of
-     the actual artifact, not a picture of a card. -->
+     The background is the real game: Alien Maze (Six Flags) as captured in vault/shots/ —
+     Philip's pick for this card, Sep 25 2026. -->
 <html><head><meta charset="utf-8">
 <style>
-html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#1a0e05}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#000}
 body{font-family:Inter,-apple-system,system-ui,sans-serif;position:relative}
-.glow{position:absolute;inset:-20% -10% auto -10%;height:70%;
-      background:radial-gradient(60% 100% at 30% 0%,rgba(255,210,74,.13),transparent 70%)}
+/* the maze at 1.4x, placed so the Six Flags mark sits right of centre */
+.maze{position:absolute;left:356px;top:-76px;width:1008px;height:748px;
+      background:url(../../vault/shots/alien-maze.jpg) 0 0/100% 100% no-repeat}
+.shade{position:absolute;inset:0;
+       background:linear-gradient(90deg,#000 0%,#000 28%,rgba(0,0,0,.84) 43%,rgba(0,0,0,.3) 60%,rgba(0,0,0,0) 72%),
+                  linear-gradient(0deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 26%)}
 .wrap{position:absolute;inset:0;padding:66px 72px;box-sizing:border-box;
       display:flex;flex-direction:column;justify-content:space-between}
 .eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
          font-size:19px;letter-spacing:5.5px;color:#ffd24a;text-transform:uppercase}
-h1{margin:14px 0 0;font-size:88px;line-height:.95;letter-spacing:-2.5px;
+h1{margin:14px 0 0;font-size:96px;line-height:.95;letter-spacing:-3px;
    font-weight:800;color:#fdf3ea}
-.sub{margin:18px 0 0;font-size:27px;line-height:1.35;color:#c9b39d;max-width:660px}
-.shots{display:flex;gap:16px;align-items:flex-end}
-.shot{width:212px;height:159px;border-radius:9px;overflow:hidden;background:#000;
-      border:1px solid #3c2612;box-shadow:0 14px 34px rgba(0,0,0,.55)}
-.shot img{width:100%;height:100%;object-fit:cover;display:block}
-.foot{display:flex;align-items:flex-end;justify-content:space-between;gap:40px}
+h1 span{color:#ffd24a}
+.sub{margin:20px 0 0;font-size:27px;line-height:1.35;color:#d9c6b3;max-width:560px}
 .url{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-     font-size:20px;letter-spacing:.5px;color:#8a7460;white-space:nowrap;padding-bottom:6px}
+     font-size:20px;letter-spacing:.5px;color:#a38c77;white-space:nowrap}
 </style></head><body>
-<div class="glow"></div>
+<div class="maze"></div>
+<div class="shade"></div>
 <div class="wrap">
   <div>
     <div class="eyebrow">Shockwave &amp; Flash &middot; 1997&ndash;2002</div>
-    <h1>The 90s Vault</h1>
+    <h1>The 90s <span>Vault</span></h1>
     <div class="sub">Games built in a '90s agency lab, recovered from the Wayback Machine and playable again in a browser.</div>
   </div>
-  <div class="foot">
-    <div class="shots">
-      <div class="shot"><img src="../../vault/shots/virtual-boomerang.jpg" alt=""></div>
-      <div class="shot"><img src="../../vault/shots/attitude-arena.jpg" alt=""></div>
-      <div class="shot"><img src="../../vault/shots/zone-pilot.jpg" alt=""></div>
-    </div>
-    <div class="url">lab.philipbaker.us/vault</div>
-  </div>
+  <div class="url">lab.philipbaker.us/vault</div>
 </div>
 </body></html>

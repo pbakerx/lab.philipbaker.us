@@ -1,0 +1,108 @@
+<!doctype html>
+<!-- Source for /shared/cards/checkmate.jpg — CheckMate's card on the lab index (the app has
+     no share card of its own). Render: see vault.html; then JPEG with sips.
+     The logo and colours are the app's own (checkmate-two-eosin.vercel.app, Sep 25 2026):
+     a ♞ glyph and "checkmate." in bold Arial, lime #c7f56b on #111513; the eyebrow, headline
+     and sub-line are its own words. The position is the scholar's mate —
+     1.e4 e5 2.Bc4 Nc6 3.Qh5 Nf6?? 4.Qxf7# — and the lens is the analysis: queen on f7,
+     king on e8, nowhere to go. Pieces are Unicode glyphs in Arial Unicode MS. -->
+<html><head><meta charset="utf-8">
+<style>
+html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#111513}
+body{position:relative;color:#f2f3ed;font-family:Arial,Helvetica,sans-serif}
+.glow{position:absolute;inset:0;background:
+  radial-gradient(48% 70% at 74% 50%,rgba(199,245,107,.09),transparent 70%),
+  radial-gradient(45% 55% at 8% 0%,rgba(51,64,42,.7),transparent 72%)}
+.brand{position:absolute;left:58px;top:84px;display:flex;align-items:center;gap:4px;
+       font:750 86px/1 Arial,Helvetica,sans-serif;letter-spacing:-5px;color:#f5f5f0}
+.brand .ic{color:#c7f56b;font-size:98px;letter-spacing:0;margin-right:4px}
+.brand .dot{color:#c7f56b}
+.eyebrow{position:absolute;left:66px;top:236px;font:600 15px/1 Arial;letter-spacing:3px;color:#a8bc99;text-transform:uppercase}
+h1{position:absolute;left:64px;top:266px;margin:0;font:500 52px/1.08 Arial;letter-spacing:-1.8px;color:#f2f3ed}
+.sub{position:absolute;left:66px;top:334px;font:400 22px/1.4 Arial;color:#a8bc99}
+.verdict{position:absolute;left:64px;bottom:62px;display:flex;align-items:center;gap:16px}
+.pill{display:flex;align-items:center;gap:10px;background:#c7f56b;color:#17220a;border-radius:13px;
+      padding:15px 22px 15px 18px;font:700 26px/1 Arial;letter-spacing:-.6px}
+.pill svg{width:26px;height:26px}
+.moves{font:400 17px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;color:#a8bc99}
+.moves b{color:#f2f3ed;font-weight:600}
+svg.board{position:absolute;left:640px;top:14px;width:506px;height:594px;overflow:visible}
+.p{font-family:"Arial Unicode MS","Apple Symbols",sans-serif;text-anchor:middle;dominant-baseline:central}
+</style></head><body>
+<div class="glow"></div>
+<div class="brand"><span class="ic">&#9822;</span>checkmate<span class="dot">.</span></div>
+<div class="eyebrow">Your board. A clear answer.</div>
+<h1>Is it checkmate?</h1>
+<div class="sub">Take a photo. We&rsquo;ll check the position.</div>
+<div class="verdict">
+  <div class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Checkmate</div>
+  <div class="moves">Scholar&rsquo;s mate<br><b>4.Qxf7#</b></div>
+</div>
+
+<svg class="board" viewBox="-30 -110 460 540" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <g id="pos"></g>
+    <clipPath id="lensclip"><circle id="lc" r="112"/></clipPath>
+    <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000" flood-opacity=".55"/></filter>
+  </defs>
+  <rect x="-6" y="-6" width="412" height="412" rx="8" fill="#0b0e0c" filter="url(#sh)"/>
+  <use xlink:href="#pos"/>
+  <!-- the scan frame the app asks for: keep all four corners in view -->
+  <g fill="none" stroke="#c7f56b" stroke-width="5" stroke-linecap="round">
+    <path d="M-22 12V-22H12"/><path d="M388 -22H422V12"/><path d="M422 388V422H388"/><path d="M12 422H-22V388"/>
+  </g>
+  <g id="callout"></g>
+</svg>
+
+<script>
+// board: 8 x 50 units, white at the bottom. rank 8 is y 0..50, file a is x 0..50.
+var FEN = "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR";
+var GLYPH = { k: "♚", q: "♛", r: "♜", b: "♝", n: "♞", p: "♟" };
+var OUT = { k: "♔", q: "♕", r: "♖", b: "♗", n: "♘", p: "♙" };
+var NS = "http://www.w3.org/2000/svg", pos = document.getElementById("pos");
+function el(tag, a, parent) { var e = document.createElementNS(NS, tag); for (var k in a) e.setAttribute(k, a[k]); (parent || pos).appendChild(e); return e; }
+for (var r = 0; r < 8; r++) for (var f = 0; f < 8; f++)
+  el("rect", { x: f * 50, y: r * 50, width: 50, height: 50, fill: (r + f) % 2 ? "#789160" : "#dfe6cf" });
+// the mate, marked the way an analysis board marks it
+el("rect", { x: 200, y: 0, width: 50, height: 50, fill: "#e5484d", opacity: .78 });   // e8: the king, in check
+el("rect", { x: 250, y: 50, width: 50, height: 50, fill: "#c7f56b", opacity: .72 });  // f7: the queen that mates
+FEN.split("/").forEach(function (row, r) {
+  var f = 0;
+  row.split("").forEach(function (c) {
+    if (/\d/.test(c)) { f += +c; return; }
+    var x = f * 50 + 25, y = r * 50 + 27, t = c.toLowerCase(), white = c !== t;
+    if (white) {
+      el("text", { x: x, y: y, class: "p", "font-size": 42, fill: "#fbfbf6" }).textContent = GLYPH[t];
+      el("text", { x: x, y: y, class: "p", "font-size": 42, fill: "#141813" }).textContent = OUT[t];
+    } else {
+      el("text", { x: x, y: y, class: "p", "font-size": 42, fill: "#161a15" }).textContent = GLYPH[t];
+    }
+    f++;
+  });
+});
+// the scope: a loupe laid right on e8/f7, magnifying them in place, with a reticle
+var co = document.getElementById("callout");
+var P = { x: 250, y: 50 }, Z = 2.1, R = 118;
+var lc = document.getElementById("lc"); lc.setAttribute("cx", P.x); lc.setAttribute("cy", P.y); lc.setAttribute("r", R);
+el("circle", { cx: P.x, cy: P.y, r: R + 6, fill: "#111513", filter: "url(#sh)" }, co);
+var g = el("g", { "clip-path": "url(#lensclip)" }, co);
+var u = el("use", { transform: "translate(" + P.x + " " + P.y + ") scale(" + Z + ") translate(" + (-P.x) + " " + (-P.y) + ")" }, g);
+u.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#pos");
+// reticle: crosshair with a gap in the middle, and ticks round the rim
+var rt = el("g", { stroke: "#c7f56b", "stroke-linecap": "round" }, co);
+[[0, -1], [0, 1], [-1, 0], [1, 0]].forEach(function (d) {
+  el("line", { x1: P.x + d[0] * 26, y1: P.y + d[1] * 26, x2: P.x + d[0] * (R - 6), y2: P.y + d[1] * (R - 6), "stroke-width": 2, opacity: .85 }, rt);
+});
+for (var a = 0; a < 360; a += 15) {
+  var rad = a * Math.PI / 180, long = a % 90 === 0, r0 = R - (long ? 16 : 8);
+  el("line", { x1: P.x + Math.cos(rad) * r0, y1: P.y + Math.sin(rad) * r0, x2: P.x + Math.cos(rad) * (R - 2), y2: P.y + Math.sin(rad) * (R - 2), "stroke-width": long ? 3 : 1.6, opacity: long ? 1 : .7 }, rt);
+}
+el("circle", { cx: P.x, cy: P.y, r: R, fill: "none", stroke: "#c7f56b", "stroke-width": 6 }, co);
+el("circle", { cx: P.x, cy: P.y, r: R + 10, fill: "none", stroke: "#c7f56b", "stroke-width": 1.5, opacity: .45 }, co);
+// the reading, pinned to the scope
+var tag = el("g", { transform: "translate(" + (P.x + R * .62) + " " + (P.y + R * .78) + ")" }, co);
+el("rect", { width: 132, height: 36, rx: 10, fill: "#c7f56b", filter: "url(#sh)" }, tag);
+var tt = el("text", { x: 66, y: 18.5, "text-anchor": "middle", "dominant-baseline": "central", "font-family": "Arial", "font-weight": 700, "font-size": 18, fill: "#17220a", "letter-spacing": "1.2" }, tag);
+tt.textContent = "Qxf7#";
+</script>
+</body></html>

@@ -313,10 +313,13 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
   `localStorage["lab-polarity"]`, applied before first paint by an inline head script).
   Inter Tight + Geist Mono from Google Fonts; no build, no library.
   - **Three shelves of cards:** Toys and Widgets (T-nn), Case Studies & Stories (S-nn),
-    Partner Companies (P-nn). A card's picture is that page's own `og:image`; the four with
-    no share card of their own (Emergence, CheckMate, AechTech, Catapult) use a 1200×630
-    headless-Chrome screenshot of their home page, as JPEG in `shared/cards/` — re-shoot if
-    a site changes. Desktop: six columns, each shelf opens on two `.big` cards (span 3) and
+    Partner Companies (P-nn). A card's picture is that page's own `og:image`; the four sites
+    with no share card of their own get a JPEG in `shared/cards/`: AechTech and Catapult are
+    1200×630 headless-Chrome screenshots of their home page (re-shoot if a site changes);
+    Emergence and CheckMate are designed cards (Sep 25 2026, Philip's brief: Emergence's logo
+    large with graphs from its UI; CheckMate's board with a scope on the analysis) whose
+    sources are `.claude/og-cards/emergence.html` / `checkmate.html` — built from each app's
+    own logo, words, colours and data, as the comments in those files say. Desktop: six columns, each shelf opens on two `.big` cards (span 3) and
     then runs in threes, and the border rules assume exactly that. Tablet pairs up (an odd
     count gives the first card the whole row). Phone: one column.
   - **Adding or removing an entry touches:** the card, its shelf's "NN entries", the hero's

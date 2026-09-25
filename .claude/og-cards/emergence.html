@@ -1,0 +1,118 @@
+<!doctype html>
+<!-- Source for /shared/cards/emergence.jpg — Emergence's card on the lab index (the app has no
+     share card of its own). Render: see vault.html; then JPEG with sips.
+     Everything here is the app's own (emergence-observatory-beryl.vercel.app, read Sep 25 2026):
+     the logo is its Lucide "activity" mark plus "emergence." in Arial 600 with the mint dot; the
+     eyebrow, headline, meta line and panel titles are its words; the colours are its CSS.
+     The three graphs are Oklahoma City's public attention (English Wikipedia), 84 days,
+     2026-06-12 .. 2026-09-03, standardized within the window:
+       02 / Shared rhythms — the Observatory chart, its two SVG paths copied verbatim;
+       01 / State trajectory and 02 / Recurrence — the Pattern lenses (delay 3 days), redrawn here
+       from the values in the app's own tooltips. Those are rounded to two decimals, so a handful
+       of recurrence cells right at the 0.7 threshold can differ from the app's grid (1454 vs 1462
+       mint cells; the 505 excluded same-week cells match exactly). -->
+<html><head><meta charset="utf-8">
+<style>
+html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#0c141c}
+body{position:relative;color:#edf2f7;font-family:Arial,Helvetica,sans-serif}
+.glow{position:absolute;inset:0;background:radial-gradient(55% 70% at 16% 18%,rgba(157,226,208,.09),transparent 70%)}
+.meta{position:absolute;top:50px;font:700 13px/1 Arial;letter-spacing:3px;color:#9eb6c7;text-transform:uppercase}
+.meta.l{left:66px}
+.meta.r{right:64px;letter-spacing:2.4px}
+.meta.r i{font-style:normal;opacity:.5;margin:0 10px}
+.logo{position:absolute;left:54px;top:82px;display:flex;align-items:center;gap:14px}
+.logo svg{width:100px;height:100px;color:#9de2d0;flex:none}
+.logo b{font:600 110px/1 Arial,Helvetica,sans-serif;letter-spacing:-5.5px;color:#edf2f7;padding-bottom:6px}
+.logo b i{font-style:normal;color:#9de2d0}
+.tag{position:absolute;right:64px;top:106px;text-align:right;font:400 36px/1.12 Georgia,"Times New Roman",serif;color:#edf2f7}
+.tag small{display:block;margin-top:12px;font:400 16px/1.45 Arial;color:#9eb6c7}
+.panels{position:absolute;left:64px;right:64px;bottom:50px;height:282px;display:grid;grid-template-columns:minmax(0,1fr) 282px 282px;gap:20px}
+.panel{position:relative;background:#0f1b24;border:1px solid #223240;border-radius:12px;padding:15px 16px 12px;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.pk{font:700 11px/1 Arial;letter-spacing:1.8px;color:#9eb6c7;text-transform:uppercase}
+.pt{margin-top:7px;font:400 16px/1.2 Arial;color:#edf2f7;white-space:nowrap}
+.pt span{color:#9eb6c7}
+.legend{position:absolute;right:16px;top:14px;display:flex;gap:14px;font:400 12px/1 Arial;color:#b4c8d6}
+.legend i{display:inline-block;width:18px;height:0;border-top:2px solid #82c9ff;vertical-align:middle;margin-right:6px}
+.legend i.ld{border-top:2px dashed #a2acba}
+.plot{position:relative;flex:1;min-height:0;margin-top:12px}
+.plot svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.dates{position:relative;height:14px;margin-top:6px;font:400 11px/1 Arial;color:#9eb6c7}
+.dates span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.dates span:last-child{transform:translateX(-100%)}
+</style></head><body>
+<div class="glow"></div>
+<div class="meta l">An observatory of collective rhythms</div>
+<div class="meta r">Signal lab<i>/</i>Prototype 04</div>
+<div class="logo">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+  <b>emergence<i>.</i></b>
+</div>
+<div class="tag">Notice what emerges.<small>We don&rsquo;t make the data beautiful;<br>we notice when the data is beautiful.</small></div>
+
+<div class="panels">
+  <div class="panel">
+    <div class="pk">02 / Shared rhythms</div>
+    <div class="pt">Public attention <span>across places</span></div>
+    <div class="legend"><span><i></i>Oklahoma City</span><span><i class="ld"></i>London</span></div>
+    <div class="plot">
+      <svg viewBox="40 18 416 220" preserveAspectRatio="none">
+        <g stroke="#223240" stroke-width="1" vector-effect="non-scaling-stroke">
+          <line x1="40" y1="232" x2="456" y2="232" vector-effect="non-scaling-stroke"/><line x1="40" y1="180" x2="456" y2="180" stroke="#2f4555" vector-effect="non-scaling-stroke"/>
+          <line x1="40" y1="127" x2="456" y2="127" vector-effect="non-scaling-stroke"/><line x1="40" y1="75" x2="456" y2="75" vector-effect="non-scaling-stroke"/><line x1="40" y1="22" x2="456" y2="22" vector-effect="non-scaling-stroke"/>
+        </g>
+        <path fill="none" stroke="#a2acba" stroke-width="1.8" stroke-dasharray="5 4" vector-effect="non-scaling-stroke" d="M40,168.9L45.0,190.1L50.0,177.0L55.0,179.5L60.0,185.5L65.0,160.6L70.0,164.1L75.0,166.3L80.0,195.3L85.1,178.2L90.1,128.1L95.1,161.1L100.1,159.5L105.1,177.5L110.1,157.1L115.1,176.4L120.1,166.9L125.2,147.9L130.2,179.2L135.2,166.8L140.2,149.4L145.2,171.1L150.2,176.8L155.2,169.6L160.2,127.5L165.3,165.1L170.3,160.3L175.3,168.1L180.3,157.5L185.3,174.3L190.3,156.6L195.3,147.0L200.3,163.9L205.3,161.8L210.4,166.1L215.4,180.5L220.4,183.2L225.4,153.9L230.4,158.3L235.4,182.5L240.4,184.1L245.4,183.1L250.5,184.9L255.5,198.8L260.5,181.4L265.5,163.4L270.5,182.8L275.5,192.9L280.5,166.7L285.5,186.0L290.6,201.4L295.6,185.5L300.6,176.9L305.6,190.1L310.6,193.1L315.6,200.2L320.6,208.5L325.6,215.0L330.6,199.5L335.7,187.2L340.7,194.6L345.7,199.2L350.7,196.4L355.7,196.1L360.7,205.1L365.7,193.4L370.7,186.6L375.8,197.9L380.8,177.8L385.8,197.5L390.8,193.7L395.8,203.7L400.8,202.3L405.8,182.4L410.8,194.8L415.9,194L420.9,195.0L425.9,189.5L430.9,200.0L435.9,196.7L440.9,186.7L445.9,187.8L450.9,170.7L456,191.0"/>
+        <path fill="none" stroke="#82c9ff" stroke-width="2.4" stroke-linejoin="round" vector-effect="non-scaling-stroke" d="M40,169.4L45.0,160.9L50.0,127.3L55.0,163.8L60.0,175.0L65.0,171.3L70.0,164.5L75.0,178.2L80.0,183.9L85.1,181.4L90.1,161.6L95.1,178.2L100.1,166.9L105.1,184.3L110.1,182.0L115.1,180.0L120.1,184.6L125.2,188.8L130.2,190.7L135.2,187.2L140.2,191.3L145.2,205.1L150.2,199.2L155.2,191.2L160.2,186.8L165.3,189.8L170.3,195.1L175.3,178.4L180.3,190.2L185.3,181.1L190.3,190.7L195.3,186.3L200.3,149.5L205.3,82.1L210.4,139.7L215.4,166.3L220.4,159.8L225.4,138.8L230.4,172.7L235.4,180.0L240.4,144.9L245.4,176.6L250.5,178.4L255.5,174.9L260.5,172.4L265.5,180.5L270.5,176.1L275.5,184.0L280.5,193.1L285.5,190.8L290.6,176.7L295.6,172.9L300.6,178.9L305.6,179.7L310.6,182.1L315.6,192.0L320.6,192.3L325.6,192.5L330.6,191.4L335.7,182.0L340.7,189.7L345.7,182.7L350.7,175.4L355.7,187.9L360.7,182.9L365.7,180.7L370.7,178.6L375.8,186.0L380.8,187.0L385.8,188.3L390.8,189.7L395.8,199.2L400.8,192.8L405.8,197.4L410.8,178.5L415.9,177.9L420.9,189.4L425.9,193.8L430.9,194.4L435.9,191.8L440.9,191.4L445.9,193.4L450.9,187.9L456,190.8"/>
+      </svg>
+    </div>
+    <div class="dates"><span style="left:3.6%">06-15</span><span style="left:22.8%">07-01</span><span style="left:42%">07-17</span><span style="left:61.3%">08-02</span><span style="left:80.5%">08-18</span><span style="left:100%">09-03</span></div>
+  </div>
+  <div class="panel">
+    <div class="pk">01 / State trajectory</div>
+    <div class="pt">Where has this state been?</div>
+    <div class="plot"><svg id="traj" viewBox="196 52 244 244"></svg></div>
+  </div>
+  <div class="panel">
+    <div class="pk">02 / Recurrence</div>
+    <div class="pt">When does a state return?</div>
+    <div class="plot"><svg id="rec" viewBox="-1 -1 83 83" shape-rendering="crispEdges"></svg></div>
+  </div>
+</div>
+
+<script>
+// Oklahoma City, public attention, standardized (the app's tooltip values): 84 days from 2026-06-12
+var X = [0.57, 1.06, 2.98,
+  0.89,0.26,0.47,0.86,0.07,-0.25,-0.11,1.02,0.07,0.72,-0.27,-0.14,-0.03,-0.30,-0.54,-0.65,
+  -0.44,-0.68,-1.46,-1.13,-0.67,-0.42,-0.59,-0.90,0.06,-0.61,-0.09,-0.65,-0.39,1.71,5.56,2.27,
+  0.75,1.12,2.32,0.39,-0.03,1.98,0.16,0.06,0.26,0.40,-0.06,0.19,-0.26,-0.78,-0.65,
+  0.16,0.38,0.03,-0.01,-0.15,-0.72,-0.73,-0.74,-0.68,-0.14,-0.59,-0.19,0.23,-0.48,-0.20,-0.07,
+  0.05,-0.37,-0.43,-0.50,-0.59,-1.13,-0.76,-1.03,0.05,0.09,-0.57,-0.82,-0.85,-0.71,-0.68,
+  -0.80,-0.48,-0.65];
+var DELAY = 3, N = X.length - DELAY, NS = "http://www.w3.org/2000/svg";
+function el(tag, a, parent) { var e = document.createElementNS(NS, tag); for (var k in a) e.setAttribute(k, a[k]); parent.appendChild(e); return e; }
+var P = []; for (var t = 0; t < N; t++) P.push([X[t], X[t + DELAY]]);
+
+// 01 / State trajectory — the app's own geometry: 0 at (255, 235), one standard deviation = 30.5 units
+var tr = document.getElementById("traj");
+el("rect", { x: 65, y: 45, width: 380, height: 380, fill: "#0e1c25" }, tr);
+[-1, 0, 1].forEach(function (v) {
+  el("line", { x1: 255 + 30.5 * v, y1: 45, x2: 255 + 30.5 * v, y2: 425, stroke: v ? "#223240" : "#2f4555", "stroke-width": 1 }, tr);
+  el("line", { x1: 65, y1: 235 - 30.5 * v, x2: 445, y2: 235 - 30.5 * v, stroke: v ? "#223240" : "#2f4555", "stroke-width": 1 }, tr);
+});
+var pts = P.map(function (p) { return [255 + 30.5 * p[0], 235 - 30.5 * p[1]]; });
+el("polyline", { points: pts.map(function (q) { return q.join(","); }).join(" "), fill: "none", stroke: "#82c9ff", "stroke-width": 1.2, opacity: .38, "stroke-linejoin": "round" }, tr);
+pts.forEach(function (q, i) { el("circle", { cx: q[0], cy: q[1], r: i ? 3.2 : 6, fill: i ? "#82c9ff" : "#ffffff", opacity: i ? .75 : 1 }, tr); });
+
+// 02 / Recurrence — a cell is lit when two days' states sit within 0.7 of each other;
+// same-week pairs (|i - j| <= 7) are the app's "excluded from summary" slate
+var rc = document.getElementById("rec");
+el("rect", { x: 0, y: 0, width: N, height: N, fill: "#0b151d" }, rc);
+var mint = el("g", { fill: "#9de2d0", opacity: .85 }, rc), slate = el("g", { fill: "#385363", opacity: .5 }, rc);
+for (var i = 0; i < N; i++) for (var j = 0; j < N; j++) {
+  var dx = P[i][0] - P[j][0], dy = P[i][1] - P[j][1];
+  if (Math.sqrt(dx * dx + dy * dy) < 0.7) el("rect", { x: i, y: j, width: 1.02, height: 1.02 }, Math.abs(i - j) <= 7 ? slate : mint);
+}
+el("rect", { x: 0, y: 0, width: 1, height: N, fill: "none", stroke: "#f7b76b", "stroke-width": .5 }, rc);
+el("rect", { x: 0, y: 0, width: N, height: 1, fill: "none", stroke: "#f7b76b", "stroke-width": .5 }, rc);
+document.title = "cells " + mint.childNodes.length + " / " + slate.childNodes.length;
+</script>
+</body></html>
