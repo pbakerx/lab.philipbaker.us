@@ -617,7 +617,7 @@
     const n = p.name, V = S.model.cfg.V, d = S.model.cfg.d;
     if (n === 'token embeddings') return `<b>Token embeddings</b>: one row per character (labeled at left), ${d} numbers each. That row is everything the model "knows" about a character on its own. The Letter map is these rows, squashed flat.`;
     if (n === 'position embeddings') return `<b>Position embeddings</b>: one row per slot in its memory window. Added to each character so it knows <i>where</i> a letter sits in the snippet, not just which letter it is.`;
-    if (/Q\/K\/V$/.test(n)) return `<b>Attention's three lenses</b>, side by side. <b>Q</b> (query): what is this letter looking for? <b>K</b> (key): what does each earlier letter offer? When a query matches a key, that square lights up in the Attention map, and <b>V</b> (value) is what gets passed along.`;
+    if (/Q\/K\/V$/.test(n)) return `<b>Attention's three lenses</b>, stacked. <b>Q</b> (query): what is this letter looking for? <b>K</b> (key): what does each earlier letter offer? When a query matches a key, that square lights up in the Attention map, and <b>V</b> (value) is what gets passed along.`;
     if (/attention output$/.test(n)) return `<b>Attention output</b>: blends what all the heads found back into one list of numbers per letter.`;
     if (/MLP expand$/.test(n)) return `<b>MLP expand</b>: the "thinking" step. Each letter's ${d} numbers fan out to ${4 * d}, pass through a bend, then get squeezed back. Researchers think much of what a model memorizes lives in layers like this.`;
     if (/MLP squeeze$/.test(n)) return `<b>MLP squeeze</b>: folds the ${4 * d}-wide thinking back down to ${d} numbers.`;
@@ -634,6 +634,7 @@
     const charRows = (p === m.wte && !tr) || (p === m.wlm && tr), qkv = /Q\/K\/V$/.test(p.name);
     const gl = charRows && (H - (qkv ? 16 : 0)) / ch >= 8 ? 18 : 0, gt = qkv ? 18 : 0;
     let mx = 1e-9; for (const v of src) mx = Math.max(mx, Math.abs(v));
+    if (qkv) return drawQKV(x, W, H, p, src, mx, hover);
     const off = document.createElement('canvas'); off.width = cw; off.height = ch;
     const ox = off.getContext('2d'), im = ox.createImageData(cw, ch), P = hex(COL.pink), N = hex(COL.cyan), B = hex(COL.bg);
     for (let i = 0; i < p.r; i++) for (let j = 0; j < p.c; j++) {
@@ -661,6 +662,30 @@
         const who = charRows ? ` (“${show(S.chars[g.tr ? j : i])}”)` : '';
         $('#xread').textContent = `row ${i + 1}${who}, column ${j + 1}: ${v >= 0 ? '+' : ''}${v.toFixed(4)}`;
       }
+    }
+  }
+  // Q, K and V stacked: three d×d blocks, one lens each.
+  function drawQKV(x, W, H, p, src, mx, hover) {
+    const d = p.r, gap = 4, lw = 62, bh = (H - 2 * gap) / 3, P = hex(COL.pink), N = hex(COL.cyan), B = hex(COL.bg);
+    const names = [['Q', 'query', COL.lime], ['K', 'key', COL.amber], ['V', 'value', COL.cyan]];
+    for (let k = 0; k < 3; k++) {
+      const off = document.createElement('canvas'); off.width = d; off.height = d;
+      const ox = off.getContext('2d'), im = ox.createImageData(d, d);
+      for (let i = 0; i < d; i++) for (let j = 0; j < d; j++) {
+        const v = src[i * p.c + k * d + j] / mx, t = Math.pow(Math.abs(v), 0.7), c = v >= 0 ? P : N;
+        im.data.set([B[0] + (c[0] - B[0]) * t, B[1] + (c[1] - B[1]) * t, B[2] + (c[2] - B[2]) * t, 255], (i * d + j) * 4);
+      }
+      ox.putImageData(im, 0, 0);
+      const y = k * (bh + gap);
+      x.imageSmoothingEnabled = false; x.drawImage(off, lw, y, W - lw, bh);
+      x.fillStyle = names[k][2]; x.font = '700 15px ui-monospace,Menlo,monospace'; x.textBaseline = 'middle'; x.fillText(names[k][0], 6, y + bh / 2 - 7);
+      x.font = '10px ui-monospace,Menlo,monospace'; x.fillStyle = COL.dim; x.fillText(names[k][1], 6, y + bh / 2 + 9);
+    }
+    x.textBaseline = 'alphabetic';
+    S.xg = null;
+    if (hover && hover.x > lw) {
+      const k = Math.min(2, Math.floor(hover.y / (bh + gap))), col = Math.floor((hover.x - lw) / ((W - lw) / d)), row = Math.floor((hover.y - k * (bh + gap)) / (bh / d));
+      if (row >= 0 && row < d && col >= 0 && col < d) { const v = src[row * p.c + k * d + col]; $('#xread').textContent = `${names[k][1]} · row ${row + 1}, col ${col + 1}: ${v >= 0 ? '+' : ''}${v.toFixed(4)}`; }
     }
   }
   $('#xray').addEventListener('pointermove', e => { const r = e.currentTarget.getBoundingClientRect(); drawXray({ x: e.clientX - r.left, y: e.clientY - r.top }); });
@@ -705,7 +730,7 @@
   function refreshLive() {
     S.liveAt = performance.now();
     if ($('#cDash').classList.contains('on') || S.mode === 'free') withPrompt($('#attnLive'), sampleText(48, 0.6));
-    withPrompt($('#live'), sampleText(90, 0.7));
+    withPrompt($('#live'), sampleText(90, +$('#temp').value));
     $('#liveStep').textContent = S.viewing >= 0 ? `· at step ${S.snaps[S.viewing].step.toLocaleString()} (rewound)` : S.step ? `· now, after ${S.step.toLocaleString()} steps` : '· before any training';
   }
   // Filmstrip: one sample saved at each milestone step, so "getting closer" is visible at a glance.
@@ -832,7 +857,7 @@
   function applyFocus(scroll) {
     document.querySelectorAll('.focus').forEach(e => e.classList.remove('focus'));
     const st = STEPS[S.wiz.i], sb = st.subs[S.wiz.sub];
-    if (!sb || !sb.focus || subMet(st, S.wiz.sub) || S.mode !== 'wizard' || document.body.classList.contains('at-intro')) return;
+    if (!sb || !sb.focus || subMet(st, S.wiz.sub) || S.mode !== 'wizard' || document.body.classList.contains('at-intro') || document.body.classList.contains('dashstep')) return;
     const el = $(sb.focus); if (!el) return;
     void el.offsetWidth; el.classList.add('focus');
     if (scroll) { const r = el.getBoundingClientRect(); if (r.top < 90 || r.bottom > innerHeight - 20) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
@@ -848,7 +873,7 @@
     });
     if (!changed) return;
     renderRail(); renderWork(); applyFocus(false);
-    if (curMet) {
+    if (curMet && !document.body.classList.contains('dashstep')) {
       const i = S.wiz.i, done = stepDone(st);
       toast(done ? '✓ All done here. Press Next when you’re ready.' : '✓ Nice. On to the next part.');
       setTimeout(() => { if (S.wiz.i === i && subMet(st, S.wiz.sub)) setSub(firstUnmet(st)); }, 1100);
@@ -1108,7 +1133,9 @@
   ['#lr', '#batch'].forEach(id => $(id).addEventListener('change', howChanged)); $('#opt').addEventListener('change', howChanged);
   [['#batch', v => v], ['#speed', v => v + '/f'], ['#temp', v => v.toFixed(2)], ['#zoom', v => '±' + v.toFixed(2)], ['#kickAmt', v => v.toFixed(2)]]
     .forEach(([id, f]) => { const el = $(id), v = $({ '#batch': '#vBatch', '#speed': '#vSpeed', '#temp': '#vTemp', '#zoom': '#vZoom', '#kickAmt': '#vKick' }[id]); const u = () => (v.textContent = f(+el.value)); el.addEventListener('input', u); u(); });
-  $('#temp').addEventListener('input', () => touch('talk'));
+  $('#temp').addEventListener('input', () => { touch('talk'); $('#dTemp').value = $('#temp').value; $('#vdTemp').textContent = (+$('#temp').value).toFixed(2); });
+  $('#dTemp').addEventListener('input', e => { $('#temp').value = e.target.value; $('#temp').dispatchEvent(new Event('input')); });
+  $('#dTemp').addEventListener('change', () => refreshLive());
   $('#prompt').addEventListener('input', () => touch('talk'));
   $('#gen').onclick = () => {
     if (S.gen) { S.gen.left = 0; return; }
