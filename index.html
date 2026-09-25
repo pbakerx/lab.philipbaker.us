@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-polarity="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,6 +19,7 @@
 <meta name="twitter:image" content="https://lab.philipbaker.us/shared/og.png">
 <meta name="twitter:title" content="lab — a hodge-podge of projects">
 <meta name="twitter:description" content="AI case studies, a live widget builder, playable '90s Shockwave games, agency archives and small Mac apps.">
+<meta name="theme-color" content="#f4511e">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -42,36 +43,201 @@
       "name": "lab — a hodge-podge of projects by Philip Baker",
       "url": "https://lab.philipbaker.us/",
       "isPartOf": {"@id": "https://lab.philipbaker.us/#website"},
-      "dateModified": "2026-09-23",
+      "dateModified": "2026-09-25",
       "mainEntity": {
         "@type": "ItemList",
         "itemListElement": [
-          {"@type": "ListItem", "position": 1, "name": "Widget Maker", "url": "https://lab.philipbaker.us/widget-maker/"},
-          {"@type": "ListItem", "position": 2, "name": "Missile Command", "url": "https://lab.philipbaker.us/missile-command/"},
-          {"@type": "ListItem", "position": 3, "name": "Missile Command Deluxe — City Run", "url": "https://lab.philipbaker.us/missile-command-deluxe/"},
-          {"@type": "ListItem", "position": 4, "name": "Maze Wars+", "url": "https://lab.philipbaker.us/maze-wars/"},
-          {"@type": "ListItem", "position": 5, "name": "The Vault — '90s Shockwave & Flash games", "url": "https://lab.philipbaker.us/vault/"},
-          {"@type": "ListItem", "position": 6, "name": "am.com 1998 — Ackerman McQueen", "url": "https://lab.philipbaker.us/90s-web-ackerman-mcqueen/"},
-          {"@type": "ListItem", "position": 7, "name": "STAPLEGUN, 2001–2020", "url": "https://lab.philipbaker.us/staplegun/"},
-          {"@type": "ListItem", "position": 8, "name": "PlainPaste", "url": "https://lab.philipbaker.us/paste-plain/"},
-          {"@type": "ListItem", "position": 9, "name": "AI solves billing — case study", "url": "https://lab.philipbaker.us/ai-solves-billing/"},
-          {"@type": "ListItem", "position": 10, "name": "Second brain — case study", "url": "https://lab.philipbaker.us/second-brain-case-study/"},
-          {"@type": "ListItem", "position": 11, "name": "Pocket GPT", "url": "https://lab.philipbaker.us/GPT/"}
+          {"@type": "ListItem", "position": 1, "name": "Pocket GPT", "url": "https://lab.philipbaker.us/GPT/"},
+          {"@type": "ListItem", "position": 2, "name": "Widget Maker", "url": "https://lab.philipbaker.us/widget-maker/"},
+          {"@type": "ListItem", "position": 3, "name": "Missile Command", "url": "https://lab.philipbaker.us/missile-command/"},
+          {"@type": "ListItem", "position": 4, "name": "Missile Command Deluxe — City Run", "url": "https://lab.philipbaker.us/missile-command-deluxe/"},
+          {"@type": "ListItem", "position": 5, "name": "Maze Wars+", "url": "https://lab.philipbaker.us/maze-wars/"},
+          {"@type": "ListItem", "position": 6, "name": "PlainPaste", "url": "https://lab.philipbaker.us/paste-plain/"},
+          {"@type": "ListItem", "position": 7, "name": "AI solves billing — case study", "url": "https://lab.philipbaker.us/ai-solves-billing/"},
+          {"@type": "ListItem", "position": 8, "name": "Second brain — case study", "url": "https://lab.philipbaker.us/second-brain-case-study/"},
+          {"@type": "ListItem", "position": 9, "name": "am.com 1998 — Ackerman McQueen", "url": "https://lab.philipbaker.us/90s-web-ackerman-mcqueen/"},
+          {"@type": "ListItem", "position": 10, "name": "The 90s Vault", "url": "https://lab.philipbaker.us/vault/"},
+          {"@type": "ListItem", "position": 11, "name": "STAPLEGUN, 2001–2020", "url": "https://lab.philipbaker.us/staplegun/"}
         ]
       }
     }
   ]
 }
 </script>
+<script>try{if(localStorage.getItem("lab-polarity")==="dark")document.documentElement.dataset.polarity="dark"}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-body{font-family:Inter,system-ui,sans-serif;background:#1a0e05;color:#fdf3ea;
-     display:grid;place-items:center;min-height:100vh;margin:0;line-height:1.55}
-main{padding:40px 22px;max-width:760px}
-h1{margin:0 0 4px}
-a{color:#ffd24a}
-.back{margin:32px 0 0;font-size:14px}
-.back a{color:#c9b39d;text-decoration:none}
-.back a:hover{color:#ffd24a}
+/* Two inks, one switch. Everything on the page is drawn in --fg on --bg; SWITCH POLARITY
+   swaps them. The social cards are the only other colour on the page, on purpose. */
+:root{
+  --orange:#f4511e;--ink:#131311;
+  --bg:var(--orange);--fg:var(--ink);
+  --mute:rgba(19,19,17,.8);--faint:rgba(19,19,17,.22);
+  --sans:"Inter Tight",Inter,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --gut:clamp(16px,2.6vw,40px);
+  --in:clamp(12px,1.3vw,18px);
+  color-scheme:light;
+}
+:root[data-polarity="dark"]{
+  --bg:var(--ink);--fg:var(--orange);
+  --mute:rgba(244,81,30,.84);--faint:rgba(244,81,30,.26);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);color:var(--fg)}
+body{margin:0;background:var(--bg);color:var(--fg);font:500 15px/1.45 var(--sans);
+     -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+a{color:inherit}
+.page{max-width:1560px;margin:0 auto;padding:0 var(--gut)}
+.k{display:block;font:500 10px/1.2 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+.v{display:block;font:700 11.5px/1.3 var(--sans);letter-spacing:.03em;text-transform:uppercase}
+.two{margin:0;font:700 10.5px/1.3 var(--sans);letter-spacing:.05em;text-transform:uppercase}
+.two span{display:block}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1.5px solid currentColor;border-radius:999px;
+      padding:5px 11px 4px;font:700 10.5px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+
+/* ── hero ─────────────────────────────────────────────────────────────── */
+.bar{display:grid;grid-template-columns:1.25fr 1fr 1fr;align-items:center;gap:var(--in);
+     min-height:92px;padding:0 64px 0 0;border-bottom:1px solid var(--fg)}
+.brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font:800 21px/1 var(--sans);letter-spacing:-.02em}
+.brand svg{flex:none}
+.brand:hover{opacity:.72}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--fg)}
+.meta>*{padding:12px var(--in) 13px;margin:0}
+.meta>*+*{border-left:1px solid var(--fg)}
+.meta>:first-child{padding-left:0}
+.meta .v a{text-decoration:none;border-bottom:1px solid var(--faint)}
+.meta .v a:hover{border-bottom-color:currentColor}
+#xy{font-family:var(--mono);font-weight:500;letter-spacing:0}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-bottom:1px solid var(--fg);
+       height:clamp(420px,calc(100vh - 330px),720px);height:clamp(420px,calc(100svh - 330px),720px)}
+/* the words sit in column 2 and the flask in column 1; the DOM keeps words first for phones */
+.intro{position:relative;display:flex;flex-direction:column;justify-content:space-between;grid-column:2;grid-row:1;
+       padding:var(--in) 0 var(--in) var(--in);border-left:1px solid var(--fg);min-width:0}
+.intro .top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--in)}
+.count{background:var(--fg);color:var(--bg);padding:10px 12px 11px;width:min(190px,44%);display:grid;gap:5px}
+.count b{font:300 54px/.9 var(--sans);letter-spacing:-.04em}
+.count .k{color:inherit;opacity:.72;font-size:9.5px}
+.count .segs{display:flex;gap:3px;height:4px;margin-top:3px}
+.count .segs i{flex:var(--n);background:currentColor;opacity:.9}
+.count .segs i:nth-child(2){opacity:.55}
+.count .segs i:nth-child(3){opacity:.3}
+h1{margin:0;font:800 clamp(128px,24vw,390px)/.74 var(--sans);letter-spacing:-.058em;margin-left:-.045em;padding-bottom:.07em}
+.lede{margin:10px 0 0;font:600 clamp(18px,1.7vw,24px)/1.15 var(--sans);letter-spacing:-.015em}
+.specimen{position:relative;grid-column:1;grid-row:1;min-width:0;overflow:hidden}
+.specimen::before,.specimen::after{content:"";position:absolute;background:var(--faint);pointer-events:none}
+.specimen::before{left:50%;top:0;bottom:0;width:1px}
+.specimen::after{top:54%;left:0;right:0;height:1px}
+#flask{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y;z-index:1}
+#flask.drag{cursor:grabbing}
+.specimen .hint{position:absolute;left:0;bottom:var(--in);z-index:2;pointer-events:none}
+.controls{display:flex;align-items:center;gap:clamp(14px,2.4vw,40px);min-height:58px;padding:10px 0;border-bottom:1px solid var(--fg)}
+.controls .two{margin-right:auto}
+.slide{display:grid;grid-template-columns:auto minmax(80px,150px) 2.4em;align-items:center;gap:10px;
+       font:700 9.5px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.slide output{font:500 10.5px/1 var(--mono);text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;background:none;width:100%;height:20px;margin:0;color:inherit;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:1px;background:currentColor}
+input[type=range]::-moz-range-track{height:1px;background:currentColor}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;margin-top:-5px;border-radius:50%;border:1.5px solid currentColor;background:var(--bg)}
+input[type=range]::-moz-range-thumb{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;background:var(--bg)}
+input[type=range]:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+button.pill{background:none;color:inherit;cursor:pointer;padding:8px 14px 7px}
+button.pill:hover,button.pill:focus-visible{background:var(--fg);color:var(--bg);outline:none}
+
+/* ── shelves ──────────────────────────────────────────────────────────── */
+.shelf{padding-top:clamp(48px,6vw,96px)}
+#toys{padding-top:clamp(28px,3vw,44px)}
+.shelf-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:end;gap:var(--in);padding-bottom:14px;border-bottom:1px solid var(--fg)}
+.shelf-head .num{font:500 12px/1 var(--mono);padding-bottom:.5em}
+.shelf-head h2{margin:0;font:800 clamp(38px,6.4vw,96px)/.86 var(--sans);letter-spacing:-.05em}
+.shelf-head .n{font:500 11px/1 var(--mono);text-transform:uppercase;padding-bottom:.55em;white-space:nowrap}
+.grid{display:grid;grid-template-columns:minmax(0,1fr)}
+.card{position:relative;display:flex;flex-direction:column;gap:14px;padding:var(--in);border-bottom:1px solid var(--fg);
+      transition:background-color .28s ease,color .28s ease}
+.shot{position:relative;aspect-ratio:1200/630;overflow:hidden;background:var(--ink);outline:1px solid var(--faint)}
+.shot img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.15,1)}
+.card:hover .shot img,.card:focus-within .shot img{transform:scale(1.045)}
+.card .meta-line{display:flex;justify-content:space-between;gap:12px;font:500 11px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.01em}
+.card .meta-line span:last-child{text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card h3{margin:0;font:700 clamp(21px,1.75vw,27px)/1.02 var(--sans);letter-spacing:-.025em}
+.card h3 a{text-decoration:none}
+.card h3 a::after{content:"";position:absolute;inset:0;z-index:2}
+.card h3 a:focus-visible{outline:none}
+.card p{margin:0;color:var(--mute);font:500 14.5px/1.42 var(--sans);transition:color .28s ease}
+.card .go{margin-top:auto;align-self:flex-start}
+.card .go::after{content:"→";display:inline-block;transition:transform .28s ease}
+.card.out .go::after{content:"↗"}
+.card:hover,.card:focus-within{background:var(--fg);color:var(--bg)}
+.card:hover p,.card:focus-within p{color:var(--bg);opacity:.78}
+.card:hover .go::after,.card:focus-within .go::after{transform:translateX(3px)}
+.card.out:hover .go::after,.card.out:focus-within .go::after{transform:translate(2px,-2px)}
+.card:focus-within{outline:2px solid var(--fg);outline-offset:-5px}
+.card.big h3{font-size:clamp(24px,2.3vw,34px)}
+
+
+/* ── footer ───────────────────────────────────────────────────────────── */
+.foot{display:flex;justify-content:space-between;align-items:center;gap:var(--in);margin-top:clamp(56px,7vw,110px);
+      padding:18px 0 28px;border-top:1px solid var(--fg);font:600 12px/1.2 var(--sans);letter-spacing:.04em;text-transform:uppercase}
+.foot a{text-decoration:none}
+.foot a:hover{text-decoration:underline;text-underline-offset:3px}
+.foot .mono{font:500 11px/1 var(--mono);color:var(--mute);text-transform:none}
+
+/* the lab-wide hamburger: its stock lines are cream, which vanish on the orange */
+/* seated on the content edge, and it glides back to the drawer when opened on a wide screen */
+#pb-menu .hamburger{right:var(--gut);transition:right .46s cubic-bezier(.16,1,.3,1),background-color .2s}
+#pb-menu .hamburger:not(.is-open){right:max(var(--gut),calc((100vw - 1560px) / 2 + var(--gut)))}
+#pb-menu .hamburger:not(.is-open){background:var(--bg);box-shadow:0 0 0 1px var(--fg);padding:0 6px}
+#pb-menu .hamburger:not(.is-open) span{background:var(--fg)}
+
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+
+/* Desktop: six columns. Every shelf opens on two big cards (span 3) and then runs in threes
+   (span 2), so a row starts at the first card and at every third one after it. */
+@media (min-width:1101px){
+  .grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .card{grid-column:span 2}
+  .card.big{grid-column:span 3}
+  .grid>.card:not(:first-child):not(:nth-child(3n)){border-left:1px solid var(--fg)}
+}
+/* Tablet: pairs. An odd count lets the first card take the whole row so the rest pair up. */
+@media (min-width:721px) and (max-width:1100px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid>.card:nth-child(even){border-left:1px solid var(--fg)}
+  .grid>.card:first-child:nth-last-child(odd){grid-column:1/-1}
+  .grid:has(>.card:first-child:nth-last-child(odd))>.card:nth-child(even){border-left:0}
+  .grid:has(>.card:first-child:nth-last-child(odd))>.card:nth-child(odd):not(:first-child){border-left:1px solid var(--fg)}
+}
+@media (max-width:1100px){
+  .meta{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .meta>:nth-child(3){border-left:0;padding-left:0}
+  .meta>:nth-child(-n+2){border-bottom:1px solid var(--fg)}
+  .controls{flex-wrap:wrap;row-gap:6px}
+  .controls .two{flex-basis:100%}
+}
+@media (max-width:720px){
+  .bar{grid-template-columns:1fr auto;min-height:88px}
+  .bar .two.c{display:none}
+  .bar .two.r{text-align:right}
+  .meta>:nth-child(n+3){display:none}
+  .meta>:nth-child(-n+2){border-bottom:0}
+  .stage{display:block;height:auto}
+  .intro{min-height:0;padding:var(--in) 0 calc(var(--in) + 4px);border-left:0}
+  h1{font-size:clamp(128px,44vw,230px);margin-top:28px}
+  .specimen{border-top:1px solid var(--fg);height:min(92vw,400px)}
+  .controls{display:grid;grid-template-columns:1fr;gap:4px;padding:12px 0 14px}
+  .slide{grid-template-columns:5.2em minmax(0,1fr) 2.4em}
+  .controls button.pill{justify-self:start;margin-top:8px}
+  .grid>.card{padding-left:0;padding-right:0}
+  .shelf-head{grid-template-columns:auto minmax(0,1fr)}
+  .shelf-head .n{grid-column:2;padding-bottom:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important}
+}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- GA4:START -->
@@ -87,28 +253,493 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <!-- LAB-EVENTS:END -->
 </head>
 <body>
+<div class="page">
+
+<header class="hero" id="top">
+  <div class="bar">
+    <a class="brand" href="https://philipbaker.us">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5 21.5 7v10L12 22.5 2.5 17V7z" fill="currentColor"/><path d="M2.9 7.2 12 12.4l9.1-5.2M12 12.4v9.7" fill="none" stroke="var(--bg)" stroke-width="1.3"/></svg>
+      Philip Baker
+    </a>
+    <p class="two c"><span>Project index</span><span>lab.philipbaker.us</span></p>
+    <p class="two r"><span>PB Productions Lab</span><span>Oklahoma City</span></p>
+  </div>
+
+  <div class="meta">
+    <p><span class="k">Subject</span><span class="v">A hodge-podge of projects</span></p>
+    <nav aria-label="Shelves"><span class="k">Shelves</span><span class="v"><a href="#toys">Toys and Widgets</a> · <a href="#stories">Case Studies &amp; Stories</a> · <a href="#partners">Partner Companies</a></span></nav>
+    <p><span class="k">Instruction</span><span class="v">Drag the flask · pick a card</span></p>
+    <p><span class="k">Pointer</span><span class="v" id="xy">X 0000 / Y 0000</span></p>
+  </div>
+
+  <div class="stage">
+    <div class="intro">
+      <div class="top">
+        <span class="pill">One-off projects</span>
+        <div class="count" aria-label="15 entries: 8 toys and widgets, 5 case studies and stories, 2 partner companies">
+          <b>15</b>
+          <span class="k">Entries on the shelves</span>
+          <span class="segs" aria-hidden="true"><i style="--n:8"></i><i style="--n:5"></i><i style="--n:2"></i></span>
+        </div>
+      </div>
+      <div>
+        <h1>lab</h1>
+        <p class="lede">A hodge-podge of projects</p>
+      </div>
+    </div>
+    <div class="specimen">
+      <canvas id="flask" role="img" aria-label="A lab flask built from cubes, fizzing. Drag it to turn it."></canvas>
+      <span class="k hint">Drag to orbit</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <p class="two"><span>Lab interface</span><span>Cubic flask specimen</span></p>
+    <label class="slide">Module <input type="range" id="mod" min="40" max="100" value="86"><output for="mod">086</output></label>
+    <label class="slide">Fizz <input type="range" id="fizz" min="0" max="100" value="40"><output for="fizz">040</output></label>
+    <label class="slide">Spread <input type="range" id="spread" min="100" max="170" value="100"><output for="spread">100</output></label>
+    <button class="pill" id="polarity" type="button" aria-pressed="false">Switch polarity</button>
+  </div>
+</header>
+
 <main>
-<h1>lab</h1>
-<p>A hodge-podge of projects</p>
-<p><a href="/ai-solves-billing/">/ai-solves-billing</a> — how billing stopped getting ignored: spoken timesheets in, invoices out</p>
-<p><a href="/GPT/">/GPT</a> — Pocket GPT: a real, tiny transformer that trains in your browser; talk to it, watch it pay attention, and drag it around its own loss landscape</p>
-<p><a href="/widget-maker/">/widget-maker</a> — say what you want and watch it get built, live; save a favorite and everyone sees it</p>
-<p><a href="https://emergence-observatory-beryl.vercel.app/">/emergence</a> — city-signal observatory: weather, attention, and news language across six places; hunt for emerging patterns</p>
-<p><a href="https://checkmate-two-eosin.vercel.app/">/checkmate</a> — OTB chess scanner: photo the board and get a clear checkmate answer</p>
-<p><a href="/missile-command/">/missile-command</a> — six cities, thirty missiles: a one-file tribute to the 1980 arcade game; mouse and keys on a desktop, thumbs on a phone</p>
-<p><a href="/missile-command-deluxe/">/missile-command-deluxe</a> — City Run: fly through a luminous 3D city under attack and call the strikes from your base camp; radar, six towers, a new city every level, in the original&rsquo;s colours</p>
-<p><a href="/maze-wars/">/maze-wars</a> — Maze Wars+, the 1986 Macintosh network shooter, rebuilt in one-bit dither: four mazes, robot sidekicks, teleporters, and whoever else is online — with chat</p>
-<p><a href="/90s-web-ackerman-mcqueen/">/90s-web-ackerman-mcqueen</a> — the black-and-white am.com, 1997–1999</p>
-<p><a href="/staplegun/">/staplegun</a> — STAPLEGUN, 2001–2020: the agency, the reel, the whole story</p>
-<p><a href="/vault/">/vault</a> — '90s Shockwave &amp; Flash games, playable again — plus the Six Flags shells and the Speed Zone film</p>
-<p><a href="/paste-plain/">/paste-plain</a> — PlainPaste, a tiny Mac menu bar app that pastes as plain text</p>
-<p><a href="/second-brain/">/second-brain</a> — PB's second brain, the notes</p>
-<p><a href="/mind-harvest/">/mind-harvest</a> — the story bank: stories mined out of a working life, one post a day for 180 days</p>
-<p><a href="/second-brain-case-study/">/second-brain-case-study</a> — the case study: ten scattered places folded into one page you can talk to</p>
-<p><a href="https://aechtech.com/">AechTech.com</a> — AI software development, from product strategy to full-stack code; makers of AssistAI, voice-first navigation for the blind</p>
-<p><a href="/hello/">/hello</a> — the example</p>
-<p class="back"><a href="https://philipbaker.us">&larr; philipbaker.us</a></p>
+
+<section class="shelf" id="toys" aria-labelledby="toys-h">
+  <div class="shelf-head"><span class="num">01</span><h2 id="toys-h">Toys and Widgets</h2><span class="n">08 entries</span></div>
+  <div class="grid">
+    <article class="card big">
+      <div class="shot"><img src="/GPT/img/og.png" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>T-01</span><span>/GPT</span></div>
+      <h3><a href="/GPT/">Pocket GPT</a></h3>
+      <p>A real, tiny transformer that trains in your browser; talk to it, watch it pay attention, and drag it around its own loss landscape</p>
+      <span class="pill go">Open</span>
+    </article>
+    <article class="card big">
+      <div class="shot"><img src="/widget-maker/img/og.png" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>T-02</span><span>/widget-maker</span></div>
+      <h3><a href="/widget-maker/">Widget Maker</a></h3>
+      <p>Say what you want and watch it get built, live; save a favorite and everyone sees it</p>
+      <span class="pill go">Open</span>
+    </article>
+    <article class="card out">
+      <div class="shot"><img src="/shared/cards/emergence.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>T-03</span><span>/emergence</span></div>
+      <h3><a href="https://emergence-observatory-beryl.vercel.app/">Emergence</a></h3>
+      <p>City-signal observatory: weather, attention, and news language across six places; hunt for emerging patterns</p>
+      <span class="pill go">Visit</span>
+    </article>
+    <article class="card out">
+      <div class="shot"><img src="/shared/cards/checkmate.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>T-04</span><span>/checkmate</span></div>
+      <h3><a href="https://checkmate-two-eosin.vercel.app/">CheckMate</a></h3>
+      <p>OTB chess scanner: photo the board and get a clear checkmate answer</p>
+      <span class="pill go">Visit</span>
+    </article>
+    <article class="card">
+      <div class="shot"><img src="/missile-command/img/og.png" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>T-05</span><span>/missile-command</span></div>
+      <h3><a href="/missile-command/">Missile Command</a></h3>
+      <p>Six cities, thirty missiles: a one-file tribute to the 1980 arcade game; mouse and keys on a desktop, thumbs on a phone</p>
+      <span class="pill go">Play</span>
+    </article>
+    <article class="card">
+      <div class="shot"><img src="/missile-command-deluxe/img/og.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>T-06</span><span>/missile-command-deluxe</span></div>
+      <h3><a href="/missile-command-deluxe/">City Run</a></h3>
+      <p>Fly through a luminous 3D city under attack and call the strikes from your base camp; radar, six towers, a new city every level, in the original&rsquo;s colours</p>
+      <span class="pill go">Play</span>
+    </article>
+    <article class="card">
+      <div class="shot"><img src="/maze-wars/img/og.png" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>T-07</span><span>/maze-wars</span></div>
+      <h3><a href="/maze-wars/">Maze Wars+</a></h3>
+      <p>The 1986 Macintosh network shooter, rebuilt in one-bit dither: four mazes, robot sidekicks, teleporters, and whoever else is online — with chat</p>
+      <span class="pill go">Play</span>
+    </article>
+    <article class="card">
+      <div class="shot"><img src="/paste-plain/img/og.png" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>T-08</span><span>/paste-plain</span></div>
+      <h3><a href="/paste-plain/">PlainPaste</a></h3>
+      <p>A tiny Mac menu bar app that pastes as plain text</p>
+      <span class="pill go">Open</span>
+    </article>
+  </div>
+</section>
+
+<section class="shelf" id="stories" aria-labelledby="stories-h">
+  <div class="shelf-head"><span class="num">02</span><h2 id="stories-h">Case Studies &amp; Stories</h2><span class="n">05 entries</span></div>
+  <div class="grid">
+    <article class="card big">
+      <div class="shot"><img src="/ai-solves-billing/img/og.png" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>S-01</span><span>/ai-solves-billing</span></div>
+      <h3><a href="/ai-solves-billing/">AI Solves Billing</a></h3>
+      <p>How billing stopped getting ignored: spoken timesheets in, invoices out</p>
+      <span class="pill go">Read</span>
+    </article>
+    <article class="card big">
+      <div class="shot"><img src="/second-brain-case-study/img/og.png" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>S-02</span><span>/second-brain-case-study</span></div>
+      <h3><a href="/second-brain-case-study/">Second Brain Case Study</a></h3>
+      <p>Ten scattered places folded into one page you can talk to</p>
+      <span class="pill go">Read</span>
+    </article>
+    <article class="card">
+      <div class="shot"><img src="/90s-web-ackerman-mcqueen/img/og.png" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>S-03</span><span>/90s-web-ackerman-mcqueen</span></div>
+      <h3><a href="/90s-web-ackerman-mcqueen/">am.com 1998</a></h3>
+      <p>The black-and-white am.com, 1997–1999</p>
+      <span class="pill go">Read</span>
+    </article>
+    <article class="card">
+      <div class="shot"><img src="/vault/img/og.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>S-04</span><span>/vault</span></div>
+      <h3><a href="/vault/">The 90s Vault</a></h3>
+      <p>'90s Shockwave &amp; Flash games, playable again — plus the Six Flags shells and the Speed Zone film</p>
+      <span class="pill go">Play</span>
+    </article>
+    <article class="card">
+      <div class="shot"><img src="/staplegun/img/og.png" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>S-05</span><span>/staplegun</span></div>
+      <h3><a href="/staplegun/">STAPLEGUN, 2001–2020</a></h3>
+      <p>The agency, the reel, the whole story</p>
+      <span class="pill go">Read</span>
+    </article>
+  </div>
+</section>
+
+<section class="shelf" id="partners" aria-labelledby="partners-h">
+  <div class="shelf-head"><span class="num">03</span><h2 id="partners-h">Partner Companies</h2><span class="n">02 entries</span></div>
+  <div class="grid">
+    <article class="card big out">
+      <div class="shot"><img src="/shared/cards/aechtech.jpg" alt="" width="960" height="504" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>P-01</span><span>aechtech.com</span></div>
+      <h3><a href="https://aechtech.com/">AechTech</a></h3>
+      <p>AI software development, from product strategy to full-stack code; makers of AssistAI, voice-first navigation for the blind</p>
+      <span class="pill go">Visit</span>
+    </article>
+    <article class="card big out">
+      <div class="shot"><img src="/shared/cards/catapult.jpg" alt="" width="1200" height="630" loading="lazy" decoding="async"></div>
+      <div class="meta-line"><span>P-02</span><span>catapultcreative.agency</span></div>
+      <h3><a href="https://catapultcreative.agency/">Catapult Creative</a></h3>
+      <p>An Oklahoma-based agency for brand strategy, campaigns, and creative that performs</p>
+      <span class="pill go">Visit</span>
+    </article>
+  </div>
+</section>
+
 </main>
+
+<footer class="foot">
+  <a href="https://philipbaker.us">&larr; philipbaker.us</a>
+  <span class="mono">lab.philipbaker.us</span>
+  <a href="#top">Top &uarr;</a>
+</footer>
+
+</div>
 <script src="/shared/menu.js" defer></script>
+<script>
+/* The flask, the pointer readout and the polarity switch.
+   A tiny voxel renderer on a 2D canvas: no library, no build. Every cube is drawn
+   back to front (painter's order); only faces turned toward the camera are drawn, and
+   faces pressed against a cube of the same kind are skipped while nothing is spread. */
+(function () {
+  "use strict";
+  var root = document.documentElement;
+  var reduce = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  // [shadow rgb, lit rgb, alpha, edge]
+  var PAL = {
+    light: {
+      glass:  [[206, 92, 40], [255, 240, 228], 0.2, "rgba(19,19,17,.36)"],
+      liquid: [[6, 6, 5], [70, 67, 58], 1],
+      bubble: [[200, 178, 160], [255, 248, 240], 1]
+    },
+    dark: {
+      glass:  [[104, 32, 8], [255, 214, 196], 0.13, "rgba(244,81,30,.5)"],
+      liquid: [[112, 28, 4], [255, 130, 84], 1],
+      bubble: [[160, 146, 136], [252, 246, 240], 1]
+    }
+  };
+  var LIGHT = (function () { var x = -0.42, y = 0.78, z = -0.46, l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; })();
+  var LEVELS = 32;
+
+  function shades(p) {
+    var out = [];
+    for (var i = 0; i < LEVELS; i++) {
+      var t = i / (LEVELS - 1);
+      out.push("rgb(" + Math.round(p[0][0] + (p[1][0] - p[0][0]) * t) + "," +
+                         Math.round(p[0][1] + (p[1][1] - p[0][1]) * t) + "," +
+                         Math.round(p[0][2] + (p[1][2] - p[0][2]) * t) + ")");
+    }
+    return { c: out, a: p[2], edge: p[3] || null };
+  }
+
+  // model: list of [x, y, z, kindName, flag]; kinds get small integer ids here
+  function View(canvas, o) {
+    var ctx = canvas.getContext("2d");
+    var names = o.kinds, K = {}, cols = [];
+    names.forEach(function (n, i) { K[n] = i; });
+    var src = o.model, n = src.length;
+    var SX = new Float32Array(n), SY = new Float32Array(n), SZ = new Float32Array(n);
+    var SK = new Uint8Array(n), SM = new Uint8Array(n), SF = new Uint8Array(n);
+    var at = {};
+    src.forEach(function (v, i) { SX[i] = v[0]; SY[i] = v[1]; SZ[i] = v[2]; SK[i] = K[v[3]]; SF[i] = v[4] || 0; at[v[0] + "," + v[1] + "," + v[2]] = SK[i] + 1; });
+    // neighbour mask: bit (axis*2 + (sign>0)) set when the neighbour is the same kind
+    var D6 = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
+    for (var i = 0; i < n; i++) {
+      var m = 0;
+      for (var d = 0; d < 6; d++) if (at[(SX[i] + D6[d][0]) + "," + (SY[i] + D6[d][1]) + "," + (SZ[i] + D6[d][2])] === SK[i] + 1) m |= 1 << d;
+      SM[i] = m;
+    }
+    var cap = n + 256;
+    var CX = new Float32Array(cap), CY = new Float32Array(cap), CZ = new Float32Array(cap);
+    var CK = new Uint8Array(cap), CM = new Uint8Array(cap), CH = new Float32Array(cap);
+    var order = [];
+    var W = 1, H = 1, F = 1;
+    var v = {
+      yaw: o.yaw, pitch: o.pitch, spread: 1, module: o.module || 0.86, slosh: 0, t: 0,
+      extra: null, dist: 60,
+      resize: function () {
+        var r = canvas.getBoundingClientRect();
+        W = Math.max(1, Math.round(r.width * DPR)); H = Math.max(1, Math.round(r.height * DPR));
+        if (canvas.width !== W) canvas.width = W;
+        if (canvas.height !== H) canvas.height = H;
+        F = Math.min(o.fitH * H / o.height, o.fitW * W / o.width) * v.dist;
+      },
+      recolor: function () {
+        var p = o.palette();
+        cols = names.map(function (nm) { return shades(p[nm]); });
+      },
+      draw: draw
+    };
+
+    function draw() {
+      var cyw = Math.cos(v.yaw), syw = Math.sin(v.yaw), cp = Math.cos(v.pitch), sp = Math.sin(v.pitch);
+      // images of the world axes in camera space (yaw about y, then pitch about x)
+      var E = [[cyw, sp * syw, -cp * syw], [0, cp, sp], [syw, -sp * cyw, cp * cyw]];
+      var s = v.spread, cy = o.center, D = v.dist, cnt = 0, h0 = 0.5 * v.module, t = v.t;
+      var cull = s < 1.02 && v.module > 0.8;
+      for (var i = 0; i < n; i++) {
+        var x = SX[i] * s, y = (SY[i] - cy) * s, z = SZ[i] * s;
+        if (SF[i] === 1 && v.slosh) y += v.slosh * Math.sin(t * 2.3 + SX[i] * 0.72 + SZ[i] * 0.47);
+        CX[cnt] = x * E[0][0] + y * E[1][0] + z * E[2][0];
+        CY[cnt] = x * E[0][1] + y * E[1][1] + z * E[2][1];
+        CZ[cnt] = x * E[0][2] + y * E[1][2] + z * E[2][2] + D;
+        CK[cnt] = SK[i]; CM[cnt] = cull ? SM[i] : 0; CH[cnt] = h0; cnt++;
+      }
+      var ex = v.extra;
+      if (ex) for (var j = 0; j < ex.length && cnt < cap; j++) {
+        var b = ex[j], bx = b.x * s, by = (b.y - cy) * s, bz = b.z * s;
+        CX[cnt] = bx * E[0][0] + by * E[1][0] + bz * E[2][0];
+        CY[cnt] = bx * E[0][1] + by * E[1][1] + bz * E[2][1];
+        CZ[cnt] = bx * E[0][2] + by * E[1][2] + bz * E[2][2] + D;
+        CK[cnt] = K[b.k]; CM[cnt] = 0; CH[cnt] = h0 * b.s; cnt++;
+      }
+      order.length = cnt;
+      for (var q = 0; q < cnt; q++) order[q] = q;
+      order.sort(function (a, b) { return CZ[b] - CZ[a]; });
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      ctx.lineJoin = "round";
+      ctx.lineWidth = Math.max(0.75, 0.7 * DPR);
+      var ox = W / 2 + (o.offX || 0) * W, oy = H / 2 + (o.offY || 0) * H, alpha = -1;
+      var P = [0, 0, 0, 0, 0, 0, 0, 0];
+      for (var r = 0; r < cnt; r++) {
+        var k = order[r], c0 = CX[k], c1 = CY[k], c2 = CZ[k], h = CH[k], col = cols[CK[k]];
+        if (c2 < 1) continue;
+        for (var ax = 0; ax < 3; ax++) {
+          var e = E[ax], dp = e[0] * c0 + e[1] * c1 + e[2] * c2, sg;
+          if (dp < -h) sg = 1; else if (dp > h) sg = -1; else continue;
+          if (CM[k] & (1 << (ax * 2 + (sg > 0 ? 1 : 0)))) continue;
+          var b1 = E[(ax + 1) % 3], b2 = E[(ax + 2) % 3];
+          var fx = c0 + sg * h * e[0], fy = c1 + sg * h * e[1], fz = c2 + sg * h * e[2];
+          for (var cI = 0; cI < 4; cI++) {
+            var u = (cI === 0 || cI === 1) ? h : -h, w2 = (cI === 0 || cI === 3) ? h : -h;
+            var px = fx + u * b1[0] + w2 * b2[0], py = fy + u * b1[1] + w2 * b2[1], pz = fz + u * b1[2] + w2 * b2[2];
+            if (pz < 0.5) pz = 0.5;
+            P[cI * 2] = ox + F * px / pz; P[cI * 2 + 1] = oy - F * py / pz;
+          }
+          var lit = sg * (e[0] * LIGHT[0] + e[1] * LIGHT[1] + e[2] * LIGHT[2]);
+          var lv = Math.round(Math.pow(Math.max(0, Math.min(1, lit * 0.5 + 0.5)), 1.15) * (LEVELS - 1));
+          if (alpha !== col.a) { alpha = col.a; ctx.globalAlpha = alpha; }
+          ctx.beginPath();
+          ctx.moveTo(P[0], P[1]); ctx.lineTo(P[2], P[3]); ctx.lineTo(P[4], P[5]); ctx.lineTo(P[6], P[7]);
+          ctx.closePath();
+          ctx.fillStyle = col.c[lv];
+          ctx.fill();
+          if (col.edge) { ctx.globalAlpha = 1; alpha = 1; ctx.strokeStyle = col.edge; ctx.stroke(); }
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+    v.recolor();
+    return v;
+  }
+
+  // ── the flask ──────────────────────────────────────────────────────────
+  var R0 = 7.4, RN = 2.5, HB = 10, TOP = 14, LV = 4;
+  function rad(y) { return y < HB ? R0 + (RN - R0) * (y / HB) : RN; }
+  function flaskModel() {
+    var out = [];
+    for (var y = 0; y <= TOP; y++) {
+      var r = y === TOP ? 3.1 : rad(y + 0.5), m = Math.ceil(r) + 1;
+      for (var x = -m; x <= m; x++) for (var z = -m; z <= m; z++) {
+        var d = Math.hypot(x, z);
+        if (y === 0) { if (d <= r - 0.3) out.push([x, y, z, "glass"]); continue; }
+        if (y === TOP) { if (d <= r && d > r - 1.1) out.push([x, y, z, "glass"]); continue; }
+        if (d <= r && d > r - 1.05) out.push([x, y, z, "glass"]);
+        else if (y <= LV && d <= r - 1.05) out.push([x, y, z, "liquid", y === LV ? 1 : 0]);
+      }
+    }
+    return out;
+  }
+
+  var views = [];
+  var polarity = function () { return root.dataset.polarity === "dark" ? "dark" : "light"; };
+
+  var canvas = document.getElementById("flask");
+  var flask = canvas && View(canvas, {
+    model: flaskModel(), kinds: ["glass", "liquid", "bubble"], center: 8,
+    height: 24, width: 17, fitH: 0.9, fitW: 0.8, offY: 0.01,
+    yaw: 0.6, pitch: -0.42, palette: function () { return PAL[polarity()]; }
+  });
+  if (flask) views.push(flask);
+
+  function sizeAll() { views.forEach(function (v) { v.resize(); v.draw(); }); }
+  if (/[?&]qa=1/.test(location.search)) window.__lab = { flask: flask };
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(function () { sizeAll(); });
+    if (canvas) ro.observe(canvas);
+  } else addEventListener("resize", sizeAll);
+  sizeAll();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeAll);
+
+  // ── the flask's life: orbit, fizz, slosh ───────────────────────────────
+  if (flask) {
+    var bubbles = [], fizz = 0.4, running = false, visible = true, raf = 0, prev = 0, carry = 0;
+    var yawVel = reduce ? 0 : 0.32, AUTO = reduce ? 0 : 0.32, PITCH = flask.pitch, energy = 0, dragging = false, lx = 0, ly = 0, lt = 0;
+    flask.extra = bubbles;
+
+    function spawn() {
+      var a = Math.random() * Math.PI * 2, rr = Math.sqrt(Math.random()) * (rad(LV + 0.5) - 2.1);
+      bubbles.push({ x: Math.cos(a) * rr, y: LV + 0.9, z: Math.sin(a) * rr, vy: 2.2 + Math.random() * 1.6,
+                     ph: Math.random() * 6.3, s: 0.42 + Math.random() * 0.3, k: "bubble" });
+    }
+    function step(dt) {
+      flask.t += dt;
+      if (!dragging) {
+        yawVel += (AUTO - yawVel) * Math.min(1, dt * 1.4);
+        flask.yaw += yawVel * dt;
+        flask.pitch += (PITCH - flask.pitch) * Math.min(1, dt * 0.6);   // tilt drifts home
+      }
+      energy *= Math.exp(-dt * 1.6);
+      flask.slosh = reduce ? 0 : 0.1 + Math.min(0.55, energy);
+      carry += dt * fizz * 14;
+      while (carry >= 1 && bubbles.length < 220) { carry -= 1; spawn(); }
+      if (carry > 1) carry = 0;
+      for (var i = bubbles.length - 1; i >= 0; i--) {
+        var b = bubbles[i];
+        b.y += b.vy * dt;
+        var pull = b.y < TOP + 1 ? Math.min(1, dt * (b.y > HB - 3 ? 3.2 : 0.9)) : 0;
+        b.x += (Math.sin(flask.t * 3.1 + b.ph) * 0.35 - b.x) * pull + Math.sin(flask.t * 2 + b.ph) * 0.2 * dt;
+        b.z += (Math.cos(flask.t * 2.7 + b.ph) * 0.35 - b.z) * pull;
+        if (b.y > TOP + 1) { b.s -= dt * 0.22; b.vy *= 1 - dt * 0.3; b.x += Math.sin(b.ph) * dt * 0.6; }
+        if (b.s <= 0.04 || b.y > TOP + 10) bubbles.splice(i, 1);
+      }
+    }
+    function loop(now) {
+      raf = 0;
+      if (!running) return;
+      var dt = Math.min(0.05, (now - (prev || now)) / 1000); prev = now;
+      step(dt);
+      flask.draw();
+      raf = requestAnimationFrame(loop);
+    }
+    function setRun() {
+      var go = visible && !document.hidden && !reduce;
+      if (go === running) return;
+      running = go; prev = 0;
+      if (go && !raf) raf = requestAnimationFrame(loop);
+    }
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; setRun(); }).observe(canvas);
+    }
+    document.addEventListener("visibilitychange", setRun);
+    setRun();
+    if (reduce) flask.draw();
+
+    // drag to orbit; vertical page scroll still works on a phone (touch-action: pan-y)
+    canvas.addEventListener("pointerdown", function (e) {
+      dragging = true; lx = e.clientX; ly = e.clientY; lt = performance.now(); yawVel = 0;
+      canvas.classList.add("drag");
+      try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    canvas.addEventListener("pointermove", function (e) {
+      if (!dragging) return;
+      var now = performance.now(), dt = Math.max(1, now - lt) / 1000, dx = e.clientX - lx, dy = e.clientY - ly;
+      flask.yaw += dx * 0.009;
+      if (e.pointerType === "mouse") flask.pitch = Math.max(-1.25, Math.min(0.3, flask.pitch - dy * 0.006));
+      yawVel = (dx * 0.009) / dt;
+      energy += Math.abs(dx) * 0.004;
+      lx = e.clientX; ly = e.clientY; lt = now;
+      if (!running) flask.draw();
+    });
+    function up() {
+      if (!dragging) return;
+      dragging = false; canvas.classList.remove("drag");
+      if (performance.now() - lt > 80) yawVel = AUTO;
+      yawVel = Math.max(-6, Math.min(6, yawVel));
+    }
+    canvas.addEventListener("pointerup", up);
+    canvas.addEventListener("pointercancel", up);
+
+    // the three sliders
+    function bind(id, fn) {
+      var el = document.getElementById(id), out = el && el.nextElementSibling;
+      if (!el) return;
+      function set() { fn(+el.value); if (out) out.textContent = ("00" + el.value).slice(-3); if (!running) flask.draw(); }
+      el.addEventListener("input", set); set();
+    }
+    bind("mod", function (x) { flask.module = x / 100; });
+    bind("fizz", function (x) { fizz = x / 100; });
+    bind("spread", function (x) { flask.spread = x / 100; });
+    if (!reduce) for (var w = 0; w < 30; w++) { spawn(); bubbles[w].y += Math.random() * 11; }
+  }
+
+  // ── pointer readout ────────────────────────────────────────────────────
+  var xy = document.getElementById("xy"), px = 0, py = 0, pend = false;
+  function pad4(n) { return ("000" + Math.max(0, Math.round(n))).slice(-4); }
+  if (xy) addEventListener("pointermove", function (e) {
+    px = e.clientX; py = e.clientY;
+    if (pend) return; pend = true;
+    requestAnimationFrame(function () { pend = false; xy.textContent = "X " + pad4(px) + " / Y " + pad4(py); });
+  }, { passive: true });
+
+  // ── polarity ───────────────────────────────────────────────────────────
+  var btn = document.getElementById("polarity"), tc = document.querySelector('meta[name="theme-color"]');
+  function paint() {
+    var dark = polarity() === "dark";
+    if (btn) btn.setAttribute("aria-pressed", String(dark));
+    if (tc) tc.setAttribute("content", dark ? "#131311" : "#f4511e");
+    views.forEach(function (v) { v.recolor(); v.draw(); });
+  }
+  paint();
+  if (btn) btn.addEventListener("click", function () {
+    var next = polarity() === "dark" ? "light" : "dark";
+    try { localStorage.setItem("lab-polarity", next); } catch (_) {}
+    function swap() { root.dataset.polarity = next; paint(); }
+    if (!document.startViewTransition || reduce) { swap(); return; }
+    var r = btn.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    var R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    var t = document.startViewTransition(swap);
+    t.ready.then(function () {
+      root.animate({ clipPath: ["circle(0px at " + x + "px " + y + "px)", "circle(" + R + "px at " + x + "px " + y + "px)"] },
+                   { duration: 700, easing: "cubic-bezier(.7,0,.2,1)", pseudoElement: "::view-transition-new(root)" });
+    }).catch(function () {});
+  });
+})();
+</script>
 </body>
 </html>

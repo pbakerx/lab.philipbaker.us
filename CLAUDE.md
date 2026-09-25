@@ -2,7 +2,8 @@
 
 One-off static projects, FTP-style. **Each top-level folder = a path on lab.philipbaker.us.**
 Drop a folder with an `index.html`, deploy, done. Curated by Philip; keep the root index
-(`index.html`) list **and `sitemap.xml`** in sync when adding/removing a project — except
+(`index.html` — card shelves since Sep 25 2026, see "/ — the root index" under Projects for
+everything a new entry touches) **and `sitemap.xml`** in sync when adding/removing a project — except
 **unlisted client links** (see `/AcrobatAnt-HNDACR-Fall-Digital`), which are deliberately
 on neither and shared by URL only.
 
@@ -306,6 +307,35 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
 
 ## Projects
 
+- **/ — the root index** (redesigned Sep 25 2026 with Philip, from a "Cubic Saturn" concept
+  video by @KushnirUI that he liked). A two-ink spec sheet — deep orange `#f4511e` and ink
+  `#131311` — flipped by **Switch polarity** (a View Transition circle wipe; the choice is
+  `localStorage["lab-polarity"]`, applied before first paint by an inline head script).
+  Inter Tight + Geist Mono from Google Fonts; no build, no library.
+  - **Three shelves of cards:** Toys and Widgets (T-nn), Case Studies & Stories (S-nn),
+    Partner Companies (P-nn). A card's picture is that page's own `og:image`; the four with
+    no share card of their own (Emergence, CheckMate, AechTech, Catapult) use a 1200×630
+    headless-Chrome screenshot of their home page, as JPEG in `shared/cards/` — re-shoot if
+    a site changes. Desktop: six columns, each shelf opens on two `.big` cards (span 3) and
+    then runs in threes, and the border rules assume exactly that. Tablet pairs up (an odd
+    count gives the first card the whole row). Phone: one column.
+  - **Adding or removing an entry touches:** the card, its shelf's "NN entries", the hero's
+    count box (the number, its `aria-label`, and the three `--n` segments), and the JSON-LD
+    `ItemList` (lab pages only, page order) — then the sitemap as usual.
+  - Each card is one link: the `<h3><a>`'s `::after` covers the card, so `analytics.js`
+    reports the title as `item_name`, and `view_item_list` sees exactly the cards — the
+    shelf jump links sit in `<header>`, outside `<main>`, on purpose.
+  - **The flask** is a hand-written voxel renderer on a 2D canvas (painter's order,
+    camera-facing faces only, same-kind neighbour culling while nothing is spread). Drag to
+    orbit; Module / Fizz / Spread sliders; it pauses offscreen and in a hidden tab, and is
+    static under `prefers-reduced-motion`. `?qa=1` exposes `window.__lab.flask` (`draw()`,
+    `yaw`, `pitch`, `spread`, `module`, `t`, `extra` = the bubbles). On desktop the flask is
+    the left column and "lab" the right (Philip's call); the DOM keeps "lab" first for phones.
+  - The lab hamburger is restyled on this page only — a bordered square in the page's ink,
+    since its stock cream lines vanish on orange — and seated on the content edge.
+  - The words are Philip's: each description is the old index's line with the name moved
+    into the title; Catapult's is its own site's meta description. Off the index since this
+    redesign, at his request: `/hello`, `/second-brain`, `/mind-harvest` (their redirects stay).
 - **/widget-maker** — creative sandbox: type a wish ("a bunch of red balls bouncing
   around", "asteroids", "a rain simulator"), Claude writes a self-contained HTML widget,
   and it runs live in a sandboxed iframe. Iterate by saying what to change; every build
@@ -439,7 +469,8 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     stacked layout doesn't shift while they load.
   - **`/second-brain` is NOT this page and must not be taken over.** It redirects to
     `https://brain-site-tan.vercel.app/` — Philip's live Second Brain, password-gated on
-    purpose. He uses that link from the lab list daily to reach the app. Those two redirect
+    purpose. It was on the lab index (his daily way in) until Sep 25 2026, when he asked for
+    it to come off; the URL still works. Those two redirect
     rules in `vercel.json` are load-bearing; leave them alone. They were once uncommitted
     (working tree only, deployed by hand) and got destroyed by a `git add -A`, so they are
     committed now precisely so a push can't drop them again.
@@ -448,7 +479,7 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     (`STORY_USER`/`STORY_PASSWORD`, not the brain's). Same treatment as the rules above:
     load-bearing, both bare and trailing-slash forms, hands off. It briefly pointed at the
     Second Brain on the day it was added; the two are separate apps and the names must not
-    be allowed to blur again.
+    be allowed to blur again. Off the index since Sep 25 2026, like `/second-brain`.
   - Neither `/second-brain` nor `/mind-harvest` belongs in `sitemap.xml`. That file lists
     real crawlable pages, and a redirect into a password gate is a dead end for a crawler.
   - `/ai-second-brain-case-study/*` (the staging folder's name) redirects here.
@@ -475,7 +506,9 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     references are absolute (`/vault/movies/…`). The Speed Zone, Tulsa Convention Center
     and OG&E films were cut in Aug 2026; only `brunswick_video_SpeedZone_HIGH.mp4`
     survives, because the Vault still plays it.
-- **/vault** — "The Vault": the '90s Shockwave/Flash games plus the few non-game pieces
+- **/vault** — "The 90s Vault" (renamed from "The Vault" on Sep 25 2026 — title, h1, share
+  card, JSON-LD, `llms.txt`, the players' tab titles; on the index it sits under Case Studies
+  & Stories): the '90s Shockwave/Flash games plus the few non-game pieces
   worth keeping. This absorbed the old **/arcade** in Aug 2026; `vercel.json` permanently
   redirects `/arcade/:path*` → `/vault/:path*`, so old links still work.
   - `player.html?f=<path>&t=<title>` plays anything under `vault/media/`; `&then=<path>`
@@ -1296,7 +1329,7 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     restamp with the sed in this session's history whenever a script changes.
   - Analytics: swept (`scripts/head-meta.py` lists `GPT/index.html`); the JSON-LD is a
     `WebApplication` in the house style; `/gpt`, `/pocket-gpt` redirect here (`vercel.json`).
-- **/hello** — the original example.
+- **/hello** — the original example. Off the root index since Sep 25 2026; the folder stays.
 
 ## The master archive (not in this repo)
 

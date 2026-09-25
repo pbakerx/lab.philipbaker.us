@@ -39,7 +39,7 @@ Home page: https://philipbaker.us
   him is kept. The Apple menu's "Where It Came From" credits the people who made
   it: Steve Colley, Greg Thompson and Howard Palmer (Maze, NASA Ames, 1973), and
   Burt Sloane and Alan McNeil (Maze Wars+, MacroMind, 1986).
-- [The Vault](https://lab.philipbaker.us/vault/): Shockwave and Flash games
+- [The 90s Vault](https://lab.philipbaker.us/vault/): Shockwave and Flash games
   built in the late 1990s at Ackerman McQueen's New Media Lab, recovered from
   the Wayback Machine and playable again in a browser — Virtual Boomerang,
   Darien Lake '97, Virtual Bowling, Attitude Arena, Alien Maze, Zone Pilot and
