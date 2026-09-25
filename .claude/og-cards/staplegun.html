@@ -1,21 +1,28 @@
 <!doctype html>
 <!-- Source for /staplegun/img/og.jpg (1200x630). Render: see vault.html; then JPEG q84 with sips.
-     Philip's brief (Sep 25 2026): one photo, full frame; the gunner guy on top, to one side, in
-     white; nothing else. The photo is the page's own (staplegun/img/office/sg-office-01.jpg, the
+     Philip's brief (Sep 25 2026): one photo, full frame, graded dark with black gradient; the
+     gunner guy centred, white at 50%; nothing else. "It needs to be sexy." The photo is the page's own (staplegun/img/office/sg-office-01.jpg, the
      20th floor of City Place Tower); the gunner guy is rendered from Philip's gunnerguy.pdf
      (white art) into staplegun/gunner-guy.png. -->
 <html><head><meta charset="utf-8">
 <style>
-html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#141417}
-.photo{position:absolute;inset:0;background:url(../../staplegun/img/office/sg-office-01.jpg) 50% 50%/cover no-repeat}
-/* the art is white on transparent, so the monitor's screen and its chin button are holes;
-   fill them dark so the >> reads, the way it does on the original's black */
-.guy{position:absolute;right:92px;bottom:38px;height:452px;aspect-ratio:648/1100;filter:drop-shadow(0 6px 22px rgba(0,0,0,.45))}
-.guy i{position:absolute;background:#16161a}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#000}
+/* a graded, darker cut of the photo: a touch more contrast, the reds kept */
+.photo{position:absolute;inset:0;background:url(../../staplegun/img/office/sg-office-01.jpg) 50% 50%/cover no-repeat;
+       filter:contrast(1.16) brightness(.86) saturate(1.08)}
+/* black from the floor up and in from the corners — Philip: "add some gradient black" */
+.shade{position:absolute;inset:0;background:
+  linear-gradient(0deg,rgba(0,0,0,.94) 0%,rgba(0,0,0,.72) 26%,rgba(0,0,0,.28) 52%,rgba(0,0,0,.08) 70%,rgba(0,0,0,.5) 100%),
+  radial-gradient(75% 95% at 50% 42%,rgba(0,0,0,0) 38%,rgba(0,0,0,.72) 100%)}
+/* the gunner guy, centred and at half strength. The art is white on transparent, so the
+   monitor's screen and chin button are holes; fill them dark so the >> reads. */
+.guy{position:absolute;left:50%;top:50%;height:520px;aspect-ratio:648/1100;transform:translate(-50%,-50%);opacity:.5}
+.guy i{position:absolute;background:#0c0c0e}
 .guy .screen{left:6.9%;top:3.9%;width:86.2%;height:24.5%;border-radius:1.5%}
 .guy .button{left:82.2%;top:31.3%;width:9.9%;height:6.2%;border-radius:50%}
 .guy img{position:relative;display:block;width:100%;height:100%}
 </style></head><body>
 <div class="photo"></div>
+<div class="shade"></div>
 <div class="guy"><i class="screen"></i><i class="button"></i><img src="staplegun/gunner-guy.png" alt=""></div>
 </body></html>
