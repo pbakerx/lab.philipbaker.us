@@ -532,6 +532,13 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
   storyboard renders, a timeline scrubber, and a Dealer pulldown. **Not on the root index
   and not in `sitemap.xml` — on purpose.** Don't "fix" that; the URL is handed to the client
   directly.
+  - **DISABLED Sep 25 2026.** Philip: "put a 'page disabled' on the front of this… leave rest
+    same." `index.html` is now a bare "Page disabled" notice (keeps `noindex, nofollow` and
+    the Vercel Insights tag, so a visit still shows up); every other file in the folder is
+    untouched and still served at its own path. The board's last `index.html` is commit
+    `790996d` — `git checkout 790996d -- AcrobatAnt-HNDACR-Fall-Digital/index.html` brings it
+    back, and so would a re-drop of the zip (which would also wipe the notice). Don't
+    re-enable it without Philip saying so.
   - **It's a drop-in package built elsewhere** (Philip's production ad pipeline), not
     authored here. It arrives as `hnd-acr-fall-v1.zip` on the NAS share `/Volumes/Public`.
     Deploy routine: unzip to the scratchpad → `diff -rq` against the folder (know what's
