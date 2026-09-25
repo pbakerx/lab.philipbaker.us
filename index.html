@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-polarity="light">
+<html lang="en" data-polarity="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,7 +19,7 @@
 <meta name="twitter:image" content="https://lab.philipbaker.us/shared/og.png">
 <meta name="twitter:title" content="lab — a hodge-podge of projects">
 <meta name="twitter:description" content="AI case studies, a live widget builder, playable '90s Shockwave games, agency archives and small Mac apps.">
-<meta name="theme-color" content="#f4511e">
+<meta name="theme-color" content="#070605">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -64,27 +64,30 @@
   ]
 }
 </script>
-<script>try{if(localStorage.getItem("lab-polarity")==="dark")document.documentElement.dataset.polarity="dark"}catch(e){}</script>
+<script>try{if(localStorage.getItem("lab-polarity")==="light")document.documentElement.dataset.polarity="light"}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-/* Two inks, one switch. Everything on the page is drawn in --fg on --bg; SWITCH POLARITY
-   swaps them. The social cards are the only other colour on the page, on purpose. */
+/* Black, lit by one fire gradient — deep red through orange to amber. Philip, Sep 25 2026:
+   the flat orange was "too halloween... I like orange and black", after a dynamic-gradient
+   landing page he liked. Night is the default; SWITCH POLARITY turns the page to paper and
+   the fire stays. The social cards are the only other colour on the page, on purpose. */
 :root{
-  --orange:#f4511e;--ink:#131311;
-  --bg:var(--orange);--fg:var(--ink);
-  --mute:rgba(19,19,17,.8);--faint:rgba(19,19,17,.22);
+  --night:#070605;--paper:#f3eee6;--hot:#ff5a00;--on-fire:#0c0a08;
+  --fire:linear-gradient(115deg,#3a0500 0%,#8a0d00 16%,#d93000 34%,#ff5a00 50%,#ff8200 66%,#ffb01f 84%,#ffd27a 100%);
+  --bg:var(--night);--fg:var(--paper);
+  --mute:rgba(243,238,230,.66);--faint:rgba(243,238,230,.14);--line:rgba(243,238,230,.2);
   --sans:"Inter Tight",Inter,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
   --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --gut:clamp(16px,2.6vw,40px);
   --in:clamp(12px,1.3vw,18px);
-  color-scheme:light;
-}
-:root[data-polarity="dark"]{
-  --bg:var(--ink);--fg:var(--orange);
-  --mute:rgba(244,81,30,.84);--faint:rgba(244,81,30,.26);
   color-scheme:dark;
+}
+:root[data-polarity="light"]{
+  --bg:var(--paper);--fg:#0c0a08;
+  --mute:rgba(12,10,8,.7);--faint:rgba(12,10,8,.12);--line:rgba(12,10,8,.22);
+  color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box}
 html{background:var(--bg);color:var(--fg)}
@@ -101,24 +104,31 @@ a{color:inherit}
 
 /* ── hero ─────────────────────────────────────────────────────────────── */
 .bar{display:grid;grid-template-columns:1.25fr 1fr 1fr;align-items:center;gap:var(--in);
-     min-height:92px;padding:0 64px 0 0;border-bottom:1px solid var(--fg)}
+     min-height:92px;padding:0 64px 0 0;border-bottom:1px solid var(--line)}
 .brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font:800 21px/1 var(--sans);letter-spacing:-.02em}
 .brand svg{flex:none}
 .brand:hover{opacity:.72}
-.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--fg)}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line)}
 .meta>*{padding:12px var(--in) 13px;margin:0}
-.meta>*+*{border-left:1px solid var(--fg)}
+.meta>*+*{border-left:1px solid var(--line)}
 .meta>:first-child{padding-left:0}
 .meta .v a{text-decoration:none;border-bottom:1px solid var(--faint)}
 .meta .v a:hover{border-bottom-color:currentColor}
 #xy{font-family:var(--mono);font-weight:500;letter-spacing:0}
-.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-bottom:1px solid var(--fg);
+.stage{position:relative;isolation:isolate;background:var(--bg);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-bottom:1px solid var(--line);
        height:clamp(420px,calc(100vh - 330px),720px);height:clamp(420px,calc(100svh - 330px),720px)}
 /* the words sit in column 2 and the flask in column 1; the DOM keeps words first for phones */
 .intro{position:relative;display:flex;flex-direction:column;justify-content:space-between;grid-column:2;grid-row:1;
-       padding:var(--in) 0 var(--in) var(--in);border-left:1px solid var(--fg);min-width:0}
+       padding:var(--in) 0 var(--in) var(--in);border-left:1px solid var(--line);min-width:0}
+.stage::before{content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:radial-gradient(58% 95% at 92% 100%,#ffd27a 0%,#ffb01f 10%,#ff8200 24%,#ff5a00 38%,rgba(217,48,0,.78) 52%,rgba(138,13,0,.45) 68%,rgba(58,5,0,0) 86%),
+             radial-gradient(38% 70% at 48% 118%,rgba(217,48,0,.55),rgba(217,48,0,0) 70%)}
+.stage::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.55;mix-blend-mode:overlay;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.34) 0 1px,rgba(255,255,255,0) 2px 10px,rgba(0,0,0,.42) 18px 21px,rgba(255,255,255,0) 22px 24px),
+             url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+:root[data-polarity="light"] .stage::after{opacity:.32}
 .intro .top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--in)}
-.count{background:var(--fg);color:var(--bg);padding:10px 12px 11px;width:min(190px,44%);display:grid;gap:5px}
+.count{background:var(--fire);color:var(--on-fire);padding:10px 12px 11px;width:min(190px,44%);display:grid;gap:5px}
 .count b{font:300 54px/.9 var(--sans);letter-spacing:-.04em}
 .count .k{color:inherit;opacity:.72;font-size:9.5px}
 .count .segs{display:flex;gap:3px;height:4px;margin-top:3px}
@@ -134,7 +144,7 @@ h1{margin:0;font:800 clamp(128px,24vw,390px)/.74 var(--sans);letter-spacing:-.05
 #flask{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y;z-index:1}
 #flask.drag{cursor:grabbing}
 .specimen .hint{position:absolute;left:0;bottom:var(--in);z-index:2;pointer-events:none}
-.controls{display:flex;align-items:center;gap:clamp(14px,2.4vw,40px);min-height:58px;padding:10px 0;border-bottom:1px solid var(--fg)}
+.controls{display:flex;align-items:center;gap:clamp(14px,2.4vw,40px);min-height:58px;padding:10px 0;border-bottom:1px solid var(--line)}
 .controls .two{margin-right:auto}
 .slide{display:grid;grid-template-columns:auto minmax(80px,150px) 2.4em;align-items:center;gap:10px;
        font:700 9.5px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase}
@@ -146,19 +156,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
 input[type=range]::-moz-range-thumb{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;background:var(--bg)}
 input[type=range]:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 button.pill{background:none;color:inherit;cursor:pointer;padding:8px 14px 7px}
-button.pill:hover,button.pill:focus-visible{background:var(--fg);color:var(--bg);outline:none}
+button.pill:hover,button.pill:focus-visible{background:var(--fire);color:var(--on-fire);border-color:transparent;outline:none}
 
 /* ── shelves ──────────────────────────────────────────────────────────── */
 .shelf{padding-top:clamp(48px,6vw,96px)}
 #toys{padding-top:clamp(28px,3vw,44px)}
-.shelf-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:end;gap:var(--in);padding-bottom:14px;border-bottom:1px solid var(--fg)}
-.shelf-head .num{font:500 12px/1 var(--mono);padding-bottom:.5em}
+.shelf-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:end;gap:var(--in);padding-bottom:14px;border-bottom:1px solid var(--line)}
+.shelf-head .num{font:500 12px/1 var(--mono);padding-bottom:.5em;color:var(--hot)}
 .shelf-head h2{margin:0;font:800 clamp(38px,6.4vw,96px)/.86 var(--sans);letter-spacing:-.05em}
 .shelf-head .n{font:500 11px/1 var(--mono);text-transform:uppercase;padding-bottom:.55em;white-space:nowrap}
 .grid{display:grid;grid-template-columns:minmax(0,1fr)}
-.card{position:relative;display:flex;flex-direction:column;gap:14px;padding:var(--in);border-bottom:1px solid var(--fg);
+.card{position:relative;display:flex;flex-direction:column;gap:14px;padding:var(--in);border-bottom:1px solid var(--line);
       transition:background-color .28s ease,color .28s ease}
-.shot{position:relative;aspect-ratio:1200/630;overflow:hidden;background:var(--ink);outline:1px solid var(--faint)}
+.shot{position:relative;aspect-ratio:1200/630;overflow:hidden;background:#000;outline:1px solid var(--faint)}
 .shot img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.15,1)}
 .card:hover .shot img,.card:focus-within .shot img{transform:scale(1.045)}
 .card .meta-line{display:flex;justify-content:space-between;gap:12px;font:500 11px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.01em}
@@ -171,22 +181,24 @@ button.pill:hover,button.pill:focus-visible{background:var(--fg);color:var(--bg)
 .card .go{margin-top:auto;align-self:flex-start}
 .card .go::after{content:"→";display:inline-block;transition:transform .28s ease}
 .card.out .go::after{content:"↗"}
-.card:hover,.card:focus-within{background:var(--fg);color:var(--bg)}
-.card:hover p,.card:focus-within p{color:var(--bg);opacity:.78}
+/* hover: the card catches the fire — a glow from the top, the title burns, the pill fills */
+.card:hover,.card:focus-within{background:linear-gradient(170deg,rgba(255,90,0,.2) 0%,rgba(138,13,0,.1) 42%,rgba(0,0,0,0) 78%)}
+.card:hover h3 a,.card:focus-within h3 a{background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent}
+.card:hover .go,.card:focus-within .go{background:var(--fire);color:var(--on-fire);border-color:transparent}
 .card:hover .go::after,.card:focus-within .go::after{transform:translateX(3px)}
 .card.out:hover .go::after,.card.out:focus-within .go::after{transform:translate(2px,-2px)}
-.card:focus-within{outline:2px solid var(--fg);outline-offset:-5px}
+.card:focus-within{outline:2px solid var(--hot);outline-offset:-5px}
 .card.big h3{font-size:clamp(24px,2.3vw,34px)}
 
 
 /* ── footer ───────────────────────────────────────────────────────────── */
 .foot{display:flex;justify-content:space-between;align-items:center;gap:var(--in);margin-top:clamp(56px,7vw,110px);
-      padding:18px 0 28px;border-top:1px solid var(--fg);font:600 12px/1.2 var(--sans);letter-spacing:.04em;text-transform:uppercase}
+      padding:18px 0 28px;border-top:1px solid var(--line);font:600 12px/1.2 var(--sans);letter-spacing:.04em;text-transform:uppercase}
 .foot a{text-decoration:none}
 .foot a:hover{text-decoration:underline;text-underline-offset:3px}
 .foot .mono{font:500 11px/1 var(--mono);color:var(--mute);text-transform:none}
 
-/* the lab-wide hamburger: its stock lines are cream, which vanish on the orange */
+/* the lab-wide hamburger: a bordered square in the page ink, to sit on the grid */
 /* seated on the content edge, and it glides back to the drawer when opened on a wide screen */
 #pb-menu .hamburger{right:var(--gut);transition:right .46s cubic-bezier(.16,1,.3,1),background-color .2s}
 #pb-menu .hamburger:not(.is-open){right:max(var(--gut),calc((100vw - 1560px) / 2 + var(--gut)))}
@@ -201,20 +213,20 @@ button.pill:hover,button.pill:focus-visible{background:var(--fg);color:var(--bg)
   .grid{grid-template-columns:repeat(6,minmax(0,1fr))}
   .card{grid-column:span 2}
   .card.big{grid-column:span 3}
-  .grid>.card:not(:first-child):not(:nth-child(3n)){border-left:1px solid var(--fg)}
+  .grid>.card:not(:first-child):not(:nth-child(3n)){border-left:1px solid var(--line)}
 }
 /* Tablet: pairs. An odd count lets the first card take the whole row so the rest pair up. */
 @media (min-width:721px) and (max-width:1100px){
   .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .grid>.card:nth-child(even){border-left:1px solid var(--fg)}
+  .grid>.card:nth-child(even){border-left:1px solid var(--line)}
   .grid>.card:first-child:nth-last-child(odd){grid-column:1/-1}
   .grid:has(>.card:first-child:nth-last-child(odd))>.card:nth-child(even){border-left:0}
-  .grid:has(>.card:first-child:nth-last-child(odd))>.card:nth-child(odd):not(:first-child){border-left:1px solid var(--fg)}
+  .grid:has(>.card:first-child:nth-last-child(odd))>.card:nth-child(odd):not(:first-child){border-left:1px solid var(--line)}
 }
 @media (max-width:1100px){
   .meta{grid-template-columns:repeat(2,minmax(0,1fr))}
   .meta>:nth-child(3){border-left:0;padding-left:0}
-  .meta>:nth-child(-n+2){border-bottom:1px solid var(--fg)}
+  .meta>:nth-child(-n+2){border-bottom:1px solid var(--line)}
   .controls{flex-wrap:wrap;row-gap:6px}
   .controls .two{flex-basis:100%}
 }
@@ -227,7 +239,7 @@ button.pill:hover,button.pill:focus-visible{background:var(--fg);color:var(--bg)
   .stage{display:block;height:auto}
   .intro{min-height:0;padding:var(--in) 0 calc(var(--in) + 4px);border-left:0}
   h1{font-size:clamp(128px,44vw,230px);margin-top:28px}
-  .specimen{border-top:1px solid var(--fg);height:min(92vw,400px)}
+  .specimen{border-top:1px solid var(--line);height:min(92vw,400px)}
   .controls{display:grid;grid-template-columns:1fr;gap:4px;padding:12px 0 14px}
   .slide{grid-template-columns:5.2em minmax(0,1fr) 2.4em}
   .controls button.pill{justify-self:start;margin-top:8px}
@@ -451,14 +463,14 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   // [shadow rgb, lit rgb, alpha, edge]
   var PAL = {
     light: {
-      glass:  [[206, 92, 40], [255, 240, 228], 0.2, "rgba(19,19,17,.36)"],
-      liquid: [[6, 6, 5], [70, 67, 58], 1],
-      bubble: [[200, 178, 160], [255, 248, 240], 1]
+      glass:  [[196, 150, 120], [255, 251, 246], 0.24, "rgba(12,10,8,.34)"],
+      liquid: [[150, 22, 0], [255, 164, 44], 1],
+      bubble: [[196, 176, 160], [255, 250, 244], 1]
     },
     dark: {
-      glass:  [[104, 32, 8], [255, 214, 196], 0.13, "rgba(244,81,30,.5)"],
-      liquid: [[112, 28, 4], [255, 130, 84], 1],
-      bubble: [[160, 146, 136], [252, 246, 240], 1]
+      glass:  [[70, 36, 24], [255, 232, 212], 0.12, "rgba(255,150,80,.44)"],
+      liquid: [[128, 16, 0], [255, 170, 56], 1],
+      bubble: [[176, 158, 146], [255, 250, 244], 1]
     }
   };
   var LIGHT = (function () { var x = -0.42, y = 0.78, z = -0.46, l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; })();
@@ -722,7 +734,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   function paint() {
     var dark = polarity() === "dark";
     if (btn) btn.setAttribute("aria-pressed", String(dark));
-    if (tc) tc.setAttribute("content", dark ? "#131311" : "#f4511e");
+    if (tc) tc.setAttribute("content", dark ? "#070605" : "#f3eee6");
     views.forEach(function (v) { v.recolor(); v.draw(); });
   }
   paint();
