@@ -1,0 +1,18 @@
+<!doctype html><meta charset="utf-8"><style>html,body{margin:0;overflow:hidden;background:#070605}iframe{border:0;display:block;width:1200px;height:630px}</style>
+<!-- Source for /shared/og.jpg, the lab home page share card: the live hero alone (brand bar over
+     the flask and the big "lab"), meta row, sliders and menu hidden. It iframes "/" and styles
+     the frame, so it must be served from the site root, e.g. the scratchpad-mirror recipe in
+     CLAUDE.md; render at --window-size=1200,630 --force-device-scale-factor=2, then
+     `sips -z 630 1200` and JPEG q88. Night polarity. -->
+<script>try{localStorage.setItem("lab-polarity","dark")}catch(e){}</script>
+<iframe id="f" src="/"></iframe>
+<script>
+document.getElementById("f").onload = function () {
+  var d = this.contentDocument, s = d.createElement("style");
+  // the card is the hero alone: brand bar over the flask and the big "lab"
+  s.textContent = ".meta,.controls,.specimen .hint,#pb-menu{display:none!important}" +
+    ".bar{padding-right:0!important}.stage{height:538px!important;border-bottom:0!important}";
+  d.head.appendChild(s);
+  this.contentWindow.dispatchEvent(new Event("resize"));
+};
+</script>

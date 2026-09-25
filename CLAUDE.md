@@ -334,6 +334,9 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     static under `prefers-reduced-motion`. `?qa=1` exposes `window.__lab.flask` (`draw()`,
     `yaw`, `pitch`, `spread`, `module`, `t`, `extra` = the bubbles). On desktop the flask is
     the left column and "lab" the right (Philip's call); the DOM keeps "lab" first for phones.
+  - **Share card:** `shared/og.jpg` is the hero itself (brand bar, flask, the big "lab", the fire),
+    rendered from `.claude/og-cards/lab-home.html` — re-render it when the hero changes. The old
+    `shared/og.png` (brown, listing /second-brain) is unused and left in place.
   - The lab hamburger is restyled on this page only — a bordered square in the page's ink,
     since its stock cream lines vanish on orange — and seated on the content edge.
   - The words are Philip's: each description is the old index's line with the name moved
@@ -528,6 +531,8 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     - Photos are shrunk to 1600px and re-encoded as JPEG **in the browser** (which also
       drops the camera metadata, GPS included) and must arrive as JPEG bytes, magic number
       checked, ≤2.6 MB. Nothing that could render as a document ever reaches the store.
+      Photos cache for an hour (not a year like the JSON) so a take-down clears from
+      browsers within the hour even if the CDN is slow to purge.
     - Guards: origin check, 4 posts per 10 minutes per IP (per warm instance), a honeypot
       field (`website`) that is thanked and dropped, 500 visible stories at most. Text is
       cleaned server-side (`line`/`prose`: no control characters, no angle brackets,

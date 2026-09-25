@@ -100,7 +100,7 @@ export default async function handler(req, res) {
       const id = newId(), when = new Date().toISOString();
       let photo = null;
       if (bytes) {
-        const r = await put(`${PHOTOS}${id}.jpg`, bytes, { access: "public", contentType: "image/jpeg", addRandomSuffix: true, cacheControlMaxAge: 31536000 });
+        const r = await put(`${PHOTOS}${id}.jpg`, bytes, { access: "public", contentType: "image/jpeg", addRandomSuffix: true, cacheControlMaxAge: 3600 });
         photo = { url: r.url, w: int(b.w, 1, 4000), h: int(b.h, 1, 4000) };
       }
       const story = { v: 1, id, name, role, text, photo, when };
