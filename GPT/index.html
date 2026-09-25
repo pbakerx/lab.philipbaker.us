@@ -253,6 +253,32 @@ select{background:var(--card2);border:1px solid var(--hair);border-radius:8px;pa
 .out .p{color:var(--ink);background:rgba(95,212,255,.18);border-bottom:2px solid var(--cyan);border-radius:4px 4px 0 0;padding:0 3px}
 .out .cur{display:inline-block;width:.55em;background:var(--lime);animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
+/* chat mode: a question-and-answer text turns the chat into a chatbot */
+body:not(.chatmode) .m-chat,body.chatmode .m-text{display:none!important}
+.hrow{display:flex;align-items:center;gap:8px}
+.chipk{flex-basis:100%;font:600 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:8px 0 1px}
+.chipk:first-child{margin-top:0}
+.suggest{margin:8px 0 2px;align-items:center}
+.suggest .lbl{font-size:12.5px;color:var(--faint);margin-right:2px}
+.suggest .chip{font-family:var(--mono);font-size:13px;background:transparent;color:var(--cyan);border-color:rgba(95,212,255,.35)}
+.suggest .chip:hover{border-color:var(--cyan);background:rgba(95,212,255,.1)}
+.fmtline{font:12.5px var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--hair);border-radius:5px;padding:1px 5px;white-space:pre}
+.out.chat{display:flex;flex-direction:column;gap:6px;font-family:Inter,system-ui,sans-serif;white-space:normal}
+.chatempty{color:var(--faint);font-size:14px;margin:auto 0;text-align:center}
+.turn{display:flex;flex-direction:column;max-width:85%}
+.turn.you{align-self:flex-end;align-items:flex-end}
+.turn.bot{align-self:flex-start;align-items:flex-start}
+.bub{padding:7px 12px;border-radius:14px;font-size:15px;line-height:1.35;white-space:pre-wrap;word-break:break-word}
+.you .bub{background:rgba(95,212,255,.16);border:1px solid rgba(95,212,255,.45);border-bottom-right-radius:4px;color:var(--ink)}
+.bot .bub{background:var(--card2);border:1px solid var(--hair);border-bottom-left-radius:4px;font-family:var(--mono);color:var(--lime);min-width:2.2em}
+.bot .bub.none{color:var(--faint);font-family:Inter,system-ui,sans-serif;font-size:13px}
+.bub .cut{color:var(--faint)}
+.tnote{font-size:11px;color:var(--faint);margin:2px 4px 0}
+.ghost .fmt{color:var(--faint)}
+body.chatmode .gt,body.chatmode .gr{cursor:default}
+.ar{color:var(--faint)}
+.snap .ok{color:var(--lime)}
+.snap .no{color:var(--bad);opacity:.8}
 .bars{display:grid;grid-template-columns:2.4em 1fr 3.6em;gap:4px 8px;align-items:center;font-family:var(--mono);font-size:13px}
 .bars .c{text-align:center;background:var(--card2);border:1px solid var(--hair);border-radius:6px;cursor:pointer;padding:2px 0}
 .bars .c:hover{background:var(--lime);color:#111}
@@ -683,10 +709,13 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <section class="card s12" id="cTalk" data-steps="2 4">
     <div class="talk">
       <div>
-        <h2>💬 Chat</h2>
-        <p class="why">Type anything and send it. It picks up where you leave off, one letter at a time, each one chosen from its own guesses.</p>
+        <h2 class="hrow">💬 Chat <button class="info m-chat" data-info="chat" title="How the real ones work">i</button></h2>
+        <p class="why m-text">Type anything and send it. It picks up where you leave off, one letter at a time, each one chosen from its own guesses.</p>
+        <p class="why m-chat">Ask it a question. It writes its answer one letter at a time and stops at the end of the line, the way every answer it has read ends. Chatting never teaches it anything: only training changes its numbers.</p>
         <input type="text" id="prompt" value="" spellcheck="false" autocomplete="off" placeholder="Say something…" aria-label="Your message">
-        <p class="meta">Your starting text. <b>↵</b> means a new line. Characters it has never seen in its training text are ignored.</p>
+        <div class="chips suggest m-chat" id="suggest"></div>
+        <p class="meta m-text">Your starting text. <b>↵</b> means a new line. Characters it has never seen in its training text are ignored.</p>
+        <p class="meta m-chat">What it actually reads: <code class="fmtline" id="fmtLine"></code> That is how its training text writes a question, and its answer is whatever it writes after <b>a:</b>.</p>
         <div class="row">
           <button class="btn go big" id="gen">Send ›</button>
           <span class="lbl" style="margin-left:8px">Creativity</span><input type="range" id="temp" min="0.1" max="2" step="0.05" value="0.8" aria-label="Creativity"><span class="val" id="vTemp"></span>
@@ -696,8 +725,9 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
         <div class="note" id="talkNote" hidden></div>
       </div>
       <div>
-        <h2>Its next-letter guesses</h2>
-        <p class="why">After your text, these are the letters it thinks could come next. The bigger the letter, the surer it is. <b>Click any letter</b> to type it for it, and watch its next guesses change.</p>
+        <h2><span class="m-text">Its next-letter guesses</span><span class="m-chat">How its answer starts</span></h2>
+        <p class="why m-text">After your text, these are the letters it thinks could come next. The bigger the letter, the surer it is. <b>Click any letter</b> to type it for it, and watch its next guesses change.</p>
+        <p class="why m-chat">After your question, these are the letters it thinks its answer could start with. The bigger the letter, the surer it is. Type a different question and watch them change.</p>
         <div class="gtop" id="gTop"></div>
         <div class="grest-l">Less likely</div>
         <div class="grest" id="gRest"></div>
@@ -714,14 +744,14 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <textarea id="corpus" spellcheck="false" aria-label="Training text"></textarea>
     <div class="warn" id="feedWarn" hidden>✎ You changed the text. Press <b>Learn from this text</b> to use it. Until you do, it keeps reading the old one.</div>
     <div class="row"><button class="btn go" id="useText">Learn from this text</button><span class="meta" style="margin:0" id="corpusInfo"></span></div>
-    <p class="meta">Pick a text above, or paste your own: song lyrics, a recipe, your emails. A few pages is plenty. Press <b>Learn from this text</b> when the box holds what you want it to learn.</p>
+    <p class="meta">Pick a text above, or paste your own: song lyrics, a recipe, your emails. A few pages is plenty. Questions and answers written like Pocket Pal’s turn it into a chatbot. Press <b>Learn from this text</b> when the box holds what you want it to learn.</p>
   </section>
 
   <!-- TRAIN IT: the master dashboard -->
   <section class="card s12 dash" id="cDash" data-steps="3 4">
     <div class="dash-intro">
       <h2>Train it</h2>
-      <p>It learns from the text you fed it. Every step it reads a snippet, covers the next letter, guesses, peeks, and nudges its numbers a little. Press <b>Train</b> and watch static turn into your text's voice. Pause whenever you like, and <b>save it to your lab</b> when its writing makes you smile.</p>
+      <p>It learns from the text you fed it. Every step it reads a snippet, covers the next letter, guesses, peeks, and nudges its numbers a little. Press <b>Train</b> and watch static turn into <span class="m-text">your text's voice</span><span class="m-chat">right answers</span>. Pause whenever you like, and <b>save it to your lab</b> when its <span class="m-text">writing makes you smile</span><span class="m-chat">answers come out right</span>.</p>
     </div>
     <div class="console" id="bar">
       <button class="tbtn" id="go" data-tip="Start or pause learning. The space bar works too.">▶ Train</button>
@@ -759,7 +789,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 
       <!-- its writing, live -->
       <div class="w w-live">
-        <header><h3><i class="dot"></i>Its writing <small id="liveStep"></small></h3><button class="info" data-info="live" title="How the real ones work">i</button></header>
+        <header><h3><i class="dot"></i><span class="m-text">Its writing</span><span class="m-chat">Its answers</span> <small id="liveStep"></small></h3><button class="info" data-info="live" title="How the real ones work">i</button></header>
         <div class="live readout" id="live">Nothing yet. Press ▶ Train.</div>
       </div>
 
@@ -901,10 +931,10 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <footer>Everything runs in this page: no server, no API, no library. It's a real GPT (token and position embeddings, masked multi-head self-attention, an MLP, layer norm, residual connections), trained with hand-written backpropagation.</footer>
 <div class="toast" id="toast"></div>
 
-<script src="/GPT/js/corpora.js?v=10ab9ce8"></script>
-<script src="/GPT/js/holo.js?v=10ab9ce8"></script>
-<script src="/GPT/js/engine.js?v=10ab9ce8"></script>
-<script src="/GPT/js/app.js?v=10ab9ce8"></script>
+<script src="/GPT/js/corpora.js?v=214aad14"></script>
+<script src="/GPT/js/holo.js?v=214aad14"></script>
+<script src="/GPT/js/engine.js?v=214aad14"></script>
+<script src="/GPT/js/app.js?v=214aad14"></script>
 <script src="/shared/menu.js" defer></script>
 </body>
 </html>

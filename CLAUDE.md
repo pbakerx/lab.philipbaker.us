@@ -1212,9 +1212,9 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
   backprop and Adam/momentum/SGD, trained live in the page. No server, no library, no build.
   `js/engine.js` is the model (a tape-based autograd over Float32Array matrices; `grad()`,
   `update()`, `predict()`, `embedPCA()`, `direction()` for the loss-landscape slice),
-  `js/corpora.js` the three texts (nursery rhymes, public domain; the tomato guide and the
+  `js/corpora.js` the six texts (nursery rhymes, public domain; the tomato guide and the
   mornings essay were supplied by Philip — **Dinosaurs was removed at his request, do not bring
-  it back**), `js/holo.js` the holographic tooltip/readout panel (written by a Sonnet subagent to a
+  it back**; the three Q&A sets below), `js/holo.js` the holographic tooltip/readout panel (written by a Sonnet subagent to a
   spec; API `Holo.open({anchor,title,html,wide})`, `Holo.close()`, `Holo.isOpen()`,
   `Holo.tip(el, text)`), `js/app.js` everything else. Gradient check that proved the engine:
   perturb a few hundred random parameters by ±1e-2 under Node (`global.window = global;
@@ -1258,6 +1258,33 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     `#iGo` on load — **budgets over ~15 s stall or never write the PNG**, because every virtual
     second is real training compute; keep the run short and wait up to 4 minutes for the file.
     Phone check: walk every screen at 375 px and assert `scrollWidth === innerWidth`.
+  - **Chat mode — the Q&A sets** (Sep 25 2026). Phase 1 of a "prescription" Philip brought in
+    from Codex (`~/Documents/Codex/2026-09-24/hey-x20/outputs/`: `pocket-gpt-prescription.md`
+    and a training pack). Pocket Pal, Tiny Facts and Tiny Cafe sit **alongside** the three texts
+    (his words), in their own "Learns to answer questions" row on Feed it; their text is the
+    pack's, byte for byte. **Any** text whose records are nearly all one `q:` line and one `a:`
+    line (`parseQA`: 4+ records, 80%+) turns the page into a chatbot — a preset, a pasted set, or a
+    loaded brain. `S.chat` / `body.chatmode`; `.m-chat` and `.m-text` swap the copy. A question is
+    tidied (`normQ`: straight quotes, single spaces, lowercase when the text has no capitals) and
+    goes in as `q:<question>\na:`; the answer ends at its first newline, or is cut at
+    `ANSWER_MAX` = 40 and shown with "…". One question, one answer: nothing earlier in the chat goes
+    back in, and chatting never trains it (the page says so). Suggested questions are
+    `CORPORA[].suggest` (familiar questions only), else the text's first four. **Every sampler
+    follows the current question** — `context(q)`, `sampleText()` and `withPrompt()` switch
+    together — so Its answers, the attention lens, the landscape sample and ✂ Head off all read
+    "question → answer", and the Snapshot quizzes four questions with ✓/✗ against the text's own
+    answer ("3 of 4 right"). The guess tiles show how the answer starts and are not clickable there.
+    Q&A sets build at memory 48 (`chatShape()`; the old memory comes back on a writing text unless
+    the slider was moved), which about doubles a step's cost (26 ms vs 12 in Node).
+    - **Measured** (Node, the page's settings, 3 seeds × 3 sets): 33–36 of the 36 familiar
+      questions right at 1,000 steps and 35–36 at 2,000; the four suggestions mostly right by 500.
+      Scores wobble while the loss keeps falling, so the loss-based "flattened out" hint is the
+      wrong signal for these sets — known, not fixed.
+    - **Not built** (the prescription's later phases, not asked for yet): a practice-question
+      scoreboard and reworded-question checks, record sampling and answer-only loss, a fixed chat
+      alphabet, "Correct this answer" with replay and undo, a longer memory. The pack's
+      `evaluation-cases.json` is test data: never feed it in as training text. Its READ-ME mentions
+      an upload button and a "starting text" box that no longer exist.
   - Cache stamp: every `js/*.js` reference carries `?v=<first 8 of shasum of cat js/*.js>`;
     restamp with the sed in this session's history whenever a script changes.
   - Analytics: swept (`scripts/head-meta.py` lists `GPT/index.html`); the JSON-LD is a

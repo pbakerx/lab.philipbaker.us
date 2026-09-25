@@ -8,13 +8,17 @@
   const COL = { bg: C('bg'), hair: C('hair'), ink: C('ink'), dim: C('dim'), faint: C('faint'), lime: C('lime'), pink: C('pink'), cyan: C('cyan'), amber: C('amber'), bad: C('bad') };
   const HEADS = [1, 2, 4], WIDTHS = [16, 24, 32, 48];
   const DEFAULT_PROMPT = { rhymes: 'the little ', tomatoes: 'Tomatoes need ', mornings: 'The best part ' };
+  // A question-and-answer text ("q:" line, "a:" line, a blank line between) turns the chat into a
+  // chatbot: each question goes in written the way its text writes one, and the answer ends at the
+  // line break. Memory 48 holds a whole question and its answer.
+  const ANSWER_MAX = 40, CHAT_MEMORY = 48;
 
   const S = {
     preset: 'rhymes', chars: [], stoi: {}, data: null, model: null,
     running: false, step: 0, hist: [], ema: null, best: Infinity, events: [], snaps: [], viewing: -1,
     evalBatch: null, land: null, mapping: null, path: [], here: null, arrow: null, hereLoss: null,
     dragging: false, pending: null, gen: null, frame: 0, xmode: 'grad', sel: { l: 0, h: 0 }, last: null,
-    embPos: null, dirty: {},
+    embPos: null, dirty: {}, chat: false, qa: null, caps: true, suggest: [], chatQ: '', chatLog: [], liveN: 0,
   };
   const touch = (...k) => k.forEach(x => (S.dirty[x] = true));
   const ALL = ['loss', 'talk', 'emb', 'xray', 'land', 'stats'];
@@ -27,7 +31,22 @@
     S.stoi = Object.fromEntries(S.chars.map((c, i) => [c, i]));
     S.data = Int32Array.from(text, c => S.stoi[c]);
     $('#corpusInfo').textContent = `${text.length.toLocaleString()} chars · ${S.chars.length} different ones`;
-    feedDirty();
+    setChat(text); feedDirty();
+  }
+  // A text is a Q&A set when nearly every record is one "q:" line and one "a:" line.
+  function parseQA(text) {
+    const recs = text.split(/\n[ \t]*\n/).filter(r => r.trim()), qa = new Map(); let ok = 0;
+    for (const r of recs) { const m = r.trim().match(/^q:([^\n]+)\na:([^\n]*)$/); if (m) { ok++; if (!qa.has(m[1])) qa.set(m[1], m[2]); } }
+    return ok >= 4 && ok >= 0.8 * recs.length ? qa : null;
+  }
+  function setChat(text) {
+    S.qa = parseQA(text); S.chat = !!S.qa; S.chatQ = ''; S.chatLog = [];
+    S.caps = S.chars.some(c => c !== c.toLowerCase());
+    const c = window.CORPORA.find(c => c.text === text);
+    S.suggest = !S.chat ? [] : c && c.suggest ? c.suggest.slice() : [...S.qa.keys()].slice(0, 4);
+    document.body.classList.toggle('chatmode', S.chat); $('#out').classList.toggle('chat', S.chat);
+    $('#prompt').placeholder = S.chat ? 'Ask it something…' : 'Say something…';
+    renderSuggest();
   }
   // Typing in the box does nothing until "Learn from this text", so say so, loudly.
   function feedDirty() {
@@ -43,7 +62,13 @@
     for (const ch of str.replace(/↵/g, '\n').replace(/␣/g, ' ')) (ch in S.stoi ? out.push(S.stoi[ch]) : unknown.add(ch));
     return { ids: out, unknown };
   }
-  function context() {
+  // Questions are tidied the same way every time: straight quotes, single spaces, and lowercase when
+  // its text never uses a capital. The chat's current question is the one every widget answers.
+  const normQ = s => { s = s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/[↵\s]+/g, ' ').trim(); return S.caps ? s : s.toLowerCase(); };
+  const chatQ = () => normQ($('#prompt').value) || S.chatQ || S.suggest[0] || 'hi';
+  const chatQs = () => [...new Set([chatQ(), ...S.suggest])].slice(0, 4);
+  function context(q) {
+    if (S.chat) { const { ids, unknown } = encode(`q:${q == null ? chatQ() : q}\na:`); return { ids, unknown, empty: false }; }
     const { ids, unknown } = encode($('#prompt').value);
     const start = '\n' in S.stoi ? S.stoi['\n'] : 0;
     return { ids: ids.length ? ids : [start], unknown, empty: !ids.length };
@@ -80,7 +105,10 @@
     $('#sParams').textContent = m.size.toLocaleString();
     setRunning(false);
     renderArch(); fillXray(); syncTM(); knobInfo();
-    $('#out').innerHTML = '<span class="p">Say something and press Send. It hasn’t learned anything yet, so expect gibberish.</span>';
+    $('#gen').textContent = 'Send ›';
+    if (S.chat) { S.chatLog = []; renderChat(); }
+    else $('#out').innerHTML = '<span class="p">Say something and press Send. It hasn’t learned anything yet, so expect gibberish.</span>';
+    syncChatLimit();
     $('#live').textContent = 'Nothing yet. Press ▶ Train.'; $('#liveStep').textContent = '';
     $('#rGuess').textContent = ''; $('#rTrue').innerHTML = '<span class="ctx">Press ▶ Train, or Slow-mo to take one step at a time.</span>';
     S.miles = []; S.firstWrite = null; S.lastWrite = null; S.ballEval = null; S.film = [];
@@ -280,11 +308,12 @@
     const r = m.predict(ctx.ids, temp);
     S.last = { ...r, empty: ctx.empty };
     const order = Array.from(r.probs.keys()).sort((a, b) => r.probs[b] - r.probs[a]);
-    const pick = j => () => { $('#prompt').value += show(S.chars[j]) === '↵' ? '↵' : S.chars[j]; touch('talk'); flag('bar'); };
+    const pick = j => () => { if (S.chat) return; $('#prompt').value += show(S.chars[j]) === '↵' ? '↵' : S.chars[j]; touch('talk'); flag('bar'); };
+    const tip = j => S.chat ? `Its answer could start with “${show(S.chars[j])}”` : `Click to type “${show(S.chars[j])}”`;
     const top = $('#gTop'), rest = $('#gRest'); top.textContent = ''; rest.textContent = '';
     // the top four: letter size follows how sure it is, so a confident guess is visibly big
     order.slice(0, 4).forEach(j => {
-      const p = r.probs[j], b = document.createElement('button'); b.className = 'gt'; b.title = `Click to type “${show(S.chars[j])}”`;
+      const p = r.probs[j], b = document.createElement('button'); b.className = 'gt'; b.title = tip(j);
       const ch = document.createElement('span'); ch.className = 'ch'; ch.textContent = show(S.chars[j]);
       ch.style.fontSize = (16 + 50 * Math.sqrt(p)).toFixed(0) + 'px';
       const pc = document.createElement('span'); pc.className = 'pc'; pc.textContent = (100 * p).toFixed(p < 0.1 ? 1 : 0) + '%';
@@ -294,11 +323,11 @@
     order.slice(4, 16).forEach(j => {
       const b = document.createElement('button'); b.className = 'gr'; b.textContent = show(S.chars[j]);
       const i = document.createElement('i'); i.textContent = (100 * r.probs[j]).toFixed(1) + '%'; b.appendChild(i);
-      b.onclick = pick(j); b.title = `Click to type “${show(S.chars[j])}”`; rest.appendChild(b);
+      b.onclick = pick(j); b.title = tip(j); rest.appendChild(b);
     });
     const dt = $('#dTop'), dr = $('#dRest'); dt.textContent = ''; dr.textContent = '';
     order.slice(0, 4).forEach(j => {
-      const p = r.probs[j], b = document.createElement('button'); b.className = 'gt'; b.title = `Click to type “${show(S.chars[j])}”`;
+      const p = r.probs[j], b = document.createElement('button'); b.className = 'gt'; b.title = tip(j);
       const ch = document.createElement('span'); ch.className = 'ch'; ch.textContent = show(S.chars[j]); ch.style.fontSize = (13 + 32 * Math.sqrt(p)).toFixed(0) + 'px';
       const pc = document.createElement('span'); pc.className = 'pc'; pc.textContent = (100 * p).toFixed(p < 0.1 ? 1 : 0) + '%';
       b.append(ch, pc); b.onclick = pick(j); dt.appendChild(b);
@@ -307,8 +336,9 @@
       const b = document.createElement('button'); b.className = 'gr'; b.textContent = show(S.chars[j]); b.onclick = pick(j);
       const i = document.createElement('i'); i.textContent = (100 * r.probs[j]).toFixed(1) + '%'; b.appendChild(i); dr.appendChild(b);
     });
-    if (document.activeElement !== $('#dPrompt')) $('#dPrompt').value = $('#prompt').value;
-    const gh = $('#dGhost'); gh.textContent = $('#prompt').value;
+    if (document.activeElement !== $('#dPrompt')) $('#dPrompt').value = S.chat ? chatQ() : $('#prompt').value;
+    const gh = $('#dGhost'); gh.textContent = $('#dPrompt').value;
+    if (S.chat) { const f = document.createElement('span'); f.className = 'fmt'; f.textContent = '↵a:'; gh.appendChild(f); $('#fmtLine').textContent = `q:${chatQ()}↵a:`; }
     const nx = document.createElement('i'); nx.textContent = show(S.chars[order[0]]); gh.appendChild(nx); gh.scrollLeft = $('#dPrompt').scrollLeft;
     const u = [...ctx.unknown].map(show).join(' ');
     $('#attnRead').textContent = u ? `ignoring unseen: ${u}` : '';
@@ -372,6 +402,50 @@
     drawAttn({ i: Math.floor((e.clientY - r.top - g.lab) / g.cell), j: Math.floor((e.clientX - r.left - g.lab) / g.cell) });
   });
 
+  // ---------- chat (Q&A texts) ----------
+  // One question, one answer: nothing earlier in the chat goes back in, and chatting never trains it.
+  const curStep = () => (S.baseSteps || 0) + (S.viewing >= 0 ? S.snaps[S.viewing].step : S.step);
+  function ask(raw) {
+    if (S.gen) return;
+    const q = normQ(raw);
+    if (!q) { toast('Type a question first, or tap one of the suggestions.'); $('#prompt').focus(); return; }
+    const { ids, unknown } = context(q);
+    const turn = { q, unknown: [...unknown], a: '', step: curStep(), busy: true };
+    S.chatQ = q; S.chatLog.push(turn); if (S.chatLog.length > 30) S.chatLog.shift();
+    S.gen = { turn, ctx: ids.slice(), prompt: q, text: '', left: ANSWER_MAX };
+    $('#prompt').value = ''; $('#gen').textContent = 'Stop ■';
+    renderChat(); touch('talk');
+  }
+  function renderChat() {
+    const out = $('#out'); out.textContent = '';
+    const el = (cls, text, parent) => { const d = document.createElement('div'); d.className = cls; if (text != null) d.textContent = text; parent.appendChild(d); return d; };
+    if (!S.chatLog.length) {
+      el('chatempty', curStep() ? 'Ask it something, or tap a question above.' : 'Ask it something, or tap a question above. It hasn’t learned anything yet, so expect gibberish.', out);
+      return;
+    }
+    for (const t of S.chatLog) {
+      const you = el('turn you', null, out); el('bub', t.q, you);
+      if (t.unknown.length) el('tnote', `never seen, skipped: ${t.unknown.map(show).join(' ')}`, you);
+      const bot = el('turn bot', null, out), b = el('bub', t.a, bot);
+      const tail = (cls, text, title) => { const s = document.createElement('span'); s.className = cls; s.textContent = text; if (title) s.title = title; b.appendChild(s); };
+      if (t.busy) tail('cur', ' ');
+      else if (!t.ended) tail('cut', '…', t.stopped ? 'You stopped it.' : `It never ended its answer, so it was cut off at ${ANSWER_MAX} letters.`);
+      else if (!t.a) { b.classList.add('none'); b.textContent = '(nothing: it ended the line at once)'; }
+      el('tnote', t.step ? `trained ${t.step.toLocaleString()} steps` : 'untrained', bot);
+    }
+    out.scrollTop = out.scrollHeight;
+  }
+  function renderSuggest() {
+    const box = $('#suggest'); box.textContent = '';
+    if (!S.suggest.length) return;
+    const k = document.createElement('span'); k.className = 'lbl'; k.textContent = 'Try'; box.appendChild(k);
+    S.suggest.forEach(q => { const b = document.createElement('button'); b.className = 'chip'; b.textContent = q; b.onclick = () => ask(q); box.appendChild(b); });
+  }
+  // A question has to fit in its memory with room left for the answer, so the boxes stop taking letters there.
+  function syncChatLimit() {
+    const lim = String(Math.max(12, S.model.cfg.n - 8));
+    ['#prompt', '#dPrompt'].forEach(s => S.chat ? $(s).setAttribute('maxlength', lim) : $(s).removeAttribute('maxlength'));
+  }
   const rec0 = () => ({ prompt: S.gen0.prompt, text: S.gen0.text, step: S.viewing >= 0 ? S.snaps[S.viewing].step : S.step });
   function noteAfterWrite(rec) {
     const n = $('#talkNote');
@@ -384,14 +458,18 @@
     const g = S.gen, m = S.model, temp = +$('#temp').value; S.gen0 = g;
     for (let k = 0; k < 3 && g.left > 0; k++, g.left--) {
       const { probs } = m.predict(g.ctx, temp), j = m.sample(probs);
+      if (g.turn && S.chars[j] === '\n') { g.turn.ended = true; g.left = 0; break; } // the end of its answer
       g.ctx.push(j); g.text += S.chars[j];
     }
-    const out = $('#out'); out.textContent = '';
-    const p = document.createElement('span'); p.className = 'p'; p.textContent = g.prompt; out.appendChild(p);
-    out.appendChild(document.createTextNode(g.text));
-    const cur = document.createElement('span'); cur.className = 'cur'; cur.textContent = ' ';
-    if (g.left > 0) out.appendChild(cur);
-    out.scrollTop = out.scrollHeight;
+    if (g.turn) { g.turn.a = g.text; g.turn.busy = g.left > 0; renderChat(); }
+    else {
+      const out = $('#out'); out.textContent = '';
+      const p = document.createElement('span'); p.className = 'p'; p.textContent = g.prompt; out.appendChild(p);
+      out.appendChild(document.createTextNode(g.text));
+      const cur = document.createElement('span'); cur.className = 'cur'; cur.textContent = ' ';
+      if (g.left > 0) out.appendChild(cur);
+      out.scrollTop = out.scrollHeight;
+    }
     if (g.left <= 0) {
       S.gen = null; $('#gen').textContent = 'Send ›'; flag('wrote'); noteAfterWrite(rec0());
       const rec = rec0();
@@ -705,10 +783,15 @@
   }
 
   // ---------- live feedback ----------
-  function sampleText(n, temp) {
-    const m = S.model, ctx = context().ids.slice(); let out = '';
-    for (let i = 0; i < n; i++) { const j = m.sample(m.predict(ctx, temp).probs); ctx.push(j); out += S.chars[j]; }
-    return out;
+  // With a Q&A text it answers a question instead: it stops at the line break, or gives up at ANSWER_MAX.
+  function sampleText(n, temp, q) {
+    const m = S.model, ctx = context(q).ids.slice(); let out = '';
+    for (let i = 0; i < (S.chat ? ANSWER_MAX : n); i++) {
+      const j = m.sample(m.predict(ctx, temp).probs);
+      if (S.chat && S.chars[j] === '\n') return out;
+      ctx.push(j); out += S.chars[j];
+    }
+    return S.chat ? out + '…' : out;
   }
   const typing = new WeakMap();
   function typeOut(el, parts) {
@@ -724,16 +807,19 @@
     };
     tick();
   }
-  function withPrompt(el, text, prompt = $('#prompt').value.replace(/↵/g, '\n')) {
-    if (el.classList.contains('readout')) return typeOut(el, [{ cls: 'pr', title: 'what you typed', text: prompt }, { text }]);
+  function withPrompt(el, text, prompt) {
+    const parts = S.chat
+      ? [{ cls: 'pr', title: 'the question', text: prompt === undefined ? chatQ() : prompt }, { cls: 'ar', text: ' → ' }, { text: text || '(nothing)' }]
+      : [{ cls: 'pr', title: 'what you typed', text: prompt === undefined ? $('#prompt').value.replace(/↵/g, '\n') : prompt }, { text }];
+    if (el.classList.contains('readout')) return typeOut(el, parts);
     el.textContent = '';
-    if (prompt) { const p = document.createElement('span'); p.className = 'pr'; p.title = 'what you typed'; p.textContent = prompt; el.appendChild(p); }
-    el.append(text);
+    parts.forEach(p => { if (!p.text) return; if (!p.cls) return el.append(p.text); const s = document.createElement('span'); s.className = p.cls; if (p.title) s.title = p.title; s.textContent = p.text; el.appendChild(s); });
   }
   function refreshLive() {
     S.liveAt = performance.now();
     if ($('#cDash').classList.contains('on') || S.mode === 'free') withPrompt($('#attnLive'), sampleText(48, 0.6));
-    withPrompt($('#live'), sampleText(90, +$('#temp').value));
+    if (S.chat) { const qs = chatQs(), q = qs[S.liveN++ % qs.length]; withPrompt($('#live'), sampleText(90, +$('#temp').value, q), q); }
+    else withPrompt($('#live'), sampleText(90, +$('#temp').value));
     $('#liveStep').textContent = S.viewing >= 0 ? `· at step ${S.snaps[S.viewing].step.toLocaleString()} (rewound)` : S.step ? `· now, after ${S.step.toLocaleString()} steps` : '· before any training';
   }
   // Filmstrip: one sample saved at each milestone step, so "getting closer" is visible at a glance.
@@ -756,9 +842,22 @@
   // The snapshot: a longer sample every 20 seconds, typed out large, so there is time to read it.
   function takeSnapshot() {
     S.snapAt = performance.now();
-    withPrompt($('#snap'), sampleText(200, +$('#temp').value));
-    const at = S.viewing >= 0 ? S.snaps[S.viewing].step : S.step;
-    $('#snapCap').textContent = `step ${at.toLocaleString()} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+    const at = S.viewing >= 0 ? S.snaps[S.viewing].step : S.step, temp = +$('#temp').value;
+    let cap = `step ${at.toLocaleString()} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+    if (S.chat) {
+      // a Q&A brain gets quizzed instead: the same few questions each time, checked against its text
+      const parts = []; let right = 0, known = 0;
+      chatQs().forEach((q, i) => {
+        const a = sampleText(ANSWER_MAX, temp, q), want = S.qa.get(q);
+        parts.push({ text: i ? '\n' : '' }, { cls: 'pr', title: 'the question', text: q }, { cls: 'ar', text: ' → ' }, { text: a || '(nothing)' });
+        if (want == null) return;
+        known++; if (a === want) right++;
+        parts.push(a === want ? { cls: 'ok', title: 'the answer in its training text', text: ' ✓' } : { cls: 'no', title: `its training text says “${want}”`, text: ' ✗' });
+      });
+      typeOut($('#snap'), parts);
+      if (known) cap += ` · ${right} of ${known} right`;
+    } else withPrompt($('#snap'), sampleText(200, temp));
+    $('#snapCap').textContent = cap;
   }
   $('#snapNow').onclick = takeSnapshot;
   function refreshLandSample() {
@@ -930,7 +1029,8 @@
     live: () => `A fresh short sample every couple of seconds, straight from the brain as it is right now, so you can watch it change while it trains. Your own words are highlighted; everything after them is its guesswork.`,
     train: () => `This is how every chatbot was made: guess the next piece of text, measure how wrong, nudge the numbers. The only difference is scale. They read a large slice of the internet and nudge hundreds of billions of numbers on thousands of chips for months; you're nudging ${S.model.size.toLocaleString()}. <b>Reading the graph:</b> lower is better, and the dashed line is what random guessing scores. Drag ⏳ or click the graph to rewind its brain to any step.`,
     read: () => `Every wrong guess is what it learns from. The top row is its guess for each next letter, made <i>before</i> it sees the letter; the bottom row is what was really there. <b>Slow-mo</b> takes exactly one step, so you can watch a single nudge.`,
-    next: () => `Every word a chatbot has ever written came out of guesses exactly like these: score every possible next piece, pick one, repeat. The big ones score word-pieces instead of letters. The bigger the letter, the surer it is. Click one to type it, or edit the text it continues from.`,
+    chat: () => `Real chatbots work the same way. Your message is wrapped in markers that say who is talking (the pros call it a <i>chat template</i>), and the model writes its reply one piece at a time until it predicts an end-of-turn marker. Here the markers are <b>q:</b> and <b>a:</b>, and the end of the line ends its turn. The big ones re-read the whole conversation before every reply, which is how they seem to remember; this one reads only your latest question. And chatting never changes their numbers, or this one's: only training does.`,
+    next: () => S.chat ? `Every word a chatbot has ever written came out of guesses exactly like these: score every possible next piece, pick one, repeat. Here it has just read your question and the <b>a:</b> after it, so these are its guesses for the first letter of its answer. The bigger the letter, the surer it is. The big ones score word-pieces instead of letters.` : `Every word a chatbot has ever written came out of guesses exactly like these: score every possible next piece, pick one, repeat. The big ones score word-pieces instead of letters. The bigger the letter, the surer it is. Click one to type it, or edit the text it continues from.`,
     attn: () => `<b>The lens</b> is your text, each letter sized by how hard the <i>last</i> letter looks at it while guessing what comes next (→). <b>The squares</b> show the same for every letter: each row is a letter looking back along its own row. Each head learned its own way of looking. <b>✂ Head off</b> is brain surgery: researchers switch parts off one at a time (<i>ablation</i>) to see what breaks. In bigger models, researchers at Anthropic found <b>induction heads</b>, which spot an earlier copy of a word and look at what came right after it, and in 2022 showed they're a big part of how large models learn from examples in your prompt.`,
     land: () => `Its whole brain is one point in a space with ${S.model.size.toLocaleString()} directions. This is a flat slice through two random directions, colored by how wrong each nearby brain would be: dark is good. The glowing ball is your model; the arrow points downhill, the <i>gradient</i>. <b>Drag the ball</b> to change its brain for real and watch its writing fall apart. Training usually slips away sideways, through directions this slice can't show; tick <b>Stick to map</b> to hold it here and watch it roll home. The method comes from a 2018 paper on why some networks train easily and others don't.`,
     emb: () => `Each character is a list of numbers: its coordinates in a space with many directions. This squashes that space flat. Nobody tells it what a vowel is, yet letters it treats alike drift together as it trains. <b>Hover a letter</b> to see its closest neighbours in the full space. Big models do this with words: in a famous 2013 result, "king" minus "man" plus "woman" landed next to "queen."`,
@@ -1002,11 +1102,14 @@
     setRunning(false);
     S.chars = pk.chars.slice(); S.stoi = Object.fromEntries(S.chars.map((c, i) => [c, i]));
     S.corpusText = text; S.data = Int32Array.from([...text].filter(c => c in S.stoi), c => S.stoi[c]);
+    const same = window.CORPORA.find(c => c.text === text); S.preset = same ? same.id : 'custom'; S.memWas = null;
+    setChat(text); if (S.chat) $('#prompt').value = '';
     $('#corpus').value = text; $('#corpusInfo').textContent = `${text.length.toLocaleString()} chars · ${V} different ones`; feedDirty();
     $('#kL').value = L; $('#kH').value = HEADS.indexOf(H); $('#kD').value = WIDTHS.indexOf(d); $('#kN').value = n;
     document.querySelectorAll('#presets .chip').forEach(c => c.classList.remove('sel'));
     build();
     S.model.setFlat(w); S.snaps[0].f = S.model.flat(); S.baseSteps = +pk.steps || 0;
+    if (S.chat) renderChat();
     S.film = []; filmShot();
     const nm = String(pk.name || 'a saved brain').slice(0, 40);
     $('#blurb').textContent = `Loaded “${nm}”.`; $('#talkNote').hidden = true; clearRetrain();
@@ -1074,21 +1177,32 @@
   function loadPreset(id) {
     const p = window.CORPORA.find(c => c.id === id); S.preset = id;
     document.querySelectorAll('#presets .chip').forEach(c => c.classList.toggle('sel', c.dataset.id === id));
-    $('#blurb').textContent = p.blurb; $('#corpus').value = p.text; $('#prompt').value = DEFAULT_PROMPT[id];
-    setText(p.text); build();
+    $('#blurb').textContent = p.blurb; $('#corpus').value = p.text; $('#prompt').value = DEFAULT_PROMPT[id] || '';
+    setText(p.text); chatShape(); build();
   }
+  // A Q&A set needs a memory that holds a whole question and its answer; other texts get the old one back.
+  function chatShape() {
+    const k = $('#kN');
+    if (S.chat && +k.value < CHAT_MEMORY) { S.memWas = +k.value; k.value = CHAT_MEMORY; }
+    else if (!S.chat && S.memWas != null) { k.value = S.memWas; S.memWas = null; }
+  }
+  $('#kN').addEventListener('input', () => { S.memWas = null; });
 
   // ---------- wiring ----------
-  window.CORPORA.forEach(c => {
-    const b = document.createElement('span'); b.className = 'chip'; b.dataset.id = c.id; b.textContent = c.label;
-    b.onclick = () => { loadPreset(c.id); flag('fed'); afterUserBuild(); }; $('#presets').appendChild(b);
+  [['Learns to write', false], ['Learns to answer questions', true]].forEach(([label, chat]) => {
+    const k = document.createElement('span'); k.className = 'chipk'; k.textContent = label; $('#presets').appendChild(k);
+    window.CORPORA.filter(c => !!c.chat === chat).forEach(c => {
+      const b = document.createElement('span'); b.className = 'chip'; b.dataset.id = c.id; b.textContent = c.label;
+      b.onclick = () => { loadPreset(c.id); flag('fed'); afterUserBuild(); }; $('#presets').appendChild(b);
+    });
   });
   $('#useText').onclick = () => {
     const t = $('#corpus').value;
     if (t.length < 60) return toast('Give it at least a few lines of text.');
     document.querySelectorAll('#presets .chip').forEach(c => c.classList.remove('sel'));
     S.preset = 'custom'; $('#blurb').textContent = 'Your own text.'; $('#prompt').value = (t.trim().match(/^\S{1,10}/) || [''])[0];
-    setText(t); build(); flag('fed'); afterUserBuild(); toast('New brain built for your text.');
+    setText(t); if (S.chat) $('#prompt').value = ''; chatShape(); build(); flag('fed'); afterUserBuild();
+    toast(S.chat ? 'New brain built. Your text is questions and answers, so it will learn to answer them.' : 'New brain built for your text.');
   };
   ['#kL', '#kH', '#kD', '#kN'].forEach(s => $(s).addEventListener('input', knobInfo));
   $('#build').onclick = () => { build(); flag('built'); afterUserBuild(); toast('New brain built. It knows nothing yet.'); };
@@ -1109,8 +1223,10 @@
   $('#dTemp').addEventListener('input', e => { $('#temp').value = e.target.value; $('#temp').dispatchEvent(new Event('input')); });
   $('#dTemp').addEventListener('change', () => { refreshLive(); takeSnapshot(); });
   $('#prompt').addEventListener('input', () => touch('talk'));
+  $('#prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); $('#gen').click(); } });
   $('#gen').onclick = () => {
-    if (S.gen) { S.gen.left = 0; return; }
+    if (S.gen) { S.gen.left = 0; if (S.gen.turn) S.gen.turn.stopped = true; return; }
+    if (S.chat) return ask($('#prompt').value);
     const ctx = context();
     S.gen = { ctx: ctx.ids.slice(), prompt: $('#prompt').value.replace(/↵/g, '\n'), text: '', left: 280 };
     $('#gen').textContent = 'Stop ■';

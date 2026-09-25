@@ -59,8 +59,10 @@ Home page: https://philipbaker.us
 - [Pocket GPT](https://lab.philipbaker.us/GPT/): A real, tiny GPT — token and
   position embeddings, masked multi-head self-attention, an MLP, layer norm —
   that trains in the browser with hand-written backpropagation; no server and no
-  library. Pick a text (nursery rhymes, a guide to growing tomatoes, or an essay
-  about mornings) or paste your own, chat with it while it still knows nothing,
+  library. Pick a text for it to imitate (nursery rhymes, a guide to growing
+  tomatoes, or an essay about mornings), a question-and-answer set that turns it
+  into a small chatbot (Pocket Pal, Tiny Facts, or the questions people ask a
+  made-up cafe), or paste your own; chat with it while it still knows nothing,
   then press Train and watch the loss fall. It shows its next-character guesses, per-head
   attention heatmaps with a switch to turn any head off, a letter map of its
   embeddings, its raw weights, and a 2-D slice of its loss landscape where the
