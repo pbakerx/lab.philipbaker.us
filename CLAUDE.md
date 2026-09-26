@@ -322,7 +322,12 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     own logo, words, colours and data, as the comments in those files say. Desktop: six columns, each shelf opens on two `.big` cards (span 3) and
     then runs in threes, and the border rules assume exactly that. Tablet pairs up (an odd
     count gives the first card the whole row). Phone: one column.
-  - **Adding or removing an entry touches:** the card, its shelf's "NN entries", the hero's
+  - **A card reads once** (Philip, Sep 25 2026: the share card already says the headline and the
+    detail, so the card was saying them twice): picture, code and path, then the title with its
+    button. The one-line description is the picture's `alt` — a picture of words needs its words
+    in `alt` anyway, and that's where search engines and screen readers read them. The title stays
+    visible and is the link: it's the anchor text for the project page and GA's `item_name`.
+  - **Adding or removing an entry touches:** the card (its `alt` carries the description), its shelf's "NN entries", the hero's
     count box (the number, its `aria-label`, and the three `--n` segments), and the JSON-LD
     `ItemList` (lab pages only, page order) — then the sitemap as usual.
   - Each card is one link: the `<h3><a>`'s `::after` covers the card, so `analytics.js`
