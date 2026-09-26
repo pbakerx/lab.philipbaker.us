@@ -79,7 +79,7 @@
   --fire-hi:linear-gradient(115deg,#e23a00 0%,#ff5a00 32%,#ff8200 64%,#ffb01f 100%);   /* under dark text: pills, the count box */
   --bg:var(--night);--fg:var(--paper);
   --mute:rgba(243,238,230,.66);--faint:rgba(243,238,230,.14);--line:rgba(243,238,230,.2);
-  --fire-text:linear-gradient(100deg,#ff6a10 0%,#ff8a1a 50%,#ffb62e 100%);--card:rgba(9,7,6,.62);--rib:.55;
+  --name:#ff7a24;--fire-text:linear-gradient(100deg,#ff6a10 0%,#ff8a1a 50%,#ffb62e 100%);--card:rgba(9,7,6,.62);--rib:.55;
   --sans:"Inter Tight",Inter,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
   --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --gut:clamp(16px,2.6vw,40px);
@@ -89,7 +89,7 @@
 :root[data-polarity="light"]{
   --bg:var(--paper);--fg:#0c0a08;
   --mute:rgba(12,10,8,.7);--faint:rgba(12,10,8,.12);--line:rgba(12,10,8,.22);
-  --fire-text:linear-gradient(100deg,#9e1400 0%,#c42800 50%,#e04800 100%);--card:rgba(243,238,230,.66);--rib:.3;
+  --name:#b52400;--fire-text:linear-gradient(100deg,#9e1400 0%,#c42800 50%,#e04800 100%);--card:rgba(243,238,230,.66);--rib:.3;
   color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -144,8 +144,10 @@ body::after{z-index:-1;opacity:var(--rib);mix-blend-mode:overlay;
 .count .segs i{flex:var(--n);background:currentColor;opacity:.9}
 .count .segs i:nth-child(2){opacity:.55}
 .count .segs i:nth-child(3){opacity:.3}
-h1{margin:0;font:800 clamp(128px,24vw,390px)/.74 var(--sans);letter-spacing:-.058em;margin-left:-.045em;padding-bottom:.07em}
-.lede{margin:10px 0 0;font:600 clamp(18px,1.7vw,24px)/1.15 var(--sans);letter-spacing:-.015em}
+/* one heading: the big word and the line under it (search reads "lab, a hodge-podge of projects by Philip Baker") */
+h1{margin:0}
+h1 .word{display:block;font:800 clamp(128px,24vw,390px)/.74 var(--sans);letter-spacing:-.058em;margin-left:-.045em;padding-bottom:.07em}
+.lede{display:block;margin:10px 0 0;font:600 clamp(18px,1.7vw,24px)/1.15 var(--sans);letter-spacing:-.015em}
 .specimen{position:relative;grid-column:1;grid-row:1;min-width:0;overflow:hidden}
 .specimen::before,.specimen::after{content:"";position:absolute;background:var(--faint);pointer-events:none}
 .specimen::before{left:50%;top:0;bottom:0;width:1px}
@@ -184,7 +186,8 @@ button.pill:hover,button.pill:focus-visible{background:var(--fire-hi);color:var(
 .card .meta-line span:last-child{text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .card .shot,.card .meta-line{grid-column:1/-1}
 .card h3{margin:0;font:700 clamp(19px,1.45vw,23px)/1.12 var(--sans);letter-spacing:-.02em;text-wrap:balance}
-.card h3 a{text-decoration:none}
+.card h3 a{display:block;text-decoration:none}
+.card h3 .nm{display:block;margin-top:7px;font:700 11px/1.2 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--name);-webkit-text-fill-color:var(--name)}
 .card h3 a::after{content:"";position:absolute;inset:0;z-index:2}
 .card h3 a:focus-visible{outline:none}
 .card .go{justify-self:end}
@@ -247,7 +250,8 @@ button.pill:hover,button.pill:focus-visible{background:var(--fire-hi);color:var(
   .meta>:nth-child(-n+2){border-bottom:0}
   .stage{display:block;height:auto}
   .intro{min-height:0;padding:var(--in) 0 calc(var(--in) + 4px);border-left:0}
-  h1{font-size:clamp(128px,44vw,230px);margin-top:28px}
+  h1{margin-top:28px}
+  h1 .word{font-size:clamp(128px,44vw,230px)}
   .specimen{border-top:1px solid var(--line);height:min(92vw,400px)}
   .controls{display:grid;grid-template-columns:1fr;gap:4px;padding:12px 0 14px}
   .slide{grid-template-columns:5.2em minmax(0,1fr) 2.4em}
@@ -304,8 +308,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
         </div>
       </div>
       <div>
-        <h1>lab</h1>
-        <p class="lede">A hodge-podge of projects</p>
+        <h1><span class="word">lab</span><span class="lede">A hodge-podge of projects by Philip Baker</span></h1>
       </div>
     </div>
     <div class="specimen">
@@ -331,49 +334,49 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <article class="card big">
       <div class="shot"><img src="/GPT/img/og.png" alt="Pocket GPT, a real transformer: train it, talk to it, watch it pay attention, and push it around its own loss landscape." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-01</span><span>/GPT</span></div>
-      <h3><a href="/GPT/">A real, tiny transformer that trains in your browser</a></h3>
+      <h3><a href="/GPT/">A real, tiny transformer that trains in your browser<span class="nm">Pocket GPT</span></a></h3>
       <span class="pill go">Open</span>
     </article>
     <article class="card big">
       <div class="shot"><img src="/widget-maker/img/og.png" alt="Widget Maker: describe it, and it gets built then and there, and runs live." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-02</span><span>/widget-maker</span></div>
-      <h3><a href="/widget-maker/">Say what you want and watch AI build it, live</a></h3>
+      <h3><a href="/widget-maker/">Say what you want and watch AI build it, live<span class="nm">Widget Maker</span></a></h3>
       <span class="pill go">Open</span>
     </article>
     <article class="card out">
       <div class="shot"><img src="/shared/cards/emergence.jpg" alt="Emergence, an observatory of collective rhythms: notice what emerges. Graphs of public attention, a state trajectory and a recurrence plot." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-03</span><span>/emergence</span></div>
-      <h3><a href="https://emergence-observatory-beryl.vercel.app/">A city-signal observatory for emerging patterns</a></h3>
+      <h3><a href="https://emergence-observatory-beryl.vercel.app/">A city-signal observatory for emerging patterns<span class="nm">Emergence</span></a></h3>
       <span class="pill go">Visit</span>
     </article>
     <article class="card out">
       <div class="shot"><img src="/shared/cards/checkmate.jpg" alt="CheckMate: is it checkmate? Take a photo and it checks the position. A chess board, magnified on the mate." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-04</span><span>/checkmate</span></div>
-      <h3><a href="https://checkmate-two-eosin.vercel.app/">Photo the board, get a clear checkmate answer</a></h3>
+      <h3><a href="https://checkmate-two-eosin.vercel.app/">Photo the board, get a clear checkmate answer<span class="nm">CheckMate</span></a></h3>
       <span class="pill go">Visit</span>
     </article>
     <article class="card">
       <div class="shot"><img src="/missile-command/img/og.png" alt="Missile Command, a 1980 arcade tribute: six cities, thirty missiles." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-05</span><span>/missile-command</span></div>
-      <h3><a href="/missile-command/">A one-file tribute to the 1980 arcade game</a></h3>
+      <h3><a href="/missile-command/">A one-file tribute to the 1980 arcade game<span class="nm">Missile Command</span></a></h3>
       <span class="pill go">Play</span>
     </article>
     <article class="card">
       <div class="shot"><img src="/missile-command-deluxe/img/og.jpg" alt="City Run, Missile Command Deluxe: fly the raid, call the strikes, save the six." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-06</span><span>/missile-command-deluxe</span></div>
-      <h3><a href="/missile-command-deluxe/">Missile Command, deluxe: a 3D city under attack</a></h3>
+      <h3><a href="/missile-command-deluxe/">Missile Command, deluxe: a 3D city under attack<span class="nm">City Run</span></a></h3>
       <span class="pill go">Play</span>
     </article>
     <article class="card">
       <div class="shot"><img src="/maze-wars/img/og.png" alt="Maze Wars+ on a one-bit Macintosh screen: a first-person maze, an eyeball opponent, the map and the mail box." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-07</span><span>/maze-wars</span></div>
-      <h3><a href="/maze-wars/">Maze Wars+, the 1986 Mac network shooter, online</a></h3>
+      <h3><a href="/maze-wars/">The 1986 Mac network shooter, back online<span class="nm">Maze Wars+</span></a></h3>
       <span class="pill go">Play</span>
     </article>
     <article class="card">
       <div class="shot"><img src="/paste-plain/img/og.png" alt="PlainPaste, a free Mac menu bar app: paste anything as plain text with Control-Command-V." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-08</span><span>/paste-plain</span></div>
-      <h3><a href="/paste-plain/">A tiny Mac menu bar app that pastes plain text</a></h3>
+      <h3><a href="/paste-plain/">A tiny Mac menu bar app that pastes plain text<span class="nm">PlainPaste</span></a></h3>
       <span class="pill go">Open</span>
     </article>
   </div>
@@ -385,31 +388,31 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <article class="card big">
       <div class="shot"><img src="/ai-solves-billing/img/og.png" alt="Case study: billing, turned into a conversation. Spoken timesheets in, invoices out, books current." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>S-01</span><span>/ai-solves-billing</span></div>
-      <h3><a href="/ai-solves-billing/">How billing stopped getting ignored</a></h3>
+      <h3><a href="/ai-solves-billing/">How billing stopped getting ignored<span class="nm">AI Solves Billing</span></a></h3>
       <span class="pill go">Read</span>
     </article>
     <article class="card big">
       <div class="shot"><img src="/second-brain-case-study/img/og.png" alt="Case study: I stopped running my businesses out of my head. Ten scattered places, one page, and a microphone." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>S-02</span><span>/second-brain-case-study</span></div>
-      <h3><a href="/second-brain-case-study/">Building a second brain you can talk to</a></h3>
+      <h3><a href="/second-brain-case-study/">Building a second brain you can talk to<span class="nm">Second Brain Case Study</span></a></h3>
       <span class="pill go">Read</span>
     </article>
     <article class="card">
       <div class="shot"><img src="/90s-web-ackerman-mcqueen/img/og.png" alt="am.com, in black and white: the Ackerman McQueen site, 1997 to 1999, recovered from the Wayback Machine." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>S-03</span><span>/90s-web-ackerman-mcqueen</span></div>
-      <h3><a href="/90s-web-ackerman-mcqueen/">The Ackerman McQueen site I designed in the '90s</a></h3>
+      <h3><a href="/90s-web-ackerman-mcqueen/">The Ackerman McQueen site I designed in the '90s<span class="nm">am.com 1998</span></a></h3>
       <span class="pill go">Read</span>
     </article>
     <article class="card">
       <div class="shot"><img src="/vault/img/og.jpg" alt="The 90s Vault: Shockwave and Flash games built in a '90s agency lab, playable again, over Alien Maze and the Six Flags logo." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>S-04</span><span>/vault</span></div>
-      <h3><a href="/vault/">Shockwave and Flash games, playable again</a></h3>
+      <h3><a href="/vault/">Shockwave and Flash games, playable again<span class="nm">The 90s Vault</span></a></h3>
       <span class="pill go">Play</span>
     </article>
     <article class="card">
       <div class="shot"><img src="/staplegun/img/og.jpg" alt="The STAPLEGUN office in City Place Tower, with the gunner guy." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>S-05</span><span>/staplegun</span></div>
-      <h3><a href="/staplegun/">STAPLEGUN: the agency, the reel, the whole story</a></h3>
+      <h3><a href="/staplegun/">The agency, the reel, the whole story<span class="nm">STAPLEGUN</span></a></h3>
       <span class="pill go">Read</span>
     </article>
   </div>
@@ -421,13 +424,13 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <article class="card big out">
       <div class="shot"><img src="/shared/cards/aechtech.jpg" alt="AechTech's home page: AI that people can actually use." width="960" height="504" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>P-01</span><span>aechtech.com</span></div>
-      <h3><a href="https://aechtech.com/">AI software, from product strategy to full-stack code</a></h3>
+      <h3><a href="https://aechtech.com/">AI software, from product strategy to full-stack code<span class="nm">AechTech</span></a></h3>
       <span class="pill go">Visit</span>
     </article>
     <article class="card big out">
       <div class="shot"><img src="/shared/cards/catapult.jpg" alt="Catapult Creative's home page: we've been making brands move forward for decades." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>P-02</span><span>catapultcreative.agency</span></div>
-      <h3><a href="https://catapultcreative.agency/">An Oklahoma agency for brand strategy and campaigns</a></h3>
+      <h3><a href="https://catapultcreative.agency/">An Oklahoma agency for brand strategy and campaigns<span class="nm">Catapult Creative</span></a></h3>
       <span class="pill go">Visit</span>
     </article>
   </div>
