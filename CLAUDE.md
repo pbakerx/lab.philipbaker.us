@@ -323,11 +323,15 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     then runs in threes, and the border rules assume exactly that. Tablet pairs up (an odd
     count gives the first card the whole row). Phone: one column.
   - **A card reads once** (Philip, Sep 25 2026: the share card already says the headline and the
-    detail, so the card was saying them twice): picture, code and path, then the title with its
-    button. The one-line description is the picture's `alt` — a picture of words needs its words
-    in `alt` anyway, and that's where search engines and screen readers read them. The title stays
-    visible and is the link: it's the anchor text for the project page and GA's `item_name`.
-  - **Adding or removing an entry touches:** the card (its `alt` carries the description), its shelf's "NN entries", the hero's
+    detail, so the card was saying them twice, then "it looks silly when the card matches the
+    headline word for word"): picture, code and path, then a title with its button. The title is
+    a short plain-words line that SUPPORTS the picture — what the thing is, in searchable words —
+    never the name the picture already shows (a picture with no words of its own, like Maze Wars+
+    or STAPLEGUN, keeps its name in the title). The picture's `alt` is the words printed on the
+    share card, name included, so search engines and screen readers still get the name. The title
+    is the link: the anchor text for the project page, and GA's `item_name` (reports still key on
+    the path, `item_id`). The project names also live in the JSON-LD `ItemList`.
+  - **Adding or removing an entry touches:** the card (a supporting title; `alt` = the share card's words), its shelf's "NN entries", the hero's
     count box (the number, its `aria-label`, and the three `--n` segments), and the JSON-LD
     `ItemList` (lab pages only, page order) — then the sitemap as usual.
   - Each card is one link: the `<h3><a>`'s `::after` covers the card, so `analytics.js`
