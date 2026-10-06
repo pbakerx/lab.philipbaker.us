@@ -103,6 +103,25 @@ Home page: https://philipbaker.us
   stripped; the menu's Scrub Clipboard strips formatting in place. Universal
   binary, free. Branded AechTech, LLC.
 
+## Products, on their own sites
+
+The lab index also links to two products from AechTech, LLC, Philip Baker's
+company. They live on their own domains, not on this host, and have their own
+prices.
+
+- [Bible Discovery Engine](https://discoverthebiblewithai.com/): An AI research
+  tool for the Bible. Ask anything, and the people, places and passages behind
+  your question take shape on a living map; every connection shows where it came
+  from, and quotations come from the Bible text itself, never from the AI. It
+  works from all 31,102 verses, 3,009 people and 443,625 Greek and Hebrew words,
+  in the Berean Standard Bible and the King James Version. The first three
+  investigations are free; plans are $7, $14 and $29 a month (October 2026).
+- [WidgetMaker.io](https://widgetmaker.io/): An iPhone, iPad and Mac app. Type one
+  sentence and AI writes a working, interactive program (a physics sim, a shader,
+  a game, a synth) and runs it live in about a minute; every creation runs in a
+  sandbox with no network access. One $4.99 App Store purchase gets all three
+  apps and 10 builds, and credit packs add more (October 2026).
+
 ## Notes for assistants
 
 - Full list of pages: https://lab.philipbaker.us/sitemap.xml

@@ -60,7 +60,24 @@
           {"@type": "ListItem", "position": 11, "name": "STAPLEGUN, 2001–2020", "url": "https://lab.philipbaker.us/staplegun/"}
         ]
       }
-    }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://lab.philipbaker.us/#faq",
+      "url": "https://lab.philipbaker.us/",
+      "isPartOf": {"@id": "https://lab.philipbaker.us/#website"},
+      "mainEntity": [
+        {"@type": "Question", "name": "What is Pocket GPT?", "acceptedAnswer": {"@type": "Answer", "text": "Pocket GPT is a real GPT, the same design as the chatbots you know, shrunk until you can watch every part of it learn. Pocket GPT lives entirely in the web page, with no server: it starts out knowing nothing, and a few pages of text are plenty to teach it. Pick a text to feed it, press Train, and watch static turn into your text’s voice.", "url": "https://lab.philipbaker.us/GPT/"}},
+        {"@type": "Question", "name": "What is Widget Maker?", "acceptedAnswer": {"@type": "Answer", "text": "Widget Maker builds what you describe, then and there, and runs it live on the page: a particle mirror, a rain simulator, a calculator. Every Widget Maker build is one self-contained HTML file with no libraries, no network and no storage, so a download works offline, anywhere. Type a wish like “a rain simulator,” press Make it, then say what to change.", "url": "https://lab.philipbaker.us/widget-maker/"}},
+        {"@type": "Question", "name": "What is Bible Discovery Engine?", "acceptedAnswer": {"@type": "Answer", "text": "Bible Discovery Engine is an AI research tool for the Bible: ask anything, and the people, places and passages behind your question take shape on a living map. Bible Discovery Engine works from all 31,102 verses, 3,009 people and 443,625 Greek and Hebrew words, and every connection shows where it came from. (discoverthebiblewithai.com, Oct 2026) Ask one question in your own words at discoverthebiblewithai.com; your first three investigations are free.", "url": "https://discoverthebiblewithai.com/"}},
+        {"@type": "Question", "name": "What is WidgetMaker.io?", "acceptedAnswer": {"@type": "Answer", "text": "WidgetMaker.io is an iPhone, iPad and Mac app that turns one sentence into a working, interactive program, from a physics sim to a synth, in about a minute. One $4.99 App Store purchase of WidgetMaker.io gets all three apps and 10 builds; each new build or change uses one, and credit packs add more. (widgetmaker.io, Oct 2026) Open widgetmaker.io and tap an example: it runs right in the page, in a sandbox.", "url": "https://widgetmaker.io/"}},
+        {"@type": "Question", "name": "What is AI Solves Billing?", "acceptedAnswer": {"@type": "Answer", "text": "AI Solves Billing is Philip Baker’s case study of a billing cycle run from a phone conversation: spoken timesheets in, invoices out through the QuickBooks API. The billing system categorized 900+ bank transactions in one session and brought 29 months of unreconciled books current. (Case study, Aug 2026) List the billing chores you keep putting off, and take yourself out of every step that doesn’t need you.", "url": "https://lab.philipbaker.us/ai-solves-billing/"}},
+        {"@type": "Question", "name": "What is the Second Brain?", "acceptedAnswer": {"@type": "Answer", "text": "The Second Brain is Philip Baker’s operations system: ten places he tracked his businesses in became one page he can talk to from the car. The Second Brain replaced nothing: no new platform and no new seat licenses. It reads QuickBooks and the registrar and puts the answers in one view. (Case study, Aug 2026) Start with a conversation: tell Philip what keeps slipping, and he’ll say honestly whether this approach would help.", "url": "https://lab.philipbaker.us/second-brain-case-study/"}}
+      ]
+    },
+    {"@type":"Organization","@id":"https://aechtech.com/#org","name":"AechTech, LLC","url":"https://aechtech.com","founder":{"@id":"https://lab.philipbaker.us/#philip"}},
+    {"@type":"WebApplication","@id":"https://discoverthebiblewithai.com/#app","name":"Bible Discovery Engine","url":"https://discoverthebiblewithai.com/","description":"Bible Discovery Engine is an AI research tool for the Bible: ask anything, and the people, places and passages behind your question take shape on a living map.","applicationCategory":"ReferenceApplication","operatingSystem":"Web","creator":{"@id":"https://lab.philipbaker.us/#philip"},"publisher":{"@id":"https://aechtech.com/#org"}},
+    {"@type":"SoftwareApplication","name":"WidgetMaker.io","url":"https://widgetmaker.io/","description":"WidgetMaker.io is an iPhone, iPad and Mac app that turns one sentence into a working, interactive program, from a physics sim to a synth, in about a minute.","applicationCategory":"DeveloperApplication","operatingSystem":"iOS, iPadOS, macOS","offers":{"@type":"Offer","price":"4.99","priceCurrency":"USD"},"creator":{"@id":"https://lab.philipbaker.us/#philip"},"publisher":{"@id":"https://aechtech.com/#org"}}
   ]
 }
 </script>
@@ -201,6 +218,14 @@ button.pill:hover,button.pill:focus-visible{background:var(--fire-hi);color:var(
 .card.out:hover .go::after,.card.out:focus-within .go::after{transform:translate(2px,-2px)}
 .card:focus-within{outline:2px solid var(--hot);outline-offset:-5px}
 .card.big h3{font-size:clamp(21px,1.9vw,28px)}
+/* the big cards carry three liftable lines, a spec sheet's rows: what it is, one sourced fact, where to start.
+   They sit under the card's link like everything else, so the card stays one link; FAQPage in the head mirrors them word for word. */
+.lift{grid-column:1/-1;display:grid;grid-template-columns:max-content minmax(0,1fr);margin:2px 0 0;border-top:1px solid var(--line)}
+.lift dt,.lift dd{margin:0;padding:9px 0 8px;border-bottom:1px solid var(--faint)}
+.lift dt:last-of-type,.lift dd:last-of-type{border-bottom:0;padding-bottom:0}
+.lift dt{padding-top:12px;padding-right:var(--in);font:500 10px/1.2 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.lift dd{font:500 14px/1.45 var(--sans);text-wrap:pretty}
+.lift .src{font:500 10.5px/1 var(--mono);letter-spacing:.01em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
 
 
 /* ── footer ───────────────────────────────────────────────────────────── */
@@ -336,12 +361,22 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
       <div class="meta-line"><span>T-01</span><span>/GPT</span></div>
       <h3><a href="/GPT/">A real, tiny transformer that trains in your browser<span class="nm">Pocket GPT</span></a></h3>
       <span class="pill go">Open</span>
+      <dl class="lift">
+        <dt>What it is</dt><dd>Pocket GPT is a real GPT, the same design as the chatbots you know, shrunk until you can watch every part of it learn.</dd>
+        <dt>Fact</dt><dd>Pocket GPT lives entirely in the web page, with no server: it starts out knowing nothing, and a few pages of text are plenty to teach it.</dd>
+        <dt>Start</dt><dd>Pick a text to feed it, press Train, and watch static turn into your text&rsquo;s voice.</dd>
+      </dl>
     </article>
     <article class="card big">
       <div class="shot"><img src="/widget-maker/img/og.png" alt="Widget Maker: describe it, and it gets built then and there, and runs live." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-02</span><span>/widget-maker</span></div>
       <h3><a href="/widget-maker/">Say what you want and watch AI build it, live<span class="nm">Widget Maker</span></a></h3>
       <span class="pill go">Open</span>
+      <dl class="lift">
+        <dt>What it is</dt><dd>Widget Maker builds what you describe, then and there, and runs it live on the page: a particle mirror, a rain simulator, a calculator.</dd>
+        <dt>Fact</dt><dd>Every Widget Maker build is one self-contained HTML file with no libraries, no network and no storage, so a download works offline, anywhere.</dd>
+        <dt>Start</dt><dd>Type a wish like &ldquo;a rain simulator,&rdquo; press Make it, then say what to change.</dd>
+      </dl>
     </article>
     <article class="card out">
       <div class="shot"><img src="/shared/cards/emergence.jpg" alt="Emergence, an observatory of collective rhythms: notice what emerges. Graphs of public attention, a state trajectory and a recurrence plot." width="1200" height="630" loading="lazy" decoding="async"></div>
@@ -384,12 +419,22 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
       <div class="meta-line"><span>T-09</span><span>discoverthebiblewithai.com</span></div>
       <h3><a href="https://discoverthebiblewithai.com/">AI Bible study where every connection shows its source<span class="nm">Bible Discovery Engine</span></a></h3>
       <span class="pill go">Visit</span>
+      <dl class="lift">
+        <dt>What it is</dt><dd>Bible Discovery Engine is an AI research tool for the Bible: ask anything, and the people, places and passages behind your question take shape on a living map.</dd>
+        <dt>Fact</dt><dd>Bible Discovery Engine works from all 31,102 verses, 3,009 people and 443,625 Greek and Hebrew words, and every connection shows where it came from. <span class="src">discoverthebiblewithai.com, Oct 2026</span></dd>
+        <dt>Start</dt><dd>Ask one question in your own words at discoverthebiblewithai.com; your first three investigations are free.</dd>
+      </dl>
     </article>
     <article class="card big out">
       <div class="shot"><img src="/shared/cards/widgetmaker.jpg" alt="WidgetMaker, the proof-of-concept machine: describe it, watch it run. On iPhone, iPad and Mac; three screens show a sentence typed in, the code being written, and the program running." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>T-10</span><span>widgetmaker.io</span></div>
       <h3><a href="https://widgetmaker.io/">A Mac and iPhone app that turns one sentence into a live program<span class="nm">WidgetMaker.io</span></a></h3>
       <span class="pill go">Visit</span>
+      <dl class="lift">
+        <dt>What it is</dt><dd>WidgetMaker.io is an iPhone, iPad and Mac app that turns one sentence into a working, interactive program, from a physics sim to a synth, in about a minute.</dd>
+        <dt>Fact</dt><dd>One $4.99 App Store purchase of WidgetMaker.io gets all three apps and 10 builds; each new build or change uses one, and credit packs add more. <span class="src">widgetmaker.io, Oct 2026</span></dd>
+        <dt>Start</dt><dd>Open widgetmaker.io and tap an example: it runs right in the page, in a sandbox.</dd>
+      </dl>
     </article>
   </div>
 </section>
@@ -402,12 +447,22 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
       <div class="meta-line"><span>S-01</span><span>/ai-solves-billing</span></div>
       <h3><a href="/ai-solves-billing/">How billing stopped getting ignored<span class="nm">AI Solves Billing</span></a></h3>
       <span class="pill go">Read</span>
+      <dl class="lift">
+        <dt>What it is</dt><dd>AI Solves Billing is Philip Baker&rsquo;s case study of a billing cycle run from a phone conversation: spoken timesheets in, invoices out through the QuickBooks API.</dd>
+        <dt>Fact</dt><dd>The billing system categorized 900+ bank transactions in one session and brought 29 months of unreconciled books current. <span class="src">Case study, Aug 2026</span></dd>
+        <dt>Start</dt><dd>List the billing chores you keep putting off, and take yourself out of every step that doesn&rsquo;t need you.</dd>
+      </dl>
     </article>
     <article class="card big">
       <div class="shot"><img src="/second-brain-case-study/img/og.png" alt="Case study: I stopped running my businesses out of my head. Ten scattered places, one page, and a microphone." width="1200" height="630" loading="lazy" decoding="async"></div>
       <div class="meta-line"><span>S-02</span><span>/second-brain-case-study</span></div>
       <h3><a href="/second-brain-case-study/">Building a second brain you can talk to<span class="nm">Second Brain Case Study</span></a></h3>
       <span class="pill go">Read</span>
+      <dl class="lift">
+        <dt>What it is</dt><dd>The Second Brain is Philip Baker&rsquo;s operations system: ten places he tracked his businesses in became one page he can talk to from the car.</dd>
+        <dt>Fact</dt><dd>The Second Brain replaced nothing: no new platform and no new seat licenses. It reads QuickBooks and the registrar and puts the answers in one view. <span class="src">Case study, Aug 2026</span></dd>
+        <dt>Start</dt><dd>Start with a conversation: tell Philip what keeps slipping, and he&rsquo;ll say honestly whether this approach would help.</dd>
+      </dl>
     </article>
     <article class="card">
       <div class="shot"><img src="/90s-web-ackerman-mcqueen/img/og.png" alt="am.com, in black and white: the Ackerman McQueen site, 1997 to 1999, recovered from the Wayback Machine." width="1200" height="630" loading="lazy" decoding="async"></div>
