@@ -39,13 +39,23 @@
       "featureList": ["Builds a self-contained widget from a written description", "Iterate by saying what to change", "Version rail you can jump back through", "Shared favorites gallery", "Full-screen view", "Download the HTML", "Share a widget on its own page"],
       "inLanguage": "en-US",
       "datePublished": "2026-08-08",
-      "dateModified": "2026-09-09",
+      "dateModified": "2026-10-06",
       "author": {"@type":"Person","@id":"https://lab.philipbaker.us/#philip","name":"Philip Baker","url":"https://philipbaker.us","sameAs":["https://philipbaker.us","https://aechtech.com/"]},
       "publisher": {"@type": "Organization", "name": "PB Productions", "url": "https://philipbaker.us"}
     },
     {
       "@type": "BreadcrumbList",
       "itemListElement": [{"@type": "ListItem", "position": 1, "name": "lab", "item": "https://lab.philipbaker.us/"}, {"@type": "ListItem", "position": 2, "name": "Widget Maker", "item": "https://lab.philipbaker.us/widget-maker/"}]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://lab.philipbaker.us/widget-maker/#faq",
+      "url": "https://lab.philipbaker.us/widget-maker/",
+      "mainEntity": [
+        {"@type": "Question", "name": "What is Widget Maker?", "acceptedAnswer": {"@type": "Answer", "text": "Widget Maker is an AI widget builder: describe a game, a simulation or a tool in a sentence, and it writes the code and runs it live on this page."}},
+        {"@type": "Question", "name": "Can I keep what Widget Maker builds?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Every Widget Maker build is one self-contained HTML file with no libraries, no network and no storage, so Download gives you a file that works offline, anywhere."}},
+        {"@type": "Question", "name": "How do I start?", "acceptedAnswer": {"@type": "Answer", "text": "Type a wish like “a rain simulator” into Widget Maker, press Make it, then say what to change."}}
+      ]
     }
   ]
 }
@@ -280,6 +290,12 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   .stage-bar{flex-wrap:wrap;row-gap:4px}
   .act{padding:5px 10px}
 }
+/* three liftable answers under the lede (what it is, one fact, where to start); the FAQPage in the head repeats them word for word */
+.brief{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:0 0 24px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.brief div{background:var(--card);padding:12px 14px 13px}
+.brief dt{margin:0 0 4px;font:600 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.brief dd{margin:0;font-size:13.5px;line-height:1.5;color:var(--dim)}
+@media(max-width:760px){.brief{grid-template-columns:1fr}}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- GA4:START -->
@@ -301,6 +317,12 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 
 <h1>Widget <span class="gold">Maker</span></h1>
 <p class="lede">Describe something and it gets built, then and there — a particle mirror, an asteroids game, a rain simulator, a matrix screen, a calculator. It runs live in the frame below. Don't like it? Say what to change.</p>
+
+<dl class="brief" aria-label="In short">
+  <div><dt>What is Widget Maker?</dt><dd>Widget Maker is an AI widget builder: describe a game, a simulation or a tool in a sentence, and it writes the code and runs it live on this page.</dd></div>
+  <div><dt>Can I keep what Widget Maker builds?</dt><dd>Yes. Every Widget Maker build is one self-contained HTML file with no libraries, no network and no storage, so Download gives you a file that works offline, anywhere.</dd></div>
+  <div><dt>How do I start?</dt><dd>Type a wish like “a rain simulator” into Widget Maker, press Make it, then say what to change.</dd></div>
+</dl>
 
 <div class="composer">
   <textarea id="prompt" rows="1" placeholder="Make a bunch of red balls bouncing around…" autocomplete="off" spellcheck="false"></textarea>

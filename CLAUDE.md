@@ -353,7 +353,13 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     alone when quoted; every fact comes from the project's own page, and a number carries its
     source and date (`.src`). The `FAQPage` node in the head repeats them word for word: change
     one, change the other. Partner Companies have none: their facts live on their own sites,
-    which can't be checked from here.
+    which can't be checked from here. The four lab pages behind those cards (`/GPT`,
+    `/widget-maker`, `/ai-solves-billing`, `/second-brain-case-study`) carry the same idea as
+    an "In short" strip near the top, `<dl class="brief">`: three real questions, each answer
+    naming its subject, styled in that page's own palette, and a `FAQPage` node in each page's
+    JSON-LD with the same words (Philip, Oct 6 2026: "do the project pages too"). On `/GPT` it
+    shows on the welcome screen only (`body.at-welcome`); on `/widget-maker` it sits between
+    the lede and the composer.
   - **Adding or removing an entry touches:** the card (a supporting title, the name as `.nm`, `alt` = the share card's words), its shelf's "NN entries", the hero's
     count box (the number, its `aria-label`, and the three `--n` segments), and the JSON-LD
     `ItemList` (lab pages only, page order) — then the sitemap as usual.
