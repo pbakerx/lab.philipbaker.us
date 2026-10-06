@@ -290,12 +290,13 @@ footer code{font-family:var(--mono);font-size:11.5px;color:#b39a80}
   .stage-bar{flex-wrap:wrap;row-gap:4px}
   .act{padding:5px 10px}
 }
-/* three liftable answers under the lede (what it is, one fact, where to start); the FAQPage in the head repeats them word for word */
-.brief{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:0 0 24px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.brief div{background:var(--card);padding:12px 14px 13px}
-.brief dt{margin:0 0 4px;font:600 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
-.brief dd{margin:0;font-size:13.5px;line-height:1.5;color:var(--dim)}
-@media(max-width:760px){.brief{grid-template-columns:1fr}}
+/* the page's questions, at the bottom and quiet (what it is, one fact, where to start); the FAQPage in the head repeats them word for word */
+.faq{margin-top:64px;max-width:660px}
+.faq h2{margin:0;font:600 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.faq dl{margin:0}
+.faq dt{margin:14px 0 2px;font-size:14px;font-weight:600;color:var(--ink)}
+.faq dd{margin:0;font-size:13.5px;line-height:1.55;color:var(--dim)}
+.faq + footer{margin-top:40px}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- GA4:START -->
@@ -316,13 +317,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <p class="crumb"><a href="/">lab.philipbaker.us</a> / widget-maker</p>
 
 <h1>Widget <span class="gold">Maker</span></h1>
-<p class="lede">Describe something and it gets built, then and there — a particle mirror, an asteroids game, a rain simulator, a matrix screen, a calculator. It runs live in the frame below. Don't like it? Say what to change.</p>
-
-<dl class="brief" aria-label="In short">
-  <div><dt>What is Widget Maker?</dt><dd>Widget Maker is an AI widget builder: describe a game, a simulation or a tool in a sentence, and it writes the code and runs it live on this page.</dd></div>
-  <div><dt>Can I keep what Widget Maker builds?</dt><dd>Yes. Every Widget Maker build is one self-contained HTML file with no libraries, no network and no storage, so Download gives you a file that works offline, anywhere.</dd></div>
-  <div><dt>How do I start?</dt><dd>Type a wish like “a rain simulator” into Widget Maker, press Make it, then say what to change.</dd></div>
-</dl>
+<p class="lede">Widget Maker is an AI widget builder: describe something and it gets built, then and there — a particle mirror, an asteroids game, a rain simulator, a matrix screen, a calculator. It runs live in the frame below. Don't like it? Say what to change.</p>
 
 <div class="composer">
   <textarea id="prompt" rows="1" placeholder="Make a bunch of red balls bouncing around…" autocomplete="off" spellcheck="false"></textarea>
@@ -422,6 +417,15 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     </div>
   </div>
 </dialog>
+
+<section class="faq" aria-labelledby="faqH">
+  <h2 id="faqH">Questions</h2>
+  <dl>
+    <div><dt>What is Widget Maker?</dt><dd>Widget Maker is an AI widget builder: describe a game, a simulation or a tool in a sentence, and it writes the code and runs it live on this page.</dd></div>
+    <div><dt>Can I keep what Widget Maker builds?</dt><dd>Yes. Every Widget Maker build is one self-contained HTML file with no libraries, no network and no storage, so Download gives you a file that works offline, anywhere.</dd></div>
+    <div><dt>How do I start?</dt><dd>Type a wish like “a rain simulator” into Widget Maker, press Make it, then say what to change.</dd></div>
+  </dl>
+</section>
 
 <footer>
   Every widget is a single self-contained HTML file — no libraries, no network, no

@@ -552,20 +552,11 @@
     .invoice-line .qty, .invoice-line .rate { display: none; }
     .invoice-meta { grid-template-columns: 1fr; }
   }
-  /* ── IN SHORT: three liftable answers (what it is, one fact, where to start); the FAQPage in the head repeats them word for word ── */
-  .brief {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 1px; background: var(--border);
-    border-radius: 12px; overflow: hidden;
-    margin: -48px 0 80px;
-  }
-  .brief div { background: var(--surface); padding: 22px 24px; }
-  .brief dt {
-    font-size: 11px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.12em; color: var(--accent); margin-bottom: 8px;
-  }
-  .brief dd { margin: 0; font-size: 15px; line-height: 1.6; color: var(--text-secondary); }
-  @media (max-width: 768px) { .brief { grid-template-columns: 1fr; } }
+  /* ── QUESTIONS: at the bottom and quiet (what it is, one fact, where to start); the FAQPage in the head repeats them word for word ── */
+  .faq dl { margin: 0; }
+  .faq dt { font-size: 17px; font-weight: 600; color: var(--text); margin: 28px 0 6px; }
+  .faq dl > div:first-child dt { margin-top: 0; }
+  .faq dd { margin: 0; font-size: 16px; color: var(--text-secondary); }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- GA4:START -->
@@ -620,13 +611,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
       <div class="stat-number cyan">29 mo</div>
       <div class="stat-label">Books Brought Current</div>
     </div>
-  </div>
-  <dl class="brief" aria-label="In short">
-    <div><dt>Can AI handle invoicing from a conversation?</dt><dd>Yes. In this case study, Philip Baker speaks his timesheets into his phone, and an AI with custom billing skills creates and sends the invoices through the QuickBooks Online API.</dd></div>
-    <div><dt>What did it change?</dt><dd>By August 2026, the AI billing system had categorized 900+ bank transactions in one session and brought 29 months of unreconciled books current.</dd></div>
-    <div><dt>Where should I start?</dt><dd>List the billing chores you keep putting off, and take yourself out of every step that doesn't need you.</dd></div>
-  </dl>
-</div>
+  </div></div>
 
 <!-- THE PROBLEM -->
 <section>
@@ -922,6 +907,18 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
     <p>
       If you're running a company and still doing the work, and your billing looks like mine used to, you don't need a better app. You need to take yourself out of the process wherever the process doesn't actually need you. That's what this does.
     </p>
+  </div>
+</section>
+
+<!-- QUESTIONS -->
+<section class="faq">
+  <div class="container">
+    <div class="section-label">Questions</div>
+    <dl>
+      <div><dt>Can AI handle invoicing from a conversation?</dt><dd>Yes. In this case study, Philip Baker speaks his timesheets into his phone, and an AI with custom billing skills creates and sends the invoices through the QuickBooks Online API.</dd></div>
+      <div><dt>What did it change?</dt><dd>By August 2026, the AI billing system had categorized 900+ bank transactions in one session and brought 29 months of unreconciled books current.</dd></div>
+      <div><dt>Where should I start?</dt><dd>List the billing chores you keep putting off, and take yourself out of every step that doesn't need you.</dd></div>
+    </dl>
   </div>
 </section>
 

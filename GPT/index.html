@@ -674,13 +674,14 @@ body.wizard main.lab #cDash{grid-column:1/-1;order:-1}
   transition: opacity .12s ease-out;
 }
 .holo-tip.holo-in { opacity: 1; }
-/* three liftable answers on the welcome screen only (what it is, one fact, where to start); the FAQPage in the head repeats them word for word */
-.brief{display:none}
-body.at-welcome .brief{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;width:100%;margin:44px 0 0;text-align:left;background:var(--hair);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
-.brief div{background:var(--card);padding:14px 16px 15px}
-.brief dt{margin:0 0 6px;font:600 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--lime)}
-.brief dd{margin:0;font-size:13.5px;line-height:1.5;color:var(--dim)}
-@media(max-width:700px){body.at-welcome .brief{grid-template-columns:1fr}}
+/* the page's questions, at the bottom and quiet (what it is, one fact, where to start); the FAQPage in the head repeats them word for word */
+.faq{max-width:1320px;margin:0 auto;padding:10px 20px 34px}
+.faq h2{margin:0;font:600 11px/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.faq dl{margin:0;max-width:720px}
+.faq dt{margin:14px 0 2px;font-size:14px;font-weight:600;color:var(--ink)}
+.faq dd{margin:0;font-size:13.5px;line-height:1.55;color:var(--dim)}
+body.at-welcome .faq{margin-top:90px} /* the welcome screen is 100vh - 90px tall: start the questions just below it, not peeking into it */
+@media(max-width:720px){.faq{padding-left:16px;padding-right:16px}}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- LAB-EVENTS:START -->
@@ -698,7 +699,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
 <body class="wizard">
 <header class="top">
   <div class="hdr"><h1>Pocket <span>GPT</span></h1></div>
-  <p class="tag">A real GPT, the same design as the chatbots you know, shrunk until you can watch every part of it work. It lives entirely in this page, starts out knowing nothing, and you'll teach it to write.</p>
+  <p class="tag">Pocket GPT is a real GPT, the same design as the chatbots you know, shrunk until you can watch every part of it work. It lives entirely in this page, starts out knowing nothing, and you'll teach it to write.</p>
 </header>
 
 <section class="intro" id="intro" aria-live="polite">
@@ -706,13 +707,7 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   <h2 class="ititle" id="iTitle"></h2>
   <p class="ilead" id="iLead"></p>
   <button class="btn go huge" id="iGo"></button>
-  <div class="inav"><button class="linkbtn" id="iBack">‹ Back</button></div>
-  <dl class="brief" aria-label="In short">
-    <div><dt>What is Pocket GPT?</dt><dd>Pocket GPT is a real GPT, the same design as the chatbots you know, shrunk small enough to watch every part of it learn.</dd></div>
-    <div><dt>Where does Pocket GPT run?</dt><dd>Pocket GPT runs entirely in this page, with no server, no API and no library. It starts out knowing nothing, and a few pages of text are plenty to teach it.</dd></div>
-    <div><dt>How do I train Pocket GPT?</dt><dd>Pick a text for Pocket GPT to learn from, press Train, and watch static turn into your text's voice.</dd></div>
-  </dl>
-</section>
+  <div class="inav"><button class="linkbtn" id="iBack">‹ Back</button></div></section>
 
 <section id="wiz" aria-label="Steps">
   <ol class="rail" id="rail"></ol>
@@ -950,6 +945,14 @@ gtag('config','G-X8JTH9PN21',{allow_google_signals:false,allow_ad_personalizatio
   </section>
 </main>
 <nav class="wiz-foot" id="wizFoot"><button class="btn" id="wBack">‹ Back</button><span class="meta" id="wHint" style="margin:0"></span><button class="btn go big" id="wNext">Next ›</button></nav>
+<section class="faq" aria-labelledby="faqH">
+  <h2 id="faqH">Questions</h2>
+  <dl>
+    <div><dt>What is Pocket GPT?</dt><dd>Pocket GPT is a real GPT, the same design as the chatbots you know, shrunk small enough to watch every part of it learn.</dd></div>
+    <div><dt>Where does Pocket GPT run?</dt><dd>Pocket GPT runs entirely in this page, with no server, no API and no library. It starts out knowing nothing, and a few pages of text are plenty to teach it.</dd></div>
+    <div><dt>How do I train Pocket GPT?</dt><dd>Pick a text for Pocket GPT to learn from, press Train, and watch static turn into your text's voice.</dd></div>
+  </dl>
+</section>
 <footer>Everything runs in this page: no server, no API, no library. It's a real GPT (token and position embeddings, masked multi-head self-attention, an MLP, layer norm, residual connections), trained with hand-written backpropagation.</footer>
 <div class="toast" id="toast"></div>
 

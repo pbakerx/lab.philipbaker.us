@@ -347,19 +347,27 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     experiments and products by Philip Baker"), the badge ("Always in progress"), the Subject
     row, the descriptions, `llms.txt` and `shared/og.jpg` all carry it; "hodge-podge" and
     "one-off" are gone from the site. Re-render `og.jpg` whenever the hero's words change.
-  - **The big cards carry three liftable lines** (Oct 6 2026, from a note on getting quoted by AI:
-    a definition, one fact, one step, near the top, mirrored in FAQ schema): `<dl class="lift">`
-    under the title — What it is / Fact / Start. Each sentence names its subject so it stands
-    alone when quoted; every fact comes from the project's own page, and a number carries its
-    source and date (`.src`). The `FAQPage` node in the head repeats them word for word: change
-    one, change the other. Partner Companies have none: their facts live on their own sites,
-    which can't be checked from here. The four lab pages behind those cards (`/GPT`,
-    `/widget-maker`, `/ai-solves-billing`, `/second-brain-case-study`) carry the same idea as
-    an "In short" strip near the top, `<dl class="brief">`: three real questions, each answer
-    naming its subject, styled in that page's own palette, and a `FAQPage` node in each page's
-    JSON-LD with the same words (Philip, Oct 6 2026: "do the project pages too"). On `/GPT` it
-    shows on the welcome screen only (`body.at-welcome`); on `/widget-maker` it sits between
-    the lede and the composer.
+  - **Liftable answers: quiet, at the bottom, never featured** (Oct 6 2026). From a note on getting
+    quoted by AI (a definition, one fact, one step, mirrored in FAQ schema). The first try put them
+    up top, as rows on the big index cards and an "In short" strip on four project pages; Philip:
+    "it's totally taken over the UI and i don't see other sites do that." So now:
+    - **Index cards carry none** ("a card reads once" stands). The index's JSON-LD keeps plain
+      `Organization` / `WebApplication` / `SoftwareApplication` nodes for AechTech, Bible Discovery
+      Engine and WidgetMaker.io; no FAQPage.
+    - **`/GPT`, `/widget-maker`, `/ai-solves-billing`, `/second-brain-case-study`** each end with a
+      small **Questions** section (`<section class="faq">`, a `<dl>` of three real questions) in
+      the page's own quiet type: on `/GPT` above the footer on every screen (at the welcome it
+      starts just below the fold, `body.at-welcome .faq`); on `/widget-maker` under the tool,
+      above the footer note; on the billing page after The Takeaway; on the Second Brain before
+      the Work with us band, so the page still ends on it. Each answer names its subject so it
+      stands alone when quoted, and comes from the page; the one number carries its date.
+    - **Each of those pages' JSON-LD has a `FAQPage` with the same words.** Change one, change the
+      other. (Google shows FAQ results only for government and health sites since 2023, so the
+      schema is for other engines and AI crawlers; it must still match visible text.)
+    - **The opening line names the thing** where that reads naturally: `/widget-maker`'s lede
+      starts "Widget Maker is an AI widget builder:", and `/GPT`'s static header line (what
+      crawlers that don't run JavaScript read; the welcome screen is drawn by `app.js`) starts
+      "Pocket GPT is a real GPT". The case studies open in Philip's first person and stay that way.
   - **Adding or removing an entry touches:** the card (a supporting title, the name as `.nm`, `alt` = the share card's words), its shelf's "NN entries", the hero's
     count box (the number, its `aria-label`, and the three `--n` segments), and the JSON-LD
     `ItemList` (lab pages only, page order) — then the sitemap as usual.
