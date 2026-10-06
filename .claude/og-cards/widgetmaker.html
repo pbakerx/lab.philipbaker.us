@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Source for /shared/cards/widgetmaker.jpg — WidgetMaker.io's card on the lab index (the
+     native Mac, iPhone and iPad app, and its site widgetmaker.io; Oct 6 2026). Render: see
+     vault.html; then JPEG. Everything here is the site's own (pbakerx/WidgetMaker,
+     server/public/index.html): the logo, the three app screens from its "How it works"
+     section, its colours (--bg #040b16, --cyan #5ff4ff, --blue #1e7bff), the hero's grid,
+     glow and perspective floor, the HUD corner brackets, the phone frames, and its words —
+     kicker, headline and the devices line. The images load from widgetmaker.io; to render
+     without the network, serve them from that repo's server/public/assets/. -->
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&display=block">
+<style>
+:root{--bg:#040b16;--text:#e6f0f8;--muted:#9fb3c6;--cyan:#5ff4ff;--blue:#1e7bff;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,"Helvetica Neue",Arial,sans-serif;
+  --mono:"SF Mono","JetBrains Mono",ui-monospace,Menlo,monospace}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:var(--bg)}
+body{position:relative;color:var(--text);font-family:var(--display)}
+.bg{position:absolute;inset:0;background:
+  radial-gradient(46% 62% at 20% 34%,rgba(30,123,255,.36),transparent 70%),
+  radial-gradient(44% 60% at 76% 46%,rgba(95,244,255,.12),transparent 70%),
+  linear-gradient(rgba(95,244,255,.05) 1px,transparent 1px) 0 0/40px 40px,
+  linear-gradient(90deg,rgba(95,244,255,.05) 1px,transparent 1px) 0 0/40px 40px,var(--bg)}
+/* the hero's floor: a grid laid flat toward the horizon */
+.floor{position:absolute;left:0;right:0;bottom:0;height:210px;overflow:hidden;perspective:280px;perspective-origin:50% 0;
+  -webkit-mask-image:linear-gradient(to top,transparent,#000 30%,rgba(0,0,0,.35) 65%,transparent)}
+.floor::before{content:"";position:absolute;left:-150%;right:-150%;bottom:0;height:320%;
+  background:linear-gradient(rgba(95,244,255,.5) 1.5px,transparent 1.5px) 0 0/64px 64px,
+             linear-gradient(90deg,rgba(95,244,255,.38) 1.5px,transparent 1.5px) 50% 0/64px 64px;
+  transform-origin:50% 100%;transform:rotateX(80deg)}
+.logo{position:absolute;left:50px;top:30px;width:316px;mix-blend-mode:screen}
+.kicker{position:absolute;left:66px;top:378px;font:600 14px/1 var(--mono);letter-spacing:.24em;color:var(--cyan);text-transform:uppercase}
+h1{position:absolute;left:62px;top:404px;margin:0;font-size:60px;line-height:1.04;letter-spacing:-.035em;font-weight:800}
+h1 span{display:block;background:linear-gradient(92deg,#7ff7ff,#5ff4ff 30%,#3aa0ff 85%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.devices{position:absolute;left:66px;top:552px;font:600 13px/1 var(--mono);letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.phone{position:absolute;margin:0;padding:5px;border-radius:30px;background:linear-gradient(160deg,#20344f,#0a1422 60%,#13233a);
+  box-shadow:0 0 0 1px rgba(95,244,255,.22),0 30px 70px -26px rgba(30,123,255,.75)}
+.phone img{display:block;width:100%;height:auto;border-radius:25px;background:#06101d}
+.phone.side img{filter:brightness(.78) saturate(.95)}
+.p1{left:566px;top:118px;width:196px}
+.p2{left:735px;top:52px;width:240px;z-index:2}
+.p3{left:948px;top:96px;width:196px}
+.corner{position:absolute;width:26px;height:26px;border:0 solid rgba(95,244,255,.6)}
+.tl{left:22px;top:22px;border-top-width:2px;border-left-width:2px}
+.tr{right:22px;top:22px;border-top-width:2px;border-right-width:2px}
+.bl{left:22px;bottom:22px;border-bottom-width:2px;border-left-width:2px}
+.br{right:22px;bottom:22px;border-bottom-width:2px;border-right-width:2px}
+</style></head><body>
+<div class="bg"></div>
+<div class="floor"></div>
+
+<img class="logo" src="https://widgetmaker.io/assets/logo-960.webp" alt="">
+<div class="kicker">Proof-of-concept machine</div>
+<h1>Describe it.<span>Watch it run.</span></h1>
+<div class="devices">iPhone · iPad · Mac</div>
+
+<figure class="phone side p1"><img src="https://widgetmaker.io/assets/shot-home-720.webp" alt=""></figure>
+<figure class="phone p2"><img src="https://widgetmaker.io/assets/shot-building-720.webp" alt=""></figure>
+<figure class="phone side p3"><img src="https://widgetmaker.io/assets/shot-running-720.webp" alt=""></figure>
+
+<i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+</body></html>

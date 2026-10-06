@@ -1,0 +1,144 @@
+<!doctype html>
+<!-- Source for /shared/cards/discover-the-bible.jpg — Bible Discovery Engine's card on the lab
+     index (discoverthebiblewithai.com, Oct 6 2026). Render: see vault.html; then JPEG.
+     Everything here is the product's own (pbakerx/BibleDiscovery): the mark is its favicon.svg;
+     paper, ink, the node-family colours, the evidence-line styles and the route orange are
+     src/styles/tokens.css and src/canvas/glyphs.tsx; Literata and Inter are its type; the
+     kicker, headline and ask box are its landing page's (src/home/Home.tsx, src/mockup/start.css).
+     The map is a real answer, not a sample: the landing page's first recording,
+     public/replays/gehenna.jsonl ("What did Jesus mean by Gehenna?") — its nodes, its labels and
+     each line's evidence class as the validator passed them (textual solid, scholarly dashed,
+     speculative dotted). Placed by hand; the engine lays it out with d3-force. -->
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&display=block">
+<style>
+:root{--paper:#f4eee2;--paper-raised:#fbf8f1;--ink:#1f1b16;--ink-2:#5b5247;--ink-3:#978d7e;--rule:#dcd1bd;
+  --person:#2e3a6e;--place:#9a4e2e;--passage:#2f5d50;--concept:#6a3d63;--route:#e0692b;
+  --ev-textual:#4b443b;--ev-scholarly:#4a5a8a;--ev-speculative:#b8892b;
+  --serif:"Literata",Georgia,serif;--sans:"Inter",system-ui,sans-serif}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:var(--paper)}
+body{position:relative;color:var(--ink);font-family:var(--sans)}
+.glow{position:absolute;inset:0;background:
+  radial-gradient(52% 70% at 30% 46%,#fbf8f1 0%,rgba(251,248,241,0) 72%),
+  radial-gradient(60% 80% at 82% 52%,rgba(235,226,208,.9) 0%,rgba(235,226,208,0) 75%)}
+.brand{position:absolute;left:64px;top:56px;display:flex;align-items:center;gap:14px;font:400 25px/1 var(--serif);letter-spacing:-.01em}
+.brand svg{width:40px;height:40px;flex:none}
+.kicker{position:absolute;left:64px;top:170px;display:flex;align-items:center;gap:12px;font:700 13px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.kicker::before{content:"";width:22px;height:2px;background:var(--route)}
+h1{position:absolute;left:61px;top:204px;margin:0;font:400 64px/1.04 var(--serif);font-variation-settings:"opsz" 72;letter-spacing:-.022em}
+h1 em{display:block;font-style:italic;color:var(--route)}
+.under{position:absolute;left:62px;top:352px;width:500px;height:10px}
+.ask{position:absolute;left:64px;top:410px;width:474px;height:62px;box-sizing:border-box;display:flex;align-items:center;gap:8px;padding:0 7px 0 24px;
+  background:var(--paper-raised);border:1px solid #c9bfae;border-radius:999px;box-shadow:0 22px 50px -28px rgba(31,27,22,.55)}
+.ask span{flex:1;font:400 19px/1 var(--serif);color:var(--ink);white-space:nowrap}
+.ask b{flex:none;height:48px;padding:0 24px;display:flex;align-items:center;border-radius:999px;background:var(--ink);color:var(--paper-raised);font:600 15px/1 var(--sans)}
+.foot{position:absolute;left:64px;bottom:56px;font:600 20px/1 var(--sans);color:var(--route)}
+svg.map{position:absolute;left:0;top:0;width:1200px;height:630px;overflow:visible}
+.lbl{font:400 15px/1 var(--serif);fill:var(--ink);paint-order:stroke;stroke:var(--paper);stroke-width:5px;stroke-linejoin:round}
+.lbl.b{font-size:19px;font-weight:500}
+.sub{font:italic 400 12.5px/1 var(--serif);fill:var(--ink-3);paint-order:stroke;stroke:var(--paper);stroke-width:4px;stroke-linejoin:round}
+.pill{font:italic 600 14px/1 var(--sans);fill:var(--ink)}
+.pill.b{font-size:16.5px}
+.elbl{font:500 11.5px/1 var(--sans);fill:var(--ink-2);paint-order:stroke;stroke:var(--paper);stroke-width:5px;stroke-linejoin:round}
+</style></head><body>
+<div class="glow"></div>
+
+<div class="brand">
+  <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#fbf8f1" stroke="#dcd1bd"/><g stroke="#1f1b16" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M9 22 L16 10 L23 20"/><path d="M9 22 L23 20" stroke-dasharray="0.1 3.2" stroke="#b8892b"/></g><circle cx="16" cy="10" r="3.4" fill="#2e3a6e"/><circle cx="9" cy="22" r="2.8" fill="#2f5d50"/><circle cx="23" cy="20" r="2.4" fill="#9a4e2e"/></svg>
+  Bible Discovery Engine
+</div>
+<div class="kicker">Ask → Connect → Discover</div>
+<h1>A new way to<em>discover the Bible.</em></h1>
+<svg class="under" viewBox="0 0 500 10" preserveAspectRatio="none"><path d="M1 6 C 120 3.6, 300 4.2, 499 4.8" fill="none" stroke="#e0692b" stroke-width="1.8" stroke-linecap="round"/></svg>
+<div class="ask"><span>What did Jesus mean by Gehenna?</span><b>Ask</b></div>
+<div class="foot">discoverthebiblewithai.com</div>
+
+<svg class="map" viewBox="0 0 1200 630">
+  <defs id="defs"></defs>
+  <g id="edges"></g>
+  <g id="nodes"></g>
+</svg>
+
+<script>
+var NS = "http://www.w3.org/2000/svg";
+function el(tag, a, parent) { var e = document.createElementNS(NS, tag); for (var k in a) e.setAttribute(k, a[k]); parent.appendChild(e); return e; }
+var C = { person: "#2e3a6e", passage: "#2f5d50", concept: "#6a3d63", word: "#6a3d63" };
+// the gradients glyphs.tsx draws every node with: white to a 22% tint of the family colour
+var defs = document.getElementById("defs");
+function mix(hex, p) { var n = parseInt(hex.slice(1), 16), r = n >> 16, g = n >> 8 & 255, b = n & 255; return "rgb(" + [r, g, b].map(function (c) { return Math.round(c * p + 255 * (1 - p)); }).join(",") + ")"; }
+Object.keys(C).forEach(function (k) {
+  var g = el("radialGradient", { id: "g-" + k, cx: "35%", cy: "30%", r: "75%" }, defs);
+  el("stop", { offset: "0%", "stop-color": "#ffffff" }, g); el("stop", { offset: "100%", "stop-color": mix(C[k], .22) }, g);
+  var s = el("radialGradient", { id: "g-" + k + "-s", cx: "38%", cy: "32%", r: "78%" }, defs);
+  el("stop", { offset: "0%", "stop-color": mix(C[k], .3) }, s); el("stop", { offset: "100%", "stop-color": mix(C[k], .78) }, s);
+});
+var halo = el("radialGradient", { id: "g-halo", cx: "50%", cy: "50%", r: "50%" }, defs);
+el("stop", { offset: "60%", "stop-color": "#1f1b16", "stop-opacity": .1 }, halo); el("stop", { offset: "100%", "stop-color": "#1f1b16", "stop-opacity": 0 }, halo);
+
+// gehenna.jsonl, as recorded: [id, kind, label, subtitle, x, y, label side]
+var N = {
+  geenna:  ["word",    "geenna (Gehenna)",        "rendered ‘hell’ in the BSB", 838, 318],
+  hinnom:  ["concept", "Valley of (Ben-)Hinnom",  "valley on Jerusalem’s border",    930, 168],
+  ahaz:    ["person",  "Ahaz",          "", 738,  76, "above"],
+  manasseh:["person",  "Manasseh",      "", 900,  56, "right"],
+  josiah:  ["person",  "Josiah",        "", 1066, 74, "above"],
+  jos:     ["passage", "Joshua 15:8",   "", 1100, 238, "below"],
+  jer:     ["passage", "Jeremiah 7:31–32", "", 1012, 338, "right"],
+  mrk:     ["passage", "Mark 9:43–48", "BSB red letter", 952, 452, "right"],
+  isa:     ["passage", "Isaiah 66:24",  "", 1078, 524, "below"],
+  mt10:    ["passage", "Matthew 10:28", "BSB red letter", 680, 420, "below"],
+  mt5:     ["passage", "Matthew 5:22",  "‘Gehenna of fire’", 822, 512, "below"],
+};
+// [from, to, evidence class, label shown]
+var E = [
+  ["geenna", "hinnom", "scholarly", "name from Hebrew gei Hinnom"],
+  ["hinnom", "jos", "textual"],
+  ["ahaz", "hinnom", "textual"],
+  ["manasseh", "hinnom", "textual"],
+  ["josiah", "hinnom", "textual"],
+  ["hinnom", "jer", "textual"],
+  ["geenna", "mrk", "textual"],
+  ["mrk", "isa", "textual", "worm and fire"],
+  ["geenna", "mt10", "textual"],
+  ["geenna", "mt5", "textual"],
+  ["mrk", "jer", "speculative"],
+];
+var STYLE = { textual: { s: "#4b443b", w: 1.4, o: .8 }, scholarly: { s: "#4a5a8a", w: 1.8, d: "7 6" }, speculative: { s: "#b8892b", w: 2.6, d: "0.1 7" } };
+var eg = document.getElementById("edges"), ng = document.getElementById("nodes");
+E.forEach(function (e) {
+  var a = N[e[0]], b = N[e[1]], st = STYLE[e[2]];
+  // a slight bow, as the canvas draws its lines
+  var mx = (a[3] + b[3]) / 2, my = (a[4] + b[4]) / 2, dx = b[3] - a[3], dy = b[4] - a[4], k = .08;
+  var cx = mx - dy * k, cy = my + dx * k;
+  el("path", { d: "M" + a[3] + " " + a[4] + " Q" + cx + " " + cy + " " + b[3] + " " + b[4], fill: "none", stroke: st.s, "stroke-width": st.w, "stroke-opacity": st.o || 1, "stroke-dasharray": st.d || "none", "stroke-linecap": "round" }, eg);
+  if (e[3]) {
+    var t = el("text", { x: (mx + cx) / 2, y: (my + cy) / 2 + 4, class: "elbl", "text-anchor": "middle" }, eg);
+    t.textContent = e[3];
+  }
+});
+Object.keys(N).forEach(function (id) {
+  var n = N[id], kind = n[0], x = n[3], y = n[4], side = n[5] || "below", g = el("g", { transform: "translate(" + x + " " + y + ")" }, ng);
+  if (kind === "word" || kind === "concept") {
+    // the central figure is drawn the way glyphs.tsx draws emphasis: strong fill, a soft halo
+    var big = id === "geenna", cls = big ? "pill b" : "pill";
+    var probe = el("text", { class: cls }, g); probe.textContent = n[1];
+    var w = probe.getComputedTextLength() + 36, h = big ? 36 : 30; g.removeChild(probe);
+    if (big) el("ellipse", { rx: w * .7, ry: h * 1.35, fill: "url(#g-halo)" }, g);
+    el("rect", { x: -w / 2, y: -h / 2, width: w, height: h, rx: h / 2, fill: "url(#g-" + kind + (big ? "-s" : "") + ")", stroke: C[kind], "stroke-width": big ? 0 : 1.6 }, g);
+    var t = el("text", { class: cls, "text-anchor": "middle", y: big ? 6 : 5 }, g);
+    t.textContent = n[1];
+    if (big) t.style.fill = "#fbf8f1";
+    var s = el("text", { class: "sub", "text-anchor": "middle", y: h / 2 + 18 }, g);
+    s.textContent = n[2];
+    return;
+  }
+  var rr = kind === "person" ? 11 : 10;
+  el("circle", { r: rr, fill: "url(#g-" + kind + ")", stroke: C[kind], "stroke-width": 1.8 }, g);
+  var lx = 0, ly = rr + 21, anchor = "middle";
+  if (side === "above") ly = -(rr + 10);
+  if (side === "right") { lx = rr + 9; ly = n[2] ? 1 : 5.5; anchor = "start"; }
+  var l = el("text", { class: "lbl", x: lx, y: ly, "text-anchor": anchor }, g); l.textContent = n[1];
+  if (n[2]) { var su = el("text", { class: "sub", x: lx, y: ly + 16, "text-anchor": anchor }, g); su.textContent = n[2]; }
+});
+</script>
+</body></html>

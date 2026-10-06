@@ -319,8 +319,14 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     Emergence and CheckMate are designed cards (Sep 25 2026, Philip's brief: Emergence's logo
     large with graphs from its UI; CheckMate's board with a scope on the analysis) whose
     sources are `.claude/og-cards/emergence.html` / `checkmate.html` — built from each app's
-    own logo, words, colours and data, as the comments in those files say. Desktop: six columns, each shelf opens on two `.big` cards (span 3) and
-    then runs in threes, and the border rules assume exactly that. Tablet pairs up (an odd
+    own logo, words, colours and data, as the comments in those files say. Bible Discovery
+    Engine (T-09, discoverthebiblewithai.com) and WidgetMaker.io (T-10, the Mac/iPhone/iPad
+    app) are designed cards too, though both sites have share cards (Oct 6 2026, Philip:
+    "match the color themes from the website"): `.claude/og-cards/discover-the-bible.html` /
+    `widgetmaker.html`, built from `pbakerx/BibleDiscovery` and `pbakerx/WidgetMaker`. Desktop: six columns, each shelf opens on two `.big` cards (span 3) and
+    then runs in threes, and the border rules assume exactly that. Toys and Widgets also
+    closes on a `.big` pair (T-09, T-10), which keeps its last row full; the rules still hold
+    because a pair that starts on a multiple of three starts a row. Tablet pairs up (an odd
     count gives the first card the whole row). Phone: one column.
   - **A card reads once** (Philip, Sep 25 2026: the share card already says the headline and the
     detail, so the card was saying them twice, then "it looks silly when the card matches the
