@@ -1,9 +1,10 @@
 # lab.philipbaker.us
 
-> A hodge-podge of one-off projects by Philip Baker — playable browser games, a
-> live AI widget builder, case studies on running a business with AI assistants,
-> recovered 1990s agency work, and small Mac utilities. Everything here is free
-> and needs no account.
+> A living index of experiments and products by Philip Baker, always in
+> progress — playable browser games, a live AI widget builder, case studies on
+> running a business with AI assistants, recovered 1990s agency work, small Mac
+> utilities, and links to products that live on their own sites. Everything on
+> this host is free and needs no account.
 
 Each top-level path is a self-contained project. There is no login and no
 paywall.

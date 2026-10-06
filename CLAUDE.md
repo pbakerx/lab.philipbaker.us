@@ -341,7 +341,19 @@ out a 503. **A Realtime row has still not been seen; that needs Philip's GA logi
     title"): `<span class="nm">` under the title, INSIDE the link — so the anchor text and GA's `item_name`
     are "supporting line + name". Small orange caps (`--name`), kept solid when the title burns on hover.
     And the brand is the heading: `<h1>` holds the big "lab" (`.word`) and the line under it
-    ("A hodge-podge of projects by Philip Baker") — one heading, nothing moved on screen.
+    ("A living index of experiments and products by Philip Baker") — one heading, nothing moved on screen.
+  - **"A living index", never "hodge-podge"** (Philip, Oct 6 2026: "It's an ongoing directory, an
+    ever living place to have experiments and real products"). The line, the title ("lab —
+    experiments and products by Philip Baker"), the badge ("Always in progress"), the Subject
+    row, the descriptions, `llms.txt` and `shared/og.jpg` all carry it; "hodge-podge" and
+    "one-off" are gone from the site. Re-render `og.jpg` whenever the hero's words change.
+  - **The big cards carry three liftable lines** (Oct 6 2026, from a note on getting quoted by AI:
+    a definition, one fact, one step, near the top, mirrored in FAQ schema): `<dl class="lift">`
+    under the title — What it is / Fact / Start. Each sentence names its subject so it stands
+    alone when quoted; every fact comes from the project's own page, and a number carries its
+    source and date (`.src`). The `FAQPage` node in the head repeats them word for word: change
+    one, change the other. Partner Companies have none: their facts live on their own sites,
+    which can't be checked from here.
   - **Adding or removing an entry touches:** the card (a supporting title, the name as `.nm`, `alt` = the share card's words), its shelf's "NN entries", the hero's
     count box (the number, its `aria-label`, and the three `--n` segments), and the JSON-LD
     `ItemList` (lab pages only, page order) — then the sitemap as usual.
