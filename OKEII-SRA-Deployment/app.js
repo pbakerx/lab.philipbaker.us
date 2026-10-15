@@ -79,6 +79,13 @@
     }
   }
 
+  // A <video> with preload="metadata" and no poster paints nothing in Safari
+  // and often nothing in Chrome either. A media fragment makes the browser
+  // decode and hold that frame, which becomes the thumbnail. Two seconds in
+  // clears any black or logo-only opening frame on these spots.
+  const POSTER_AT = 2;
+  const posterSrc = (url) => `${url}#t=${POSTER_AT}`;
+
   const camp = () => CAT.campaigns.find((c) => c.id === campaign) || CAT.campaigns[0];
   const cats = () => camp().categories;
 
@@ -135,7 +142,8 @@
     const inner = !f
       ? el("span", { class: "empty", text: "To come" })
       : f.kind === "video"
-        ? el("video", { src: f.url, muted: "", playsinline: "", preload: "metadata", loop: "" })
+        ? el("video", { src: posterSrc(f.url), muted: "", playsinline: "",
+                        preload: "metadata", loop: "" })
         : f.kind === "audio"
           ? el("span", { class: "audio-mark", text: item.size })
           : el("img", { src: f.url, alt: "", loading: "lazy" });
@@ -192,9 +200,8 @@
         el("span", { class: "camp-art" },
           !hero ? el("span", { class: "camp-art-empty" })
             : hero.kind === "video"
-              // #t=1 makes the browser decode and show a frame; without it a
-              // metadata-only preload paints nothing but black.
-              ? el("video", { src: `${hero.url}#t=1`, muted: "", playsinline: "", preload: "metadata" })
+              ? el("video", { src: posterSrc(hero.url), muted: "", playsinline: "",
+                              preload: "metadata" })
               : el("img", { src: hero.url, alt: "", loading: "lazy" })),
         el("span", { class: "camp-body" },
           el("span", { class: "camp-name", text: c.name }),
