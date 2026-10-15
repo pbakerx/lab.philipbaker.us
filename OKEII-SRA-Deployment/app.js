@@ -37,6 +37,7 @@
   const fill = (n, ...kids) => { n.replaceChildren(); mount(n, kids); return n; };
 
   let CAT = null;         // the catalog
+  let campaign = null;    // selected campaign id, or null while choosing
   let FILES = {};         // id -> { current, versions } -- versions newest first
   let category = null;    // selected category id
   let open = null;        // { catId, msgId, idx, rev } while the viewer is up
@@ -78,6 +79,9 @@
     }
   }
 
+  const camp = () => CAT.campaigns.find((c) => c.id === campaign) || CAT.campaigns[0];
+  const cats = () => camp().categories;
+
   const slotOf = (id) => FILES[id] || null;
   const fileOf = (id) => FILES[id]?.current || null;
 
@@ -95,7 +99,7 @@
 
   // ── nav ──────────────────────────────────────────────────────────────────
   function renderSide() {
-    const here = CAT.categories.find((c) => c.id === category) || CAT.categories[0];
+    const here = cats().find((c) => c.id === category) || cats()[0];
     fill($("#side"),
       el("button", {
         class: "side-toggle", "aria-expanded": String(sideOpen),
@@ -104,7 +108,7 @@
         el("span", { class: "name", text: here.name }),
         el("span", { class: "chev", text: sideOpen ? "▲" : "▼" })),
       el("nav", { class: `side-list${sideOpen ? " open" : ""}` },
-        CAT.categories.map((c) => {
+        cats().map((c) => {
           const on = c.id === category;
           return el("button", {
             class: `cat${on ? " is-on" : ""}`,
@@ -122,7 +126,7 @@
     renderSide();
     renderBoard();
     window.scrollTo({ top: 0 });
-    history.replaceState(null, "", `#${id}`);
+    history.replaceState(null, "", `#${campaign}/${id}`);
   }
 
   // ── the grid ─────────────────────────────────────────────────────────────
@@ -145,17 +149,86 @@
     },
       el("span", { class: "frame" }, inner,
         (f?.kind === "video" || f?.kind === "audio") && el("span", { class: "play" }),
-        revised && el("span", { class: "rev", text: `RV${revOf(slot, f)}` })),
+        revised && el("span", { class: "rev", text: `RV${revOf(slot, f)}` }),
+        // The slot is labelled at trim size; say when the file on it is a
+        // different pixel size, so the label is never read as a promise.
+        f && item.filepx && el("span", { class: "proof", text: "2×" })),
       el("span", { class: "size", text: item.size }));
   }
 
   function renderBoard() {
-    const cat = CAT.categories.find((c) => c.id === category);
+    const cat = cats().find((c) => c.id === category);
     fill($("#board"),
       el("header", { class: "board-head" }, el("h1", { text: cat.name })),
       cat.messages.map((m) => el("section", { class: "msg" },
         el("h2", { text: m.name }),
         el("div", { class: "grid" }, m.items.map((it, i) => tile(cat, m, it, i))))));
+  }
+
+  // ── choosing a campaign ──────────────────────────────────────────────────
+  // Two campaigns now run side by side and they are NOT interchangeable -- a
+  // buyer pulling Morning creative for a Scoreboard flight would be a real
+  // mistake. So the choice is the whole first screen rather than a dropdown.
+  const tally = (c) => {
+    const items = c.categories.flatMap((x) => x.messages.flatMap((m) => m.items));
+    return { total: items.length, have: items.filter((i) => fileOf(i.id)).length };
+  };
+
+  function renderChooser() {
+    document.body.classList.add("choosing");
+    $("#chooser").hidden = false;
+    fill($("#chooser-grid"), CAT.campaigns.map((c) => {
+      const t = tally(c);
+      // The card crops to 16:9, so a tall 1080x1920 ad would show as a narrow
+      // slice of its own middle. Pick whatever landed asset is closest to the
+      // card's shape instead of simply the first one.
+      const landed = c.categories.flatMap((x) => x.messages.flatMap((m) => m.items))
+        .map((i) => ({ f: fileOf(i.id), w: i.w, h: i.h }))
+        .filter((x) => x.f);
+      const near = (x) => Math.abs((x.w / x.h) - 16 / 9);
+      const pick = (kind) => landed.filter((x) => x.f.kind === kind).sort((a, b) => near(a) - near(b))[0];
+      const hero = (pick("image") || pick("video") || {}).f;
+      return el("button", { class: "camp", onclick: () => pickCampaign(c.id) },
+        el("span", { class: "camp-art" },
+          !hero ? el("span", { class: "camp-art-empty" })
+            : hero.kind === "video"
+              // #t=1 makes the browser decode and show a frame; without it a
+              // metadata-only preload paints nothing but black.
+              ? el("video", { src: `${hero.url}#t=1`, muted: "", playsinline: "", preload: "metadata" })
+              : el("img", { src: hero.url, alt: "", loading: "lazy" })),
+        el("span", { class: "camp-body" },
+          el("span", { class: "camp-name", text: c.name }),
+          c.blurb && el("span", { class: "camp-blurb", text: c.blurb }),
+          el("span", { class: "camp-n" },
+            el("b", { text: String(t.have) }),
+            ` of ${t.total} delivered`,
+            t.total > t.have && el("i", { text: `· ${t.total - t.have} to come` }))));
+    }));
+  }
+
+  function pickCampaign(id) {
+    campaign = id;
+    $("#chooser").hidden = true;
+    document.body.classList.remove("choosing");
+    category = cats()[0].id;
+    paintTopbar();
+    renderSide();
+    renderBoard();
+    window.scrollTo({ top: 0 });
+    history.replaceState(null, "", `#${campaign}/${category}`);
+  }
+
+  function backToChooser() {
+    campaign = null;
+    history.replaceState(null, "", "#");
+    renderChooser();
+  }
+
+  function paintTopbar() {
+    fill($("#topbar-campaign"),
+      el("button", { class: "camp-switch", onclick: backToChooser },
+        el("b", { text: camp().name }),
+        el("span", { class: "swap", text: "change" })));
   }
 
   // ── the viewer ───────────────────────────────────────────────────────────
@@ -175,14 +248,14 @@
   }
   function step(d) {
     if (!open) return;
-    const m = CAT.categories.find((c) => c.id === open.catId).messages.find((x) => x.id === open.msgId);
+    const m = cats().find((c) => c.id === open.catId).messages.find((x) => x.id === open.msgId);
     open.idx = (open.idx + d + m.items.length) % m.items.length;
     open.rev = null;                   // a new asset starts on its current cut
     renderViewer();
   }
 
   function renderViewer() {
-    const cat = CAT.categories.find((c) => c.id === open.catId);
+    const cat = cats().find((c) => c.id === open.catId);
     const msg = cat.messages.find((m) => m.id === open.msgId);
     const item = msg.items[open.idx];
     const slot = slotOf(item.id);
@@ -223,6 +296,7 @@
       const pct = Math.round((shown / nat) * 100);
       fill($("#viewer-fit"), pct < 99 ? `fit to window · ${pct}%` : "actual size");
     };
+    fill($("#viewer-note"), item.filepx ? `file ${item.filepx}` : null);
     fill($("#viewer-fit"));
     if (media.tagName === "IMG") media.complete ? showScale() : media.addEventListener("load", showScale, { once: true });
     else if (media.tagName === "VIDEO") media.addEventListener("loadedmetadata", showScale, { once: true });
@@ -241,8 +315,19 @@
       return;
     }
 
-    const want = location.hash.slice(1);
-    category = CAT.categories.some((c) => c.id === want) ? want : CAT.categories[0].id;
+    // #campaign/category deep-links straight in; anything else starts at the
+    // chooser. A bare #category is the old one-campaign form -- honour it
+    // against the scoreboard so links already sent out still land.
+    const [wantCamp, wantCat] = location.hash.slice(1).split("/");
+    const byId = CAT.campaigns.find((c) => c.id === wantCamp);
+    const legacy = !byId && wantCamp
+      && CAT.campaigns.find((c) => c.categories.some((x) => x.id === wantCamp));
+    if (byId || legacy) {
+      campaign = (byId || legacy).id;
+      const list = cats();
+      category = list.some((c) => c.id === (wantCat || wantCamp))
+        ? (wantCat || wantCamp) : list[0].id;
+    }
 
     window.addEventListener("resize", () => { if (open && scaleWatch) scaleWatch(); });
     $("#viewer-close").addEventListener("click", closeViewer);
@@ -256,6 +341,12 @@
       if (e.key === "ArrowRight") step(1);
     });
 
+    $("#chooser-grid").addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && campaign) pickCampaign(campaign);
+    });
+
+    if (!campaign) { renderChooser(); return; }
+    paintTopbar();
     renderSide();
     renderBoard();
   }

@@ -48,7 +48,71 @@ img, video { max-width: 100%; display: block; }
   font-size: 10px; font-weight: 700; letter-spacing: .2em; color: var(--gold);
 }
 .topbar h1 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
-.topbar .sub { font-size: 13px; color: var(--ink-faint); }
+
+/* ── choosing a campaign ──────────────────────────────────────────────────
+   The whole screen, because picking the wrong campaign's creative for a flight
+   is the expensive mistake this board exists to prevent. */
+body.choosing .shell { display: none; }
+
+#chooser { padding: 40px 22px 70px; }
+.chooser-inner { max-width: 1060px; margin: 0 auto; }
+.chooser-eyebrow {
+  margin: 0 0 8px; font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--gold); font-weight: 700;
+}
+.chooser-h {
+  margin: 0 0 30px; font-size: 40px; line-height: 1.05; font-weight: 700;
+  letter-spacing: -.03em;
+}
+.chooser-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
+
+.camp {
+  display: flex; flex-direction: column; text-align: left; overflow: hidden;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+  transition: border-color .14s, transform .14s, background .14s;
+}
+.camp:hover { border-color: var(--gold); transform: translateY(-2px); background: #101c38; }
+.camp:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.camp-art { display: block; aspect-ratio: 16 / 9; background: #05091a; overflow: hidden; }
+.camp-art img, .camp-art video { width: 100%; height: 100%; object-fit: cover; }
+.camp-art-empty {
+  display: block; width: 100%; height: 100%;
+  background: repeating-linear-gradient(-45deg, #070e1e, #070e1e 8px, #0a1226 8px, #0a1226 16px);
+}
+
+.camp-body { display: block; padding: 18px 20px 20px; }
+.camp-name { display: block; font-size: 25px; font-weight: 700; letter-spacing: -.02em; }
+.camp-blurb {
+  display: block; padding-top: 7px; font-size: 13.5px; line-height: 1.45; color: var(--ink-dim);
+}
+.camp-n {
+  display: block; padding-top: 13px; font-size: 12px; color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+.camp-n b { color: var(--ink); font-size: 14px; }
+.camp-n i { font-style: normal; padding-left: 6px; color: var(--gold); }
+
+/* The campaign in hand, and the way back out of it. */
+.topbar-campaign { margin-left: auto; }
+.camp-switch {
+  display: flex; align-items: baseline; gap: 9px;
+  padding: 5px 11px; border-radius: 7px; border: 1px solid var(--line);
+  color: var(--ink-dim); font-size: 13px;
+}
+.camp-switch b { color: var(--ink); font-weight: 700; }
+.camp-switch .swap {
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint);
+}
+.camp-switch:hover { border-color: var(--gold); color: var(--ink); }
+.camp-switch:hover .swap { color: var(--gold); }
+
+@media (max-width: 900px) {
+  #chooser { padding: 26px 15px 50px; }
+  .chooser-h { font-size: 29px; margin-bottom: 22px; }
+  .chooser-grid { grid-template-columns: 1fr; gap: 15px; }
+  .camp-name { font-size: 21px; }
+}
 
 /* ── layout ───────────────────────────────────────────────────────────── */
 .shell {
@@ -156,6 +220,18 @@ img, video { max-width: 100%; display: block; }
   padding: 2px 6px; border-radius: 4px;
   background: rgba(214,45,45,.95); color: #fff;
   font-size: 9.5px; font-weight: 700; letter-spacing: .06em;
+}
+
+/* Amber, not red: a proof is fine to review, just not fine to traffic. */
+.tile .proof {
+  position: absolute; left: 6px; top: 6px;
+  padding: 2px 6px; border-radius: 4px;
+  background: rgba(255,197,49,.92); color: #1a1204;
+  font-size: 9px; font-weight: 700; letter-spacing: .08em;
+}
+.viewer-bar .note {
+  flex: 0 0 auto; font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--gold);
 }
 
 /* ── viewer ───────────────────────────────────────────────────────────── */
