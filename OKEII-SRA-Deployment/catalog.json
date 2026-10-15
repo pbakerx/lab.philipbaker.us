@@ -1563,7 +1563,7 @@
          "w": 1920,
          "h": 1080,
          "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/1920x1080 Paid Social - 1.mp4",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_KidsTeachersParents_1920x1080.mp4",
          "archived": null,
          "filepx": null
         },
@@ -1573,7 +1573,7 @@
          "w": 1080,
          "h": 1920,
          "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/1080x1920 Paid Social - 1.mp4",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_KidsTeachersParents_1080x1920.mp4",
          "archived": null,
          "filepx": null
         },
@@ -1583,7 +1583,7 @@
          "w": 1080,
          "h": 1080,
          "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/1080x1080 Paid Social - 1.mp4",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_KidsTeachersParents_1080x1080.mp4",
          "archived": null,
          "filepx": null
         }
@@ -1599,7 +1599,7 @@
          "w": 1920,
          "h": 1080,
          "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/1920x1080 Paid Social - 2.mp4",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_WorkAlongside_1920x1080.mp4",
          "archived": null,
          "filepx": null
         },
@@ -1609,7 +1609,7 @@
          "w": 1080,
          "h": 1920,
          "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/1080x1920 Paid Social - 2.mp4",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_WorkAlongside_1080x1920.mp4",
          "archived": null,
          "filepx": null
         },
@@ -1619,7 +1619,7 @@
          "w": 1080,
          "h": 1080,
          "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/1080x1080 Paid Social - 2.mp4",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_WorkAlongside_1080x1080.mp4",
          "archived": null,
          "filepx": null
         }
@@ -1641,7 +1641,7 @@
          "w": 1080,
          "h": 1920,
          "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/Paid Social Static-08.png",
+         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1080x1920.png",
          "archived": null,
          "filepx": "2250×4000"
         },
@@ -1651,7 +1651,7 @@
          "w": 1080,
          "h": 1080,
          "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/Paid Social Static-06.png",
+         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1080x1080.png",
          "archived": null,
          "filepx": "2250×2250"
         },
@@ -1661,7 +1661,7 @@
          "w": 1200,
          "h": 628,
          "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/Paid Social Static-04.png",
+         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1200x628.png",
          "archived": null,
          "filepx": "2500×1309"
         },
@@ -1671,7 +1671,7 @@
          "w": 1080,
          "h": 565,
          "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/Paid Social Static-01.png",
+         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1080x565.png",
          "archived": null,
          "filepx": "2250×1177"
         }
@@ -1687,7 +1687,7 @@
          "w": 1080,
          "h": 1920,
          "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/Paid Social Static-07.png",
+         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x1920.png",
          "archived": null,
          "filepx": "2250×4000"
         },
@@ -1697,7 +1697,7 @@
          "w": 1080,
          "h": 1080,
          "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/Paid Social Static-05.png",
+         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x1080.png",
          "archived": null,
          "filepx": "2250×2250"
         },
@@ -1707,7 +1707,7 @@
          "w": 1200,
          "h": 628,
          "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/Paid Social Static-03.png",
+         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1200x628.png",
          "archived": null,
          "filepx": "2500×1309"
         },
@@ -1717,7 +1717,7 @@
          "w": 1080,
          "h": 565,
          "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/Paid Social Static-02.png",
+         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x565.png",
          "archived": null,
          "filepx": "2250×1177"
         }
