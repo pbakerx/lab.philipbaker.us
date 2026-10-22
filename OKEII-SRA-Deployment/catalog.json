@@ -3,8 +3,8 @@
   "campaign": "Strong Readers Act",
   "client": "Oklahoma Education Impact Initiative",
   "agency": "Catapult",
-  "total": 152,
-  "delivered": 152
+  "total": 164,
+  "delivered": 164
  },
  "campaigns": [
   {
@@ -1720,6 +1720,156 @@
          "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x565.png",
          "archived": null,
          "filepx": "2250×1177"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "morning-digital",
+     "name": "Digital",
+     "messages": [
+      {
+       "id": "morning-digital-head2",
+       "name": "Stronger Readers, Classrooms, Families",
+       "items": [
+        {
+         "id": "morning-digital-head2-300x600-image",
+         "size": "300×600",
+         "w": 300,
+         "h": 600,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x600_300x600_2.png",
+         "archived": null,
+         "filepx": "625×1250"
+        },
+        {
+         "id": "morning-digital-head2-320x480-image",
+         "size": "320×480",
+         "w": 320,
+         "h": 480,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_320x480_320x480_2.png",
+         "archived": null,
+         "filepx": "667×1000"
+        },
+        {
+         "id": "morning-digital-head2-160x600-image",
+         "size": "160×600",
+         "w": 160,
+         "h": 600,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_160x600_160x600_2-01.png",
+         "archived": null,
+         "filepx": "334×1250"
+        }
+       ]
+      },
+      {
+       "id": "morning-digital-head3",
+       "name": "Everyone wins. Learn what it says",
+       "items": [
+        {
+         "id": "morning-digital-head3-300x600-image",
+         "size": "300×600",
+         "w": 300,
+         "h": 600,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x600_300x600_1.png",
+         "archived": null,
+         "filepx": "625×1250"
+        },
+        {
+         "id": "morning-digital-head3-320x480-image",
+         "size": "320×480",
+         "w": 320,
+         "h": 480,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_320x480_320x480_1.png",
+         "archived": null,
+         "filepx": "667×1000"
+        },
+        {
+         "id": "morning-digital-head3-160x600-image",
+         "size": "160×600",
+         "w": 160,
+         "h": 600,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_160x600_160x600_2-02.png",
+         "archived": null,
+         "filepx": "334×1250"
+        },
+        {
+         "id": "morning-digital-head3-300x250-image",
+         "size": "300×250",
+         "w": 300,
+         "h": 250,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x250_300x250_1.png",
+         "archived": null,
+         "filepx": "625×521"
+        },
+        {
+         "id": "morning-digital-head3-300x250-image-2",
+         "size": "300×250",
+         "w": 300,
+         "h": 250,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x250_300x250_2.png",
+         "archived": null,
+         "filepx": "625×521"
+        },
+        {
+         "id": "morning-digital-head3-728x90-image",
+         "size": "728×90",
+         "w": 728,
+         "h": 90,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50_728x90.png",
+         "archived": null,
+         "filepx": "1517×188"
+        },
+        {
+         "id": "morning-digital-head3-320x50-image",
+         "size": "320×50",
+         "w": 320,
+         "h": 50,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50_320x50.png",
+         "archived": null,
+         "filepx": "667×105"
+        },
+        {
+         "id": "morning-digital-head3-300x50-image",
+         "size": "300×50",
+         "w": 300,
+         "h": 50,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50.png",
+         "archived": null,
+         "filepx": "625×105"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "morning-tv",
+     "name": "TV",
+     "messages": [
+      {
+       "id": "morning-tv-morning-30",
+       "name": "The Morning :30",
+       "items": [
+        {
+         "id": "morning-tv-morning-30-1920x1080-video",
+         "size": "1920×1080",
+         "w": 1920,
+         "h": 1080,
+         "kind": "video",
+         "src": "../SRA - The Morning Campaign/Video Production/Rendered Offlines/The Morning -30 16x9_2.mp4",
+         "archived": null,
+         "filepx": null
         }
        ]
       }
