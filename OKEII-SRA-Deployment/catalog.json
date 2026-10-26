@@ -3,8 +3,8 @@
   "campaign": "Strong Readers Act",
   "client": "Oklahoma Education Impact Initiative",
   "agency": "Catapult",
-  "total": 164,
-  "delivered": 164
+  "total": 165,
+  "delivered": 165
  },
  "campaigns": [
   {
@@ -1868,6 +1868,22 @@
          "h": 1080,
          "kind": "video",
          "src": "../SRA - The Morning Campaign/Video Production/Rendered Offlines/The Morning -30 16x9_2.mp4",
+         "archived": null,
+         "filepx": null
+        }
+       ]
+      },
+      {
+       "id": "morning-tv-morning-15",
+       "name": "The Morning :15",
+       "items": [
+        {
+         "id": "morning-tv-morning-15-1920x1080-video",
+         "size": "1920×1080",
+         "w": 1920,
+         "h": 1080,
+         "kind": "video",
+         "src": "../SRA - The Morning Campaign/Video Production/Rendered Offlines/The Morning -15 16x9.mp4",
          "archived": null,
          "filepx": null
         }
