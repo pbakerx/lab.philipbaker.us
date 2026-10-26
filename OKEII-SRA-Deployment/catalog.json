@@ -3,8 +3,8 @@
   "campaign": "Strong Readers Act",
   "client": "Oklahoma Education Impact Initiative",
   "agency": "Catapult",
-  "total": 165,
-  "delivered": 165
+  "total": 170,
+  "delivered": 170
  },
  "campaigns": [
   {
@@ -1848,6 +1848,68 @@
          "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50.png",
          "archived": null,
          "filepx": "625×105"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "morning-outdoor",
+     "name": "Outdoor",
+     "messages": [
+      {
+       "id": "morning-outdoor-head3",
+       "name": "Everyone wins. Learn what it says",
+       "items": [
+        {
+         "id": "morning-outdoor-head3-6667x1667-image",
+         "size": "6667×1667",
+         "w": 6667,
+         "h": 1667,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 6667x1667.png",
+         "archived": null,
+         "filepx": null
+        },
+        {
+         "id": "morning-outdoor-head3-4167x2605-image",
+         "size": "4167×2605",
+         "w": 4167,
+         "h": 2605,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 4167x2605.png",
+         "archived": null,
+         "filepx": null
+        },
+        {
+         "id": "morning-outdoor-head3-5834x1667-image",
+         "size": "5834×1667",
+         "w": 5834,
+         "h": 1667,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 5834x1667.png",
+         "archived": null,
+         "filepx": null
+        },
+        {
+         "id": "morning-outdoor-head3-3500x1667-image",
+         "size": "3500×1667",
+         "w": 3500,
+         "h": 1667,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 3500x1667.png",
+         "archived": null,
+         "filepx": null
+        },
+        {
+         "id": "morning-outdoor-head3-2500x1600-image",
+         "size": "2500×1600",
+         "w": 2500,
+         "h": 1600,
+         "kind": "image",
+         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 2500x1600.png",
+         "archived": null,
+         "filepx": null
         }
        ]
       }
