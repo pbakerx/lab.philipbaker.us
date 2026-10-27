@@ -3,8 +3,8 @@
   "campaign": "Strong Readers Act",
   "client": "Oklahoma Education Impact Initiative",
   "agency": "Catapult",
-  "total": 172,
-  "delivered": 172
+  "total": 176,
+  "delivered": 176
  },
  "campaigns": [
   {
@@ -1929,7 +1929,27 @@
          "w": 1920,
          "h": 1080,
          "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Rendered Offlines/The Morning -30 16x9_2.mp4",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 16x9.mp4",
+         "archived": null,
+         "filepx": null
+        },
+        {
+         "id": "morning-tv-morning-30-1080x1920-video",
+         "size": "1080×1920",
+         "w": 1080,
+         "h": 1920,
+         "kind": "video",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 Vertical.mp4",
+         "archived": null,
+         "filepx": null
+        },
+        {
+         "id": "morning-tv-morning-30-1080x1080-video",
+         "size": "1080×1080",
+         "w": 1080,
+         "h": 1080,
+         "kind": "video",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 Square.mp4",
          "archived": null,
          "filepx": null
         }
@@ -1945,7 +1965,27 @@
          "w": 1920,
          "h": 1080,
          "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Rendered Offlines/The Morning -15 16x9.mp4",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 16x9.mp4",
+         "archived": null,
+         "filepx": null
+        },
+        {
+         "id": "morning-tv-morning-15-1080x1920-video",
+         "size": "1080×1920",
+         "w": 1080,
+         "h": 1920,
+         "kind": "video",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 VERTICAL.mp4",
+         "archived": null,
+         "filepx": null
+        },
+        {
+         "id": "morning-tv-morning-15-1080x1080-video",
+         "size": "1080×1080",
+         "w": 1080,
+         "h": 1080,
+         "kind": "video",
+         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 SQUARE.mp4",
          "archived": null,
          "filepx": null
         }
