@@ -2033,8 +2033,8 @@
       "blurb": "Capitol briefing soundbites for social. Featured story plus 16 cuts.",
       "categories": [
         {
-          "id": "press-featured",
-          "name": "Featured",
+          "id": "press-clips-from-event",
+          "name": "Clips From Event",
           "messages": [
             {
               "id": "press-ashdyn-story",
@@ -2051,13 +2051,7 @@
                   "filepx": null
                 }
               ]
-            }
-          ]
-        },
-        {
-          "id": "press-soundbites",
-          "name": "Soundbites",
-          "messages": [
+            },
             {
               "id": "press-y01-literacy-moves-the-needle",
               "name": "Y01 - Literacy Moves the Needle",
