@@ -2031,6 +2031,7 @@
       "id": "press-oct29",
       "name": "Press Conference, October 29: Social Media Snippets",
       "blurb": "Capitol briefing soundbites for social. Featured story plus 16 cuts.",
+      "layout": "grid-2",
       "categories": [
         {
           "id": "press-clips-from-event",

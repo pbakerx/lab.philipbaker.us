@@ -323,3 +323,34 @@ body.choosing .shell { display: none; }
   .tile .frame { transition: none; }
   .tile:hover .frame { transform: none; }
 }
+
+
+/* ── layout: grid-2 (opt-in via catalog campaign.layout) ────────────────
+   Used by the press-oct29 clips board: one message = one 16:9 video card,
+   two across until the viewport is too narrow. Other campaigns omit the
+   flag and keep the existing size-tile grid untouched. */
+body[data-layout="grid-2"] #board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 18px;
+  row-gap: 4px;
+  align-items: start;
+}
+body[data-layout="grid-2"] #board > .board-head { grid-column: 1 / -1; }
+body[data-layout="grid-2"] #board > .msg {
+  padding-top: 18px;
+  min-width: 0;
+}
+body[data-layout="grid-2"] #board > .msg .grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+body[data-layout="grid-2"] #board > .msg .tile .frame {
+  aspect-ratio: 16 / 9;
+}
+body[data-layout="grid-2"] #board > .msg .tile .frame video {
+  object-fit: cover;
+  padding: 0;
+}
+@media (max-width: 720px) {
+  body[data-layout="grid-2"] #board { grid-template-columns: 1fr; }
+}

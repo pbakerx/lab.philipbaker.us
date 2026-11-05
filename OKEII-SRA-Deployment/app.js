@@ -164,6 +164,21 @@
       el("span", { class: "size", text: item.size }));
   }
 
+
+  // Marks the body with the active campaign's optional layout so CSS can
+  // restyle one campaign (e.g. press clips two-up) without touching the others.
+  function syncCampAttr() {
+    if (!campaign) {
+      delete document.body.dataset.campaign;
+      delete document.body.dataset.layout;
+      return;
+    }
+    document.body.dataset.campaign = campaign;
+    const layout = camp().layout;
+    if (layout) document.body.dataset.layout = layout;
+    else delete document.body.dataset.layout;
+  }
+
   function renderBoard() {
     const cat = cats().find((c) => c.id === category);
     fill($("#board"),
@@ -218,6 +233,7 @@
     $("#chooser").hidden = true;
     document.body.classList.remove("choosing");
     category = cats()[0].id;
+    syncCampAttr();
     paintTopbar();
     renderSide();
     renderBoard();
@@ -227,6 +243,7 @@
 
   function backToChooser() {
     campaign = null;
+    syncCampAttr();
     history.replaceState(null, "", "#");
     renderChooser();
   }
@@ -352,7 +369,8 @@
       if (e.key === "Escape" && campaign) pickCampaign(campaign);
     });
 
-    if (!campaign) { renderChooser(); return; }
+    if (!campaign) { syncCampAttr(); renderChooser(); return; }
+    syncCampAttr();
     paintTopbar();
     renderSide();
     renderBoard();
