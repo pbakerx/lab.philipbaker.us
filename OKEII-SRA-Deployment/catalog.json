@@ -1,2031 +1,2322 @@
 {
- "meta": {
-  "campaign": "Strong Readers Act",
-  "client": "Oklahoma Education Impact Initiative",
-  "agency": "Catapult",
-  "total": 176,
-  "delivered": 176
- },
- "campaigns": [
-  {
-   "id": "scoreboard",
-   "name": "The Scoreboard",
-   "blurb": "Stadium scoreboard. Five messages across every channel.",
-   "categories": [
-    {
-     "id": "paid-social-static",
-     "name": "Paid Social — Static",
-     "messages": [
-      {
-       "id": "paid-social-static-ok50",
-       "name": "50th in Education",
-       "items": [
-        {
-         "id": "paid-social-static-ok50-1080x1920-image",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-ok50-1080x1920-image-2",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-08.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-ok50-1080x1080-image",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-ok50-1080x1080-image-2",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-07.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-ok50-1200x628-image",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-ok50-1200x628-image-2",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-06.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-ok50-1080x565-image",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-ok50-1080x565-image-2",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-06.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "paid-social-static-47th",
-       "name": "47th in Reading",
-       "items": [
-        {
-         "id": "paid-social-static-47th-1080x1920-image",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-47th-1080x1920-image-2",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-07.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-47th-1080x1080-image",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-47th-1080x1080-image-2",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-06.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-47th-1200x628-image",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-47th-1200x628-image-2",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-47th-1080x565-image",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-47th-1080x565-image-2",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-08.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "paid-social-static-parents",
-       "name": "Parents Win",
-       "items": [
-        {
-         "id": "paid-social-static-parents-1080x1920-image",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-parents-1080x1920-image-2",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-09.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-parents-1080x1080-image",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-parents-1080x1080-image-2",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-08.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-parents-1200x628-image",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-parents-1200x628-image-2",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-07.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-parents-1080x565-image",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-parents-1080x565-image-2",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-09.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "paid-social-static-teachers",
-       "name": "Teachers Win",
-       "items": [
-        {
-         "id": "paid-social-static-teachers-1080x1920-image",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-teachers-1080x1920-image-2",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-10.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-teachers-1080x1080-image",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-teachers-1080x1080-image-2",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-09.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-teachers-1200x628-image",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-teachers-1200x628-image-2",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-08.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-teachers-1080x565-image",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-teachers-1080x565-image-2",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-07.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "paid-social-static-students",
-       "name": "Students Win",
-       "items": [
-        {
-         "id": "paid-social-static-students-1080x1920-image",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-06.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-students-1080x1920-image-2",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-11.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-students-1080x1080-image",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-students-1080x1080-image-2",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-10.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-students-1200x628-image",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-09.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-students-1200x628-image-2",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-10.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-students-1080x565-image",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-static-students-1080x565-image-2",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-10.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "paid-social-video",
-     "name": "Paid Social — Video",
-     "messages": [
-      {
-       "id": "paid-social-video-ok50",
-       "name": "50th in Education",
-       "items": [
-        {
-         "id": "paid-social-video-ok50-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - 50th in Education -15 16x9_1.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-ok50-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - 50th in Education -15 VERTICAL.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-ok50-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - 50th in Education -15 SQUARE.mp4",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "paid-social-video-47th",
-       "name": "47th in Reading",
-       "items": [
-        {
-         "id": "paid-social-video-47th-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - 47th in Reading -15 16x9.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-47th-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - 47th in Reading -15 VERTICAL.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-47th-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - 47th in Reading -15 SQUARE.mp4",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "paid-social-video-parents",
-       "name": "Parents Win",
-       "items": [
-        {
-         "id": "paid-social-video-parents-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 16x9_2.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-parents-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 VERTICAL_1.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-parents-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 SQUARE_1.mp4",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "paid-social-video-teachers",
-       "name": "Teachers Win",
-       "items": [
-        {
-         "id": "paid-social-video-teachers-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 16x9_2.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-teachers-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 VERTICAL_1.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-teachers-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 SQUARE_1.mp4",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "paid-social-video-students",
-       "name": "Students Win",
-       "items": [
-        {
-         "id": "paid-social-video-students-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 16x9_2.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-students-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 vertical.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "paid-social-video-students-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 Square_2.mp4",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "digital",
-     "name": "Digital",
-     "messages": [
-      {
-       "id": "digital-ok50",
-       "name": "50th in Education",
-       "items": [
-        {
-         "id": "digital-ok50-1024x768-image",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-1024x768-image-2",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-06.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-768x1024-image",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-768x1024-image-2",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-07.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-300x600-image",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-300x600-image-2",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-07.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-480x320-image",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-480x320-image-2",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-06.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-320x480-image",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-320x480-image-2",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-07.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-160x600-image",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-160x600-image-2",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-07.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-300x250-image",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-ok50-300x250-image-2",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-07.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "digital-47th",
-       "name": "47th in Reading",
-       "items": [
-        {
-         "id": "digital-47th-1024x768-image",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-1024x768-image-2",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-08.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-768x1024-image",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-768x1024-image-2",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-06.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-300x600-image",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-300x600-image-2",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-06.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-480x320-image",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-480x320-image-2",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-08.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-320x480-image",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-320x480-image-2",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-06.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-160x600-image",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-160x600-image-2",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-06.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-300x250-image",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-47th-300x250-image-2",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-06.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "digital-parents",
-       "name": "Parents Win",
-       "items": [
-        {
-         "id": "digital-parents-1024x768-image",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-1024x768-image-2",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-09.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-768x1024-image",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-768x1024-image-2",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-08.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-300x600-image",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-300x600-image-2",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-08.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-480x320-image",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-480x320-image-2",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-09.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-320x480-image",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-320x480-image-2",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-08.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-160x600-image",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-160x600-image-2",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-08.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-300x250-image",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-parents-300x250-image-2",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-08.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "digital-teachers",
-       "name": "Teachers Win",
-       "items": [
-        {
-         "id": "digital-teachers-1024x768-image",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-1024x768-image-2",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-07.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-768x1024-image",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-768x1024-image-2",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-09.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-300x600-image",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-300x600-image-2",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-09.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-480x320-image",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-480x320-image-2",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-07.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-320x480-image",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-320x480-image-2",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-09.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-160x600-image",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-04.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-160x600-image-2",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-09.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-300x250-image",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-teachers-300x250-image-2",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-09.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "digital-students",
-       "name": "Students Win",
-       "items": [
-        {
-         "id": "digital-students-1024x768-image",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-1024x768-image-2",
-         "size": "1024×768",
-         "w": 1024,
-         "h": 768,
-         "kind": "image",
-         "src": "Digital Ads/1024x768 Exports/Digital 1024x768-10.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-768x1024-image",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-768x1024-image-2",
-         "size": "768×1024",
-         "w": 768,
-         "h": 1024,
-         "kind": "image",
-         "src": "Digital Ads/768x1024 exports/Digital 768x1024-10.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-300x600-image",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-300x600-image-2",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/300x600 Exports/Digital 300x600-10.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-480x320-image",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-480x320-image-2",
-         "size": "480×320",
-         "w": 480,
-         "h": 320,
-         "kind": "image",
-         "src": "Digital Ads/480x320 Exports/Digital 480x320-10.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-320x480-image",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-320x480-image-2",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "Digital Ads/320x480 Exports/Digital 320x480-10.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-160x600-image",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-160x600-image-2",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "Digital Ads/160X600 Exports/Digital 160x600-10.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-300x250-image",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-students-300x250-image-2",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "Digital Ads/300x250 Exports/Digital 300x250-10.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "digital-tagline",
-       "name": "Know What It Says",
-       "items": [
-        {
-         "id": "digital-tagline-728x90-image",
-         "size": "728×90",
-         "w": 728,
-         "h": 90,
-         "kind": "image",
-         "src": "Digital Ads/728x90 Exports/Digital 728x90-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-tagline-320x50-image",
-         "size": "320×50",
-         "w": 320,
-         "h": 50,
-         "kind": "image",
-         "src": "Digital Ads/320x50 Exports/Digital 320x50.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "digital-tagline-300x50-image",
-         "size": "300×50",
-         "w": 300,
-         "h": 50,
-         "kind": "image",
-         "src": "Digital Ads/320x50 Exports/Digital 300x50.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "outdoor",
-     "name": "Outdoor",
-     "messages": [
-      {
-       "id": "outdoor-tagline",
-       "name": "Know What It Says",
-       "items": [
-        {
-         "id": "outdoor-tagline-1600x400-image",
-         "size": "1600×400",
-         "w": 1600,
-         "h": 400,
-         "kind": "image",
-         "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-02.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "outdoor-tagline-1000x625-image",
-         "size": "1000×625",
-         "w": 1000,
-         "h": 625,
-         "kind": "image",
-         "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-05.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "outdoor-tagline-1400x400-image",
-         "size": "1400×400",
-         "w": 1400,
-         "h": 400,
-         "kind": "image",
-         "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-01.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "outdoor-tagline-840x400-image",
-         "size": "840×400",
-         "w": 840,
-         "h": 400,
-         "kind": "image",
-         "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-03.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "outdoor-tagline-600x384-image",
-         "size": "600×384",
-         "w": 600,
-         "h": 384,
-         "kind": "image",
-         "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-04.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "tv",
-     "name": "TV",
-     "messages": [
-      {
-       "id": "tv-scoreboard-30",
-       "name": "ScoreBoard :30",
-       "items": [
-        {
-         "id": "tv-scoreboard-30-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 Final.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "tv-scoreboard-30-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 VERTICAL FINAL mp4.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "tv-scoreboard-30-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 SQUARE FINAL.mp4",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "radio",
-     "name": "Radio",
-     "messages": [
-      {
-       "id": "radio-scoreboard",
-       "name": "ScoreBoard",
-       "items": [
-        {
-         "id": "radio-scoreboard-15-audio",
-         "size": ":15",
-         "w": 0,
-         "h": 0,
-         "kind": "audio",
-         "src": "Video Production/Offline Renders/MASTERS/Radio ScoreBoard -15 v2.mp3",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "radio-scoreboard-30-audio",
-         "size": ":30",
-         "w": 0,
-         "h": 0,
-         "kind": "audio",
-         "src": "Video Production/Offline Renders/MASTERS/Radio ScoreBoard -30 v2.mp3",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
-    }
-   ]
+  "meta": {
+    "campaign": "Strong Readers Act",
+    "client": "Oklahoma Education Impact Initiative",
+    "agency": "Catapult",
+    "total": 193,
+    "delivered": 176
   },
-  {
-   "id": "morning",
-   "name": "The Morning",
-   "blurb": "A family's morning routine. Paid social only, in development.",
-   "categories": [
+  "campaigns": [
     {
-     "id": "morning-paid-social-video",
-     "name": "Paid Social — Video",
-     "messages": [
-      {
-       "id": "morning-paid-social-video-kids-teachers-parents",
-       "name": "Kids, Teachers, Parents",
-       "items": [
+      "id": "scoreboard",
+      "name": "The Scoreboard",
+      "blurb": "Stadium scoreboard. Five messages across every channel.",
+      "categories": [
         {
-         "id": "morning-paid-social-video-kids-teachers-parents-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_KidsTeachersParents_1920x1080.mp4",
-         "archived": null,
-         "filepx": null
+          "id": "paid-social-static",
+          "name": "Paid Social — Static",
+          "messages": [
+            {
+              "id": "paid-social-static-ok50",
+              "name": "50th in Education",
+              "items": [
+                {
+                  "id": "paid-social-static-ok50-1080x1920-image",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-ok50-1080x1920-image-2",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-08.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-ok50-1080x1080-image",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-ok50-1080x1080-image-2",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-07.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-ok50-1200x628-image",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-ok50-1200x628-image-2",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-06.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-ok50-1080x565-image",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-ok50-1080x565-image-2",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-06.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "paid-social-static-47th",
+              "name": "47th in Reading",
+              "items": [
+                {
+                  "id": "paid-social-static-47th-1080x1920-image",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-47th-1080x1920-image-2",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-07.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-47th-1080x1080-image",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-47th-1080x1080-image-2",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-06.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-47th-1200x628-image",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-47th-1200x628-image-2",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-47th-1080x565-image",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-47th-1080x565-image-2",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-08.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "paid-social-static-parents",
+              "name": "Parents Win",
+              "items": [
+                {
+                  "id": "paid-social-static-parents-1080x1920-image",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-parents-1080x1920-image-2",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-09.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-parents-1080x1080-image",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-parents-1080x1080-image-2",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-08.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-parents-1200x628-image",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-parents-1200x628-image-2",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-07.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-parents-1080x565-image",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-parents-1080x565-image-2",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-09.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "paid-social-static-teachers",
+              "name": "Teachers Win",
+              "items": [
+                {
+                  "id": "paid-social-static-teachers-1080x1920-image",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-teachers-1080x1920-image-2",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-10.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-teachers-1080x1080-image",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-teachers-1080x1080-image-2",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-09.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-teachers-1200x628-image",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-teachers-1200x628-image-2",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-08.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-teachers-1080x565-image",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-teachers-1080x565-image-2",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-07.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "paid-social-static-students",
+              "name": "Students Win",
+              "items": [
+                {
+                  "id": "paid-social-static-students-1080x1920-image",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-06.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-students-1080x1920-image-2",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1920 Exports/Paid Social 1080x1920-11.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-students-1080x1080-image",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-students-1080x1080-image-2",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x1080/Paid Social 1080x1080-10.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-students-1200x628-image",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-09.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-students-1200x628-image-2",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1299x628 Exports/Paid Social 1200x628-10.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-students-1080x565-image",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-static-students-1080x565-image-2",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "Paid Social/Paid Social 1080x565 Exports/Paid Social 1080x565-10.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
         },
         {
-         "id": "morning-paid-social-video-kids-teachers-parents-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_KidsTeachersParents_1080x1920.mp4",
-         "archived": null,
-         "filepx": null
+          "id": "paid-social-video",
+          "name": "Paid Social — Video",
+          "messages": [
+            {
+              "id": "paid-social-video-ok50",
+              "name": "50th in Education",
+              "items": [
+                {
+                  "id": "paid-social-video-ok50-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - 50th in Education -15 16x9_1.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-ok50-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - 50th in Education -15 VERTICAL.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-ok50-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - 50th in Education -15 SQUARE.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "paid-social-video-47th",
+              "name": "47th in Reading",
+              "items": [
+                {
+                  "id": "paid-social-video-47th-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - 47th in Reading -15 16x9.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-47th-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - 47th in Reading -15 VERTICAL.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-47th-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - 47th in Reading -15 SQUARE.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "paid-social-video-parents",
+              "name": "Parents Win",
+              "items": [
+                {
+                  "id": "paid-social-video-parents-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 16x9_2.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-parents-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 VERTICAL_1.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-parents-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - Parents Win -15 SQUARE_1.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "paid-social-video-teachers",
+              "name": "Teachers Win",
+              "items": [
+                {
+                  "id": "paid-social-video-teachers-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 16x9_2.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-teachers-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 VERTICAL_1.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-teachers-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - Teachers Win -15 SQUARE_1.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "paid-social-video-students",
+              "name": "Students Win",
+              "items": [
+                {
+                  "id": "paid-social-video-students-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 16x9_2.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-students-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 vertical.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "paid-social-video-students-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/Paid Social - Students Win -15 Square_2.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
         },
         {
-         "id": "morning-paid-social-video-kids-teachers-parents-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_KidsTeachersParents_1080x1080.mp4",
-         "archived": null,
-         "filepx": null
+          "id": "digital",
+          "name": "Digital",
+          "messages": [
+            {
+              "id": "digital-ok50",
+              "name": "50th in Education",
+              "items": [
+                {
+                  "id": "digital-ok50-1024x768-image",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-1024x768-image-2",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-06.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-768x1024-image",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-768x1024-image-2",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-07.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-300x600-image",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-300x600-image-2",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-07.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-480x320-image",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-480x320-image-2",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-06.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-320x480-image",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-320x480-image-2",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-07.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-160x600-image",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-160x600-image-2",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-07.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-300x250-image",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-ok50-300x250-image-2",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-07.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "digital-47th",
+              "name": "47th in Reading",
+              "items": [
+                {
+                  "id": "digital-47th-1024x768-image",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-1024x768-image-2",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-08.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-768x1024-image",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-768x1024-image-2",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-06.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-300x600-image",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-300x600-image-2",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-06.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-480x320-image",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-480x320-image-2",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-08.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-320x480-image",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-320x480-image-2",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-06.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-160x600-image",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-160x600-image-2",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-06.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-300x250-image",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-47th-300x250-image-2",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-06.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "digital-parents",
+              "name": "Parents Win",
+              "items": [
+                {
+                  "id": "digital-parents-1024x768-image",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-1024x768-image-2",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-09.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-768x1024-image",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-768x1024-image-2",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-08.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-300x600-image",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-300x600-image-2",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-08.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-480x320-image",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-480x320-image-2",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-09.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-320x480-image",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-320x480-image-2",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-08.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-160x600-image",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-160x600-image-2",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-08.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-300x250-image",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-parents-300x250-image-2",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-08.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "digital-teachers",
+              "name": "Teachers Win",
+              "items": [
+                {
+                  "id": "digital-teachers-1024x768-image",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-1024x768-image-2",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-07.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-768x1024-image",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-768x1024-image-2",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-09.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-300x600-image",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-300x600-image-2",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-09.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-480x320-image",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-480x320-image-2",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-07.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-320x480-image",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-320x480-image-2",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-09.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-160x600-image",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-04.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-160x600-image-2",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-09.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-300x250-image",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-teachers-300x250-image-2",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-09.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "digital-students",
+              "name": "Students Win",
+              "items": [
+                {
+                  "id": "digital-students-1024x768-image",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-1024x768-image-2",
+                  "size": "1024×768",
+                  "w": 1024,
+                  "h": 768,
+                  "kind": "image",
+                  "src": "Digital Ads/1024x768 Exports/Digital 1024x768-10.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-768x1024-image",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-768x1024-image-2",
+                  "size": "768×1024",
+                  "w": 768,
+                  "h": 1024,
+                  "kind": "image",
+                  "src": "Digital Ads/768x1024 exports/Digital 768x1024-10.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-300x600-image",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-300x600-image-2",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/300x600 Exports/Digital 300x600-10.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-480x320-image",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-480x320-image-2",
+                  "size": "480×320",
+                  "w": 480,
+                  "h": 320,
+                  "kind": "image",
+                  "src": "Digital Ads/480x320 Exports/Digital 480x320-10.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-320x480-image",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-320x480-image-2",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "Digital Ads/320x480 Exports/Digital 320x480-10.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-160x600-image",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-160x600-image-2",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "Digital Ads/160X600 Exports/Digital 160x600-10.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-300x250-image",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-students-300x250-image-2",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "Digital Ads/300x250 Exports/Digital 300x250-10.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "digital-tagline",
+              "name": "Know What It Says",
+              "items": [
+                {
+                  "id": "digital-tagline-728x90-image",
+                  "size": "728×90",
+                  "w": 728,
+                  "h": 90,
+                  "kind": "image",
+                  "src": "Digital Ads/728x90 Exports/Digital 728x90-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-tagline-320x50-image",
+                  "size": "320×50",
+                  "w": 320,
+                  "h": 50,
+                  "kind": "image",
+                  "src": "Digital Ads/320x50 Exports/Digital 320x50.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "digital-tagline-300x50-image",
+                  "size": "300×50",
+                  "w": 300,
+                  "h": 50,
+                  "kind": "image",
+                  "src": "Digital Ads/320x50 Exports/Digital 300x50.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "outdoor",
+          "name": "Outdoor",
+          "messages": [
+            {
+              "id": "outdoor-tagline",
+              "name": "Know What It Says",
+              "items": [
+                {
+                  "id": "outdoor-tagline-1600x400-image",
+                  "size": "1600×400",
+                  "w": 1600,
+                  "h": 400,
+                  "kind": "image",
+                  "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-02.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "outdoor-tagline-1000x625-image",
+                  "size": "1000×625",
+                  "w": 1000,
+                  "h": 625,
+                  "kind": "image",
+                  "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-05.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "outdoor-tagline-1400x400-image",
+                  "size": "1400×400",
+                  "w": 1400,
+                  "h": 400,
+                  "kind": "image",
+                  "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-01.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "outdoor-tagline-840x400-image",
+                  "size": "840×400",
+                  "w": 840,
+                  "h": 400,
+                  "kind": "image",
+                  "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-03.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "outdoor-tagline-600x384-image",
+                  "size": "600×384",
+                  "w": 600,
+                  "h": 384,
+                  "kind": "image",
+                  "src": "Outdoor/Outdoor Exports/SRAE - Outdoor Mechanicals-04.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tv",
+          "name": "TV",
+          "messages": [
+            {
+              "id": "tv-scoreboard-30",
+              "name": "ScoreBoard :30",
+              "items": [
+                {
+                  "id": "tv-scoreboard-30-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "tv-scoreboard-30-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 VERTICAL FINAL mp4.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "tv-scoreboard-30-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "Video Production/Offline Renders/MASTERS/The ScoreBoared -30 SQUARE FINAL.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "radio",
+          "name": "Radio",
+          "messages": [
+            {
+              "id": "radio-scoreboard",
+              "name": "ScoreBoard",
+              "items": [
+                {
+                  "id": "radio-scoreboard-15-audio",
+                  "size": ":15",
+                  "w": 0,
+                  "h": 0,
+                  "kind": "audio",
+                  "src": "Video Production/Offline Renders/MASTERS/Radio ScoreBoard -15 v2.mp3",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "radio-scoreboard-30-audio",
+                  "size": ":30",
+                  "w": 0,
+                  "h": 0,
+                  "kind": "audio",
+                  "src": "Video Production/Offline Renders/MASTERS/Radio ScoreBoard -30 v2.mp3",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
         }
-       ]
-      },
-      {
-       "id": "morning-paid-social-video-work-alongside",
-       "name": "Work Alongside Teachers and Schools",
-       "items": [
-        {
-         "id": "morning-paid-social-video-work-alongside-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_WorkAlongside_1920x1080.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-paid-social-video-work-alongside-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_WorkAlongside_1080x1920.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-paid-social-video-work-alongside-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_WorkAlongside_1080x1080.mp4",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
+      ]
     },
     {
-     "id": "morning-paid-social-static",
-     "name": "Paid Social — Static",
-     "messages": [
-      {
-       "id": "morning-paid-social-static-head2",
-       "name": "Stronger Readers, Classrooms, Families",
-       "items": [
+      "id": "morning",
+      "name": "The Morning",
+      "blurb": "A family's morning routine. Paid social only, in development.",
+      "categories": [
         {
-         "id": "morning-paid-social-static-head2-1080x1920-image",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1080x1920.png",
-         "archived": null,
-         "filepx": "2250×4000"
+          "id": "morning-paid-social-video",
+          "name": "Paid Social — Video",
+          "messages": [
+            {
+              "id": "morning-paid-social-video-kids-teachers-parents",
+              "name": "Kids, Teachers, Parents",
+              "items": [
+                {
+                  "id": "morning-paid-social-video-kids-teachers-parents-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_KidsTeachersParents_1920x1080.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-paid-social-video-kids-teachers-parents-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_KidsTeachersParents_1080x1920.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-paid-social-video-kids-teachers-parents-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_KidsTeachersParents_1080x1080.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "morning-paid-social-video-work-alongside",
+              "name": "Work Alongside Teachers and Schools",
+              "items": [
+                {
+                  "id": "morning-paid-social-video-work-alongside-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_WorkAlongside_1920x1080.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-paid-social-video-work-alongside-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_WorkAlongside_1080x1920.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-paid-social-video-work-alongside-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/SRA_Morning_PaidSocial_WorkAlongside_1080x1080.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
         },
         {
-         "id": "morning-paid-social-static-head2-1080x1080-image",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1080x1080.png",
-         "archived": null,
-         "filepx": "2250×2250"
+          "id": "morning-paid-social-static",
+          "name": "Paid Social — Static",
+          "messages": [
+            {
+              "id": "morning-paid-social-static-head2",
+              "name": "Stronger Readers, Classrooms, Families",
+              "items": [
+                {
+                  "id": "morning-paid-social-static-head2-1080x1920-image",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1080x1920.png",
+                  "archived": null,
+                  "filepx": "2250×4000"
+                },
+                {
+                  "id": "morning-paid-social-static-head2-1080x1080-image",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1080x1080.png",
+                  "archived": null,
+                  "filepx": "2250×2250"
+                },
+                {
+                  "id": "morning-paid-social-static-head2-1200x628-image",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1200x628.png",
+                  "archived": null,
+                  "filepx": "2500×1309"
+                },
+                {
+                  "id": "morning-paid-social-static-head2-1080x565-image",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1080x565.png",
+                  "archived": null,
+                  "filepx": "2250×1177"
+                }
+              ]
+            },
+            {
+              "id": "morning-paid-social-static-head3",
+              "name": "Everyone wins. Learn what it says",
+              "items": [
+                {
+                  "id": "morning-paid-social-static-head3-1080x1920-image",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x1920.png",
+                  "archived": null,
+                  "filepx": "2250×4000"
+                },
+                {
+                  "id": "morning-paid-social-static-head3-1080x1080-image",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x1080.png",
+                  "archived": null,
+                  "filepx": "2250×2250"
+                },
+                {
+                  "id": "morning-paid-social-static-head3-1200x628-image",
+                  "size": "1200×628",
+                  "w": 1200,
+                  "h": 628,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1200x628.png",
+                  "archived": null,
+                  "filepx": "2500×1309"
+                },
+                {
+                  "id": "morning-paid-social-static-head3-1080x565-image",
+                  "size": "1080×565",
+                  "w": 1080,
+                  "h": 565,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x565.png",
+                  "archived": null,
+                  "filepx": "2250×1177"
+                }
+              ]
+            }
+          ]
         },
         {
-         "id": "morning-paid-social-static-head2-1200x628-image",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1200x628.png",
-         "archived": null,
-         "filepx": "2500×1309"
+          "id": "morning-digital",
+          "name": "Digital",
+          "messages": [
+            {
+              "id": "morning-digital-head2",
+              "name": "Stronger Readers, Classrooms, Families",
+              "items": [
+                {
+                  "id": "morning-digital-head2-300x600-image",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x600_300x600_2.png",
+                  "archived": null,
+                  "filepx": "625×1250"
+                },
+                {
+                  "id": "morning-digital-head2-320x480-image",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_320x480_320x480_2.png",
+                  "archived": null,
+                  "filepx": "667×1000"
+                },
+                {
+                  "id": "morning-digital-head2-160x600-image",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_160x600_160x600_2-01.png",
+                  "archived": null,
+                  "filepx": "334×1250"
+                }
+              ]
+            },
+            {
+              "id": "morning-digital-head3",
+              "name": "Everyone wins. Learn what it says",
+              "items": [
+                {
+                  "id": "morning-digital-head3-300x600-image",
+                  "size": "300×600",
+                  "w": 300,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x600_300x600_1.png",
+                  "archived": null,
+                  "filepx": "625×1250"
+                },
+                {
+                  "id": "morning-digital-head3-320x480-image",
+                  "size": "320×480",
+                  "w": 320,
+                  "h": 480,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_320x480_320x480_1.png",
+                  "archived": null,
+                  "filepx": "667×1000"
+                },
+                {
+                  "id": "morning-digital-head3-160x600-image",
+                  "size": "160×600",
+                  "w": 160,
+                  "h": 600,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_160x600_160x600_2-02.png",
+                  "archived": null,
+                  "filepx": "334×1250"
+                },
+                {
+                  "id": "morning-digital-head3-300x250-image",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x250_300x250_1.png",
+                  "archived": null,
+                  "filepx": "625×521"
+                },
+                {
+                  "id": "morning-digital-head3-300x250-image-2",
+                  "size": "300×250",
+                  "w": 300,
+                  "h": 250,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x250_300x250_2.png",
+                  "archived": null,
+                  "filepx": "625×521"
+                },
+                {
+                  "id": "morning-digital-head3-728x90-image",
+                  "size": "728×90",
+                  "w": 728,
+                  "h": 90,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50_728x90.png",
+                  "archived": null,
+                  "filepx": "1517×188"
+                },
+                {
+                  "id": "morning-digital-head3-320x50-image",
+                  "size": "320×50",
+                  "w": 320,
+                  "h": 50,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50_320x50.png",
+                  "archived": null,
+                  "filepx": "667×105"
+                },
+                {
+                  "id": "morning-digital-head3-300x50-image",
+                  "size": "300×50",
+                  "w": 300,
+                  "h": 50,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50.png",
+                  "archived": null,
+                  "filepx": "625×105"
+                }
+              ]
+            }
+          ]
         },
         {
-         "id": "morning-paid-social-static-head2-1080x565-image",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_StrongerReaders_1080x565.png",
-         "archived": null,
-         "filepx": "2250×1177"
+          "id": "morning-outdoor",
+          "name": "Outdoor",
+          "messages": [
+            {
+              "id": "morning-outdoor-head3",
+              "name": "Everyone wins. Learn what it says",
+              "items": [
+                {
+                  "id": "morning-outdoor-head3-1600x400-image",
+                  "size": "1600×400",
+                  "w": 1600,
+                  "h": 400,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 1600x400.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-outdoor-head3-1000x625-image",
+                  "size": "1000×625",
+                  "w": 1000,
+                  "h": 625,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 1000x625.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-outdoor-head3-1400x400-image",
+                  "size": "1400×400",
+                  "w": 1400,
+                  "h": 400,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 1400x400.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-outdoor-head3-840x400-image",
+                  "size": "840×400",
+                  "w": 840,
+                  "h": 400,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 840x400.png",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-outdoor-head3-600x384-image",
+                  "size": "600×384",
+                  "w": 600,
+                  "h": 384,
+                  "kind": "image",
+                  "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 600x384.png",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "morning-tv",
+          "name": "TV",
+          "messages": [
+            {
+              "id": "morning-tv-morning-30",
+              "name": "The Morning :30",
+              "items": [
+                {
+                  "id": "morning-tv-morning-30-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 16x9.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-tv-morning-30-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 Vertical.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-tv-morning-30-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 Square.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "morning-tv-morning-15",
+              "name": "The Morning :15",
+              "items": [
+                {
+                  "id": "morning-tv-morning-15-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 16x9.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-tv-morning-15-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 VERTICAL.mp4",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-tv-morning-15-1080x1080-video",
+                  "size": "1080×1080",
+                  "w": 1080,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 SQUARE.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "morning-radio",
+          "name": "Radio",
+          "messages": [
+            {
+              "id": "morning-radio-the-morning",
+              "name": "The Morning",
+              "items": [
+                {
+                  "id": "morning-radio-the-morning-15-audio",
+                  "size": ":15",
+                  "w": 0,
+                  "h": 0,
+                  "kind": "audio",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 Radio.mp3",
+                  "archived": null,
+                  "filepx": null
+                },
+                {
+                  "id": "morning-radio-the-morning-30-audio",
+                  "size": ":30",
+                  "w": 0,
+                  "h": 0,
+                  "kind": "audio",
+                  "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 Radio.mp3",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
         }
-       ]
-      },
-      {
-       "id": "morning-paid-social-static-head3",
-       "name": "Everyone wins. Learn what it says",
-       "items": [
-        {
-         "id": "morning-paid-social-static-head3-1080x1920-image",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x1920.png",
-         "archived": null,
-         "filepx": "2250×4000"
-        },
-        {
-         "id": "morning-paid-social-static-head3-1080x1080-image",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x1080.png",
-         "archived": null,
-         "filepx": "2250×2250"
-        },
-        {
-         "id": "morning-paid-social-static-head3-1200x628-image",
-         "size": "1200×628",
-         "w": 1200,
-         "h": 628,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1200x628.png",
-         "archived": null,
-         "filepx": "2500×1309"
-        },
-        {
-         "id": "morning-paid-social-static-head3-1080x565-image",
-         "size": "1080×565",
-         "w": 1080,
-         "h": 565,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Paid Social/Exports/SRA_Morning_PaidSocial_EveryoneWins_1080x565.png",
-         "archived": null,
-         "filepx": "2250×1177"
-        }
-       ]
-      }
-     ]
+      ]
     },
     {
-     "id": "morning-digital",
-     "name": "Digital",
-     "messages": [
-      {
-       "id": "morning-digital-head2",
-       "name": "Stronger Readers, Classrooms, Families",
-       "items": [
+      "id": "press-oct29",
+      "name": "Press Conference, October 29: Social Media Snippets",
+      "blurb": "Capitol briefing soundbites for social. Featured story plus 16 cuts.",
+      "categories": [
         {
-         "id": "morning-digital-head2-300x600-image",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x600_300x600_2.png",
-         "archived": null,
-         "filepx": "625×1250"
+          "id": "press-featured",
+          "name": "Featured",
+          "messages": [
+            {
+              "id": "press-ashdyn-story",
+              "name": "Ashdyn's Story",
+              "items": [
+                {
+                  "id": "press-ashdyn-story-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Ashdyn's Story - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
         },
         {
-         "id": "morning-digital-head2-320x480-image",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_320x480_320x480_2.png",
-         "archived": null,
-         "filepx": "667×1000"
-        },
-        {
-         "id": "morning-digital-head2-160x600-image",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_160x600_160x600_2-01.png",
-         "archived": null,
-         "filepx": "334×1250"
+          "id": "press-soundbites",
+          "name": "Soundbites",
+          "messages": [
+            {
+              "id": "press-y01-literacy-moves-the-needle",
+              "name": "Y01 - Literacy Moves the Needle",
+              "items": [
+                {
+                  "id": "press-y01-literacy-moves-the-needle-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y01 - Literacy Moves the Needle - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y02-oklahoma-did-it-first-in-2011",
+              "name": "Y02 - Oklahoma Did It First in 2011",
+              "items": [
+                {
+                  "id": "press-y02-oklahoma-did-it-first-in-2011-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y02 - Oklahoma Did It First in 2011 - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y03-literacy-focus-as-superintendent-and-parent",
+              "name": "Y03 - Literacy Focus as Superintendent and Parent",
+              "items": [
+                {
+                  "id": "press-y03-literacy-focus-as-superintendent-and-parent-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y03 - Literacy Focus as Superintendent and Parent - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y04-stay-the-course",
+              "name": "Y04 - Stay the Course",
+              "items": [
+                {
+                  "id": "press-y04-stay-the-course-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y04 - Stay the Course - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y05-early-identification-and-intervention-matter",
+              "name": "Y05 - Early Identification and Intervention Matter",
+              "items": [
+                {
+                  "id": "press-y05-early-identification-and-intervention-matter-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y05 - Early Identification and Intervention Matter - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y06-strong-readers-act-strengthens-support",
+              "name": "Y06 - Strong Readers Act Strengthens Support",
+              "items": [
+                {
+                  "id": "press-y06-strong-readers-act-strengthens-support-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y06 - Strong Readers Act Strengthens Support - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y07-multi-tiered-system-of-supports",
+              "name": "Y07 - Multi-Tiered System of Supports",
+              "items": [
+                {
+                  "id": "press-y07-multi-tiered-system-of-supports-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y07 - Multi-Tiered System of Supports - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y08-from-research-to-every-classroom",
+              "name": "Y08 - From Research to Every Classroom",
+              "items": [
+                {
+                  "id": "press-y08-from-research-to-every-classroom-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y08 - From Research to Every Classroom - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y09-superhighway-vs-country-back-roads",
+              "name": "Y09 - Superhighway vs Country Back Roads",
+              "items": [
+                {
+                  "id": "press-y09-superhighway-vs-country-back-roads-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y09 - Superhighway vs Country Back Roads - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y10-95-percent-goal-is-doable",
+              "name": "Y10 - 95 Percent Goal Is Doable",
+              "items": [
+                {
+                  "id": "press-y10-95-percent-goal-is-doable-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y10 - 95 Percent Goal Is Doable - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y11-from-26-percent-to-95-percent",
+              "name": "Y11 - From 26 Percent to 95 Percent",
+              "items": [
+                {
+                  "id": "press-y11-from-26-percent-to-95-percent-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y11 - From 26 Percent to 95 Percent - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y12-parents-reading-and-talking-with-kids",
+              "name": "Y12 - Parents Reading and Talking With Kids",
+              "items": [
+                {
+                  "id": "press-y12-parents-reading-and-talking-with-kids-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y12 - Parents Reading and Talking With Kids - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y13-reading-success-is-intentional",
+              "name": "Y13 - Reading Success Is Intentional",
+              "items": [
+                {
+                  "id": "press-y13-reading-success-is-intentional-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y13 - Reading Success Is Intentional - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y14-what-strong-literacy-policies-do",
+              "name": "Y14 - What Strong Literacy Policies Do",
+              "items": [
+                {
+                  "id": "press-y14-what-strong-literacy-policies-do-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y14 - What Strong Literacy Policies Do - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y15-implementation-is-the-goal",
+              "name": "Y15 - Implementation Is the Goal",
+              "items": [
+                {
+                  "id": "press-y15-implementation-is-the-goal-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y15 - Implementation Is the Goal - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-y16-a-marathon-not-a-miracle",
+              "name": "Y16 - A Marathon Not a Miracle",
+              "items": [
+                {
+                  "id": "press-y16-a-marathon-not-a-miracle-1920x1080-video",
+                  "size": "1920×1080",
+                  "w": 1920,
+                  "h": 1080,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Y16 - A Marathon Not a Miracle - Final.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
         }
-       ]
-      },
-      {
-       "id": "morning-digital-head3",
-       "name": "Everyone wins. Learn what it says",
-       "items": [
-        {
-         "id": "morning-digital-head3-300x600-image",
-         "size": "300×600",
-         "w": 300,
-         "h": 600,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x600_300x600_1.png",
-         "archived": null,
-         "filepx": "625×1250"
-        },
-        {
-         "id": "morning-digital-head3-320x480-image",
-         "size": "320×480",
-         "w": 320,
-         "h": 480,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_320x480_320x480_1.png",
-         "archived": null,
-         "filepx": "667×1000"
-        },
-        {
-         "id": "morning-digital-head3-160x600-image",
-         "size": "160×600",
-         "w": 160,
-         "h": 600,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_160x600_160x600_2-02.png",
-         "archived": null,
-         "filepx": "334×1250"
-        },
-        {
-         "id": "morning-digital-head3-300x250-image",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x250_300x250_1.png",
-         "archived": null,
-         "filepx": "625×521"
-        },
-        {
-         "id": "morning-digital-head3-300x250-image-2",
-         "size": "300×250",
-         "w": 300,
-         "h": 250,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x250_300x250_2.png",
-         "archived": null,
-         "filepx": "625×521"
-        },
-        {
-         "id": "morning-digital-head3-728x90-image",
-         "size": "728×90",
-         "w": 728,
-         "h": 90,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50_728x90.png",
-         "archived": null,
-         "filepx": "1517×188"
-        },
-        {
-         "id": "morning-digital-head3-320x50-image",
-         "size": "320×50",
-         "w": 320,
-         "h": 50,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50_320x50.png",
-         "archived": null,
-         "filepx": "667×105"
-        },
-        {
-         "id": "morning-digital-head3-300x50-image",
-         "size": "300×50",
-         "w": 300,
-         "h": 50,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/Digital Ads/EXPORTS/Digital Ads_300x50.png",
-         "archived": null,
-         "filepx": "625×105"
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "morning-outdoor",
-     "name": "Outdoor",
-     "messages": [
-      {
-       "id": "morning-outdoor-head3",
-       "name": "Everyone wins. Learn what it says",
-       "items": [
-        {
-         "id": "morning-outdoor-head3-1600x400-image",
-         "size": "1600×400",
-         "w": 1600,
-         "h": 400,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 1600x400.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-outdoor-head3-1000x625-image",
-         "size": "1000×625",
-         "w": 1000,
-         "h": 625,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 1000x625.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-outdoor-head3-1400x400-image",
-         "size": "1400×400",
-         "w": 1400,
-         "h": 400,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 1400x400.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-outdoor-head3-840x400-image",
-         "size": "840×400",
-         "w": 840,
-         "h": 400,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 840x400.png",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-outdoor-head3-600x384-image",
-         "size": "600×384",
-         "w": 600,
-         "h": 384,
-         "kind": "image",
-         "src": "../SRA - The Morning Campaign/OOH/Exports/OKEII - The Morning - OOH - 600x384.png",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "morning-tv",
-     "name": "TV",
-     "messages": [
-      {
-       "id": "morning-tv-morning-30",
-       "name": "The Morning :30",
-       "items": [
-        {
-         "id": "morning-tv-morning-30-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 16x9.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-tv-morning-30-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 Vertical.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-tv-morning-30-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 Square.mp4",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      },
-      {
-       "id": "morning-tv-morning-15",
-       "name": "The Morning :15",
-       "items": [
-        {
-         "id": "morning-tv-morning-15-1920x1080-video",
-         "size": "1920×1080",
-         "w": 1920,
-         "h": 1080,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 16x9.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-tv-morning-15-1080x1920-video",
-         "size": "1080×1920",
-         "w": 1080,
-         "h": 1920,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 VERTICAL.mp4",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-tv-morning-15-1080x1080-video",
-         "size": "1080×1080",
-         "w": 1080,
-         "h": 1080,
-         "kind": "video",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 SQUARE.mp4",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "morning-radio",
-     "name": "Radio",
-     "messages": [
-      {
-       "id": "morning-radio-the-morning",
-       "name": "The Morning",
-       "items": [
-        {
-         "id": "morning-radio-the-morning-15-audio",
-         "size": ":15",
-         "w": 0,
-         "h": 0,
-         "kind": "audio",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -15 Radio.mp3",
-         "archived": null,
-         "filepx": null
-        },
-        {
-         "id": "morning-radio-the-morning-30-audio",
-         "size": ":30",
-         "w": 0,
-         "h": 0,
-         "kind": "audio",
-         "src": "../SRA - The Morning Campaign/Video Production/Masters/The Morning -30 Radio.mp3",
-         "archived": null,
-         "filepx": null
-        }
-       ]
-      }
-     ]
+      ]
     }
-   ]
-  }
- ]
+  ]
 }
