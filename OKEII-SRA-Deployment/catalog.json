@@ -3,8 +3,8 @@
     "campaign": "Strong Readers Act",
     "client": "Oklahoma Education Impact Initiative",
     "agency": "Catapult",
-    "total": 193,
-    "delivered": 176
+    "total": 210,
+    "delivered": 193
   },
   "campaigns": [
     {
@@ -2304,6 +2304,284 @@
                   "h": 1080,
                   "kind": "video",
                   "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 - Longer Intro + Captions - Nov 9/Y16 - A Marathon Not a Miracle - Final v3 - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "press-clips-from-event-vertical",
+          "name": "Clips From Event — Vertical (9:16)",
+          "messages": [
+            {
+              "id": "press-vertical-ashdyn-story",
+              "name": "Ashdyn's Story",
+              "items": [
+                {
+                  "id": "press-vertical-ashdyn-story-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Ashdyn's Story - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y01-literacy-moves-the-needle",
+              "name": "Y01 - Literacy Moves the Needle",
+              "items": [
+                {
+                  "id": "press-vertical-y01-literacy-moves-the-needle-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y01 - Literacy Moves the Needle - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y02-oklahoma-did-it-first-in-2011",
+              "name": "Y02 - Oklahoma Did It First in 2011",
+              "items": [
+                {
+                  "id": "press-vertical-y02-oklahoma-did-it-first-in-2011-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y02 - Oklahoma Did It First in 2011 - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y03-literacy-focus-as-superintendent-and-parent",
+              "name": "Y03 - Literacy Focus as Superintendent and Parent",
+              "items": [
+                {
+                  "id": "press-vertical-y03-literacy-focus-as-superintendent-and-parent-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y03 - Literacy Focus as Superintendent and Parent - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y04-stay-the-course",
+              "name": "Y04 - Stay the Course",
+              "items": [
+                {
+                  "id": "press-vertical-y04-stay-the-course-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y04 - Stay the Course - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y05-early-identification-and-intervention-matter",
+              "name": "Y05 - Early Identification and Intervention Matter",
+              "items": [
+                {
+                  "id": "press-vertical-y05-early-identification-and-intervention-matter-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y05 - Early Identification and Intervention Matter - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y06-strong-readers-act-strengthens-support",
+              "name": "Y06 - Strong Readers Act Strengthens Support",
+              "items": [
+                {
+                  "id": "press-vertical-y06-strong-readers-act-strengthens-support-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y06 - Strong Readers Act Strengthens Support - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y07-multi-tiered-system-of-supports",
+              "name": "Y07 - Multi-Tiered System of Supports",
+              "items": [
+                {
+                  "id": "press-vertical-y07-multi-tiered-system-of-supports-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y07 - Multi-Tiered System of Supports - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y08-from-research-to-every-classroom",
+              "name": "Y08 - From Research to Every Classroom",
+              "items": [
+                {
+                  "id": "press-vertical-y08-from-research-to-every-classroom-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y08 - From Research to Every Classroom - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y09-superhighway-vs-country-back-roads",
+              "name": "Y09 - Superhighway vs Country Back Roads",
+              "items": [
+                {
+                  "id": "press-vertical-y09-superhighway-vs-country-back-roads-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y09 - Superhighway vs Country Back Roads - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y10-95-percent-goal-is-doable",
+              "name": "Y10 - 95 Percent Goal Is Doable",
+              "items": [
+                {
+                  "id": "press-vertical-y10-95-percent-goal-is-doable-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y10 - 95 Percent Goal Is Doable - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y11-from-26-percent-to-95-percent",
+              "name": "Y11 - From 26 Percent to 95 Percent",
+              "items": [
+                {
+                  "id": "press-vertical-y11-from-26-percent-to-95-percent-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y11 - From 26 Percent to 95 Percent - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y12-parents-reading-and-talking-with-kids",
+              "name": "Y12 - Parents Reading and Talking With Kids",
+              "items": [
+                {
+                  "id": "press-vertical-y12-parents-reading-and-talking-with-kids-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y12 - Parents Reading and Talking With Kids - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y13-reading-success-is-intentional",
+              "name": "Y13 - Reading Success Is Intentional",
+              "items": [
+                {
+                  "id": "press-vertical-y13-reading-success-is-intentional-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y13 - Reading Success Is Intentional - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y14-what-strong-literacy-policies-do",
+              "name": "Y14 - What Strong Literacy Policies Do",
+              "items": [
+                {
+                  "id": "press-vertical-y14-what-strong-literacy-policies-do-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y14 - What Strong Literacy Policies Do - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y15-implementation-is-the-goal",
+              "name": "Y15 - Implementation Is the Goal",
+              "items": [
+                {
+                  "id": "press-vertical-y15-implementation-is-the-goal-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y15 - Implementation Is the Goal - Vertical - Captions.mp4",
+                  "archived": null,
+                  "filepx": null
+                }
+              ]
+            },
+            {
+              "id": "press-vertical-y16-a-marathon-not-a-miracle",
+              "name": "Y16 - A Marathon Not a Miracle",
+              "items": [
+                {
+                  "id": "press-vertical-y16-a-marathon-not-a-miracle-1080x1920-video",
+                  "size": "1080×1920",
+                  "w": 1080,
+                  "h": 1920,
+                  "kind": "video",
+                  "src": "../Press Work/OKEII Press Conference Soundbites - Oct 29 2026/Finals/Final v3 Vertical - 9x16 - Nov 9/Y16 - A Marathon Not a Miracle - Vertical - Captions.mp4",
                   "archived": null,
                   "filepx": null
                 }

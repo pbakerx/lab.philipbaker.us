@@ -186,6 +186,13 @@
       cat.messages.map((m) => el("section", { class: "msg" },
         el("h2", { text: m.name }),
         el("div", { class: "grid" }, m.items.map((it, i) => tile(cat, m, it, i))))));
+    // grid-2 boards whose items are all portrait (the 9:16 press clips) get a
+    // data-orient flag so CSS can give them tall cards; every other board,
+    // including the horizontal press clips, renders exactly as before.
+    const items = cat.messages.flatMap((m) => m.items);
+    if (camp().layout === "grid-2" && items.length && items.every((it) => it.h > it.w))
+      $("#board").dataset.orient = "tall";
+    else delete $("#board").dataset.orient;
   }
 
   // ── choosing a campaign ──────────────────────────────────────────────────
