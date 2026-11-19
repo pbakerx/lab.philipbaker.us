@@ -43,7 +43,7 @@
   }
 
   /* A media slot: shows the file if it is in media/, a quiet placeholder if not. */
-  function slot(item) {
+  function slot(item, opt) {
     var box = el('div', 'slot'), kind = item.kind || 'image';
     var ph = el('div', 'ph');
     ph.appendChild(el('div', 'g', kind === 'video' ? '▶' : kind === 'audio' ? '♪' : '□'));
@@ -57,7 +57,16 @@
     else {
       m = document.createElement(kind === 'audio' ? 'audio' : 'video');
       m.controls = true; m.preload = 'metadata'; m.playsInline = true;
-      m.onloadedmetadata = fill; m.src = url;
+      opt = opt || {};
+      if (kind === 'video' && (item.muted || item.autoplay || opt.muted || opt.autoplay)) {
+        m.muted = true; m.defaultMuted = true; m.setAttribute('muted', '');
+        m.playsInline = true; m.setAttribute('playsinline', ''); m.setAttribute('webkit-playsinline', '');
+        m.autoplay = true; m.loop = true; m.controls = false; m.preload = 'auto';
+        m.onloadedmetadata = function () { fill(); var p = m.play(); if (p && p.catch) p.catch(function () {}); };
+      } else {
+        m.onloadedmetadata = fill;
+      }
+      m.src = url;
       if (kind === 'audio') { m.onloadedmetadata = function () { box.textContent = ''; var w = el('div', 'ph'); w.appendChild(el('b', null, item.label || '')); w.appendChild(m); m.style.marginTop = '28px'; box.appendChild(w); }; }
     }
     return box;
@@ -140,9 +149,23 @@
     media: function (root, s, v) {
       root.appendChild(metaRow(s)); root.appendChild(head(s, v.label));
       var g = el('div', 'slots');
-      v.items.forEach(function (it, i) { var b = slot(it); b.classList.add('rise'); b.style.setProperty('--i', i + 2); g.appendChild(b); });
+      v.items.forEach(function (it, i) { var b = slot(it, v); b.classList.add('rise'); b.style.setProperty('--i', i + 2); g.appendChild(b); });
       if (v.items.length === 1) { g.style.left = '330px'; g.style.right = '330px'; }
-      if (v.grid) { g.classList.add('tight'); g.style.gridTemplateColumns = 'repeat(' + v.grid + ',1fr)'; var rows = Math.ceil(v.items.length / v.grid), rh = Math.min(1640 / v.grid * 9 / 16, 690 / rows); g.style.right = 'auto'; g.style.width = Math.round(rh * 16 / 9 * v.grid) + 'px'; }
+      if (v.grid) {
+        var cols = v.grid, rows = Math.ceil(v.items.length / cols);
+        g.style.right = 'auto';
+        if (v.square) {
+          g.classList.add('square');
+          var gap = 36, side = Math.round(Math.min((1640 - gap * (cols - 1)) / cols, (690 - gap * (rows - 1)) / rows));
+          g.style.width = (side * cols + gap * (cols - 1)) + 'px';
+          Array.prototype.forEach.call(g.children, function (b) { b.style.width = side + 'px'; b.style.flex = '0 0 ' + side + 'px'; });
+        } else {
+          g.classList.add('tight');
+          g.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+          var rh = Math.min(1640 / cols * 9 / 16, 690 / rows);
+          g.style.width = Math.round(rh * 16 / 9 * cols) + 'px';
+        }
+      }
       root.appendChild(g);
     },
 

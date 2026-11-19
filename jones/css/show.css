@@ -180,3 +180,6 @@ body:not(.awake){cursor:none}
 .v-media .slots.tight{bottom:auto;gap:0;grid-auto-flow:row;grid-auto-columns:auto;box-shadow:0 30px 70px -30px rgba(40,30,10,.45)}
 .v-media .slots.tight .slot{aspect-ratio:16/9;border:0;border-radius:0;box-shadow:none;background:transparent}
 .v-media .slots.tight .slot img{object-fit:cover}
+.v-media .slots.square{bottom:auto;display:flex;flex-wrap:wrap;justify-content:center;align-content:flex-start}
+.v-media .slots.square .slot{aspect-ratio:1/1}
+.v-media .slots.square .slot img,.v-media .slots.square .slot video{object-fit:cover}
