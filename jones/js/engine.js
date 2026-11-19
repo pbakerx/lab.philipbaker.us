@@ -142,6 +142,7 @@
       var g = el('div', 'slots');
       v.items.forEach(function (it, i) { var b = slot(it); b.classList.add('rise'); b.style.setProperty('--i', i + 2); g.appendChild(b); });
       if (v.items.length === 1) { g.style.left = '330px'; g.style.right = '330px'; }
+      if (v.grid) { g.classList.add('tight'); g.style.gridTemplateColumns = 'repeat(' + v.grid + ',1fr)'; var rows = Math.ceil(v.items.length / v.grid), rh = Math.min(1640 / v.grid * 9 / 16, 690 / rows); g.style.right = 'auto'; g.style.width = Math.round(rh * 16 / 9 * v.grid) + 'px'; }
       root.appendChild(g);
     },
 

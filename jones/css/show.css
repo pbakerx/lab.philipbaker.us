@@ -177,3 +177,6 @@ body:not(.awake){cursor:none}
 
 .v-showcase .head{top:170px;width:400px}
 .v-showcase .head h2{font-size:30px;letter-spacing:-.035em;font-weight:800;color:var(--soft);line-height:1.05}
+.v-media .slots.tight{bottom:auto;gap:0;grid-auto-flow:row;grid-auto-columns:auto;box-shadow:0 30px 70px -30px rgba(40,30,10,.45)}
+.v-media .slots.tight .slot{aspect-ratio:16/9;border:0;border-radius:0;box-shadow:none;background:transparent}
+.v-media .slots.tight .slot img{object-fit:cover}

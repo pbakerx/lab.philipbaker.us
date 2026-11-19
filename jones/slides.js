@@ -66,13 +66,13 @@ window.SHOW = {
           'Oklahoma Education Impact Initiative', 'Cause for Effect', 'VIP Luxury Seating',
           'BibleDiscovery.app', 'Assist AI',
           /* added from the project folders. Delete any that do not belong: */
-          'Honda · Acura', 'RibCrib', 'Brock Institute', 'Tulsa Sound Originals'
+          'Honda · Acura', 'Brock Institute', 'Tulsa Sound Originals'
         ] }
       ] },
 
     { id: 'mazzios', title: 'Mazzio’s', noTitle: true,
       steps: [
-        { type: 'media', label: 'Cheezzy Bread', items: [
+        { type: 'media', label: 'Cheezzy Bread', grid: 3, items: [
           { kind: 'image', file: 'mazzios-cheezzy-1.jpg', label: 'Turn up the Cheezzy' },
           { kind: 'image', file: 'mazzios-cheezzy-2.jpg', label: 'Cheezzy Cheese bread' },
           { kind: 'image', file: 'mazzios-cheezzy-3.jpg', label: 'Bread and sauce' },
@@ -84,10 +84,16 @@ window.SHOW = {
 
     { id: 'okeii', title: 'OKEII', noTitle: true, aliases: ['oklahoma education impact initiative'],
       steps: [
-        { type: 'media', label: 'Movies', items: [
-          { kind: 'video', file: 'okeii-1.mp4', label: 'Movie 1' },
-          { kind: 'video', file: 'okeii-2.mp4', label: 'Movie 2' },
-          { kind: 'video', file: 'okeii-3.mp4', label: 'Movie 3' }
+        { type: 'media', label: 'Spots', grid: 3, items: [
+          { kind: 'image', file: 'okeii-grid-1.jpg', label: 'OK 50th in public education' },
+          { kind: 'image', file: 'okeii-grid-2.jpg', label: 'The Strong Readers Act' },
+          { kind: 'image', file: 'okeii-grid-3.jpg', label: 'More reading coaches' },
+          { kind: 'image', file: 'okeii-grid-4.jpg', label: 'Help me' },
+          { kind: 'image', file: 'okeii-grid-5.jpg', label: '1-in-6 third graders' },
+          { kind: 'image', file: 'okeii-grid-6.jpg', label: 'Help us' },
+          { kind: 'image', file: 'okeii-grid-7.jpg', label: '1-in-6, with speaker' },
+          { kind: 'image', file: 'okeii-grid-8.jpg', label: 'Think critically and creatively' },
+          { kind: 'image', file: 'okeii-grid-9.jpg', label: "Help strengthen Oklahoma's reading laws" }
         ] }
       ] },
 
