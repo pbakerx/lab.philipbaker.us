@@ -23,6 +23,9 @@
 
   var si = 0, ki = 0;
 
+  var autoTimer = null;
+  function clearAuto() { if (autoTimer != null) { clearTimeout(autoTimer); autoTimer = null; } }
+
   /* ---------- small helpers ---------- */
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function svgEl(tag) { return document.createElementNS('http://www.w3.org/2000/svg', tag); }
@@ -277,8 +280,19 @@
     var h = '#' + s.id + (ki ? '.' + (ki + 1) : ''); if (location.hash !== h) history.replaceState(null, '', h);
     document.title = pad(s.n) + ' ' + s.title + ' — ' + SHOW.name;
     announce();
+    /* Per-screen or first-screen auto-advance. Only moves within this slide.
+       go() clears the timer first, so a manual next during the wait does not double-advance. */
+    var ms = scr.autoAdvance || (ki === 0 ? s.autoAdvance : 0);
+    if (ms && ki < s.screens.length - 1) {
+      var holdSi = si, holdKi = ki;
+      autoTimer = setTimeout(function () {
+        autoTimer = null;
+        if (si === holdSi && ki === holdKi) next();
+      }, ms);
+    }
   }
   function go(a, b) {
+    clearAuto();
     a = Math.max(0, Math.min(slides.length - 1, a)); b = Math.max(0, Math.min(slides[a].screens.length - 1, b || 0));
     if (a === si && b === ki && current) return; si = a; ki = b; render();
   }

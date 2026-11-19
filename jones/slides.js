@@ -9,6 +9,10 @@
    the arrow key (a "phase").  noTitle: true  skips the title screen, so the
    slide opens straight on its first step with the title above it.
 
+   autoAdvance: 5000  holds the opening screen for that many milliseconds, then
+             advances to the next screen of the same slide. A key press during the
+             wait cancels the timer, so it will not double-advance.
+
    FILES     anything named in  file:  is looked for in  media/  which is your
              DropFolder. Until a file with that exact name is there, the slide
              shows a clean placeholder that tells you the name it is waiting for.
@@ -39,15 +43,15 @@ window.SHOW = {
     { id: 'intelligence-age', title: 'The Intelligence Age',
       sub: 'Change. Change. Change. Overwhelming.' },
 
-    { id: 'years', title: '1987 to 2000', sub: 'Marketer and technologist.', aliases: ['1987', 'timeline', 'career', 'growth'],
+    { id: 'years', title: '1987 to 2000', sub: 'Marketer and technologist.', autoAdvance: 5000, aliases: ['1987', 'timeline', 'career', 'growth'],
       steps: [
-        { type: 'tree', label: 'Growth', grow: true, x0: 660, x1: 930, key: 'Technology', items: [
-          { k: 'Pre-87', name: 'Computer programming', hot: true },
+        { type: 'tree', label: 'Growth', grow: true, x0: 660, x1: 930, items: [
+          { k: 'Pre-87', name: 'Computer programming' },
           { k: '1987', name: 'Art direction', line: 'Yellow Pages design' },
           { k: '1988', name: 'Freelance business' },
           { k: '1991', name: 'Ackerman McQueen', line: 'Art director' },
           { k: '1993', name: 'Ackerman McQueen', line: 'Broadcast producer' },
-          { k: '1995', name: 'Ackerman McQueen', line: 'Internet producer, new media', hot: true },
+          { k: '1995', name: 'Ackerman McQueen', line: 'Internet producer, new media' },
           { k: '2000', name: 'Founded StapleGun' },
           { k: '2000+', name: 'Running an agency', line: 'Clients, process, new business, creative direction' }
         ] }
@@ -55,11 +59,11 @@ window.SHOW = {
 
     { id: 'last-6-years', title: 'The Last 6 Years', sub: 'Speed to market.' },
 
-    { id: 'agency', title: 'Agency from my chair.', aliases: ['clients', 'chair'],
+    { id: 'agency', title: 'Agency from my chair.', autoAdvance: 5000, aliases: ['clients', 'chair'],
       steps: [
         { type: 'tree', label: 'Clients', items: [
-          'AcrobatAnt', 'Perillo Tours', 'Ruby Tuesday', 'Mazzio’s', 'The Learning Center',
-          'Oklahoma Education Impact Initiative', 'Omega Motion', 'VIP Luxury Seating',
+          'AcrobatAnt', 'Pokes with a Purpose', 'NIL-OSU Athletics', 'Perillo Tours', 'Ruby Tuesday', 'Mazzio’s', 'The Learning Center',
+          'Oklahoma Education Impact Initiative', 'Cause for Effect', 'VIP Luxury Seating',
           'BibleDiscovery.app', 'Assist AI',
           /* added from the project folders. Delete any that do not belong: */
           'Honda · Acura', 'RibCrib', 'Brock Institute', 'Tulsa Sound Originals'
@@ -68,17 +72,18 @@ window.SHOW = {
 
     { id: 'mazzios', title: 'Mazzio’s', noTitle: true,
       steps: [
-        { type: 'media', label: 'Movies', items: [
-          { kind: 'video', file: 'mazzios-1.mp4', label: 'Movie 1' },
-          { kind: 'video', file: 'mazzios-2.mp4', label: 'Movie 2' }
+        { type: 'media', label: 'Cheezzy Bread', items: [
+          { kind: 'image', file: 'mazzios-cheezzy-1.jpg', label: 'Turn up the Cheezzy' },
+          { kind: 'image', file: 'mazzios-cheezzy-2.jpg', label: 'Cheezzy Cheese bread' },
+          { kind: 'image', file: 'mazzios-cheezzy-3.jpg', label: 'Bread and sauce' },
+          { kind: 'image', file: 'mazzios-cheezzy-4.jpg', label: 'Cheezzy close-up' },
+          { kind: 'image', file: 'mazzios-cheezzy-5.jpg', label: 'Badge centered' },
+          { kind: 'image', file: 'mazzios-cheezzy-6.jpg', label: 'Mazzio’s end card' }
         ] }
       ] },
 
     { id: 'okeii', title: 'OKEII', noTitle: true, aliases: ['oklahoma education impact initiative'],
       steps: [
-        { type: 'media', label: 'The website', items: [
-          { kind: 'image', file: 'okeii-website.jpg', label: 'Website' }
-        ] },
         { type: 'media', label: 'Movies', items: [
           { kind: 'video', file: 'okeii-1.mp4', label: 'Movie 1' },
           { kind: 'video', file: 'okeii-2.mp4', label: 'Movie 2' },
