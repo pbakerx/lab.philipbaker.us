@@ -123,15 +123,7 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'voice-agents', title: 'Voice Agents', aliases: ['voice'],
-      steps: [
-        { type: 'showcase', items: [
-          { name: 'Catapult', src: 'https://catapultcreative.agency/', note: 'catapultcreative.agency' },
-          { name: 'Lady on Main', file: 'lady-on-main.jpg', kind: 'image',
-            note: 'Waiting on the site address, or drop lady-on-main.jpg.' },
-          { name: 'AechTech', src: 'https://aechtech.com/', note: 'aechtech.com' }
-        ] }
-      ] },
+    { id: 'voice-agents', title: 'Voice Agents', aliases: ['voice'] },
 
     { id: 'research', title: 'Research', noTitle: true,
       steps: [
