@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fall Leaves Lab — Honda / Acura Fall Display</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #17181c;
+    --panel: #212329;
+    --panel-2: #2a2d35;
+    --ink: #e8e6e1;
+    --ink-dim: #9a978f;
+    --accent: #e07a2f;
+    --line: #383b44;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 13px/1.45 -apple-system, "Helvetica Neue", Arial, sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh; padding: 20px;
+  }
+  header { width: 100%; max-width: 1000px; margin-bottom: 14px; }
+  header h1 { font-size: 17px; font-weight: 700; letter-spacing: .2px; }
+  header p  { color: var(--ink-dim); font-size: 12px; margin-top: 2px; }
+  .layout { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
+
+  /* ---------- Stage ---------- */
+  .stage-wrap { position: sticky; top: 16px; min-width: 320px; }
+  .stage-frame {
+    display: flex; align-items: flex-start; justify-content: safe center;
+    max-width: 96vw; overflow: auto;   /* big custom stages scroll, never blow out the layout */
+  }
+  #stage {
+    display: block; border: 1px solid var(--line); border-radius: 6px;
+    cursor: crosshair;
+  }
+  #stage.bg-checker {
+    background: repeating-conic-gradient(#26272c 0% 25%, #1d1e22 0% 50%) 0 0 / 24px 24px;
+  }
+  #stage.bg-white  { background: #ffffff; }
+  #stage.bg-cream  { background: #f5efe3; }
+  #stage.bg-dark   { background: #101014; }
+  #stage.bg-sky    { background: linear-gradient(#cfe3ee 0%, #e8ddc4 62%, #d9b98a 100%); }
+  #stage.recording { border-color: #d84a3a; box-shadow: 0 0 0 2px rgba(216, 74, 58, .35); }
+  .stage-meta {
+    display: flex; justify-content: space-between; margin-top: 6px;
+    color: var(--ink-dim); font-size: 11px; font-variant-numeric: tabular-nums;
+  }
+  .stage-hint { color: var(--ink-dim); font-size: 11px; margin-top: 4px; }
+
+  /* ---------- Controls ---------- */
+  .panel {
+    width: 330px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; padding: 14px 16px 16px; max-height: 88vh; overflow-y: auto;
+  }
+  .group { margin-bottom: 14px; }
+  .group h2 {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
+    color: var(--accent); margin-bottom: 8px; padding-bottom: 4px;
+    border-bottom: 1px solid var(--line);
+  }
+  .row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .row label { flex: 0 0 108px; color: var(--ink-dim); }
+  .row input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
+  .row output {
+    flex: 0 0 46px; text-align: right; font-variant-numeric: tabular-nums; font-size: 12px;
+  }
+  .row select, .row input[type=text] {
+    flex: 1; background: var(--panel-2); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 4px; padding: 4px 6px; font: inherit; min-width: 0;
+  }
+  .row input[type=number] {
+    width: 70px; background: var(--panel-2); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 4px; padding: 4px 6px; font: inherit;
+  }
+  .checks { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  .checks label { display: flex; align-items: center; gap: 5px; color: var(--ink); cursor: pointer; }
+  .checks input { accent-color: var(--accent); }
+  .buttons { display: flex; flex-wrap: wrap; gap: 7px; }
+  button {
+    background: var(--panel-2); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 5px; padding: 6px 12px; font: inherit; cursor: pointer;
+  }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #1a1206; font-weight: 600; }
+  .status { color: var(--accent); font-size: 11px; margin-top: 6px; min-height: 14px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🍁 Fall Leaves Lab</h1>
+  <p>Honda / Acura Fall Display · canvas-2D particle system · branch <code>design/leaves</code> · presets save to <code>Design&nbsp;Lab/leaf-presets.json</code> for the ad build</p>
+</header>
+
+<div class="layout">
+  <div class="stage-wrap">
+    <div class="stage-frame">
+      <canvas id="stage" width="600" height="600" class="bg-sky"></canvas>
+    </div>
+    <div class="stage-meta">
+      <span id="dims">600 × 600</span>
+      <span id="stats">— fps · — leaves</span>
+    </div>
+    <div class="stage-hint" id="hint"></div>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="group">
+      <h2>Stage &amp; Spawn</h2>
+      <div class="row"><label for="stageSize">Ad size</label>
+        <select id="stageSize">
+          <option value="600x600" selected>600 × 600 (design)</option>
+          <option value="300x600">300 × 600</option>
+          <option value="160x600">160 × 600</option>
+          <option value="300x250">300 × 250</option>
+          <option value="728x90">728 × 90</option>
+          <option value="320x50">320 × 50</option>
+          <option value="300x50">300 × 50</option>
+          <option value="custom">Custom…</option>
+        </select>
+      </div>
+      <div class="row" id="customSizeRow" style="display:none"><label>Custom W × H</label>
+        <input type="number" id="customW" min="50" max="1600" value="600">
+        <input type="number" id="customH" min="50" max="1600" value="600">
+        <button id="applySizeBtn">Set</button>
+      </div>
+      <div class="row"><label for="spawnMode">Spawn mode</label>
+        <select id="spawnMode">
+          <option value="top" selected>Falling from top</option>
+          <option value="emitter">Emitter (click to place)</option>
+          <option value="burst">Burst on click</option>
+        </select>
+      </div>
+      <div class="row"><label for="kick">Kick strength</label><input type="range" id="kick" min="0" max="650" step="5" value="280"><output>280</output></div>
+      <div class="row"><label for="kickAngle">Kick direction</label><input type="range" id="kickAngle" min="-180" max="180" step="5" value="-95"><output>-95</output></div>
+      <div class="row"><label for="spread">Kick spread</label><input type="range" id="spread" min="0" max="180" step="5" value="70"><output>70</output></div>
+      <div class="row"><label for="radius">Spawn radius</label><input type="range" id="radius" min="0" max="220" step="2" value="46"><output>46</output></div>
+      <div class="row"><label for="burstCount">Burst count</label><input type="range" id="burstCount" min="1" max="60" step="1" value="18"><output>18</output></div>
+      <div class="row"><label>Guides</label><div class="checks" style="flex:1"><label><input type="checkbox" id="showEmitter" checked> show design guides (emitter · kick · wind · car path)</label></div></div>
+    </div>
+
+    <div class="group">
+      <h2>Scene Car &amp; Mask</h2>
+      <div class="row"><label for="scene">Scene still</label>
+        <select id="scene">
+          <option value="none" selected>None</option>
+          <option value="honda">Honda coastal road</option>
+          <option value="acura">Acura sunset drive</option>
+        </select>
+      </div>
+      <div class="row"><label for="sceneDur">Duration</label><input type="range" id="sceneDur" min="1" max="12" step="0.5" value="5"><output>5.00</output></div>
+      <div class="row"><label for="sceneStartX">Start position</label><input type="range" id="sceneStartX" min="-120" max="120" step="1" value="-25"><output>-25</output></div>
+      <div class="row"><label for="sceneEndX">End position</label><input type="range" id="sceneEndX" min="-120" max="120" step="1" value="25"><output>25</output></div>
+      <div class="row"><label for="sceneOffY">Frame Y offset</label><input type="range" id="sceneOffY" min="-40" max="40" step="1" value="0"><output>0</output></div>
+      <div class="row"><label for="sceneZoom">Zoom (crop-in)</label><input type="range" id="sceneZoom" min="1" max="1.8" step="0.01" value="1.15"><output>1.15</output></div>
+      <div class="row"><label for="sceneScaleDrift">Scale drift %</label><input type="range" id="sceneScaleDrift" min="0" max="30" step="1" value="8"><output>8</output></div>
+      <div class="row"><label for="sceneRotDrift">Rotate drift °</label><input type="range" id="sceneRotDrift" min="-6" max="6" step="0.5" value="1.5"><output>2</output></div>
+      <div class="checks" style="margin-bottom:7px">
+        <label><input type="checkbox" id="sceneEase" checked> ease in-out</label>
+        <label><input type="checkbox" id="sceneLoop"> loop</label>
+        <label><input type="checkbox" id="sceneSafeCover" checked> safe cover (auto-zoom, no edge clip)</label>
+      </div>
+      <div class="buttons" style="margin-bottom:10px"><button id="scenePlayBtn" class="primary">🚗 Play scene</button></div>
+      <div class="row"><label>Wake sync</label><div class="checks" style="flex:1"><label><input type="checkbox" id="syncWake"> leaf bursts follow the drive</label></div></div>
+      <div class="row"><label for="wakeBursts">Wake bursts</label><input type="range" id="wakeBursts" min="1" max="20" step="1" value="6"><output>6</output></div>
+      <div class="row"><label for="wakeY">Wake height</label><input type="range" id="wakeY" min="0" max="1" step="0.01" value="0.62"><output>0.62</output></div>
+      <div class="row"><label>Mask card</label><div class="checks" style="flex:1"><label><input type="checkbox" id="maskOn"> rounded inner card</label></div></div>
+      <div class="row"><label for="maskInset">Card inset</label><input type="range" id="maskInset" min="0" max="120" step="1" value="16"><output>16</output></div>
+      <div class="row"><label for="maskRadius">Corner radius</label><input type="range" id="maskRadius" min="0" max="120" step="1" value="24"><output>24</output></div>
+      <div class="checks">
+        <label><input type="checkbox" id="maskClipLeaves"> card clips leaves too</label>
+        <label><input type="checkbox" id="maskShow" checked> show card edge</label>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Wind</h2>
+      <div class="row"><label for="windSpeed">Speed</label><input type="range" id="windSpeed" min="-160" max="160" step="1" value="35"><output>35</output></div>
+      <div class="row"><label for="windLift">Lift (vertical)</label><input type="range" id="windLift" min="-160" max="160" step="1" value="0"><output>0</output></div>
+      <div class="row"><label for="gustStrength">Gust strength</label><input type="range" id="gustStrength" min="0" max="140" step="1" value="55"><output>55</output></div>
+      <div class="row"><label for="gustFreq">Gust frequency</label><input type="range" id="gustFreq" min="0.03" max="0.6" step="0.01" value="0.14"><output>0.14</output></div>
+      <div class="row"><label for="turbulence">Turbulence</label><input type="range" id="turbulence" min="0" max="1" step="0.01" value="0.45"><output>0.45</output></div>
+    </div>
+
+    <div class="group">
+      <h2>Fall</h2>
+      <div class="row"><label for="fallSpeed">Fall speed</label><input type="range" id="fallSpeed" min="15" max="220" step="1" value="62"><output>62</output></div>
+      <div class="row"><label for="speedVar">Speed variance</label><input type="range" id="speedVar" min="0" max="1" step="0.01" value="0.5"><output>0.50</output></div>
+    </div>
+
+    <div class="group">
+      <h2>Leaves</h2>
+      <div class="row"><label for="count">Count</label><input type="range" id="count" min="1" max="120" step="1" value="36"><output>36</output></div>
+      <div class="row"><label for="sizeScale">Size</label><input type="range" id="sizeScale" min="0.35" max="2.2" step="0.01" value="1"><output>1.00</output></div>
+      <div class="row"><label for="sizeVar">Size variance</label><input type="range" id="sizeVar" min="0" max="1" step="0.01" value="0.55"><output>0.55</output></div>
+      <div class="row"><label for="opacity">Opacity</label><input type="range" id="opacity" min="0.05" max="1" step="0.01" value="0.95"><output>0.95</output></div>
+      <div class="row"><label for="opacityVar">Opacity variance</label><input type="range" id="opacityVar" min="0" max="1" step="0.01" value="0.25"><output>0.25</output></div>
+      <div class="row"><label>Depth parallax</label><div class="checks" style="flex:1"><label><input type="checkbox" id="depth" checked> far = smaller · slower · fainter</label></div></div>
+    </div>
+
+    <div class="group">
+      <h2>Tumble &amp; Flutter</h2>
+      <div class="row"><label for="tumble">Tumble spin</label><input type="range" id="tumble" min="0" max="360" step="1" value="90"><output>90</output></div>
+      <div class="row"><label for="flutter">Flutter (3D flip)</label><input type="range" id="flutter" min="0" max="1" step="0.01" value="0.55"><output>0.55</output></div>
+      <div class="row"><label for="swayAmp">Sway amount</label><input type="range" id="swayAmp" min="0" max="90" step="1" value="34"><output>34</output></div>
+      <div class="row"><label for="swaySpeed">Sway speed</label><input type="range" id="swaySpeed" min="0.1" max="2.5" step="0.01" value="0.7"><output>0.70</output></div>
+    </div>
+
+    <div class="group">
+      <h2>Leaf types <span style="color:var(--ink-dim);font-weight:400;text-transform:none;letter-spacing:0">(each has its own base size)</span></h2>
+      <div class="checks" style="margin-bottom:8px">
+        <label><input type="checkbox" class="type" value="maple" checked> Maple (L)</label>
+        <label><input type="checkbox" class="type" value="oak" checked> Oak (M)</label>
+        <label><input type="checkbox" class="type" value="aspen" checked> Aspen (S)</label>
+        <label><input type="checkbox" class="type" value="elm" checked> Elm (XS)</label>
+      </div>
+      <div class="row"><label for="palette">Palette</label>
+        <select id="palette">
+          <option value="mixed" selected>Mixed fall</option>
+          <option value="red">Red maple</option>
+          <option value="golden">Golden hour</option>
+          <option value="brown">Brown oak</option>
+        </select>
+      </div>
+      <div class="row"><label for="bgSelect">Backdrop</label>
+        <select id="bgSelect">
+          <option value="bg-sky" selected>Autumn sky</option>
+          <option value="bg-checker">Checkerboard</option>
+          <option value="bg-white">White</option>
+          <option value="bg-cream">Warm cream</option>
+          <option value="bg-dark">Dark</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Recorder <span style="color:var(--ink-dim);font-weight:400;text-transform:none;letter-spacing:0">(motion choreography)</span></h2>
+      <div class="buttons">
+        <button id="recBtn" class="primary">⏺ Record (R)</button>
+        <button id="playRecBtn">▶ Replay</button>
+        <button id="clearRecBtn">Clear</button>
+      </div>
+      <div style="color:var(--ink-dim);font-size:11px;margin-top:5px">3-2-1 countdown before capture · <b>R</b> starts/stops · <b>S</b> / <b>Esc</b> stops</div>
+      <div class="checks" style="margin-top:7px">
+        <label><input type="checkbox" id="recAutoScene" checked> 🚗 drive starts with recording</label>
+        <label><input type="checkbox" id="loopRec"> loop replay</label>
+      </div>
+      <div class="status" id="recStatus"></div>
+    </div>
+
+    <div class="group">
+      <h2>Presets <span style="color:var(--ink-dim);font-weight:400;text-transform:none;letter-spacing:0">(→ leaf-presets.json)</span></h2>
+      <div class="row"><label for="presetName">Name</label><input type="text" id="presetName" placeholder="e.g. 300x600_A_ambient"></div>
+      <div class="row"><label for="presetSelect">Saved</label><select id="presetSelect"><option value="">— none —</option></select></div>
+      <div class="buttons">
+        <button id="savePresetBtn" class="primary">Save preset</button>
+        <button id="loadPresetBtn">Load</button>
+        <button id="deletePresetBtn">Delete</button>
+      </div>
+      <div class="status" id="presetStatus"></div>
+    </div>
+
+    <div class="group">
+      <h2>Ad assignments <span style="color:var(--ink-dim);font-weight:400;text-transform:none;letter-spacing:0">(Fall units · summer naming)</span></h2>
+      <div class="row"><label>Honda A</label><select id="assign_HND_A" class="assign"></select><button class="assignLoad" data-slot="HND_A">Load</button></div>
+      <div class="row"><label>Honda B</label><select id="assign_HND_B" class="assign"></select><button class="assignLoad" data-slot="HND_B">Load</button></div>
+      <div class="row"><label>Acura A</label><select id="assign_ACR_A" class="assign"></select><button class="assignLoad" data-slot="ACR_A">Load</button></div>
+      <div class="row"><label>Acura B</label><select id="assign_ACR_B" class="assign"></select><button class="assignLoad" data-slot="ACR_B">Load</button></div>
+      <div class="status" id="assignStatus"></div>
+    </div>
+
+    <div class="group">
+      <h2>Playback</h2>
+      <div class="buttons">
+        <button id="pauseBtn" class="primary">Pause</button>
+        <button id="reseedBtn">Reseed</button>
+        <button id="resetBtn">Reset defaults</button>
+        <button id="copyBtn">Copy settings</button>
+        <button id="snapBtn">📸 Snapshot</button>
+      </div>
+      <div class="status" id="playStatus"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* =========================================================================
+   Fall Leaves Lab — canvas-2D leaf particle engine
+   - FLUTTER: side-to-side sway + rocking rotation; fall speed drops at the
+     swing extremes (real falling-leaf behavior, unlike snow).
+   - TUMBLE: end-over-end spin faked with a scaleY "3D flip" that darkens
+     the leaf's back side.
+   - WIND: shared field (base + layered-sine gusts) so leaves surge
+     together; per-leaf turbulence keeps them out of lockstep.
+   - SPAWN MODES: "top" curtain · "emitter" (click to place, continuous)
+     · "burst" (click = one kick of leaves, e.g. a passing car).
+     Kicked leaves get an initial velocity that decays under drag, then
+     normal flutter/fall takes over.
+   - PRESETS: full parameter sets, named per ad unit, POSTed to the
+     preview server → Design Lab/leaf-presets.json (committed to git,
+     read later by the ad templates). localStorage is the offline fallback.
+   ========================================================================= */
+
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d');
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+const STAGES = {
+  '600x600': [600, 600], '300x600': [300, 600], '160x600': [160, 600],
+  '300x250': [300, 250], '728x90': [728, 90], '320x50': [320, 50], '300x50': [300, 50],
+};
+let W = 600, H = 600;
+
+/* ---------- seeded RNG (mulberry32) ---------- */
+let seed = 1337;
+function rngFactory(s) {
+  return function () {
+    s |= 0; s = (s + 0x6D2B79F5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+let rng = rngFactory(seed);
+
+/* ---------- leaf geometry (Path2D, 100×100 box, centered at 50,50) ---------- */
+const LEAF_SHAPES = {
+  maple: {
+    base: 46,
+    path: new Path2D('M50 4 L57 20 L71 10 L67 28 L87 24 L75 41 L94 49 L73 55 L81 73 L61 65 L57 86 L50 71 L43 86 L39 65 L19 73 L27 55 L6 49 L25 41 L13 24 L33 28 L29 10 L43 20 Z'),
+    stem: [[50, 71], [50, 96]],
+  },
+  oak: {
+    base: 38,
+    path: new Path2D('M50 5 C62 9 64 19 57 25 C70 23 74 33 63 39 C78 39 80 51 65 55 C76 59 73 71 59 69 C63 81 54 87 50 79 C46 87 37 81 41 69 C27 71 24 59 35 55 C20 51 22 39 37 39 C26 33 30 23 43 25 C36 19 38 9 50 5 Z'),
+    stem: [[50, 82], [50, 97]],
+  },
+  aspen: {
+    base: 30,
+    path: new Path2D('M50 6 C74 6 90 28 83 50 C77 70 63 82 50 90 C37 82 23 70 17 50 C10 28 26 6 50 6 Z'),
+    stem: [[50, 90], [50, 99]],
+  },
+  elm: {
+    base: 24,
+    path: new Path2D('M50 4 C68 16 75 42 68 63 C63 79 56 88 50 94 C44 88 37 79 32 63 C25 42 32 16 50 4 Z'),
+    stem: [[50, 94], [50, 100]],
+  },
+};
+
+/* ---------- palettes: [hue, sat%, light%] ---------- */
+const PALETTES = {
+  mixed:  [[8, 72, 42], [22, 80, 48], [35, 85, 50], [45, 78, 52], [16, 65, 35], [55, 60, 45]],
+  red:    [[4, 75, 40], [10, 78, 46], [16, 72, 50], [355, 60, 38], [20, 70, 44]],
+  golden: [[38, 88, 52], [45, 85, 55], [50, 80, 58], [32, 82, 48], [42, 75, 50]],
+  brown:  [[24, 55, 34], [28, 50, 40], [18, 45, 30], [32, 48, 44], [22, 40, 37]],
+};
+
+/* ---------- parameters ---------- */
+const DEFAULTS = {
+  stage: '600x600', customW: 600, customH: 600, spawnMode: 'top',
+  scene: 'none', sceneDur: 5, sceneStartX: -25, sceneEndX: 25, sceneOffY: 0, sceneZoom: 1.15,
+  sceneScaleDrift: 8, sceneRotDrift: 1.5, sceneEase: true, sceneLoop: false, sceneSafeCover: true,
+  syncWake: false, wakeBursts: 6, wakeY: 0.62, recAutoScene: true,
+  maskOn: false, maskInset: 16, maskRadius: 24, maskClipLeaves: false, maskShow: true,
+  kick: 280, kickAngle: -95, spread: 70, radius: 46, burstCount: 18, showEmitter: true,
+  emitterX: 0.5, emitterY: 0.86,   // fractions of stage size, so presets survive resizes
+  windSpeed: 35, windLift: 0, gustStrength: 55, gustFreq: 0.14, turbulence: 0.45,
+  fallSpeed: 62, speedVar: 0.5,
+  count: 36, sizeScale: 1, sizeVar: 0.55, opacity: 0.95, opacityVar: 0.25, depth: true,
+  tumble: 90, flutter: 0.55, swayAmp: 34, swaySpeed: 0.7,
+  types: ['maple', 'oak', 'aspen', 'elm'],
+  palette: 'mixed', bgSelect: 'bg-sky',
+};
+let P = loadParams();
+
+/* older recipes stored pan as scenePan (travel %) + sceneDir; convert to
+   explicit start/end positions so they keep their motion */
+function migrateParams(p) {
+  if (p && p.scenePan != null && p.sceneStartX == null) {
+    const half = p.scenePan / 2;
+    const d = p.sceneDir === 'rtl' ? -1 : 1;
+    p.sceneStartX = -half * d;
+    p.sceneEndX = half * d;
+  }
+  return p;
+}
+
+function loadParams() {
+  try {
+    const saved = migrateParams(JSON.parse(localStorage.getItem('leavesLabParams')));
+    if (saved && typeof saved === 'object') return Object.assign({}, DEFAULTS, saved);
+  } catch (e) {}
+  return Object.assign({}, DEFAULTS);
+}
+function saveParams() {
+  try { localStorage.setItem('leavesLabParams', JSON.stringify(P)); } catch (e) {}
+}
+
+/* ---------- leaf pool ---------- */
+let leaves = [];
+let burstCursor = 0;
+
+function baseProps() {
+  const types = P.types.length ? P.types : ['maple'];
+  const pal = PALETTES[P.palette] || PALETTES.mixed;
+  return {
+    type: types[(rng() * types.length) | 0],
+    color: pal[(rng() * pal.length) | 0],
+    z: P.depth ? 0.35 + rng() * 0.65 : 1,
+    sizeMul: 1 + (rng() * 2 - 1) * P.sizeVar * 0.6,
+    speedMul: 1 + (rng() * 2 - 1) * P.speedVar * 0.6,
+    alphaMul: 1 - rng() * P.opacityVar,
+    angle: rng() * Math.PI * 2,
+    spinDir: rng() < 0.5 ? -1 : 1,
+    spinMul: 0.4 + rng() * 1.2,
+    swayPhase: rng() * Math.PI * 2,
+    swayMul: 0.7 + rng() * 0.6,
+    flipPhase: rng() * Math.PI * 2,
+    flipMul: 0.5 + rng() * 1.1,
+    turbSeed: rng() * 100,
+    kvx: 0, kvy: 0,
+    active: true,
+  };
+}
+
+function spawnTop(leaf, scatter) {
+  Object.assign(leaf, baseProps(), {
+    x: rng() * W,
+    y: scatter ? rng() * H : -60 - rng() * H * 0.5,
+  });
+}
+
+function spawnKicked(leaf, px, py) {
+  const r = Math.sqrt(rng()) * P.radius;
+  const t = rng() * Math.PI * 2;
+  const a = (P.kickAngle + (rng() * 2 - 1) * P.spread / 2) * Math.PI / 180;
+  const sp = P.kick * (0.4 + rng() * 0.9);
+  Object.assign(leaf, baseProps(), {
+    x: px + Math.cos(t) * r,
+    y: py + Math.sin(t) * r,
+    kvx: Math.cos(a) * sp,
+    kvy: Math.sin(a) * sp,
+  });
+}
+
+function emitterPx() { return [P.emitterX * W, P.emitterY * H]; }
+
+function respawn(leaf) {
+  if (P.spawnMode === 'top') spawnTop(leaf, false);
+  else if (P.spawnMode === 'emitter') { const [ex, ey] = emitterPx(); spawnKicked(leaf, ex, ey); }
+  else leaf.active = false;                       // burst mode: die until next click
+}
+
+function rebuildPool(scatter) {
+  leaves = [];
+  burstCursor = 0;
+  for (let i = 0; i < P.count; i++) {
+    const leaf = baseProps();
+    if (P.spawnMode === 'top') spawnTop(leaf, scatter);
+    else if (P.spawnMode === 'emitter') { const [ex, ey] = emitterPx(); spawnKicked(leaf, ex, ey); }
+    else { leaf.active = false; leaf.x = -999; leaf.y = -999; }
+    leaves.push(leaf);
+  }
+}
+
+function burstAt(px, py) {
+  const n = Math.min(P.burstCount, leaves.length);
+  // prefer inactive leaves, then recycle round-robin
+  let spawned = 0;
+  for (const leaf of leaves) {
+    if (spawned >= n) break;
+    if (!leaf.active) { spawnKicked(leaf, px, py); leaf.active = true; spawned++; }
+  }
+  while (spawned < n) {
+    const leaf = leaves[burstCursor++ % leaves.length];
+    spawnKicked(leaf, px, py); leaf.active = true; spawned++;
+  }
+}
+
+/* ---------- wind field: base + layered-sine gusts ---------- */
+function windAt(t, leaf) {
+  const f = P.gustFreq * Math.PI * 2;
+  const tt = t + leaf.turbSeed * P.turbulence;
+  const gust =
+    0.55 * Math.sin(f * tt) +
+    0.30 * Math.sin(f * 2.63 * tt + 1.7) +
+    0.15 * Math.sin(f * 5.11 * tt + 4.1);
+  return P.windSpeed + P.gustStrength * gust;
+}
+
+/* ---------- simulation ---------- */
+const KICK_DRAG = 1.8;      // 1/s — kicked velocity decays toward normal flutter
+const GRAVITY_BLEND = 0.25; // kicked leaves regain fall speed as the kick fades
+let paused = false;
+let simT = 0;
+let lastFrame = performance.now();
+let fpsSmooth = 60;
+
+function step(dt) {
+  simT += dt;
+  if (scenePlaying) {
+    sceneT += dt;
+    if (sceneT >= P.sceneDur) {
+      if (P.sceneLoop) { sceneT = 0; wakeFired = 0; }
+      else { scenePlaying = false; sceneDone = true; }
+    }
+    // wake sync: fire leaf bursts at evenly-spaced beats along the drive,
+    // positioned where the car's travel has reached
+    if (P.syncWake && P.scene !== 'none') {
+      const due = Math.floor(easeP(Math.min(sceneT / P.sceneDur, 1)) * P.wakeBursts + 1e-6);
+      while (wakeFired < due) {
+        wakeFired++;
+        burstAt(wakeX(wakeFired / P.wakeBursts), P.wakeY * H);
+      }
+    }
+  }
+  const drag = Math.exp(-KICK_DRAG * dt);
+  for (const leaf of leaves) {
+    if (!leaf.active) continue;
+    const z = P.depth ? leaf.z : 1;
+
+    leaf.swayPhase += P.swaySpeed * leaf.swayMul * Math.PI * 2 * dt * 0.5;
+    leaf.flipPhase += (0.6 + P.flutter * 1.6) * leaf.flipMul * dt * Math.PI;
+
+    leaf.kvx *= drag;
+    leaf.kvy *= drag;
+
+    leaf.x += (windAt(simT, leaf) * (0.45 + 0.55 * z) + leaf.kvx) * dt;
+
+    const lift = 1 - 0.38 * P.flutter * Math.abs(Math.cos(leaf.swayPhase));
+    // while a kick dominates, suppress the ambient fall so the toss reads clean
+    const kickMag = Math.min(Math.hypot(leaf.kvx, leaf.kvy) / 120, 1);
+    const fallMul = 1 - (1 - GRAVITY_BLEND) * kickMag;
+    leaf.y += (P.fallSpeed * leaf.speedMul * (0.5 + 0.5 * z) * lift * fallMul
+               + P.windLift * (0.45 + 0.55 * z) + leaf.kvy) * dt;
+
+    leaf.angle += (P.tumble * Math.PI / 180) * leaf.spinDir * leaf.spinMul * (1 + kickMag * 1.5) * dt;
+
+    const m = 80;
+    if (leaf.x < -m) leaf.x += W + m * 2;
+    if (leaf.x > W + m) leaf.x -= W + m * 2;
+    if (leaf.y > H + m) respawn(leaf);
+    else if (leaf.y < -m * 1.5 && P.windLift < -5) {
+      // blown upward off the top: re-enter from the bottom so flow stays continuous
+      if (P.spawnMode === 'burst') leaf.active = false;
+      else leaf.y = H + m - 1;
+    }
+  }
+}
+
+/* ---------- scene car layer: an animated still inside a rounded mask card.
+   The classic move — pan one direction + scale drift + slight rotation —
+   sells a driving car from a single photograph. The mask is the "card
+   within a card": it clips the scene before the canvas edge. ---------- */
+const SCENES = {
+  honda: 'assets/scene_honda_coast.png',
+  acura: 'assets/scene_acura_sunset.png',
+};
+const sceneImgs = {};
+function sceneImg() {
+  const key = P.scene;
+  if (key === 'none' || !SCENES[key]) return null;
+  if (!sceneImgs[key]) { const im = new Image(); im.src = SCENES[key]; sceneImgs[key] = im; }
+  return sceneImgs[key].complete && sceneImgs[key].naturalWidth ? sceneImgs[key] : null;
+}
+let sceneT = 0, scenePlaying = false, sceneDone = false, wakeFired = 0;
+function playScene() { sceneT = 0; scenePlaying = true; sceneDone = false; wakeFired = 0; }
+function resetScene() { sceneT = 0; scenePlaying = false; sceneDone = false; wakeFired = 0; }
+function easeP(p) {
+  return P.sceneEase ? (p < 0.5 ? 2 * p * p : 1 - ((-2 * p + 2) ** 2) / 2) : p;
+}
+/* travel direction implied by start → end ordering */
+function sceneTravelDir() { return P.sceneEndX >= P.sceneStartX ? 1 : -1; }
+
+/* where the car's travel "is" at a given progress — wake bursts and the
+   pan-path guide both track this line across the card */
+function wakeX(prog) {
+  const inset = P.maskOn ? maskInsetPx() : 0;
+  const mw = W - 2 * inset;
+  return sceneTravelDir() === 1 ? inset + prog * mw : inset + (1 - prog) * mw;
+}
+
+let _clipWarn = null;
+function clipWarnPattern() {
+  if (!_clipWarn) {
+    const pc = document.createElement('canvas');
+    pc.width = pc.height = 12;
+    const p = pc.getContext('2d');
+    p.strokeStyle = '#d84a3a';
+    p.lineWidth = 2.5;
+    p.beginPath();
+    p.moveTo(-3, 15); p.lineTo(15, -3);
+    p.moveTo(-3, 3); p.lineTo(3, -3);
+    p.moveTo(9, 15); p.lineTo(15, 9);
+    p.stroke();
+    _clipWarn = ctx.createPattern(pc, 'repeat');
+  }
+  return _clipWarn;
+}
+
+/* shared scene geometry: the cover scale (safe cover compensates rotation +
+   Y offset) and the horizontal slack — how far the still can travel before
+   its edge enters the card. Start/end positions are % of this slack. */
+function sceneGeom(img, mw, mh) {
+  let needW = mw, needH = mh;
+  if (P.sceneSafeCover) {
+    const rotMax = Math.abs(P.sceneRotDrift) * Math.PI / 180;
+    const c = Math.cos(rotMax), s = Math.sin(rotMax);
+    const maxOffY = Math.abs(P.sceneOffY) / 100;
+    needW = mw * c + mh * s;
+    needH = (mw * s + mh * c) * (1 + 2 * maxOffY);
+  }
+  const cover = Math.max(needW / img.naturalWidth, needH / img.naturalHeight) * P.sceneZoom;
+  const slackX = Math.max((img.naturalWidth * cover) / 2 - mw / 2, 0);
+  return { cover, slackX };
+}
+
+/* safe cover also clamps travel to ±100% of slack so it can never clip */
+function scenePos(v) { return P.sceneSafeCover ? Math.max(-100, Math.min(100, v)) : v; }
+
+function maskInsetPx() { return Math.min(P.maskInset, Math.min(W, H) / 2 - 2); }
+function maskPath() {
+  const i = maskInsetPx();
+  const r = Math.max(Math.min(P.maskRadius, (Math.min(W, H) - 2 * i) / 2), 0);
+  ctx.beginPath();
+  ctx.roundRect(i, i, W - 2 * i, H - 2 * i, r);
+}
+
+function drawScene() {
+  const img = sceneImg();
+  if (!img) return;
+  const p = sceneDone ? 1 : (scenePlaying ? Math.min(sceneT / P.sceneDur, 1) : 0);
+  const e = easeP(p);
+  const inset = P.maskOn ? maskInsetPx() : 0;
+  const mw = W - 2 * inset, mh = H - 2 * inset;
+  // cover the card, auto-compensating for max rotation + the farthest
+  // start/end/Y offsets so the image edge can never swing into view;
+  // Zoom stays purely aesthetic
+  const { cover, slackX } = sceneGeom(img, mw, mh);
+  const scale = cover * (1 + (P.sceneScaleDrift / 100) * e);
+  const rot = (P.sceneRotDrift * Math.PI / 180) * e;
+  // start/end are % of the image's horizontal slack: ±100 = the image edge
+  // exactly reaches the card edge; beyond that is deliberate clip territory
+  const p0 = scenePos(P.sceneStartX), p1 = scenePos(P.sceneEndX);
+  const dx = ((p0 + (p1 - p0) * e) / 100) * slackX;
+  const dy = (P.sceneOffY / 100) * mh;
+  ctx.save();
+  if (P.maskOn) { maskPath(); ctx.clip(); }
+  // with safe cover off, flag any un-covered card area with red hatching —
+  // the designer's cue that the source image needs more bleed
+  if (!P.sceneSafeCover && P.showEmitter) {
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = clipWarnPattern();
+    ctx.fillRect(inset, inset, mw, mh);
+    ctx.globalAlpha = 1;
+  }
+  ctx.translate(inset + mw / 2 + dx, inset + mh / 2 + dy);
+  ctx.rotate(rot);
+  ctx.scale(scale, scale);
+  ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+  ctx.restore();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  drawScene();
+  if (P.maskOn && P.maskClipLeaves) { ctx.save(); maskPath(); ctx.clip(); drawLeaves(); ctx.restore(); }
+  else drawLeaves();
+  if (P.maskOn && P.maskShow) {
+    ctx.save();
+    ctx.globalAlpha = 0.6;
+    ctx.strokeStyle = '#e07a2f';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    maskPath();
+    ctx.stroke();
+    ctx.restore();
+  }
+  drawOverlays();
+  if (counting) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(10, 10, 12, 0.35)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#e07a2f';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = `bold ${Math.round(Math.min(W, H) * 0.4)}px -apple-system, "Helvetica Neue", Arial, sans-serif`;
+    ctx.fillText(String(Math.ceil(countdownT)), W / 2, H / 2);
+    ctx.restore();
+  }
+}
+
+function drawLeaves() {
+  const sorted = P.depth ? [...leaves].sort((a, b) => a.z - b.z) : leaves;
+  for (const leaf of sorted) {
+    if (!leaf.active) continue;
+    const shape = LEAF_SHAPES[leaf.type];
+    const z = P.depth ? leaf.z : 1;
+    const size = shape.base * P.sizeScale * leaf.sizeMul * (0.55 + 0.45 * z);
+    const s = size / 100;
+
+    const swayX = Math.sin(leaf.swayPhase) * P.swayAmp * leaf.swayMul;
+    const rock = Math.sin(leaf.swayPhase) * 0.5 * P.flutter;
+    const flip = 1 - P.flutter * 0.85 * Math.abs(Math.sin(leaf.flipPhase));
+
+    const [h, sat, li] = leaf.color;
+    const light = li * (0.62 + 0.38 * flip);
+    const alpha = P.opacity * leaf.alphaMul * (P.depth ? 0.45 + 0.55 * z : 1);
+
+    ctx.save();
+    ctx.translate(leaf.x + swayX, leaf.y);
+    ctx.rotate(leaf.angle + rock);
+    ctx.scale(s, s * Math.max(flip, 0.12));
+    ctx.translate(-50, -50);
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = `hsl(${h} ${sat}% ${light}%)`;
+    ctx.fill(shape.path);
+    ctx.strokeStyle = `hsl(${h} ${Math.min(sat + 5, 100)}% ${Math.max(light - 14, 8)}%)`;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(shape.stem[0][0], shape.stem[0][1]);
+    ctx.lineTo(shape.stem[1][0], shape.stem[1][1]);
+    ctx.moveTo(50, 10);
+    ctx.lineTo(shape.stem[0][0], shape.stem[0][1]);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function guideArrow(x1, y1, x2, y2, head = 7) {
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+  ctx.moveTo(x2, y2); ctx.lineTo(x2 - head * Math.cos(a - 0.45), y2 - head * Math.sin(a - 0.45));
+  ctx.moveTo(x2, y2); ctx.lineTo(x2 - head * Math.cos(a + 0.45), y2 - head * Math.sin(a + 0.45));
+  ctx.stroke();
+}
+
+function drawOverlays() {
+  if (P.showEmitter) {
+    ctx.save();
+    ctx.strokeStyle = '#e07a2f';
+    ctx.lineWidth = 1;
+
+    // emitter position + spawn radius + kick direction wedge
+    if (P.spawnMode !== 'top') {
+      const [ex, ey] = emitterPx();
+      ctx.globalAlpha = 0.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(ex, ey, Math.max(P.radius, 4), 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(ex - 8, ey); ctx.lineTo(ex + 8, ey);
+      ctx.moveTo(ex, ey - 8); ctx.lineTo(ex, ey + 8);
+      ctx.stroke();
+      if (P.kick > 0) {
+        const len = 24 + P.kick * 0.11;
+        const ac = P.kickAngle * Math.PI / 180;
+        const a0 = (P.kickAngle - P.spread / 2) * Math.PI / 180;
+        const a1 = (P.kickAngle + P.spread / 2) * Math.PI / 180;
+        ctx.globalAlpha = 0.35;
+        ctx.beginPath();
+        ctx.moveTo(ex, ey); ctx.lineTo(ex + Math.cos(a0) * len * 0.8, ey + Math.sin(a0) * len * 0.8);
+        ctx.moveTo(ex, ey); ctx.lineTo(ex + Math.cos(a1) * len * 0.8, ey + Math.sin(a1) * len * 0.8);
+        ctx.stroke();
+        ctx.globalAlpha = 0.7;
+        guideArrow(ex, ey, ex + Math.cos(ac) * len, ey + Math.sin(ac) * len);
+      }
+    }
+
+    // wind vane (top-right): live wind + lift vector, gusts included
+    {
+      const vx = W - 30, vy = 26, r = 15;
+      const wind = windAt(simT, { turbSeed: 0 });
+      ctx.globalAlpha = 0.45;
+      ctx.beginPath();
+      ctx.arc(vx, vy, r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 0.85;
+      guideArrow(vx, vy, vx + (wind / 160) * (r - 2), vy + (P.windLift / 160) * (r - 2), 5);
+    }
+
+    // car pan path: start dot → end arrowhead at the actual start/end offsets
+    const gimg = sceneImg();
+    if (gimg && P.sceneStartX !== P.sceneEndX) {
+      const inset = P.maskOn ? maskInsetPx() : 0;
+      const mw = W - 2 * inset, mh = H - 2 * inset;
+      const { slackX } = sceneGeom(gimg, mw, mh);
+      const cy = inset + mh - 14;
+      const cx = inset + mw / 2;
+      const gx = (v) => Math.max(inset + 4, Math.min(inset + mw - 4, cx + (scenePos(v) / 100) * slackX));
+      const x0 = gx(P.sceneStartX), x1 = gx(P.sceneEndX);
+      ctx.globalAlpha = 0.7;
+      ctx.beginPath();
+      ctx.arc(x0, cy, 3, 0, Math.PI * 2);
+      ctx.stroke();
+      guideArrow(x0, cy, x1, cy);
+    }
+
+    // wake beats: an ✕ where each synced burst will fire, on a dashed line
+    if (P.syncWake && P.scene !== 'none') {
+      const wy = P.wakeY * H;
+      ctx.globalAlpha = 0.3;
+      ctx.setLineDash([3, 5]);
+      ctx.beginPath();
+      ctx.moveTo(wakeX(0), wy); ctx.lineTo(wakeX(1), wy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 0.7;
+      for (let i = 1; i <= P.wakeBursts; i++) {
+        const x = wakeX(i / P.wakeBursts);
+        ctx.beginPath();
+        ctx.moveTo(x - 4, wy - 4); ctx.lineTo(x + 4, wy + 4);
+        ctx.moveTo(x - 4, wy + 4); ctx.lineTo(x + 4, wy - 4);
+        ctx.stroke();
+      }
+    }
+
+    ctx.restore();
+  }
+
+  // live wind-drag arrow
+  if (dragging && dragStart && dragLast) {
+    const [x1, y1] = dragStart, [x2, y2] = dragLast;
+    const a = Math.atan2(y2 - y1, x2 - x1);
+    ctx.save();
+    ctx.globalAlpha = 0.85;
+    ctx.strokeStyle = '#e07a2f';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.moveTo(x2, y2); ctx.lineTo(x2 - 12 * Math.cos(a - 0.45), y2 - 12 * Math.sin(a - 0.45));
+    ctx.moveTo(x2, y2); ctx.lineTo(x2 - 12 * Math.cos(a + 0.45), y2 - 12 * Math.sin(a + 0.45));
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function frame(now) {
+  const dt = Math.min((now - lastFrame) / 1000, 0.05);
+  lastFrame = now;
+  if (!paused) {
+    if (counting) {
+      countdownT -= dt;
+      if (countdownT <= 0) { counting = false; beginRecording(); }
+      else {
+        const n = Math.ceil(countdownT);
+        recStatusEl.textContent = `recording in ${n}…`;
+        recBtn.textContent = `✕ Cancel (${n})`;
+      }
+    }
+    if (recState === 'rec') {
+      recClock += dt;
+      recStatusEl.textContent = `● ${recClock.toFixed(1)}s · ${savedRecording.events.length} events`;
+    } else if (recState === 'play') {
+      playT += dt;
+      const evs = savedRecording.events;
+      while (playIdx < evs.length && evs[playIdx].t <= playT) applyEvent(evs[playIdx++]);
+      recStatusEl.textContent = `▶ ${playT.toFixed(1)} / ${savedRecording.duration.toFixed(1)}s`;
+      if (playT >= savedRecording.duration) {
+        if (document.getElementById('loopRec').checked) startReplay();
+        else stopReplay();
+      }
+    }
+    step(dt); draw();
+  }
+  fpsSmooth = fpsSmooth * 0.95 + (1 / Math.max(dt, 1e-4)) * 0.05;
+  const active = leaves.reduce((n, l) => n + (l.active ? 1 : 0), 0);
+  statsEl.textContent = `${Math.round(fpsSmooth)} fps · ${active}/${leaves.length} leaves`;
+  requestAnimationFrame(frame);
+}
+
+/* ---------- stage sizing ---------- */
+function setStage(key) {
+  const [w, h] = key === 'custom'
+    ? [clamp(parseInt(P.customW) || 600, 50, 1600), clamp(parseInt(P.customH) || 600, 50, 1600)]
+    : (STAGES[key] || STAGES['600x600']);
+  W = w; H = h;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  document.getElementById('dims').textContent = `${W} × ${H}`;
+  rebuildPool(true);
+}
+
+/* ---------- UI wiring ---------- */
+const statsEl = document.getElementById('stats');
+const hintEl = document.getElementById('hint');
+const sliderIds = ['kick','kickAngle','spread','radius','burstCount',
+  'sceneDur','sceneStartX','sceneEndX','sceneOffY','sceneZoom','sceneScaleDrift','sceneRotDrift','wakeBursts','wakeY','maskInset','maskRadius',
+  'windSpeed','windLift','gustStrength','gustFreq','turbulence','fallSpeed','speedVar',
+  'count','sizeScale','sizeVar','opacity','opacityVar','tumble','flutter','swayAmp','swaySpeed'];
+
+function fmt(id, v) {
+  return ['gustFreq','turbulence','speedVar','sizeScale','sizeVar','opacity','opacityVar','flutter','swaySpeed','sceneDur','sceneZoom','wakeY'].includes(id)
+    ? Number(v).toFixed(2) : String(Math.round(v));
+}
+
+function adjustPool() {
+  while (leaves.length < P.count) {
+    const leaf = baseProps();
+    if (P.spawnMode === 'top') spawnTop(leaf, true);
+    else if (P.spawnMode === 'emitter') { const [ex, ey] = emitterPx(); spawnKicked(leaf, ex, ey); }
+    else leaf.active = false;
+    leaves.push(leaf);
+  }
+  leaves.length = Math.min(leaves.length, P.count);
+}
+
+function applyParam(id, v) {
+  P[id] = v;
+  syncSlider(id);
+  if (id === 'count') adjustPool();
+  // scrubbing an endpoint slider previews that endpoint's framing
+  if (id === 'sceneStartX') { scenePlaying = false; sceneDone = false; sceneT = 0; }
+  else if (id === 'sceneEndX') { scenePlaying = false; sceneDone = true; }
+}
+
+for (const id of sliderIds) {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    applyParam(id, parseFloat(el.value));
+    recordEvent('param', { key: id, value: P[id] });
+    saveParams();
+  });
+}
+
+/* backdrop applies as canvas class; keep the recording ring if active */
+function setBackdrop(v) {
+  canvas.className = v + (recState === 'rec' ? ' recording' : '');
+}
+
+function wireCheckbox(id) {
+  const el = document.getElementById(id);
+  el.addEventListener('change', () => {
+    P[id] = el.checked;
+    recordEvent('param', { key: id, value: el.checked });
+    saveParams();
+  });
+}
+wireCheckbox('depth');
+wireCheckbox('showEmitter');
+wireCheckbox('sceneEase');
+wireCheckbox('sceneLoop');
+wireCheckbox('sceneSafeCover');
+wireCheckbox('syncWake');
+wireCheckbox('recAutoScene');
+wireCheckbox('maskOn');
+wireCheckbox('maskClipLeaves');
+wireCheckbox('maskShow');
+
+for (const cb of document.querySelectorAll('.type')) {
+  cb.addEventListener('change', () => {
+    P.types = [...document.querySelectorAll('.type:checked')].map(c => c.value);
+    if (!P.types.length) { cb.checked = true; P.types = [cb.value]; }
+    rebuildPool(true);
+    recordEvent('param', { key: 'types', value: [...P.types] });
+    saveParams();
+  });
+}
+
+function wireSelect(id, onChange) {
+  const el = document.getElementById(id);
+  el.addEventListener('change', () => {
+    const key = id === 'stageSize' ? 'stage' : id;
+    P[key] = el.value;
+    onChange(el.value);
+    recordEvent('param', { key, value: el.value });
+    saveParams();
+  });
+}
+wireSelect('stageSize', (v) => {
+  document.getElementById('customSizeRow').style.display = v === 'custom' ? '' : 'none';
+  setStage(v);
+});
+wireSelect('spawnMode', () => { rebuildPool(true); updateHint(); });
+wireSelect('palette', () => rebuildPool(true));
+wireSelect('bgSelect', (v) => setBackdrop(v));
+wireSelect('scene', () => resetScene());
+
+document.getElementById('applySizeBtn').addEventListener('click', () => {
+  P.customW = clamp(parseInt(document.getElementById('customW').value) || 600, 50, 1600);
+  P.customH = clamp(parseInt(document.getElementById('customH').value) || 600, 50, 1600);
+  P.stage = 'custom';
+  document.getElementById('stageSize').value = 'custom';
+  setStage('custom');
+  recordEvent('param', { key: 'customW', value: P.customW });
+  recordEvent('param', { key: 'customH', value: P.customH });
+  recordEvent('param', { key: 'stage', value: 'custom' });
+  saveParams();
+});
+
+function updateHint() {
+  hintEl.textContent =
+    P.spawnMode === 'emitter' ? 'Click to place the emitter · drag to steer the wind.' :
+    P.spawnMode === 'burst'   ? 'Click to kick a burst of leaves (think: passing car) · drag to steer the wind.' :
+                                'Drag on the stage to steer the wind — leaves follow the arrow.';
+}
+
+/* sync every control from P (used at boot + preset load) */
+function applyUI() {
+  for (const id of sliderIds) {
+    const el = document.getElementById(id);
+    el.value = P[id];
+    el.nextElementSibling.textContent = fmt(id, P[id]);
+  }
+  for (const id of ['depth','showEmitter','sceneEase','sceneLoop','sceneSafeCover','syncWake','recAutoScene','maskOn','maskClipLeaves','maskShow'])
+    document.getElementById(id).checked = P[id];
+  for (const cb of document.querySelectorAll('.type')) cb.checked = P.types.includes(cb.value);
+  document.getElementById('stageSize').value = P.stage;
+  document.getElementById('spawnMode').value = P.spawnMode;
+  document.getElementById('scene').value = P.scene;
+  document.getElementById('palette').value = P.palette;
+  document.getElementById('bgSelect').value = P.bgSelect;
+  document.getElementById('customW').value = P.customW;
+  document.getElementById('customH').value = P.customH;
+  document.getElementById('customSizeRow').style.display = P.stage === 'custom' ? '' : 'none';
+  setBackdrop(P.bgSelect);
+  updateHint();
+}
+
+/* ---------- stage pointer: click = emitter/burst · drag = steer the wind ---------- */
+const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+function canvasPos(e) {
+  const r = canvas.getBoundingClientRect();
+  return [(e.clientX - r.left) * (W / r.width), (e.clientY - r.top) * (H / r.height)];
+}
+function syncSlider(id) {
+  const el = document.getElementById(id);
+  el.value = P[id];
+  el.nextElementSibling.textContent = fmt(id, P[id]);
+}
+let dragStart = null, dragLast = null, dragging = false;
+const WIND_DRAG_GAIN = 1.2;   // 100 px of drag ≈ 120 px/s of wind
+
+canvas.addEventListener('pointerdown', (e) => {
+  dragStart = dragLast = canvasPos(e);
+  dragging = false;
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener('pointermove', (e) => {
+  if (!dragStart) return;
+  dragLast = canvasPos(e);
+  if (!dragging && Math.hypot(dragLast[0] - dragStart[0], dragLast[1] - dragStart[1]) > 6) dragging = true;
+  if (dragging) {
+    P.windSpeed = Math.round(clamp((dragLast[0] - dragStart[0]) * WIND_DRAG_GAIN, -160, 160));
+    P.windLift  = Math.round(clamp((dragLast[1] - dragStart[1]) * WIND_DRAG_GAIN, -160, 160));
+    syncSlider('windSpeed');
+    syncSlider('windLift');
+    recordEvent('wind', { s: P.windSpeed, l: P.windLift });
+  }
+});
+canvas.addEventListener('pointerup', () => {
+  if (dragStart && !dragging && P.spawnMode !== 'top') {
+    const [x, y] = dragLast;
+    P.emitterX = clamp(x / W, 0, 1);
+    P.emitterY = clamp(y / H, 0, 1);
+    recordEvent('emitter', { x: P.emitterX, y: P.emitterY });
+    if (P.spawnMode === 'burst') {
+      burstAt(x, y);
+      recordEvent('burst', { x: x / W, y: y / H });
+    }
+  }
+  if (dragging) recordEvent('wind', { s: P.windSpeed, l: P.windLift }, true);
+  saveParams();
+  dragStart = dragLast = null;
+  dragging = false;
+});
+
+/* ---------- motion recorder: capture a timed performance, replay it ---------- */
+let recState = null;            // 'rec' | 'play' | null
+let recClock = 0, playT = 0, playIdx = 0;
+let lastWindRec = -1;
+let savedRecording = null;
+try { savedRecording = JSON.parse(localStorage.getItem('leavesLabRecording')); } catch (e) {}
+
+const recStatusEl = document.getElementById('recStatus');
+const recBtn = document.getElementById('recBtn');
+
+function recordEvent(type, data, force) {
+  if (recState !== 'rec') return;
+  // wind streams at pointer-move rate; thin it to 20 Hz (forced on release)
+  if (type === 'wind' && !force && recClock - lastWindRec < 0.05) return;
+  if (type === 'wind') lastWindRec = recClock;
+  savedRecording.events.push(Object.assign({ t: Math.round(recClock * 1000) / 1000, type }, data));
+}
+
+function persistRecording() {
+  try {
+    if (savedRecording) localStorage.setItem('leavesLabRecording', JSON.stringify(savedRecording));
+    else localStorage.removeItem('leavesLabRecording');
+  } catch (e) {}
+}
+
+function recIdleStatus() {
+  recStatusEl.textContent = savedRecording
+    ? `recording ready: ${savedRecording.duration.toFixed(1)}s · ${savedRecording.events.length} events — saved with presets`
+    : 'no recording yet — hit ⏺ and perform';
+}
+
+/* Record arms a 3-2-1 countdown first — capture begins at zero, so the
+   human delay between clicking Record and grabbing the stage never lands
+   in the take. R and Esc work from anywhere for fast stop mid-performance. */
+let counting = false, countdownT = 0;
+const COUNTDOWN_S = 3;
+
+function requestRecord() {
+  if (recState === 'rec') { stopRecording(); return; }
+  if (counting) { cancelCountdown(); return; }
+  if (recState === 'play') stopReplay();
+  counting = true;
+  countdownT = COUNTDOWN_S;
+}
+
+function cancelCountdown() {
+  counting = false;
+  recBtn.textContent = '⏺ Record (R)';
+  recIdleStatus();
+}
+
+function beginRecording() {
+  savedRecording = { startState: JSON.parse(JSON.stringify(P)), seed, events: [], duration: 0 };
+  rng = rngFactory(seed);
+  rebuildPool(true);
+  resetScene();
+  simT = 0; recClock = 0; lastWindRec = -1;
+  recState = 'rec';
+  recBtn.textContent = '⏹ Stop (R/S)';
+  setBackdrop(P.bgSelect);
+  // performance mode: the car drives itself, the designer adds the leaves
+  if (P.recAutoScene && P.scene !== 'none') {
+    playScene();
+    recordEvent('sceneplay', {});
+  }
+}
+
+function stopRecording() {
+  savedRecording.duration = recClock;
+  recState = null;
+  recBtn.textContent = '⏺ Record (R)';
+  setBackdrop(P.bgSelect);
+  persistRecording();
+  recIdleStatus();
+}
+
+recBtn.addEventListener('click', requestRecord);
+
+/* hotkeys: R arms/stops recording, Esc cancels the countdown / stops a take */
+window.addEventListener('keydown', (e) => {
+  const t = e.target;
+  const typing = t && (t.tagName === 'TEXTAREA' ||
+    (t.tagName === 'INPUT' && (t.type === 'text' || t.type === 'number')));
+  if (typing) return;
+  if (e.key === 'r' || e.key === 'R') {
+    e.preventDefault();
+    requestRecord();
+  } else if (e.key === 's' || e.key === 'S' || e.key === 'Escape') {
+    if (counting) cancelCountdown();
+    else if (recState === 'rec') stopRecording();
+    else if (scenePlaying) resetScene();   // outside a take, S/Esc halts the drive
+  }
+});
+
+function applyEvent(ev) {
+  if (ev.type === 'wind') {
+    P.windSpeed = ev.s; P.windLift = ev.l;
+    syncSlider('windSpeed'); syncSlider('windLift');
+  } else if (ev.type === 'burst') {
+    burstAt(ev.x * W, ev.y * H);
+  } else if (ev.type === 'emitter') {
+    P.emitterX = ev.x; P.emitterY = ev.y;
+  } else if (ev.type === 'sceneplay') {
+    playScene();
+  } else if (ev.type === 'param') {
+    const k = ev.key;
+    if (sliderIds.includes(k)) { applyParam(k, ev.value); return; }
+    if (k === 'types') { P.types = [...ev.value]; rebuildPool(true); }
+    else if (k === 'stage') { P.stage = ev.value; setStage(ev.value); }
+    else if (k === 'spawnMode' || k === 'palette') { P[k] = ev.value; rebuildPool(true); }
+    else { P[k] = ev.value; if (k === 'bgSelect') setBackdrop(ev.value); }
+    applyUI();
+  }
+}
+
+function startReplay() {
+  if (!savedRecording || recState === 'rec') return;
+  P = Object.assign({}, DEFAULTS, migrateParams(JSON.parse(JSON.stringify(savedRecording.startState))));
+  seed = savedRecording.seed;
+  rng = rngFactory(seed);
+  applyUI();
+  setStage(P.stage);
+  resetScene();
+  simT = 0; playT = 0; playIdx = 0;
+  recState = 'play';
+}
+
+function stopReplay() {
+  recState = null;
+  recIdleStatus();
+}
+
+document.getElementById('scenePlayBtn').addEventListener('click', () => {
+  playScene();
+  recordEvent('sceneplay', {});
+});
+
+document.getElementById('playRecBtn').addEventListener('click', startReplay);
+document.getElementById('clearRecBtn').addEventListener('click', () => {
+  savedRecording = null;
+  if (recState === 'play') recState = null;
+  recBtn.textContent = '⏺ Record (R)';
+  persistRecording();
+  recIdleStatus();
+});
+
+/* ---------- presets + ad assignments (server file + localStorage fallback)
+   File format v2: { presets: {name: {...}}, assignments: {HND_A: name, ...} }
+   (v1 files — a bare {name: preset} map — are migrated on load.) ---------- */
+const PRESETS_URL = '/Design%20Lab/leaf-presets.json';
+const SLOTS = ['HND_A', 'HND_B', 'ACR_A', 'ACR_B'];
+let presets = {};
+let assignments = {};
+const presetStatusEl = document.getElementById('presetStatus');
+const presetSelectEl = document.getElementById('presetSelect');
+const assignStatusEl = document.getElementById('assignStatus');
+let statusTimer = null;
+function status(el, msg) {
+  el.textContent = msg;
+  clearTimeout(statusTimer);
+  statusTimer = setTimeout(() => (el.textContent = ''), 3500);
+}
+
+function presetLabel(n) {
+  const rec = presets[n] && presets[n].recording;
+  return rec ? `${n} · ⏺${(rec.duration || 0).toFixed(1)}s take` : n;
+}
+
+function refreshPresetSelect() {
+  const names = Object.keys(presets).sort();
+  presetSelectEl.innerHTML = names.length
+    ? names.map(n => `<option value="${n}">${presetLabel(n)}</option>`).join('')
+    : '<option value="">— none —</option>';
+  refreshAssignUI();
+}
+
+function refreshAssignUI() {
+  const names = Object.keys(presets).sort();
+  for (const slot of SLOTS) {
+    const el = document.getElementById('assign_' + slot);
+    const cur = assignments[slot] || '';
+    el.innerHTML = '<option value="">— unassigned —</option>' +
+      names.map(n => `<option value="${n}"${n === cur ? ' selected' : ''}>${presetLabel(n)}</option>`).join('');
+  }
+}
+
+function adoptStore(json) {
+  if (json && json.presets) {
+    presets = json.presets;
+    assignments = json.assignments || {};
+  } else {
+    presets = json || {};       // v1 migration
+    assignments = {};
+  }
+}
+
+async function fetchPresets() {
+  try {
+    const r = await fetch(PRESETS_URL, { cache: 'no-store' });
+    if (r.ok) { adoptStore(await r.json()); refreshPresetSelect(); return; }
+  } catch (e) {}
+  try { adoptStore(JSON.parse(localStorage.getItem('leafPresets'))); } catch (e) { presets = {}; assignments = {}; }
+  refreshPresetSelect();
+}
+
+async function pushPresets() {
+  const store = { presets, assignments };
+  try { localStorage.setItem('leafPresets', JSON.stringify(store)); } catch (e) {}
+  try {
+    const r = await fetch('/api/presets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(store, null, 2),
+    });
+    status(presetStatusEl, r.ok ? 'saved to leaf-presets.json ✓' : 'server rejected save — kept locally');
+  } catch (e) {
+    status(presetStatusEl, 'server offline — saved locally only');
+  }
+}
+
+document.getElementById('savePresetBtn').addEventListener('click', () => {
+  const name = document.getElementById('presetName').value.trim();
+  if (!name) { status(presetStatusEl, 'give the preset a name first'); return; }
+  presets[name] = Object.assign({ savedAt: new Date().toISOString(), seed }, P);
+  if (savedRecording) presets[name].recording = savedRecording;
+  refreshPresetSelect();
+  presetSelectEl.value = name;
+  pushPresets();
+});
+function loadPresetByName(name, statusEl) {
+  if (!name || !presets[name]) { status(statusEl, 'nothing selected'); return; }
+  const { savedAt, seed: pseed, recording, ...params } = presets[name];
+  P = Object.assign({}, DEFAULTS, migrateParams(params));
+  if (pseed != null) { seed = pseed; rng = rngFactory(seed); }
+  savedRecording = recording ? JSON.parse(JSON.stringify(recording)) : null;
+  persistRecording();
+  recIdleStatus();
+  applyUI();
+  setStage(P.stage);
+  resetScene();
+  saveParams();
+  document.getElementById('presetName').value = name;
+  status(statusEl, `loaded "${name}"${recording ? ' + recording' : ''}`);
+}
+
+document.getElementById('loadPresetBtn').addEventListener('click', () =>
+  loadPresetByName(presetSelectEl.value, presetStatusEl));
+
+document.getElementById('deletePresetBtn').addEventListener('click', () => {
+  const name = presetSelectEl.value;
+  if (!name || !presets[name]) { status(presetStatusEl, 'nothing selected'); return; }
+  delete presets[name];
+  for (const slot of SLOTS) if (assignments[slot] === name) delete assignments[slot];
+  refreshPresetSelect();
+  pushPresets();
+});
+
+/* ---------- ad assignment slots ---------- */
+for (const slot of SLOTS) {
+  document.getElementById('assign_' + slot).addEventListener('change', (e) => {
+    if (e.target.value) assignments[slot] = e.target.value;
+    else delete assignments[slot];
+    pushPresets();
+    status(assignStatusEl, e.target.value
+      ? `${slot.replace('_', ' ')} → "${e.target.value}"`
+      : `${slot.replace('_', ' ')} unassigned`);
+  });
+}
+for (const btn of document.querySelectorAll('.assignLoad')) {
+  btn.addEventListener('click', () => {
+    const slot = btn.dataset.slot;
+    const name = assignments[slot];
+    if (!name) { status(assignStatusEl, `${slot.replace('_', ' ')} has no recipe assigned`); return; }
+    loadPresetByName(name, assignStatusEl);
+  });
+}
+
+/* ---------- playback buttons ---------- */
+const playStatusEl = document.getElementById('playStatus');
+document.getElementById('pauseBtn').addEventListener('click', (e) => {
+  paused = !paused;
+  e.target.textContent = paused ? 'Play' : 'Pause';
+});
+document.getElementById('reseedBtn').addEventListener('click', () => {
+  seed = (Math.random() * 1e9) | 0;
+  rng = rngFactory(seed);
+  rebuildPool(true);
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  localStorage.removeItem('leavesLabParams');
+  location.reload();
+});
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  const out = Object.assign({ seed }, P, savedRecording ? { recording: savedRecording } : {});
+  await navigator.clipboard.writeText(JSON.stringify(out, null, 2));
+  status(playStatusEl, savedRecording ? 'settings + recording JSON copied ✓' : 'settings JSON copied ✓');
+});
+
+/* snapshot → server writes PNG into Case Study/screenshots/ */
+document.getElementById('snapBtn').addEventListener('click', async () => {
+  const name = (document.getElementById('presetName').value.trim() || P.stage);
+  try {
+    const r = await fetch('/api/snapshot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, dataUrl: canvas.toDataURL('image/png') }),
+    });
+    const j = await r.json();
+    status(playStatusEl, j.ok ? `saved ${j.file} ✓` : 'snapshot failed');
+  } catch (e) {
+    status(playStatusEl, 'server offline — snapshot needs the preview server');
+  }
+});
+
+/* ---------- go ---------- */
+applyUI();
+setStage(P.stage);
+fetchPresets();
+recIdleStatus();
+requestAnimationFrame((t) => { lastFrame = t; requestAnimationFrame(frame); });
+</script>
+</body>
+</html>

@@ -1,0 +1,3616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fall Ad Builder — Honda / Acura Fall Display</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  /* The same faces the units ship, loaded from the master copies rather than
+     any one unit's folder. Without these the staged dealer line fell back to
+     system Avenir and the Builder disagreed with the Deck about the one piece
+     of copy that changes per dealer. Keep in step with FUTURA_FACE /
+     AVENIR_FACE in Scripts/gen_units.py. */
+  @font-face {
+    font-family: 'HondaRound';
+    src: url('/Ad%20Build/fonts/AvenirNextRoundedStd-Medium.ttf') format('truetype');
+    font-display: block;
+  }
+  @font-face {
+    font-family: 'FuturaXBlk';
+    src: url('/Ad%20Build/fonts/FuturaNowForAcura-CondXBlk.ttf') format('truetype');
+    font-display: block;
+  }
+  @font-face {
+    font-family: 'AcuraBespoke';
+    font-weight: 700;
+    src: url('/Ad%20Build/fonts/AcuraBespoke-Bold.otf') format('opentype');
+    font-display: block;
+  }
+  :root {
+    --bg: #17181c;
+    --panel: #212329;
+    --panel-2: #2a2d35;
+    --ink: #e8e6e1;
+    --ink-dim: #9a978f;
+    --accent: #e07a2f;
+    --line: #383b44;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 13px/1.45 -apple-system, "Helvetica Neue", Arial, sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh; padding: 20px;
+  }
+  header { width: 100%; max-width: 1000px; margin-bottom: 14px; }
+  header h1 { font-size: 17px; font-weight: 700; letter-spacing: .2px; }
+  header p  { color: var(--ink-dim); font-size: 12px; margin-top: 2px; }
+  .layout { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
+  .stage-wrap { position: sticky; top: 16px; min-width: 320px; }
+  .stage-frame {
+    display: flex; align-items: flex-start; justify-content: safe center;
+    max-width: 96vw; overflow: auto; max-height: 78vh;
+  }
+  #stageStack {
+    position: relative; display: inline-block;
+    border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+  }
+  #stage { display: block; cursor: crosshair; }
+  /* the rest of the ad, drawn around the photo window so the drive is framed
+     in context instead of against a bare canvas */
+  .ctx-layer { position: absolute; left: 0; top: 0; pointer-events: none; }
+  /* the two normal layers crop at the ad edge like the real ad does; ctxFree
+     deliberately does not, so a piece can be inspected whole */
+  #ctxUnder, #ctxMid, #ctxOver { overflow: hidden; }
+  #ctxFree { overflow: visible; z-index: 6; }
+  #adEdge {
+    position: absolute; left: 0; top: 0; z-index: 7; display: none;
+    border: 1px dashed rgba(224,122,47,.9); pointer-events: none;
+  }
+  /* inspecting a whole piece needs room around the ad for it to spill into,
+     and the frame scrolls if the piece is bigger than the room */
+  #stageStack.unmasked { overflow: visible; margin: 300px 280px; }
+  #stageStack.unmasked #adEdge { display: block; }
+  #freeClose {
+    position: absolute; right: -1px; top: -26px; z-index: 9; display: none;
+    font-size: 11px; padding: 2px 8px;
+  }
+  #stageStack.unmasked #freeClose { display: block; }
+  .ctx-layer img, .ctx-layer div { position: absolute; }
+  .layerlist { border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+  .layerlist .lrow {
+    display: flex; align-items: center; gap: 6px; padding: 3px 6px;
+    font-size: 11px; border-bottom: 1px solid var(--line); cursor: pointer;
+  }
+  .layerlist .lrow:last-child { border-bottom: 0; }
+  .layerlist .lrow.sel { background: rgba(224,122,47,.16); }
+  .layerlist .lrow.locked { color: var(--ink-dim); }
+  .layerlist .lrow .nm { flex: 1; }
+  .layerlist .lrow .zz { color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+  .layerlist .lrow button { padding: 0 5px; font-size: 10px; line-height: 16px; }
+  /* The ad stacks: card/tech (z<10) · scene canvas (z10) · scrims (z11) ·
+     LEAF canvas (z18) · carcut (z19) · copy (z21+). Two canvases here too —
+     the engine draws leaves onto #stageLeaves — so the staged art sorts into
+     three bands and the scrims land between the scene and the leaves like
+     they do in the Deck (before, one canvas put every scrim over the leaves). */
+  #ctxUnder { z-index: 1; }
+  #stage { position: relative; z-index: 2; background: transparent; }
+  #ctxMid { z-index: 3; }
+  #stageLeaves { position: absolute; left: 0; top: 0; z-index: 4; pointer-events: none; }
+  #ctxOver { z-index: 5; }
+  /* design guides on their own layer ABOVE the staged ad art — drawn on the
+     engine canvas they vanished behind ctxOver the moment a unit was
+     staged. pointer-events:none: the stage still owns every click. */
+  #guides { position: absolute; left: 0; top: 0; z-index: 8; pointer-events: none; }
+  #stageStack.bg-checker {
+    background: repeating-conic-gradient(#26272c 0% 25%, #1d1e22 0% 50%) 0 0 / 24px 24px;
+  }
+  #stageStack.bg-white  { background: #ffffff; }
+  #stageStack.bg-cream  { background: #f5efe3; }
+  #stageStack.bg-dark   { background: #101014; }
+  #stageStack.bg-sky    { background: linear-gradient(#cfe3ee 0%, #e8ddc4 62%, #d9b98a 100%); }
+  #stage.recording { border-color: #d84a3a; box-shadow: 0 0 0 2px rgba(216, 74, 58, .35); }
+  .stage-meta {
+    display: flex; justify-content: space-between; margin-top: 6px;
+    color: var(--ink-dim); font-size: 11px; font-variant-numeric: tabular-nums;
+  }
+  .stage-hint { color: var(--ink-dim); font-size: 11px; margin-top: 4px; }
+  .scrubbar {
+    display: flex; align-items: center; gap: 8px; margin-top: 5px;
+    color: var(--ink-dim); font-size: 11px; font-variant-numeric: tabular-nums;
+  }
+  .scrubbar input[type=range] { flex: 1; accent-color: var(--accent); }
+  .scrubbar #timeLabel { min-width: 68px; text-align: right; }
+  .scrubbar button { padding: 1px 8px; font-size: 11px; }
+  .panel {
+    width: 330px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; padding: 14px 16px 16px; max-height: 88vh; overflow-y: auto;
+  }
+  .group { margin-bottom: 14px; }
+  .group h2 {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
+    color: var(--accent); margin-bottom: 8px; padding-bottom: 4px;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer; user-select: none; display: flex; align-items: baseline; gap: 6px;
+  }
+  .group h2:hover { color: #f0a267; }
+  .group h2 .caret {
+    font-size: 9px; opacity: .75; transition: transform .12s ease; display: inline-block;
+  }
+  .group.collapsed h2 { margin-bottom: 0; }
+  .group.collapsed h2 .caret { transform: rotate(-90deg); }
+  .group.collapsed .body { display: none; }
+  .group h3 {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px;
+    color: var(--ink-dim); margin: 12px 0 6px;
+  }
+  .hint { color: var(--ink-dim); font-size: 11px; margin: 2px 0 8px; line-height: 1.4; }
+  .row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .row label { flex: 0 0 108px; color: var(--ink-dim); }
+  .row input[type=range] { flex: 1; accent-color: var(--accent); min-width: 0; }
+  .row output {
+    flex: 0 0 46px; text-align: right; font-variant-numeric: tabular-nums; font-size: 12px;
+  }
+  .row select, .row input[type=text] {
+    flex: 1; background: var(--panel-2); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 4px; padding: 4px 6px; font: inherit; min-width: 0;
+  }
+  .row input[type=number] {
+    width: 70px; background: var(--panel-2); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 4px; padding: 4px 6px; font: inherit;
+  }
+  .row input[type=color] { width: 42px; height: 24px; border: 1px solid var(--line); background: var(--panel-2); border-radius: 4px; padding: 1px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  .checks label { display: flex; align-items: center; gap: 5px; color: var(--ink); cursor: pointer; }
+  .checks input { accent-color: var(--accent); }
+  .buttons { display: flex; flex-wrap: wrap; gap: 7px; }
+  button {
+    background: var(--panel-2); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 5px; padding: 6px 12px; font: inherit; cursor: pointer;
+  }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #1a1206; font-weight: 600; }
+  .status { color: var(--accent); font-size: 11px; margin-top: 6px; min-height: 14px; }
+  .assign-note { color: var(--ink-dim); font-size: 11px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🍂 Fall Ad Builder</h1>
+  <p>Honda / Acura Fall Display · shared engine <code>leaf-engine.js</code> · recipes bake into ad units via <code>leaf-presets.json</code> · successor to the Leaves Lab</p>
+</header>
+
+<div class="layout">
+  <div class="stage-wrap">
+    <div class="stage-frame">
+      <div id="stageStack">
+        <div id="ctxUnder" class="ctx-layer"></div>
+        <canvas id="stage" width="600" height="600" class="bg-sky"></canvas>
+        <div id="ctxMid" class="ctx-layer"></div>
+        <canvas id="stageLeaves" width="600" height="600"></canvas>
+        <div id="ctxOver" class="ctx-layer"></div>
+        <div id="ctxFree" class="ctx-layer"></div>
+        <canvas id="guides" width="600" height="600"></canvas>
+        <div id="adEdge"></div>
+        <button id="freeClose" title="close whole-piece view">✕ whole-piece view</button>
+      </div>
+    </div>
+    <div class="stage-meta">
+      <span id="dims">600 × 600</span>
+      <span id="stats">— fps · — leaves</span>
+    </div>
+    <div class="scrubbar">
+      <button id="scrubPlayBtn" class="primary" title="play the whole frame">🚗 whole frame</button>
+      <button id="pauseWFBtn" title="freeze the frame right here — the scrubber jumps to this moment so you can tweak; press again to continue from wherever the scrubber sits">⏸ pause</button>
+      <button id="liveBtn" title="back to live playback">● live</button>
+      <input type="range" id="timeScrub" min="0" max="9000" step="25" value="0">
+      <span id="timeLabel">live</span>
+    </div>
+    <div class="stage-hint" id="hint"></div>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="group">
+      <h2>Takes <span style="color:var(--ink-dim);font-weight:400;text-transform:none;letter-spacing:0">(load one — 🎬 Motion's Save writes it back)</span></h2>
+      <div class="body">
+      <div class="row"><label for="presetName">Name</label><input type="text" id="presetName" placeholder="e.g. ACR_728x90_B_take2"></div>
+      <div class="row"><label for="presetSelect">Saved</label><select id="presetSelect"><option value="">— none —</option></select></div>
+      <div class="buttons">
+        <button id="loadPresetBtn">Reload</button>
+        <button id="deletePresetBtn">Delete</button>
+      </div>
+      <div class="status" id="presetStatus"></div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Stage</h2>
+      <div class="body">
+      <div class="row"><label for="unitCtx">Ad context</label>
+        <select id="unitCtx">
+          <option value="">— free canvas (size only) —</option>
+        </select>
+      </div>
+      <div class="row"><label for="stageSize">Ad size</label>
+        <select id="stageSize">
+          <option value="600x600" selected>600 × 600 (design)</option>
+          <option value="300x600">300 × 600</option>
+          <option value="160x600">160 × 600</option>
+          <option value="300x250">300 × 250</option>
+          <option value="728x90">728 × 90</option>
+          <option value="320x50">320 × 50</option>
+          <option value="300x50">300 × 50</option>
+          <option value="custom">Custom…</option>
+        </select>
+      </div>
+      <div class="row" id="customSizeRow" style="display:none"><label>Custom W × H</label>
+        <input type="number" id="customW" min="50" max="1600" value="600">
+        <input type="number" id="customH" min="50" max="1600" value="600">
+        <button id="applySizeBtn">Set</button>
+      </div>
+      <div class="row"><label for="bgSelect">Backdrop</label>
+        <select id="bgSelect">
+          <option value="bg-sky" selected>Autumn sky</option>
+          <option value="bg-checker">Checkerboard</option>
+          <option value="bg-white">White</option>
+          <option value="bg-cream">Warm cream</option>
+          <option value="bg-dark">Dark</option>
+        </select>
+      </div>
+      <div class="row"><label>Guides</label><div class="checks" style="flex:1"><label><input type="checkbox" id="showEmitter" checked> show design guides (emitter · kick · wind · car path)</label></div></div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>🎬 Motion <span style="color:var(--ink-dim);font-weight:400;text-transform:none;letter-spacing:0">(the car and every piece of art, one panel)</span></h2>
+      <div class="body">
+      <div id="layoutRow" style="margin:0 0 8px">
+        <div class="assign-note" style="margin-bottom:5px">Pick what to move — the car scene or any piece of art — then place it on the stage or with the sliders.<br>
+        <b>👁</b> hide it · <b>⛶</b> show the whole piece past the ad edge · <b>▲▼</b> front/back.<br>The stage itself belongs to the leaves — click to place bursts, drag to steer the wind.</div>
+        <div id="layerList" class="layerlist"></div>
+        <div class="checks" style="margin:5px 0 2px">
+          <label><input type="checkbox" id="keepLive" checked> replay after scrubbing an endpoint — plays once when you let go, then holds</label>
+        </div>
+        <div id="layoutInfo" style="color:var(--ink-dim);margin:5px 0">nothing selected</div>
+        <div id="poseRow" style="display:none">
+          <div class="checks" style="margin-bottom:5px">
+            <label><input type="radio" name="poseMode" value="start" checked> <b>where it starts</b></label>
+            <label><input type="radio" name="poseMode" value="end"> <b>where it ends up</b></label>
+            <label id="poseMode2Label" style="display:none"><input type="radio" name="poseMode" value="end2"> <b>then moves to</b></label>
+          </div>
+          <div class="row"><label for="poseX">Left / right</label><input type="range" id="poseX" min="-1600" max="1600" step="any" value="0"><input type="number" id="poseXn" step="1" style="width:66px" title="type an exact value"></div>
+          <div class="row"><label for="poseY">Up / down</label><input type="range" id="poseY" min="-1200" max="1200" step="any" value="0"><input type="number" id="poseYn" step="1" style="width:66px"></div>
+          <div class="row"><label for="poseRot">Rotation</label><input type="range" id="poseRot" min="-180" max="180" step="any" value="0"><input type="number" id="poseRotn" step="0.5" style="width:66px"></div>
+          <div class="row"><label for="poseScale">Zoom</label><input type="range" id="poseScale" min="0.1" max="6" step="any" value="1"><input type="number" id="poseScalen" step="0.05" style="width:66px"></div>
+          <div class="assign-note" id="poseHint" style="margin:6px 0 4px">This piece doesn't move — it just sits where you put it. To make it move, place <b>where it ends up</b>, then set the two timings below.</div>
+          <div class="row"><label for="poseEaseIn">Soft start</label><input type="range" id="poseEaseIn" min="0" max="100" step="5" value="40"><output>40</output></div>
+          <div class="row"><label for="poseEaseOut">Soft landing</label><input type="range" id="poseEaseOut" min="0" max="100" step="5" value="80"><output>80</output></div>
+          <div class="row"><label for="poseAt">Starts moving</label><input type="range" id="poseAt" min="0" max="12" step="0.1" value="3.5"><input type="number" id="poseAtn" step="0.1" style="width:66px" title="seconds into the ad"></div>
+          <div class="row"><label for="poseDur">Move lasts</label><input type="range" id="poseDur" min="0.05" max="8" step="0.05" value="1"><input type="number" id="poseDurn" step="0.05" style="width:66px" title="seconds"></div>
+          <div class="row" id="cutLeadRow" style="display:none"><label for="poseCutLead">Cut to frame 2</label><input type="range" id="poseCutLead" min="0" max="4" step="0.05" value="0"><input type="number" id="poseCutLeadn" step="0.05" style="width:66px" title="seconds BEFORE the drive ends"></div>
+          <div class="step2" style="display:none">
+            <div class="row"><label for="poseAt2">Then moves at</label><input type="range" id="poseAt2" min="0" max="12" step="0.1" value="5"><input type="number" id="poseAt2n" step="0.1" style="width:66px" title="seconds into the ad — the hold is the gap before this"></div>
+            <div class="row"><label for="poseDur2">That move lasts</label><input type="range" id="poseDur2" min="0.05" max="8" step="0.05" value="1"><input type="number" id="poseDur2n" step="0.05" style="width:66px" title="seconds"></div>
+            <div class="row"><label for="poseEaseIn2">Soft start</label><input type="range" id="poseEaseIn2" min="0" max="100" step="5" value="40"><output>40</output></div>
+            <div class="row"><label for="poseEaseOut2">Soft landing</label><input type="range" id="poseEaseOut2" min="0" max="100" step="5" value="80"><output>80</output></div>
+          </div>
+          <div class="row"><label for="poseEnterStyle">Arrives by</label>
+            <select id="poseEnterStyle" style="flex:1">
+              <option value="keep">its usual entrance</option>
+              <option value="fade">a fade — no movement</option>
+              <option value="cut">a cut — it is just there</option>
+              <option value="none">nothing — present from frame one</option>
+            </select>
+          </div>
+          <div class="row"><label for="poseEnter">Arrives at</label><input type="range" id="poseEnter" min="0" max="12" step="0.1" value="5.1"><input type="number" id="poseEntern" step="0.1" style="width:66px" title="seconds into the ad"></div>
+          <div class="row"><label for="poseEnterDur">Arrival lasts</label><input type="range" id="poseEnterDur" min="0.05" max="4" step="0.05" value="0.7"><input type="number" id="poseEnterDurn" step="0.05" style="width:66px" title="seconds"></div>
+          <div class="checks" style="margin:4px 0 2px">
+            <label><input type="checkbox" id="poseStays"> <b>stays put</b> — never leaves; whatever passes over it does the revealing</label>
+          </div>
+          <div class="row"><label for="poseExit">Leaves at</label><input type="range" id="poseExit" min="0" max="12" step="0.1" value="4.6"><input type="number" id="poseExitn" step="0.1" style="width:66px" title="seconds into the ad"></div>
+          <div class="buttons" style="margin-bottom:6px">
+            <button id="posePlayBtn">▶ This move</button>
+            <button id="poseScenePlayBtn" class="primary">🚗 Whole frame</button>
+            <button id="poseStep2Btn">＋ Third step</button>
+            <button id="poseClearBtn">Make it static</button>
+          </div>
+        </div>
+        <div class="buttons">
+          <button id="layoutSaveBtn" class="primary">Save</button>
+          <button id="layoutResetBtn">Reset edits</button>
+        </div>
+        <div class="status" id="layoutStatus" style="margin:4px 0 6px"></div>
+      </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>🚗 Car &amp; Motion</h2>
+      <div class="body">
+      <div class="row"><label for="scene">Scene still</label>
+        <select id="scene">
+          <option value="none" selected>None</option>
+          <optgroup label="Honda — client art">
+            <option value="HND_728x90_A">HND 728×90 A vehicle</option>
+            <option value="HND_728x90_B">HND 728×90 B vehicle</option>
+            <option value="HND_160x600_A">HND 160×600 A vehicle</option>
+            <option value="HND_160x600_B">HND 160×600 B leaves-scene</option>
+            <option value="HND_320x50_B">HND 320×50 B background</option>
+            <option value="HND_300x600_A">HND 300×600 A vehicle</option>
+            <option value="HND_300x600_B">HND 300×600 B vehicle</option>
+          </optgroup>
+          <optgroup label="Acura — client art">
+            <option value="ACR_728x90_A">ACR 728×90 A vehicle</option>
+            <option value="ACR_728x90_B">ACR 728×90 B vehicle</option>
+            <option value="ACR_160x600_A">ACR 160×600 A vehicle</option>
+            <option value="ACR_160x600_B">ACR 160×600 B vehicle</option>
+            <option value="ACR_320x50_B">ACR 320×50 B vehicle</option>
+            <option value="ACR_300x600_A">ACR 300×600 A vehicle</option>
+            <option value="ACR_300x600_B">ACR 300×600 B vehicle</option>
+          </optgroup>
+          <optgroup label="Legacy placeholders">
+            <option value="honda">Honda coastal road</option>
+            <option value="acura">Acura sunset drive</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <h3>Speed streaks (Acura motion lines)</h3>
+      <div class="checks" style="margin-bottom:7px">
+        <label><input type="checkbox" id="streaksOn"> enable motion streaks</label>
+      </div>
+      <div class="row"><label for="streakCount">Count</label><input type="range" id="streakCount" min="2" max="60" step="1" value="14"><output>14</output></div>
+      <div class="row"><label for="streakAngle">Angle °</label><input type="range" id="streakAngle" min="-40" max="40" step="1" value="-8"><output>-8</output></div>
+      <div class="row"><label for="streakSpeed">Speed</label><input type="range" id="streakSpeed" min="-2000" max="2000" step="25" value="900"><output>900</output></div>
+      <div class="row"><label for="streakLen">Length</label><input type="range" id="streakLen" min="20" max="400" step="5" value="120"><output>120</output></div>
+      <div class="row"><label for="streakLenVar">Length variance</label><input type="range" id="streakLenVar" min="0" max="1" step="0.01" value="0.6"><output>0.60</output></div>
+      <div class="row"><label for="streakThickness">Thickness</label><input type="range" id="streakThickness" min="0.5" max="12" step="0.5" value="3"><output>3</output></div>
+      <div class="row"><label for="streakBlur">Motion blur</label><input type="range" id="streakBlur" min="0" max="20" step="0.5" value="4"><output>4</output></div>
+      <div class="row"><label for="streakOpacity">Opacity</label><input type="range" id="streakOpacity" min="0.05" max="1" step="0.01" value="0.75"><output>0.75</output></div>
+      <div class="row"><label for="streakBandTop">Band top</label><input type="range" id="streakBandTop" min="0" max="1" step="0.01" value="0.25"><output>0.25</output></div>
+      <div class="row"><label for="streakBandBottom">Band bottom</label><input type="range" id="streakBandBottom" min="0" max="1" step="0.01" value="0.85"><output>0.85</output></div>
+      <div class="row"><label for="streakPerspective">Perspective</label><input type="range" id="streakPerspective" min="0" max="1" step="0.01" value="0.6"><output>0.60</output></div>
+      <div class="row"><label for="streakBend">Bend</label><input type="range" id="streakBend" min="-60" max="60" step="1" value="0"><output>0</output></div>
+      <div class="row"><label for="streakOffX">Position ↔</label><input type="range" id="streakOffX" min="-300" max="300" step="1" value="0"><output>0</output></div>
+      <div class="row"><label for="streakOffY">Position ↕</label><input type="range" id="streakOffY" min="-300" max="300" step="1" value="0"><output>0</output></div>
+      <div class="row"><label for="streakScale">Group scale</label><input type="range" id="streakScale" min="0.2" max="3" step="0.01" value="1"><output>1.00</output></div>
+      <div class="row"><label for="streakRotate">Group rotate</label><input type="range" id="streakRotate" min="-180" max="180" step="1" value="0"><output>0</output></div>
+      <div class="row"><label for="streakGroupBend">Group bend</label><input type="range" id="streakGroupBend" min="-150" max="150" step="1" value="0"><output>0</output></div>
+      <div class="row"><label for="streakFieldW">Group width</label><input type="range" id="streakFieldW" min="0.05" max="2" step="0.01" value="1"><output>1.00</output></div>
+      <div class="row"><label for="streakFieldH">Group height</label><input type="range" id="streakFieldH" min="0.05" max="2" step="0.01" value="1"><output>1.00</output></div>
+      <div class="row"><label for="streakColor">Color</label><input type="color" id="streakColor" value="#ffffff"></div>
+      <div class="checks" style="margin-top:6px">
+        <label><input type="checkbox" id="cutoutPreview" checked> streaks pass behind the car (cutout preview — available for ACR B scenes)</label>
+      </div>
+
+      <h3>Leaf wake (car kicks leaves)</h3>
+      <div class="row"><label>Wake sync</label><div class="checks" style="flex:1"><label><input type="checkbox" id="syncWake"> leaf bursts follow the drive</label></div></div>
+      <div class="row"><label for="wakeBursts">Wake bursts</label><input type="range" id="wakeBursts" min="1" max="20" step="1" value="6"><output>6</output></div>
+      <div class="row"><label for="wakeY">Wake height</label><input type="range" id="wakeY" min="0" max="1" step="0.01" value="0.62"><output>0.62</output></div>
+
+      <h3>Card mask — the photo window</h3>
+      <div class="hint">Crops the car scene into a rounded card inset from the stage edge —
+        the ads’ “photo window.” Turn it ON to preview how the scene sits inside the
+        card; inset/radius shape it; “clips leaves too” keeps leaves inside the card
+        instead of spilling over the ad.</div>
+      <div class="row"><label>Mask card</label><div class="checks" style="flex:1"><label><input type="checkbox" id="maskOn"> rounded inner card</label></div></div>
+      <div class="row"><label for="maskInset">Card inset</label><input type="range" id="maskInset" min="0" max="120" step="1" value="16"><output>16</output></div>
+      <div class="row"><label for="maskRadius">Corner radius</label><input type="range" id="maskRadius" min="0" max="120" step="1" value="24"><output>24</output></div>
+      <div class="checks">
+        <label><input type="checkbox" id="maskClipLeaves"> card clips leaves too</label>
+        <label><input type="checkbox" id="maskShow" checked> show card edge</label>
+      </div>
+      </div>
+    </div>
+
+    <button id="scenePlayBtn" style="display:none"></button>
+    <div class="group">
+      <h2>🍁 Leaves</h2>
+      <div class="body">
+      <h3>Spawn</h3>
+      <div class="row"><label for="spawnMode">Spawn mode</label>
+        <select id="spawnMode">
+          <option value="top" selected>Falling from top</option>
+          <option value="emitter">Emitter (click to place)</option>
+          <option value="burst">Burst on click</option>
+        </select>
+      </div>
+      <div class="row"><label for="count">Count</label><input type="range" id="count" min="1" max="120" step="1" value="36"><output>36</output></div>
+      <div class="row"><label for="spawnStagger" title="Seconds over which the leaves trickle in — from the top, or from the emitter spot — instead of all going at once and returning together. 0 = all at once.">Spread arrivals (s)</label><input type="range" id="spawnStagger" min="0" max="8" step="0.25" value="0"><output>0.00</output></div>
+      <div class="row"><label for="kick">Kick strength</label><input type="range" id="kick" min="0" max="650" step="5" value="280"><output>280</output></div>
+      <div class="row"><label for="kickAngle">Kick direction</label><input type="range" id="kickAngle" min="-180" max="180" step="5" value="-95"><output>-95</output></div>
+      <div class="row"><label for="spread">Kick spread</label><input type="range" id="spread" min="0" max="180" step="5" value="70"><output>70</output></div>
+      <div class="row"><label for="radius">Spawn radius</label><input type="range" id="radius" min="0" max="220" step="2" value="46"><output>46</output></div>
+      <div class="row"><label for="burstCount">Burst count</label><input type="range" id="burstCount" min="1" max="60" step="1" value="18"><output>18</output></div>
+      <div class="row"><label for="leafLife">Leaf life (in ads)</label>
+        <select id="leafLife">
+          <option value="taper" selected>Taper into frame 2</option>
+          <option value="f1">Frame 1 only</option>
+          <option value="continuous">Continuous to end</option>
+        </select>
+      </div>
+      <div class="row"><label for="leafClearS">Gone by (s after F2)</label><input type="range" id="leafClearS" min="0" max="6" step="0.25" value="0"><output>0.00</output></div>
+      <div class="hint">0 = leaves fall out naturally after the frame-2 handoff; any other value forces every leaf fully gone that many seconds in.</div>
+      <div class="row"><label for="leafFadeIn">Fade up over (s)</label><input type="range" id="leafFadeIn" min="0" max="4" step="0.05" value="0"><output>0.00</output></div>
+      <div class="hint">The whole flurry fades up from nothing over this many seconds at ad start. 0 = leaves are simply there on frame one. Take data — follows the take to every unit it drives.</div>
+
+      <h3>Look</h3>
+      <div class="row"><label for="leafStyle">Leaf style</label>
+        <select id="leafStyle">
+          <option value="procedural" selected>Procedural (drawn)</option>
+          <option value="sprite">Client art (PSD sprites)</option>
+        </select>
+      </div>
+      <div class="row"><label for="spriteSet">Sprite set</label>
+        <select id="spriteSet">
+          <option value="honda" selected>Honda leaves</option>
+          <option value="acura">Acura leaves</option>
+        </select>
+      </div>
+      <div class="row"><label for="spriteBaseSize">Sprite size</label><input type="range" id="spriteBaseSize" min="12" max="120" step="1" value="40"><output>40</output></div>
+      <div class="row"><label for="sizeScale">Size</label><input type="range" id="sizeScale" min="0.35" max="2.2" step="0.01" value="1"><output>1.00</output></div>
+      <div class="row"><label for="sizeVar">Size variance</label><input type="range" id="sizeVar" min="0" max="1" step="0.01" value="0.55"><output>0.55</output></div>
+      <div class="row"><label for="opacity">Opacity</label><input type="range" id="opacity" min="0.05" max="1" step="0.01" value="0.95"><output>0.95</output></div>
+      <div class="row"><label for="opacityVar">Opacity variance</label><input type="range" id="opacityVar" min="0" max="1" step="0.01" value="0.25"><output>0.25</output></div>
+      <div class="row"><label>Depth parallax</label><div class="checks" style="flex:1"><label><input type="checkbox" id="depth" checked> far = smaller · slower · fainter</label></div></div>
+      <div class="checks" style="margin:6px 0 4px">
+        <label><input type="checkbox" class="type" value="maple" checked> Maple (L)</label>
+        <label><input type="checkbox" class="type" value="oak" checked> Oak (M)</label>
+        <label><input type="checkbox" class="type" value="aspen" checked> Aspen (S)</label>
+        <label><input type="checkbox" class="type" value="elm" checked> Elm (XS)</label>
+      </div>
+      <div class="row"><label for="palette">Palette</label>
+        <select id="palette">
+          <option value="mixed" selected>Mixed fall</option>
+          <option value="red">Red maple</option>
+          <option value="golden">Golden hour</option>
+          <option value="brown">Brown oak</option>
+        </select>
+      </div>
+
+      <h3>Motion &amp; wind</h3>
+      <div class="row"><label for="windSpeed">Wind speed</label><input type="range" id="windSpeed" min="-160" max="160" step="1" value="35"><output>35</output></div>
+      <div class="row"><label for="windLift">Wind lift</label><input type="range" id="windLift" min="-160" max="160" step="1" value="0"><output>0</output></div>
+      <div class="row"><label for="gustStrength">Gust strength</label><input type="range" id="gustStrength" min="0" max="140" step="1" value="55"><output>55</output></div>
+      <div class="row"><label for="gustFreq">Gust frequency</label><input type="range" id="gustFreq" min="0.03" max="0.6" step="0.01" value="0.14"><output>0.14</output></div>
+      <div class="row"><label for="turbulence">Turbulence</label><input type="range" id="turbulence" min="0" max="1" step="0.01" value="0.45"><output>0.45</output></div>
+      <div class="row"><label for="fallSpeed">Fall speed</label><input type="range" id="fallSpeed" min="15" max="220" step="1" value="62"><output>62</output></div>
+      <div class="row"><label for="speedVar">Speed variance</label><input type="range" id="speedVar" min="0" max="1" step="0.01" value="0.5"><output>0.50</output></div>
+      <div class="row"><label for="tumble">Tumble spin</label><input type="range" id="tumble" min="0" max="360" step="1" value="90"><output>90</output></div>
+      <div class="row"><label for="flutter">Flutter (3D flip)</label><input type="range" id="flutter" min="0" max="1" step="0.01" value="0.55"><output>0.55</output></div>
+      <div class="row"><label for="swayAmp">Sway amount</label><input type="range" id="swayAmp" min="0" max="90" step="1" value="34"><output>34</output></div>
+      <div class="row"><label for="swaySpeed">Sway speed</label><input type="range" id="swaySpeed" min="0.1" max="2.5" step="0.01" value="0.7"><output>0.70</output></div>
+
+      <div class="buttons" style="margin-top:8px">
+        <button id="leafPlayBtn" class="primary" title="play the whole frame from 0s — drive, leaves and every element together">▶ Play</button>
+        <button id="leafSaveBtn" title="same Save as 🎬 Motion: take + layout, then bakes the take into every unit it drives">Save</button>
+      </div>
+      <div class="status" id="leafStatus"></div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Recorder <span style="color:var(--ink-dim);font-weight:400;text-transform:none;letter-spacing:0">(motion choreography)</span></h2>
+      <div class="body">
+      <div class="buttons">
+        <button id="recBtn" class="primary">⏺ Record (R)</button>
+        <button id="playRecBtn">▶ Replay</button>
+        <button id="clearRecBtn">Clear</button>
+      </div>
+      <div style="color:var(--ink-dim);font-size:11px;margin-top:5px">3-2-1 countdown before capture · <b>R</b> starts/stops · <b>S</b> / <b>Esc</b> stops</div>
+      <div class="checks" style="margin-top:7px">
+        <label><input type="checkbox" id="recAutoScene" checked> 🚗 drive starts with recording</label>
+        <label><input type="checkbox" id="loopRec"> loop replay</label>
+      </div>
+      <div class="status" id="recStatus"></div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Ad assignments <span style="color:var(--ink-dim);font-weight:400;text-transform:none;letter-spacing:0">(24 A/B units · Load = take + stage)</span></h2>
+      <div class="body">
+      <div class="assign-note">Assign a recipe to each unit, then ⚡ Bake writes it into the ad units. Replay the unit in the Review Deck to see it.</div>
+      <div id="assignRows"></div>
+      <div class="buttons" style="margin-top:8px">
+        <button id="bakeBtn" class="primary">⚡ Bake assignments into ads</button>
+        <a href="/Ad%20Build/review/index.html" target="_blank"><button type="button">Open Review Deck ↗</button></a>
+      </div>
+      <div class="status" id="assignStatus"></div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Playback</h2>
+      <div class="body">
+      <div class="buttons">
+        <button id="pauseBtn" class="primary">Pause</button>
+        <button id="reseedBtn">Reseed</button>
+        <button id="resetBtn">Reset defaults</button>
+        <button id="copyBtn">Copy settings</button>
+        <button id="snapBtn">📸 Snapshot</button>
+      </div>
+      <div class="status" id="playStatus"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="leaf-engine.js"></script>
+<script>
+'use strict';
+/* =========================================================================
+   Fall Ad Builder — host UI over the shared FallEngine runtime.
+   All physics live in leaf-engine.js (also shipped inside every ad unit),
+   so a take performed here replays pixel-identically in the built ads.
+   This file is ONLY: knobs, pointer gestures, the recorder, presets,
+   assignments, design-guide overlays, and the snapshot/case-study hooks.
+   ========================================================================= */
+
+const canvas = document.getElementById('stage');
+// invisible stand-in whose opacity IS the scene's fade: animated by WAAPI on the
+// same clock as every other cue, sampled into eng.sceneAlpha each frame
+const sceneFade = document.createElement('span');
+sceneFade.style.cssText = 'position:absolute;opacity:1;pointer-events:none;width:0;height:0';
+document.body.appendChild(sceneFade);
+// …and the scene's SLIDE (slideOutLeft / slideUp): a WAAPI-animated transform on
+// this span, sampled each tick into eng.sceneOffX/OffY — the engine translates
+// the scene inside its window clip, which is exactly what the ad's canvas does.
+const sceneSlide = document.createElement('span');
+sceneSlide.style.cssText = 'position:absolute;pointer-events:none;width:0;height:0';
+document.body.appendChild(sceneSlide);
+function sampleSceneSlide() {
+  // 'none' (no animation yet / after a reset) is not a parseable transform-list
+  // in every engine — an unguarded DOMMatrixReadOnly('none') throw here would
+  // kill the whole rAF loop and the Builder would freeze mid-transition.
+  try {
+    const t = getComputedStyle(sceneSlide).transform;
+    if (!t || t === 'none') { eng.sceneOffX = 0; eng.sceneOffY = 0; return; }
+    const m = new DOMMatrixReadOnly(t);
+    eng.sceneOffX = m.m41; eng.sceneOffY = m.m42;
+  } catch (e) { eng.sceneOffX = 0; eng.sceneOffY = 0; }
+}
+const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+
+/* ---------- persisted params (same storage keys as the old lab) ---------- */
+function loadParams() {
+  try {
+    const saved = FallEngine.migrateParams(JSON.parse(localStorage.getItem('leavesLabParams')));
+    if (saved && typeof saved === 'object') {
+      // one-time preference flip (2026-08-09): clipping should be VISIBLE by
+      // default — auto-zoom is opt-in from here on
+      if (!saved._clipVisibleDefault) { saved.sceneSafeCover = false; saved._clipVisibleDefault = 1; }
+      return Object.assign({}, FallEngine.DEFAULTS, saved);
+    }
+  } catch (e) {}
+  return Object.assign({}, FallEngine.DEFAULTS);
+}
+let dirty = false;              // edits since the last load/save of a take
+function saveParams() {
+  try { localStorage.setItem('leavesLabParams', JSON.stringify(eng.P)); } catch (e) {}
+  dirty = true;
+  const n = document.getElementById('presetName').value.trim();
+  if (n) status(presetStatusEl, `● unsaved edits to "${n}"`);
+}
+
+let seed = 1337;
+const eng = new FallEngine(canvas, {
+  params: loadParams(),
+  seed,
+  assetBase: '/Ad%20Build/assets/sprites/',
+  sceneSources: {
+    // client vehicle art — the SAME files the ad units ship (units resolve
+    // any scene key to their own vehicle art, so recipes stay portable)
+    HND_728x90_A: '/Ad%20Build/assets/HND/728x90/A_F1/img_vehicle_A_728.png',
+    HND_728x90_B: '/Ad%20Build/assets/HND/728x90/B_F1/img_vehicle_B_728.png',
+    HND_160x600_A: '/Ad%20Build/assets/HND/160x600/A_F1/img_vehicle_A_GenExpand3_160.png',
+    HND_160x600_B: '/Ad%20Build/assets/HND/160x600/B_F1/img_leaves_B_160.png',
+    HND_320x50_B: '/Ad%20Build/assets/HND/320x50/B_F1/img_vehicle_B_320_noleaves.png',
+    HND_300x600_A: '/Ad%20Build/assets/HND/300x600/A_F1/img_vehicle_A_ACS23-058_filled.png',   // r2 QA: edge-filled plate
+    HND_300x600_B: '/Ad%20Build/assets/HND/300x600/B_F1/img_vehicle_B_GenerativeFill2.png',
+    ACR_728x90_A: '/Ad%20Build/assets/ACR/728x90/A_F1/img_vehicle_A_728.png',
+    ACR_728x90_B: '/Ad%20Build/assets/ACR/728x90/B_F1/img_vehicle_B_728.png',
+    ACR_160x600_A: '/Ad%20Build/assets/ACR/160x600/A_F1/img_vehicle_A_160.png',
+    ACR_160x600_B: '/Ad%20Build/assets/ACR/160x600/B_F1/img_vehicle_B_160.png',
+    ACR_320x50_B: '/Ad%20Build/assets/ACR/320x50/B_F1/img_vehicle_B_320.png',
+    ACR_300x600_A: '/Ad%20Build/assets/ACR/300x600/A_F1/img_vehicle_A_large2.png',   // Philip's plate, 2026-09-03
+    ACR_300x600_B: '/Ad%20Build/assets/ACR/300x600/B_F1/img_vehicle_B_GenFill2-B.png',
+    // r2 buildout: the 300x250 plates and the 300x50 smalls' backgrounds
+    // (the A smalls have no drive but the staged unit should still show its
+    // own ground, not the previous unit's car)
+    HND_300x250_A: '/Ad%20Build/assets/HND/300x250/A_F1/img_vehicle_A_300250.png',
+    HND_300x250_B: '/Ad%20Build/assets/HND/300x250/B_F1/img_vehicle_B_300250.png',
+    ACR_300x250_A: '/Ad%20Build/assets/ACR/300x250/A_F1/img_vehicle_A_300250.png',
+    ACR_300x250_B: '/Ad%20Build/assets/ACR/300x250/B_F1/img_vehicle_B_300250.png',
+    HND_300x50_B: '/Ad%20Build/assets/HND/300x50/B_F1/img_vehicle_B_300_noleaves.png',
+    ACR_300x50_B: '/Ad%20Build/assets/ACR/300x50/B_F1/img_vehicle_B_300.png',
+    ACR_320x50_A: '/Ad%20Build/assets/ACR/320x50/A_F1/bg_A_320.png',
+    ACR_300x50_A: '/Ad%20Build/assets/ACR/300x50/A_F1/bg_A_300.png',
+    // legacy placeholders from the lab era
+    honda: 'assets/scene_honda_coast.png',
+    acura: 'assets/scene_acura_sunset.png',
+  },
+  onParam: (key, value) => syncControl(key, value),
+  onStage: (key, w, h) => { document.getElementById('dims').textContent = `${w} × ${h}`; },
+});
+// Leaves draw on their own canvas (#stageLeaves, above ctxMid, below ctxOver) —
+// the same split the ads make between f1canvas (z10) and leafcanvas (z18), so
+// the scrims at z11 sit between the scene and the leaves here as well.
+eng.leafCanvas = document.getElementById('stageLeaves');
+eng.setSize(eng.W, eng.H);
+
+/* ---------- control wiring ---------- */
+const sliderIds = ['kick','kickAngle','spread','radius','burstCount',
+  'sceneDur','sceneStartX','sceneEndX','sceneStartY','sceneEndY','sceneStartRot','sceneEndRot','sceneStartZoom','sceneEndZoom','sceneEaseIn','sceneEaseOut','wakeBursts','wakeY','maskInset','maskRadius',
+  'windSpeed','windLift','gustStrength','gustFreq','turbulence','fallSpeed','speedVar',
+  'count','spawnStagger','sizeScale','sizeVar','opacity','opacityVar','tumble','flutter','swayAmp','swaySpeed',
+  'spriteBaseSize','leafClearS','leafFadeIn','streakCount','streakAngle','streakSpeed','streakLen','streakLenVar',
+  'streakThickness','streakBlur','streakOpacity','streakBandTop','streakBandBottom','streakPerspective','streakBend','streakOffX','streakOffY','streakScale','streakRotate','streakGroupBend','streakFieldW','streakFieldH'];
+// showEmitter is NOT here: the design guides are builder chrome, not take data.
+// It used to ride along — so a take saved with the guides off (all the auto_*
+// takes were) switched them off for good on every load. See the guides block.
+const checkboxIds = ['depth','sceneLoop','sceneSafeCover','syncWake','recAutoScene',
+  'maskOn','maskClipLeaves','maskShow','streaksOn'];
+const selectIds = ['spawnMode','scene','palette','bgSelect','leafStyle','spriteSet','leafLife'];
+
+const twoDec = ['gustFreq','turbulence','speedVar','sizeScale','sizeVar','opacity','opacityVar','flutter',
+  'swaySpeed','sceneDur','sceneStartZoom','sceneEndZoom','wakeY','leafClearS','leafFadeIn','streakScale','streakFieldW','streakFieldH','sceneStartRot','sceneEndRot','streakLenVar','streakOpacity','streakBandTop','streakBandBottom','streakPerspective', 'spawnStagger'];
+function fmt(id, v) { return twoDec.includes(id) ? Number(v).toFixed(2) : String(Math.round(v)); }
+
+function syncControl(key, value) {
+  if (key === 'showEmitter') return;   // guides are builder chrome — an old
+                                       // recording's param event must not
+                                       // desync the checkbox (see guides block)
+  const el = document.getElementById(key === 'stage' ? 'stageSize' : key);
+  if (!el) return;
+  if (el.type === 'range') { el.value = value; el.nextElementSibling.textContent = fmt(key, value); }
+  else if (el.type === 'checkbox') el.checked = !!value;
+  else if (el.tagName === 'SELECT' || el.type === 'color') el.value = value;
+  if (key === 'bgSelect') setBackdrop(value);
+}
+
+for (const id of sliderIds) {
+  const el = document.getElementById(id);
+  if (!el) continue;                 // driven from the Motion panel instead
+  el.addEventListener('input', () => {
+    const v = parseFloat(el.value);
+    eng.set(id, v);
+    // scrubbing an endpoint slider previews that endpoint's framing
+    if (id === 'sceneStartX' || id === 'sceneStartY' || id === 'sceneStartRot' || id === 'sceneStartZoom') { eng.scenePlaying = false; eng.sceneDone = false; eng.sceneT = 0; }
+    else if (id === 'sceneEndX' || id === 'sceneEndY' || id === 'sceneEndRot' || id === 'sceneEndZoom') { eng.scenePlaying = false; eng.sceneDone = true; }
+    recordEvent('param', { key: id, value: v });
+    saveParams();
+  });
+  // scrubbing freezes the drive on that endpoint so the framing can be judged;
+  // letting go plays it back ONCE (see keepLive)
+  if (/^scene(Start|End)/.test(id)) {
+    el.addEventListener('change', () => { liveArmed = true; liveIdle = 0; });
+  }
+}
+for (const id of checkboxIds) {
+  const el = document.getElementById(id);
+  if (!el) continue;                 // driven from the Motion panel instead
+  el.addEventListener('change', () => {
+    eng.set(id, el.checked);
+    recordEvent('param', { key: id, value: el.checked });
+    saveParams();
+  });
+}
+for (const id of selectIds) {
+  const el = document.getElementById(id);
+  if (!el) continue;                 // driven from the Motion panel instead
+  el.addEventListener('change', () => {
+    eng.set(id, el.value);
+    if (id === 'scene') { eng.resetScene(); syncCutout(); resyncCarPanel(); }
+    recordEvent('param', { key: id, value: el.value });
+    saveParams();
+  });
+}
+/* ---------- design guides: builder-local, never take data ----------
+   Loading a take used to overwrite P.showEmitter (every auto_* take carried
+   false), which read as "the directional overlay is gone". The preference now
+   lives in localStorage; takes neither set nor save it. */
+let showGuides = true;
+try { showGuides = localStorage.getItem('fallShowGuides') !== '0'; } catch (e) {}
+const showGuidesEl = document.getElementById('showEmitter');
+showGuidesEl.checked = showGuides;
+showGuidesEl.addEventListener('change', () => {
+  showGuides = showGuidesEl.checked;
+  try { localStorage.setItem('fallShowGuides', showGuides ? '1' : '0'); } catch (e) {}
+  drawOverlays();                    // take effect immediately, even while paused
+});
+/* a take is eng.P minus builder chrome */
+function takeParams() {
+  const t = Object.assign({}, eng.P);
+  delete t.showEmitter;
+  return t;
+}
+
+const CUTOUTS = {
+  ACR_728x90_B: '/Ad%20Build/assets/ACR/728x90/B_F1/img_vehicle_B_728_cutout.png',
+  ACR_160x600_B: '/Ad%20Build/assets/ACR/160x600/B_F1/img_vehicle_B_160_cutout.png',
+  // r2 (2026-09-03): without these the stage drew the speed lines ACROSS the
+  // car on the new B units while the ad passed them behind it
+  ACR_300x600_B: '/Ad%20Build/assets/ACR/300x600/B_F1/img_vehicle_B_GenFill2-B_cutout.png',
+  ACR_300x250_B: '/Ad%20Build/assets/ACR/300x250/B_F1/img_vehicle_B_300250_cutout.png',
+};
+function syncCutout() {
+  const on = document.getElementById('cutoutPreview').checked;
+  eng.setCutout(on ? (CUTOUTS[eng.P.scene] || null) : null);
+}
+document.getElementById('cutoutPreview').addEventListener('change', syncCutout);
+document.getElementById('streakColor').addEventListener('input', (e) => {
+  eng.set('streakColor', e.target.value);
+  recordEvent('param', { key: 'streakColor', value: e.target.value });
+  saveParams();
+});
+document.getElementById('stageSize').addEventListener('change', (e) => {
+  const v = e.target.value;
+  document.getElementById('customSizeRow').style.display = v === 'custom' ? '' : 'none';
+  eng.setStage(v);
+  recordEvent('param', { key: 'stage', value: v });
+  saveParams();
+});
+for (const cb of document.querySelectorAll('.type')) {
+  cb.addEventListener('change', () => {
+    let types = [...document.querySelectorAll('.type:checked')].map(c => c.value);
+    if (!types.length) { cb.checked = true; types = [cb.value]; }
+    eng.set('types', types);
+    recordEvent('param', { key: 'types', value: [...types] });
+    saveParams();
+  });
+}
+document.getElementById('applySizeBtn').addEventListener('click', () => {
+  eng.P.customW = clamp(parseInt(document.getElementById('customW').value) || 600, 50, 1600);
+  eng.P.customH = clamp(parseInt(document.getElementById('customH').value) || 600, 50, 1600);
+  document.getElementById('stageSize').value = 'custom';
+  eng.setStage('custom');
+  recordEvent('param', { key: 'customW', value: eng.P.customW });
+  recordEvent('param', { key: 'customH', value: eng.P.customH });
+  recordEvent('param', { key: 'stage', value: 'custom' });
+  saveParams();
+});
+
+function setBackdrop(v) {
+  // painted on the stack, behind ctxUnder, so fading the scene reveals the
+  // technician underneath rather than the canvas's own fill
+  const stack = document.getElementById('stageStack');
+  stack.className = stack.className.replace(/\bbg-\S+/g, '').trim() + ' ' + v;
+  canvas.className = (recState === 'rec' ? 'recording' : '');
+}
+
+function updateHint() {
+  const m = eng.P.spawnMode;
+  document.getElementById('hint').textContent =
+    m === 'emitter' ? 'Click to place the emitter · drag to steer the wind.' :
+    m === 'burst'   ? 'Click to kick a burst of leaves (think: passing car) · drag to steer the wind.' :
+                      'Drag on the stage to steer the wind — leaves follow the arrow.';
+}
+
+function applyUI() {
+  const P = eng.P;
+  for (const id of sliderIds) syncControl(id, P[id]);
+  for (const id of checkboxIds) syncControl(id, P[id]);
+  for (const id of selectIds) syncControl(id, P[id]);
+  syncControl('streakColor', P.streakColor);
+  for (const cb of document.querySelectorAll('.type')) cb.checked = P.types.includes(cb.value);
+  document.getElementById('stageSize').value = P.stage;
+  document.getElementById('customW').value = P.customW;
+  document.getElementById('customH').value = P.customH;
+  document.getElementById('customSizeRow').style.display = P.stage === 'custom' ? '' : 'none';
+  setBackdrop(P.bgSelect);
+  updateHint();
+}
+
+/* ---------- stage pointer: click = emitter/burst · drag = wind ---------- */
+function canvasPos(e) {
+  const r = canvas.getBoundingClientRect();
+  return [(e.clientX - r.left) * (eng.W / r.width), (e.clientY - r.top) * (eng.H / r.height)];
+}
+let dragStart = null, dragLast = null, dragging = false;
+const WIND_DRAG_GAIN = 1.2;
+
+canvas.addEventListener('pointerdown', (e) => {
+  dragStart = dragLast = canvasPos(e);
+  dragging = false;
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener('pointermove', (e) => {
+  if (!dragStart) return;
+  dragLast = canvasPos(e);
+  if (!dragging && Math.hypot(dragLast[0] - dragStart[0], dragLast[1] - dragStart[1]) > 6) dragging = true;
+  if (dragging) {
+    eng.set('windSpeed', Math.round(clamp((dragLast[0] - dragStart[0]) * WIND_DRAG_GAIN, -160, 160)));
+    eng.set('windLift',  Math.round(clamp((dragLast[1] - dragStart[1]) * WIND_DRAG_GAIN, -160, 160)));
+    recordEvent('wind', { s: eng.P.windSpeed, l: eng.P.windLift });
+  }
+});
+canvas.addEventListener('pointerup', () => {
+  if (dragStart && !dragging && eng.P.spawnMode !== 'top') {
+    const [x, y] = dragLast;
+    eng.P.emitterX = clamp(x / eng.W, 0, 1);
+    eng.P.emitterY = clamp(y / eng.H, 0, 1);
+    recordEvent('emitter', { x: eng.P.emitterX, y: eng.P.emitterY });
+    if (eng.P.spawnMode === 'burst') {
+      eng.burstAt(x, y);
+      recordEvent('burst', { x: x / eng.W, y: y / eng.H });
+    }
+  }
+  if (dragging) recordEvent('wind', { s: eng.P.windSpeed, l: eng.P.windLift }, true);
+  saveParams();
+  dragStart = dragLast = null;
+  dragging = false;
+});
+
+/* ---------- recorder (capture is host-side; replay is engine-side) ---------- */
+let recState = null;            // 'rec' | null — engine owns 'play'
+
+/* ---------- replay after an endpoint scrub ----------
+   Endpoint sliders deliberately freeze the scene on the frame being scrubbed,
+   so the framing can be judged. Letting go plays the drive back ONCE and then
+   holds on its end frame — it does NOT loop. A loop makes start/end points
+   almost impossible to set, because the thing you are trying to look at keeps
+   being replaced. 🚗 Play scene is how you watch it again.
+   Builder-only state — never part of eng.P, so it can't reach a take. */
+const LIVE_RESUME = 0.15;       // seconds of stillness before the replay fires
+                                // — just enough to debounce a run of arrow-key
+                                // nudges; 0.45 read as a dead beat before every
+                                // endpoint preview (Philip, ACR B pass)
+let liveIdle = 0;
+let liveArmed = false;          // only a scrub arms it — never a finished drive
+const keepLiveEl = document.getElementById('keepLive');
+try { keepLiveEl.checked = localStorage.getItem('fallKeepLive') !== '0'; } catch (e) {}
+keepLiveEl.addEventListener('change', () => {
+  try { localStorage.setItem('fallKeepLive', keepLiveEl.checked ? '1' : '0'); } catch (e) {}
+  liveArmed = false;
+});
+function tickLiveDrive(dt) {
+  if (!liveArmed) return;
+  // hands off while recording or replaying a take — an auto-replay there would
+  // inject phantom sceneplay events / fight the recording
+  if (!keepLiveEl.checked || recState === 'rec' || eng.recState === 'play' ||
+      eng.P.scene === 'none') { liveArmed = false; liveIdle = 0; return; }
+  if (eng.scenePlaying) { liveIdle = 0; return; }
+  liveIdle += dt;
+  if (liveIdle >= LIVE_RESUME) { liveIdle = 0; liveArmed = false; eng.playScene(); }
+}
+let recClock = 0, lastWindRec = -1;
+let savedRecording = null;
+try { savedRecording = JSON.parse(localStorage.getItem('leavesLabRecording')); } catch (e) {}
+
+const recStatusEl = document.getElementById('recStatus');
+const recBtn = document.getElementById('recBtn');
+
+function recordEvent(type, data, force) {
+  if (recState !== 'rec') return;
+  if (type === 'wind' && !force && recClock - lastWindRec < 0.05) return;
+  if (type === 'wind') lastWindRec = recClock;
+  savedRecording.events.push(Object.assign({ t: Math.round(recClock * 1000) / 1000, type }, data));
+}
+function persistRecording() {
+  try {
+    if (savedRecording) localStorage.setItem('leavesLabRecording', JSON.stringify(savedRecording));
+    else localStorage.removeItem('leavesLabRecording');
+  } catch (e) {}
+}
+function recIdleStatus() {
+  recStatusEl.textContent = savedRecording
+    ? `recording ready: ${savedRecording.duration.toFixed(1)}s · ${savedRecording.events.length} events — saved with presets`
+    : 'no recording yet — hit ⏺ and perform';
+}
+
+let counting = false, countdownT = 0;
+const COUNTDOWN_S = 3;
+
+function requestRecord() {
+  if (recState === 'rec') { stopRecording(); return; }
+  if (counting) { cancelCountdown(); return; }
+  if (eng.recState === 'play') { eng.stopReplay(); recIdleStatus(); }
+  counting = true;
+  countdownT = COUNTDOWN_S;
+}
+function cancelCountdown() {
+  counting = false;
+  recBtn.textContent = '⏺ Record (R)';
+  recIdleStatus();
+}
+function beginRecording() {
+  savedRecording = { startState: JSON.parse(JSON.stringify(eng.P)), seed, events: [], duration: 0 };
+  eng.setSeed(seed);
+  eng.rebuildPool(true);
+  eng.rebuildStreaks();
+  eng.resetScene();
+  eng.simT = 0; recClock = 0; lastWindRec = -1;
+  recState = 'rec';
+  recBtn.textContent = '⏹ Stop (R/S)';
+  setBackdrop(eng.P.bgSelect);
+  if (eng.P.recAutoScene && eng.P.scene !== 'none') {
+    eng.playScene();
+    recordEvent('sceneplay', {});
+  }
+}
+function stopRecording() {
+  savedRecording.duration = recClock;
+  recState = null;
+  recBtn.textContent = '⏺ Record (R)';
+  setBackdrop(eng.P.bgSelect);
+  persistRecording();
+  recIdleStatus();
+}
+recBtn.addEventListener('click', requestRecord);
+
+window.addEventListener('keydown', (e) => {
+  const t = e.target;
+  const typing = t && (t.tagName === 'TEXTAREA' ||
+    (t.tagName === 'INPUT' && (t.type === 'text' || t.type === 'number')));
+  if (typing) return;
+  if (e.key === 'r' || e.key === 'R') {
+    e.preventDefault();
+    requestRecord();
+  } else if (e.key === 's' || e.key === 'S' || e.key === 'Escape') {
+    if (counting) cancelCountdown();
+    else if (recState === 'rec') stopRecording();
+    else if (eng.scenePlaying) eng.resetScene();
+  }
+});
+
+const AD_F2_AT = 4.6;   // the ad units' frame-1 -> frame-2 transition time
+function startReplay() {
+  if (!savedRecording || recState === 'rec') return;
+  eng.loadRecording(savedRecording);
+  seed = savedRecording.seed;
+  eng.taperAt = AD_F2_AT;      // replay previews leaf taper/clear like the ads
+  eng.startReplay();
+  applyUI();
+}
+// the staged unit's own taper: engine.taperAt, or the resolved cut for taperRel
+// units (ad-player.js re-anchors it at load). null on a free canvas.
+function unitTaperAt() {
+  const e = stagedAd && stagedAd.engine;
+  if (!e || e.taperAt == null) return null;
+  return e.taperRel ? Math.max(0, (+eng.P.sceneDur || 0) - (+eng.P.cutLead || 0)) : e.taperAt;
+}
+eng.onReplayEnd = () => {
+  eng.taperAt = null;            // back to the editing view: no taper while tuning
+  if (document.getElementById('loopRec').checked) startReplay();
+  else recIdleStatus();
+};
+
+function playDriveOnly() {
+  eng.playScene();
+  recordEvent('sceneplay', {});
+}
+document.getElementById('scenePlayBtn').addEventListener('click', () => {
+  if (scrubbing) goLive();
+  // A whole-frame play is a from-0 preview: restart the leaf clock
+  // deterministically (same seed, fresh pool) with the unit's taper armed, so
+  // the flurry's fade-out plays on the ad's timing and can be timed against
+  // the copy. Without this, play continued the idle view's clock and the
+  // taper never lined up (or, pre-fix, never ran at all).
+  eng.setSeed(seed);
+  eng.rebuildPool(true);
+  eng.rebuildStreaks();
+  eng.simT = 0;
+  eng.taperAt = unitTaperAt();
+  playDriveOnly();
+  // ...and the ad's own pieces, so the passports move with the car
+  if (typeof playContextTimeline === 'function') {
+    const dur = playContextTimeline();
+    if (dur) status(playStatusEl, `playing the frame — last cue lands at ${dur.toFixed(1)}s`);
+  }
+  // the scrubber follows this play, and ⏸ can freeze it (see pauseWholeFrame)
+  wholePlayT0 = document.timeline.currentTime;
+  syncPauseWF();
+});
+document.getElementById('playRecBtn').addEventListener('click', startReplay);
+document.getElementById('clearRecBtn').addEventListener('click', () => {
+  savedRecording = null;
+  eng.stopReplay();
+  recBtn.textContent = '⏺ Record (R)';
+  persistRecording();
+  recIdleStatus();
+});
+
+/* ---------- presets + ad assignments (v3: full unit ids; legacy keys kept) ---------- */
+const PRESETS_URL = '/Design%20Lab/leaf-presets.json';
+const SLOTS = [
+  'HND_728x90_A', 'HND_728x90_B', 'HND_160x600_A', 'HND_160x600_B', 'HND_300x600_A', 'HND_300x600_B',
+  'HND_300x250_A', 'HND_300x250_B', 'HND_320x50_A', 'HND_320x50_B', 'HND_300x50_A', 'HND_300x50_B',
+  'ACR_728x90_A', 'ACR_728x90_B', 'ACR_160x600_A', 'ACR_160x600_B', 'ACR_300x600_A', 'ACR_300x600_B',
+  'ACR_300x250_A', 'ACR_300x250_B', 'ACR_320x50_A', 'ACR_320x50_B', 'ACR_300x50_A', 'ACR_300x50_B',
+];
+let presets = {};
+let assignments = {};
+const presetStatusEl = document.getElementById('presetStatus');
+const presetSelectEl = document.getElementById('presetSelect');
+const assignStatusEl = document.getElementById('assignStatus');
+let statusTimer = null;
+function status(el, msg, hold) {
+  if (!el) return;                       // a missing status line must not kill the caller
+  el.textContent = msg;
+  if (hold) return;                      // receipts stay until the next action
+  clearTimeout(statusTimer);
+  statusTimer = setTimeout(() => (el.textContent = ''), 3500);
+}
+function presetLabel(n) {
+  const rec = presets[n] && presets[n].recording;
+  return rec ? `${n} · ⏺${(rec.duration || 0).toFixed(1)}s take` : n;
+}
+function refreshPresetSelect() {
+  const names = Object.keys(presets).sort();
+  presetSelectEl.innerHTML = names.length
+    ? names.map(n => `<option value="${n}">${presetLabel(n)}</option>`).join('')
+    : '<option value="">— none —</option>';
+  refreshAssignUI();
+}
+/* assignment rows are generated from SLOTS (24 A/B units since round 2) */
+const assignRowsEl = document.getElementById('assignRows');
+assignRowsEl.innerHTML = SLOTS.map(slot => `
+  <div class="row"><label>${slot.replace(/_/g, ' ')}</label>
+    <select id="assign_${slot}" class="assign"></select>
+    <button class="assignLoad" data-slot="${slot}">Load</button>
+  </div>`).join('');
+
+function refreshAssignUI() {
+  const names = Object.keys(presets).sort();
+  for (const slot of SLOTS) {
+    const el = document.getElementById('assign_' + slot);
+    const cur = assignments[slot] || '';
+    el.innerHTML = '<option value="">— unassigned —</option>' +
+      names.map(n => `<option value="${n}"${n === cur ? ' selected' : ''}>${presetLabel(n)}</option>`).join('');
+  }
+}
+function adoptStore(json) {
+  if (json && json.presets) {
+    presets = json.presets;
+    assignments = json.assignments || {};
+  } else {
+    presets = json || {};
+    assignments = {};
+  }
+}
+async function fetchPresets() {
+  try {
+    const r = await fetch(PRESETS_URL, { cache: 'no-store' });
+    if (r.ok) { adoptStore(await r.json()); refreshPresetSelect(); return; }
+  } catch (e) {}
+  try { adoptStore(JSON.parse(localStorage.getItem('leafPresets'))); } catch (e) { presets = {}; assignments = {}; }
+  refreshPresetSelect();
+}
+// Save used to POST whatever this page loaded at open, so anything that changed
+// the file afterwards — a script, a second tab, an earlier save — was silently
+// overwritten. It cost a take today. Re-read and merge instead.
+async function mergedPresets(takeName) {
+  let disk = { presets: {}, assignments: {} };
+  try {
+    const r = await fetch(PRESETS_URL, { cache: 'no-store' });
+    if (r.ok) {
+      const j = await r.json();
+      disk = j && j.presets ? j : { presets: j || {}, assignments: {} };
+    }
+  } catch (e) {}
+  const out = { presets: Object.assign({}, disk.presets),
+                assignments: Object.assign({}, disk.assignments, assignments) };
+  if (takeName && presets[takeName]) out.presets[takeName] = presets[takeName];
+  return out;
+}
+async function mergedOverrides(unit) {
+  let disk = {};
+  try {
+    const r = await fetch('/Ad%20Build/layout-overrides.json', { cache: 'no-store' });
+    if (r.ok) disk = await r.json();
+  } catch (e) {}
+  const out = Object.assign({}, disk);
+  if (unit && layoutOv[unit]) out[unit] = layoutOv[unit];
+  return out;
+}
+
+// Save is MERGE-on-save (r2): a stale tab used to POST its page-load memory
+// wholesale, wiping any take saved from another tab since. Now every push
+// re-reads the file first and lays this page's entries over it; only names
+// this page explicitly deleted/unassigned are dropped (tracked below).
+const deletedPresets = new Set();
+const unassignedSlots = new Set();
+async function pushPresets() {
+  try {
+    const r0 = await fetch(PRESETS_URL, { cache: 'no-store' });
+    if (r0.ok) {
+      const disk = await r0.json();
+      const mp = Object.assign({}, disk.presets || {}, presets);
+      for (const n of deletedPresets) delete mp[n];
+      const ma = Object.assign({}, disk.assignments || {}, assignments);
+      for (const s of unassignedSlots) delete ma[s];
+      // drop assignments that point at a preset this page just deleted
+      for (const s of Object.keys(ma)) if (deletedPresets.has(ma[s])) delete ma[s];
+      presets = mp;
+      assignments = ma;
+      // the rebuild used to drop the dropdown to its first entry, so Delete /
+      // Load right after a save acted on the alphabetically-first take
+      const keepSel = presetSelectEl.value;
+      refreshPresetSelect();
+      if (keepSel && presets[keepSel]) presetSelectEl.value = keepSel;
+    }
+  } catch (e) { /* offline: save what this page has */ }
+  const store = { presets, assignments };
+  try { localStorage.setItem('leafPresets', JSON.stringify(store)); } catch (e) {}
+  try {
+    const r = await fetch('/api/presets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(store, null, 2),
+    });
+    status(presetStatusEl, r.ok ? 'saved to leaf-presets.json ✓' : 'server rejected save — kept locally');
+    // the merged file is now the truth: a tombstone kept past this point would
+    // strip that name/slot from every later save for as long as the tab lived —
+    // including ones author_takes.py wrote in between
+    if (r.ok) { deletedPresets.clear(); unassignedSlots.clear(); }
+  } catch (e) {
+    status(presetStatusEl, 'server offline — saved locally only');
+  }
+}
+(document.getElementById('savePresetBtn') || { addEventListener() {} }).addEventListener('click', () => {
+  const name = document.getElementById('presetName').value.trim();
+  if (!name) { status(presetStatusEl, 'give the preset a name first'); return; }
+  presets[name] = Object.assign({ savedAt: new Date().toISOString(), seed }, takeParams());
+  deletedPresets.delete(name);         // re-created after an earlier delete
+  if (savedRecording) presets[name].recording = savedRecording;
+  refreshPresetSelect();
+  presetSelectEl.value = name;
+  dirty = false;
+  pushPresets();
+});
+function loadPresetByName(name, statusEl, opts) {
+  opts = opts || {};
+  if (!name || !presets[name]) { status(statusEl, 'nothing selected'); return; }
+  const { savedAt, seed: pseed, recording, ...params } = presets[name];
+  eng.P = Object.assign({}, FallEngine.DEFAULTS, FallEngine.migrateParams(params));
+  if (pseed != null) { seed = pseed; eng.setSeed(seed); }
+  savedRecording = recording ? JSON.parse(JSON.stringify(recording)) : null;
+  persistRecording();
+  recIdleStatus();
+  applyUI();
+  eng.setStage(eng.P.stage);
+  eng.rebuildStreaks();
+  eng.resetScene();
+  saveParams();
+  document.getElementById('presetName').value = name;
+  dirty = false;
+  resyncCarPanel();
+  const drives = unitsForTake(name);
+  status(statusEl, `loaded "${name}"${recording ? ' + recording' : ''}`
+    + (drives.length ? ` — drives ${drives.join(', ')}` : ' — not assigned to a unit yet'));
+  // a take that drives exactly one unit gets staged in that unit's context, so
+  // loading it puts you in front of the real ad rather than a bare canvas
+  if (opts.stage === false) return;   // the caller stages (the Ad-context dropdown)
+  if (drives.length === 1 && typeof stageUnit === 'function' && CTX_UNITS.includes(drives[0])) {
+    // P0: the take is loaded either way (that is what Load promises); only the
+    // stage switch is optional, and only when it would cost layout edits. The
+    // same unit re-stages in place — stageUnit() re-keys the edits.
+    if (drives[0] !== stagedUnit && layoutDirty()
+        && !confirm(`"${name}" drives ${drives[0]} — switch the stage to it?\n\n`
+                  + `Unsaved layout edits to ${stagedUnit} will be lost.\n`
+                  + `Cancel keeps the stage on ${stagedUnit}; Save, then Load again.`)) {
+      status(statusEl, `loaded "${name}" — stage kept on ${stagedUnit} (unsaved layout edits)`, true);
+      return;
+    }
+    unitCtxEl.value = drives[0];
+    stageUnit(drives[0]);
+  }
+}
+document.getElementById('loadPresetBtn').addEventListener('click', () =>
+  loadPresetByName(presetSelectEl.value, presetStatusEl));
+// picking a take IS loading it — no second click. Unsaved edits are the only
+// thing worth a speed bump, so ask once and only when there are any.
+presetSelectEl.addEventListener('change', () => {
+  if (dirty && !confirm('Load "' + presetSelectEl.value + '"? Unsaved edits to the current take will be lost.')) {
+    presetSelectEl.value = document.getElementById('presetName').value;
+    return;
+  }
+  loadPresetByName(presetSelectEl.value, presetStatusEl);
+});
+
+/* which units a take drives — a take can be assigned to several */
+function unitsForTake(name) {
+  return Object.keys(assignments).filter(u => assignments[u] === name).sort();
+}
+// bake ONLY the units this take drives. The ⚡ button in Ad assignments bakes
+// every assignment, which is safe (each unit is just rewritten from its own
+// assigned take) but noisy when you are iterating on one unit.
+(document.getElementById('bakeTakeBtn') || { addEventListener() {} }).addEventListener('click', async () => {
+  const name = document.getElementById('presetName').value.trim();
+  if (!name || !presets[name]) { status(presetStatusEl, 'save the take first'); return; }
+  const units = unitsForTake(name);
+  if (!units.length) { status(presetStatusEl, `"${name}" is not assigned to a unit yet — assign it below`); return; }
+  if (dirty) { status(presetStatusEl, 'unsaved edits — hit Save take first'); return; }
+  status(presetStatusEl, `baking ${units.join(', ')}…`);
+  try {
+    for (const u of units) {
+      const r = await fetch('/api/bake', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                           body: JSON.stringify({ unit: u }) });
+      const j = await r.json();
+      if (!j.ok) { status(presetStatusEl, 'bake failed: ' + j.out); return; }
+    }
+    status(presetStatusEl, `baked ${units.join(', ')} ✓ — ↻ Replay it in the Review Deck`);
+  } catch (e) {
+    status(presetStatusEl, 'server offline — run Scripts/bake_recipes.py manually');
+  }
+});
+document.getElementById('deletePresetBtn').addEventListener('click', () => {
+  const name = presetSelectEl.value;
+  if (!name || !presets[name]) { status(presetStatusEl, 'nothing selected'); return; }
+  delete presets[name];
+  deletedPresets.add(name);
+  for (const slot of SLOTS) if (assignments[slot] === name) { delete assignments[slot]; unassignedSlots.add(slot); }
+  refreshPresetSelect();
+  pushPresets();
+});
+for (const slot of SLOTS) {
+  document.getElementById('assign_' + slot).addEventListener('change', (e) => {
+    if (e.target.value) { assignments[slot] = e.target.value; unassignedSlots.delete(slot); }
+    else { delete assignments[slot]; unassignedSlots.add(slot); }
+    pushPresets();
+    status(assignStatusEl, e.target.value
+      ? `${slot.replace(/_/g, ' ')} → "${e.target.value}"`
+      : `${slot.replace(/_/g, ' ')} unassigned`);
+  });
+}
+document.getElementById('bakeBtn').addEventListener('click', async () => {
+  status(assignStatusEl, 'baking…');
+  try {
+    const r = await fetch('/api/bake', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    const j = await r.json();
+    status(assignStatusEl, j.ok ? (j.out.split('\n').pop() || 'baked ✓') : 'bake failed: ' + j.out);
+  } catch (e) {
+    status(assignStatusEl, 'server offline — run Scripts/bake_recipes.py manually');
+  }
+});
+document.querySelectorAll('.assignLoad').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const slot = btn.dataset.slot;
+    const name = assignments[slot];
+    if (!name) { status(assignStatusEl, `${slot.replace(/_/g, ' ')} has no recipe assigned`); return; }
+    loadPresetByName(name, assignStatusEl);
+  });
+});
+
+/* ---------- playback buttons ---------- */
+const playStatusEl = document.getElementById('playStatus');
+document.getElementById('pauseBtn').addEventListener('click', (e) => {
+  eng.paused = !eng.paused;
+  e.target.textContent = eng.paused ? 'Play' : 'Pause';
+});
+document.getElementById('reseedBtn').addEventListener('click', () => {
+  seed = (Math.random() * 1e9) | 0;
+  eng.setSeed(seed);
+  eng.rebuildPool(true);
+  eng.rebuildStreaks();
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  localStorage.removeItem('leavesLabParams');
+  location.reload();
+});
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  const out = Object.assign({ seed }, eng.P, savedRecording ? { recording: savedRecording } : {});
+  await navigator.clipboard.writeText(JSON.stringify(out, null, 2));
+  status(playStatusEl, savedRecording ? 'settings + recording JSON copied ✓' : 'settings JSON copied ✓');
+});
+document.getElementById('snapBtn').addEventListener('click', async () => {
+  const name = (document.getElementById('presetName').value.trim() || eng.P.stage);
+  try {
+    const r = await fetch('/api/snapshot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, dataUrl: canvas.toDataURL('image/png') }),
+    });
+    const j = await r.json();
+    status(playStatusEl, j.ok ? `saved ${j.file} ✓` : 'snapshot failed');
+  } catch (e) {
+    status(playStatusEl, 'server offline — snapshot needs the preview server');
+  }
+});
+
+/* ---------- design-guide overlays (builder chrome, drawn over the engine) ----------
+   On their own canvas (z6), not the engine's (z2): staged ad art lives on
+   ctxOver at z3, so guides drawn into the engine canvas disappeared behind the
+   unit's own art the moment an Ad context was staged. */
+const guideCv = document.getElementById('guides');
+const ctx = guideCv.getContext('2d');
+function syncGuideCanvas() {
+  if (guideCv.width !== canvas.width || guideCv.height !== canvas.height) {
+    guideCv.width = canvas.width;
+    guideCv.height = canvas.height;
+    guideCv.style.width = canvas.style.width;
+    guideCv.style.height = canvas.style.height;
+  }
+  ctx.setTransform(eng.dpr, 0, 0, eng.dpr, 0, 0);
+  ctx.clearRect(0, 0, eng.W, eng.H);
+}
+function guideArrow(x1, y1, x2, y2, head = 7) {
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+  ctx.moveTo(x2, y2); ctx.lineTo(x2 - head * Math.cos(a - 0.45), y2 - head * Math.sin(a - 0.45));
+  ctx.moveTo(x2, y2); ctx.lineTo(x2 - head * Math.cos(a + 0.45), y2 - head * Math.sin(a + 0.45));
+  ctx.stroke();
+}
+function drawOverlays() {
+  const P = eng.P, W = eng.W, H = eng.H;
+  syncGuideCanvas();
+  if (P.maskOn && P.maskShow) {
+    ctx.save();
+    ctx.globalAlpha = 0.6;
+    ctx.strokeStyle = '#e07a2f';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 5]);
+    // eng.maskPath() paths into the ENGINE's context — same geometry, our canvas
+    const mi = eng.maskInsetPx();
+    const mr = Math.max(Math.min(P.maskRadius, (Math.min(eng.SW, eng.SH) - 2 * mi) / 2), 0);
+    ctx.beginPath();
+    ctx.roundRect(mi, mi, eng.SW - 2 * mi, eng.SH - 2 * mi, mr);
+    ctx.stroke();
+    ctx.restore();
+  }
+  if (showGuides) {
+    ctx.save();
+    ctx.strokeStyle = '#e07a2f';
+    ctx.lineWidth = 1;
+    if (P.spawnMode !== 'top') {
+      const [ex, ey] = eng.emitterPx();
+      ctx.globalAlpha = 0.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(ex, ey, Math.max(P.radius, 4), 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(ex - 8, ey); ctx.lineTo(ex + 8, ey);
+      ctx.moveTo(ex, ey - 8); ctx.lineTo(ex, ey + 8);
+      ctx.stroke();
+      if (P.kick > 0) {
+        const len = 24 + P.kick * 0.11;
+        const ac = P.kickAngle * Math.PI / 180;
+        const a0 = (P.kickAngle - P.spread / 2) * Math.PI / 180;
+        const a1 = (P.kickAngle + P.spread / 2) * Math.PI / 180;
+        ctx.globalAlpha = 0.35;
+        ctx.beginPath();
+        ctx.moveTo(ex, ey); ctx.lineTo(ex + Math.cos(a0) * len * 0.8, ey + Math.sin(a0) * len * 0.8);
+        ctx.moveTo(ex, ey); ctx.lineTo(ex + Math.cos(a1) * len * 0.8, ey + Math.sin(a1) * len * 0.8);
+        ctx.stroke();
+        ctx.globalAlpha = 0.7;
+        guideArrow(ex, ey, ex + Math.cos(ac) * len, ey + Math.sin(ac) * len);
+      }
+    }
+    {
+      const vx = W - 30, vy = 26, r = 15;
+      const wind = eng.windAt(eng.simT, { turbSeed: 0 });
+      ctx.globalAlpha = 0.45;
+      ctx.beginPath();
+      ctx.arc(vx, vy, r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 0.85;
+      guideArrow(vx, vy, vx + (wind / 160) * (r - 2), vy + (P.windLift / 160) * (r - 2), 5);
+    }
+    const gimg = eng.sceneImg();
+    if (gimg && P.sceneStartX !== P.sceneEndX) {
+      ctx.save();
+      ctx.translate(eng.SX, eng.SY);      // the drive lives in the scene window
+      const inset = P.maskOn ? eng.maskInsetPx() : 0;
+      const mw = eng.SW - 2 * inset, mh = eng.SH - 2 * inset;
+      const { slackX } = eng.sceneGeom(gimg, mw, mh, P.sceneStartZoom);
+      const cy = inset + mh - 14;
+      const cx = inset + mw / 2;
+      const gx = (v) => clamp(cx + (eng.scenePos(v) / 100) * slackX, inset + 4, inset + mw - 4);
+      const x0 = gx(P.sceneStartX), x1 = gx(P.sceneEndX);
+      ctx.globalAlpha = 0.7;
+      ctx.beginPath();
+      ctx.arc(x0, cy, 3, 0, Math.PI * 2);
+      ctx.stroke();
+      guideArrow(x0, cy, x1, cy);
+      ctx.restore();
+    }
+    if (P.syncWake && P.scene !== 'none') {
+      const wy = P.wakeY * H;
+      ctx.globalAlpha = 0.3;
+      ctx.setLineDash([3, 5]);
+      ctx.beginPath();
+      ctx.moveTo(eng.wakeX(0), wy); ctx.lineTo(eng.wakeX(1), wy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 0.7;
+      for (let i = 1; i <= P.wakeBursts; i++) {
+        const x = eng.wakeX(i / P.wakeBursts);
+        ctx.beginPath();
+        ctx.moveTo(x - 4, wy - 4); ctx.lineTo(x + 4, wy + 4);
+        ctx.moveTo(x - 4, wy + 4); ctx.lineTo(x + 4, wy - 4);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+  if (dragging && dragStart && dragLast) {
+    const [x1, y1] = dragStart, [x2, y2] = dragLast;
+    ctx.save();
+    ctx.globalAlpha = 0.85;
+    ctx.strokeStyle = '#e07a2f';
+    ctx.lineWidth = 2;
+    guideArrow(x1, y1, x2, y2, 12);
+    ctx.restore();
+  }
+  if (counting) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(10, 10, 12, 0.35)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#e07a2f';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = `bold ${Math.round(Math.min(W, H) * 0.4)}px -apple-system, "Helvetica Neue", Arial, sans-serif`;
+    ctx.fillText(String(Math.ceil(countdownT)), W / 2, H / 2);
+    ctx.restore();
+  }
+}
+
+/* ---------- main loop ---------- */
+const statsEl = document.getElementById('stats');
+function frame(now) {
+  const dt = eng.tick(now);   // step + draw (0 while paused)
+  // Paused is "time stands still", not "the picture stands still": the pose
+  // radios and knobs, and a scene image that finishes loading, all change what
+  // the engine would draw without advancing it. Draw is pure over engine state,
+  // so repainting a paused engine every frame shows those edits and reproduces
+  // a scrubbed moment exactly. Without it, a scrub (which pauses) froze the
+  // canvas — the car ignored the radios, and a unit Loaded then scrubbed
+  // before its plate arrived stayed empty, showing the technician underneath.
+  if (eng.paused) { eng.draw(); drawOverlays(); }
+  if (!eng.paused) {
+    if (counting) {
+      countdownT -= dt;
+      if (countdownT <= 0) { counting = false; beginRecording(); }
+      else {
+        const n = Math.ceil(countdownT);
+        recStatusEl.textContent = `recording in ${n}…`;
+        recBtn.textContent = `✕ Cancel (${n})`;
+      }
+    }
+    if (recState === 'rec') {
+      recClock += dt;
+      recStatusEl.textContent = `● ${recClock.toFixed(1)}s · ${savedRecording.events.length} events`;
+    } else if (eng.recState === 'play' && eng.recording) {
+      recStatusEl.textContent = `▶ ${eng.playT.toFixed(1)} / ${eng.recording.duration.toFixed(1)}s`;
+    }
+    tickLiveDrive(dt);
+    eng.sceneAlpha = +getComputedStyle(sceneFade).opacity;
+    sampleSceneSlide();
+    drawOverlays();
+    trackWholeFrame();
+  }
+  statsEl.textContent = `${Math.round(eng.fpsSmooth)} fps · ${eng.activeCount}/${eng.leaves.length} leaves`;
+  requestAnimationFrame(frame);
+}
+
+/* ---------- ad context: stage the REAL unit, not just its size ----------
+   The scene in a shipped ad lives inside that unit's photo window, with the
+   leaves spilling across the whole ad and the copy sitting on top. Authoring
+   on a bare full-size canvas framed the car in a space it never occupies.
+   Picking a unit here sets the canvas to the ad size, points the engine's
+   scene viewport at that unit's real photo window, and paints the unit's own
+   frame-1 furniture around it. What you frame is what the ad shows. */
+// Fallback only. The real list comes from Ad Build/units/units.json, written by
+// gen_units.py — this one was hand-maintained and had drifted: HND_320x50_A was
+// missing from it, so that ad could not be opened in the Builder at all.
+let CTX_UNITS = ['HND_728x90_A','HND_728x90_B','HND_160x600_A','HND_160x600_B','HND_320x50_B',
+                 'ACR_728x90_A','ACR_728x90_B','ACR_160x600_A','ACR_160x600_B',
+                 'ACR_320x50_A','ACR_320x50_B'];
+const CTX_SIZES = ['728x90', '160x600', '300x600', '300x250', '320x50', '300x50'];   // r2: full storyboard
+let CTX_LABELS = {};
+// frame-2 art is staged as well — you cannot place what you cannot select —
+// but it starts hidden so frame 1 still reads normally.
+// Frame-2 art that would sit ON TOP of frame 1 starts hidden. The technician
+// is not in that list: it lives under the stage canvas (z8), so it is already
+// occluded by the car until the transition uncovers it.
+const F2_ONLY = new Set(['dealer', 'passport_under']);
+// per-unit additions live here. (HND 300x600 A's `passport_top` was listed
+// while it entered at the cut; since 2026-09-02 it is a frame-0 sheet that
+// lands as the frame-2 paper, so it stays visible like the other sheets.)
+function f2OnlyFor(unit) {
+  return new Set(F2_ONLY);
+}
+const unitCtxEl = document.getElementById('unitCtx');
+const ctxUnder = document.getElementById('ctxUnder');
+const ctxMid = document.getElementById('ctxMid');
+const ctxOver = document.getElementById('ctxOver');
+function renderUnitOptions() {
+  const keep = unitCtxEl.value;
+  unitCtxEl.innerHTML = '<option value="">— free canvas (size only) —</option>' +
+    CTX_UNITS.map(u => `<option value="${u}">${CTX_LABELS[u] || u.replace(/_/g, ' ')}</option>`).join('');
+  if (keep && CTX_UNITS.includes(keep)) unitCtxEl.value = keep;
+}
+renderUnitOptions();
+// Replace the fallback with what gen_units.py actually built, narrowed to the
+// sizes being shipped. Any failure leaves the list above in place — this can
+// make the dropdown better, never worse.
+(async () => {
+  try {
+    const m = await (await fetch('/Ad%20Build/units/units.json', { cache: 'no-store' })).json();
+    // r2: the RT statics are listed too — layout mode is the only Builder
+    // feature that applies to them (position / scale / z of copy, logo, CTA)
+    const rows = (m.units || []).filter(u => CTX_SIZES.includes(u.size));
+    if (!rows.length) return;
+    CTX_UNITS = rows.map(u => u.unit);
+    CTX_LABELS = {};
+    for (const u of rows) {
+      // a unit with no engine has no drive, so it will never have a take —
+      // say so here rather than let the empty Takes list read as a fault
+      CTX_LABELS[u.unit] = u.unit.replace(/_/g, ' ')
+        + (u.creative === 'RT' ? ' · static' : (u.hasEngine ? '' : ' · no drive'));
+    }
+    renderUnitOptions();
+  } catch (e) { /* keep the fallback */ }
+})();
+
+function clearAdContext() {
+  ctxUnder.innerHTML = ctxMid.innerHTML = ctxOver.innerHTML = '';
+  document.getElementById('ctxFree').innerHTML = '';
+  eng.taperAt = null;
+  eng.setSceneRect(null);
+  eng.cutoutOverLeaves = false;
+  eng.sceneFadeAt = null;
+  eng.streakOutAt = null;
+  eng.streakBackAt = null;
+  eng.streakBackAlpha = null;
+  eng.streakWipe = null;
+  eng.streakWipeDur = null;
+  eng.streakWipeFade = false;
+  eng.streakOutAt2 = null;
+  eng.streakWipe2 = null;
+  eng.streakWipe2Dur = null;
+  eng.streakWipe2Fade = false;
+  eng.streakFollow = null;
+  eng.streakFollowBandH = null;
+  // free canvas returns to the take's chosen backdrop
+  document.getElementById('stageStack').style.background = '';
+  setEngineHidden(false);
+}
+// A unit with no engine (the RT statics, the stamp smalls) is not driven by
+// any take, so nothing the loaded take draws belongs on its stage: the scene
+// and leaf canvases hide while one is staged. (They used to show the loaded
+// take's leaves over the stamp ads.) The guides canvas stays.
+function setEngineHidden(on) {
+  for (const id of ['stage', 'stageLeaves']) document.getElementById(id).style.visibility = on ? 'hidden' : '';
+}
+// The dealer the storyboards are set with (HND_p5 frame 2, ACR likewise) —
+// also the PSDs' placeholder, so previewing against it matches the board.
+// (Acura was 'Open Road Acura of East Brunswick' until the r2 QA pass: the
+// boards, the PSDs, frames.html and build_lab_package.py all say Herb Connolly.)
+const BOARD_DEALER = {
+  HND: 'Norm Reeves Honda Superstore Huntington Beach',
+  ACR: 'Herb Connolly Acura of Framingham',
+};
+async function stageUnit(unit) {
+  const prevUnit = stagedUnit;    // P0: reassigned below; tells a same-unit reload from a switch
+  if (!unit) {
+    clearAdContext();
+    dropLayoutEdits();            // P0: the nodes are gone here too
+    stagedAd = null; stagedUnit = null;
+    renderLayerList();
+    status(playStatusEl, 'free canvas — scene fills the whole stage');
+    return true;
+  }
+  let ad;
+  try {
+    const html = await (await fetch(`/Ad%20Build/units/${unit}/index.html`, { cache: 'no-store' })).text();
+    ad = JSON.parse(html.match(/const AD = (\{[\s\S]*?\n\});/)[1]);
+  } catch (e) {
+    status(playStatusEl, `could not read ${unit} — has it been generated?`, true);
+    unitCtxEl.value = prevUnit || '';   // P0: the old stage is still up, and Save keys on this dropdown
+    return false;
+  }
+  // canvas = the whole ad
+  document.getElementById('customW').value = ad.w;
+  document.getElementById('customH').value = ad.h;
+  eng.P.customW = ad.w; eng.P.customH = ad.h;
+  const named = `${ad.w}x${ad.h}`;
+  const known = [...document.getElementById('stageSize').options].some(o => o.value === named);
+  document.getElementById('stageSize').value = known ? named : 'custom';
+  eng.setStage(known ? named : 'custom');
+
+  // The AD'S OWN ground, not the take's editing backdrop: Acura runs on
+  // black, and against a white backdrop its white lockup, CTA strokes and
+  // headline were invisible — and the F2 dissolve washed white over the
+  // photo instead of black. Inline style beats the backdrop class; the
+  // dropdown still governs free canvas. Older units without `bg` keep the
+  // backdrop (regenerate to pick it up).
+  document.getElementById('stageStack').style.background = ad.bg || '';
+
+  // scene viewport = the unit's real photo window
+  const els = {};
+  for (const e of ad.els) els[e.id] = e;
+  const win = (els.f1canvas || {}).box;
+  eng.setSceneRect(win ? { x: win[0], y: win[1], w: win[2], h: win[3] } : null);
+  // the ad rounds its scene canvas in CSS; here the scene is clipped by the
+  // engine, so hand it the same radius
+  eng.sceneRadius = (els.f1canvas && els.f1canvas.radius) || 0;
+  // car-over-leaves units: on this single canvas the same result comes from
+  // drawing the cutout AFTER the leaves (the ad mirrors it above the overlay)
+  eng.cutoutOverLeaves = !!(ad.engine && ad.engine.cutoutCanvas);
+  eng.sceneFadeAt = (ad.engine && ad.engine.sceneFadeAt != null) ? ad.engine.sceneFadeAt : null;
+  eng.sceneFadeDur = (ad.engine && ad.engine.sceneFadeDur != null) ? ad.engine.sceneFadeDur : null;
+  eng.streakOutAt = (ad.engine && ad.engine.streakOutAt != null) ? ad.engine.streakOutAt : null;
+  eng.streakBackAt = (ad.engine && ad.engine.streakBackAt != null) ? ad.engine.streakBackAt : null;
+  eng.streakFadeDur = (ad.engine && ad.engine.streakFadeDur != null) ? ad.engine.streakFadeDur : null;
+  eng.streakBackAlpha = (ad.engine && ad.engine.streakBackAlpha != null) ? ad.engine.streakBackAlpha : null;
+  eng.streakWipe = (ad.engine && ad.engine.streakWipe) ? ad.engine.streakWipe : null;
+  eng.streakWipeDur = (ad.engine && ad.engine.streakWipeDur != null) ? ad.engine.streakWipeDur : null;
+  eng.streakWipeFade = !!(ad.engine && ad.engine.streakWipeFade);
+  eng.streakOutAt2 = (ad.engine && ad.engine.streakOutAt2 != null) ? ad.engine.streakOutAt2 : null;
+  eng.streakWipe2 = (ad.engine && ad.engine.streakWipe2) ? ad.engine.streakWipe2 : null;
+  eng.streakWipe2Dur = (ad.engine && ad.engine.streakWipe2Dur != null) ? ad.engine.streakWipe2Dur : null;
+  eng.streakWipe2Fade = !!(ad.engine && ad.engine.streakWipe2Fade);
+  eng.streakFollow = (ad.engine && ad.engine.streakFollow) || null;
+  eng.streakFollowBandH = (ad.engine && ad.engine.streakFollowBandH != null) ? ad.engine.streakFollowBandH : null;
+
+  // and the unit's own frame-1 furniture around it
+  ctxUnder.innerHTML = ctxMid.innerHTML = ctxOver.innerHTML = '';
+  document.getElementById('ctxFree').innerHTML = '';   // P0: a ⛶-freed piece from the last stage is a zombie otherwise
+  for (const el of ['ctxUnder', 'ctxMid', 'ctxOver']) {
+    const n = document.getElementById(el);
+    n.style.width = ad.w + 'px';
+    n.style.height = ad.h + 'px';
+  }
+  // Band thresholds from the unit itself: the scene canvas's z and the leaf
+  // canvas's z (18 by default, 19 where a layout override lifted it; the
+  // smalls draw leaves on the scene canvas, so their two thresholds coincide).
+  const sceneZ = els.f1canvas ? (els.f1canvas.z || 0) : 10;
+  const leafEl = ad.engine && ad.engine.leafCanvas ? els[ad.engine.leafCanvas] : null;
+  const leafZ = leafEl ? (leafEl.z || 0) : sceneZ;
+  // Leaf taper is armed by play/scrub only (unitTaperAt) — the idle editing
+  // view free-runs its clock, so a persistent taper let the flurry finish and
+  // never respawn: after a few seconds of just sitting on a tapering unit the
+  // Builder showed no leaves at all (Philip hit this on HND_728x90_B).
+  eng.taperAt = null;
+  setEngineHidden(!ad.engine);
+  for (const e of ad.els) {
+    if (e.type === 'canvas') continue;
+    const z = e.z || 0;
+    const layer = z < sceneZ ? ctxUnder : (z < leafZ ? ctxMid : ctxOver);
+    stageBands = { sceneZ, leafZ };   // P1: setZ() re-parents a node whose z later crosses a canvas
+    let node;
+    if (e.type === 'img' && (e.fit === 'cover' || e.fit === 'contain')) {
+      // Mirror the player: a fitted image is an <img> inside its box.
+      node = document.createElement('div');
+      const inner = document.createElement('img');
+      inner.src = `/Ad%20Build/units/${unit}/${e.src}`;
+      inner.style.cssText = 'width:100%;height:100%;display:block;object-fit:' +
+                            (e.fit === 'cover' ? 'cover' : 'contain');
+      node.appendChild(inner);
+      // Only a real MASK (clip) poses the picture instead of the box — posing
+      // the technician must not resize its window. Art that is merely fitted to
+      // its own box (headline, logo, CTA lettering) carries no mask: it moves
+      // its box, and clipping it here would cut it off. ad-player.js does the
+      // same test, and gen_units.py routes the override to match.
+      // a fitted (non-masked) piece can still carry a resting rotation — the
+      // ad's applyInitial rotates its box (the apple stamp); mirror it here or
+      // the stage shows it square. The base-pose loop below reads it back into
+      // dataset.baseRot so live pose edits compose on top.
+      if (e.rot && !e.clip) node.style.transform = `rotate(${e.rot}deg)`;
+      if (e.clip) {
+        node.dataset.masked = '1';
+        node.style.overflow = 'hidden';
+        // mirror ad-player.js: a masked photo covers its window and OVERFLOWS,
+        // centred, so a pose has something to pan into
+        if (e.fit === 'cover' && e.natural) {
+          const s = Math.max(e.box[2] / e.natural[0], e.box[3] / e.natural[1]);
+          inner.style.cssText = 'display:block;position:absolute;left:50%;top:50%;'
+            + `width:${e.natural[0] * s}px;height:${e.natural[1] * s}px`;
+          node.dataset.centred = '1';
+        }
+        const p = e.imgPose || { dx: 0, dy: 0, rot: 0, scale: 1 };
+        // A masked photo carries its saved pose in the PICTURE's transform,
+        // where every other element carries it in its box. Record it as the
+        // base: the live pose is a delta on top (that is what Save adds to the
+        // override), so anything that repaints has to compose the two or the
+        // saved framing is thrown away the moment the timeline plays.
+        node.dataset.baseDx = p.dx || 0;
+        node.dataset.baseDy = p.dy || 0;
+        node.dataset.baseScale = p.scale == null ? 1 : p.scale;
+        node.dataset.baseRot = p.rot || 0;
+        inner.style.transform = (node.dataset.centred ? 'translate(-50%, -50%) ' : '')
+          + `translate(${p.dx || 0}px, ${p.dy || 0}px) `
+          + `rotate(${p.rot || 0}deg) scale(${p.scale == null ? 1 : p.scale})`;
+      }
+    } else if (e.type === 'img') {
+      node = document.createElement('img');
+      node.src = `/Ad%20Build/units/${unit}/${e.src}`;
+      if (e.rot || (e.anim && e.anim.rot0)) {
+        node.style.transform = `rotate(${e.rot || e.anim.rot0}deg)`;
+      }
+    } else if (e.type === 'text') {
+      node = document.createElement('div');
+      // The Deck substitutes a real dealer; only the raw unit file carries the
+      // token. Both now open on the name the storyboard uses, which is also the
+      // PSD's placeholder and the longest dealer in the CSV — so what you place
+      // against is what the board shows AND the worst case for the layout.
+      node.innerHTML = (e.html || '').split('{{DEALER_NAME}}').join(BOARD_DEALER[ad.brand] || '');
+      Object.assign(node.style, e.css || {});
+      // The stage's `.ctx-layer div { position:absolute }` rule (for the staged
+      // ELEMENT nodes) also catches a text element's inner html div — absolute
+      // means shrink-to-fit, so text-align:center centred the ACR headline in
+      // its own text width, 14px left of where the ad centres it in the box.
+      // Restore the ad's layout: a normal block filling the element.
+      for (const inner of node.children) {
+        if (inner.tagName === 'DIV') {
+          inner.style.position = 'static';
+          // only when the html didn't size it itself (the drawn ACR CTA does)
+          if (!inner.style.width) inner.style.width = '100%';
+        }
+      }
+    } else if (e.type === 'rect') {
+      node = document.createElement('div');
+      Object.assign(node.style, e.css || {});
+    } else continue;
+    node.dataset.el = e.id;
+    // drop-shadow follows the art's alpha, like the ad (ad-player applyInitial)
+    if (e.shadow) node.style.filter = `drop-shadow(${e.shadow})`;
+    node.style.left = e.box[0] + 'px';
+    node.style.top = e.box[1] + 'px';
+    node.style.width = e.box[2] + 'px';
+    node.style.height = e.box[3] + 'px';
+    // the ad stacks by each element's own z (ad-player boxStyle); without this
+    // the stage stacked by DOM order instead, so anything generated later
+    // covered anything generated earlier regardless of z — which is why the
+    // headline sat under passport_top here but above it in the Deck
+    node.style.zIndex = e.z;
+    if (e.radius) {
+      node.style.borderRadius = Array.isArray(e.radius) ? e.radius.map(v => v + 'px').join(' ') : e.radius + 'px';
+      node.style.overflow = 'hidden';
+    }
+    node.dataset.display = node.style.display || '';
+    layer.appendChild(node);
+    // the ad steps a long dealer name down until it fits (ad-player autoFit);
+    // without this the Builder showed copy at a size the ad would never use
+    if (e.autoFit) autoFitStaged(node, e);
+  }
+  // author against this unit's own art unless the take says otherwise
+  if (eng.sceneSources && eng.sceneSources[unit]) {
+    eng.set('scene', unit);
+    syncControl('scene', unit);
+    syncCutout();
+    eng.resetScene();
+  } else {
+    // No scene art registered for this unit (the stamp-sequence unit, or a
+    // unit whose entry is missing). Without this the scene from whatever was
+    // staged before stayed loaded — a previous unit's CAR on this unit's
+    // stage. r2: applies with or without a photo window; a missing
+    // sceneSources entry must read as "no scene", never as a stale one.
+    eng.set('scene', 'none');
+    syncControl('scene', 'none');
+    eng.resetScene();
+  }
+  for (const n of document.querySelectorAll('.ctx-layer [data-el]')) {
+    if (n.dataset.baseScale != null) continue;   // a masked photo set its own above
+    const m = /rotate\((-?[\d.]+)deg\)/.exec(n.style.transform || '');
+    n.dataset.baseRot = m ? m[1] : 0;
+  }
+  stagedAd = ad;
+  stagedUnit = unit;
+  // P0: the nodes built above are new objects and the edit state is keyed by
+  // node. Same unit (Save's reload, a Load, a take pick): re-key the Maps,
+  // re-apply unsaved z, remember the selection to restore below. Different
+  // unit: drop everything — a stale entry would land in this unit's block on
+  // Save. CAR stays selected either way (resyncCarPanel() below).
+  const sameUnit = prevUnit === unit;
+  const keepSel = sameUnit && layoutSel && !isCar(layoutSel) ? layoutSel.dataset.el : null;
+  if (sameUnit) {
+    rekeyLayoutEdits();
+    for (const [id, z] of Object.entries(zEdits)) {    // ▲▼ edits: the fresh `ad` doesn't know them yet
+      const spec = ad.els.find(e => e.id === id);
+      if (spec) spec.z = z;
+      const n = nodeFor(id);
+      if (n) setZ(n, z);
+    }
+    if (layoutSel && !isCar(layoutSel)) layoutSel = null;   // never point at a detached node, even briefly
+  } else {
+    dropLayoutEdits();
+  }
+  // fresh nodes, fresh timeline: without this the first scrub after staging a
+  // new unit kept the previous unit's built state and played nothing
+  timelineBuilt = false;
+  clearZTimers();
+  renderLayerList();
+  applyHidden();
+  const edge = document.getElementById('adEdge');
+  edge.style.width = ad.w + 'px';
+  edge.style.height = ad.h + 'px';
+  document.getElementById('ctxFree').style.width = ad.w + 'px';
+  document.getElementById('ctxFree').style.height = ad.h + 'px';
+  applyFree();
+  setLayoutMode(true);
+  if (keepSel) reselectAfterRestage(keepSel);   // P0: same piece, fresh node, edits intact
+  resyncCarPanel();          // the drive was reset above: a selected car follows
+  status(playStatusEl, `staged ${unit} — scene window ${win ? win.join(', ') : 'full ad'}`);
+  return true;
+}
+// P0: the same speed bump the take dropdown has — a different unit throws the
+// unsaved layout edits away. OK = switch and discard; Cancel = stay (the
+// dropdown reverts) so they can be Saved first. And the unit's own take comes
+// with it (Philip, 2026-09-03): the preview's cut, the leaf taper and the take
+// half of Save then belong to the unit on the stage, never to a leftover take.
+unitCtxEl.addEventListener('change', async () => {
+  const next = unitCtxEl.value;
+  if (next !== stagedUnit && layoutDirty()
+      && !confirm(`Switch the stage to ${next || 'the free canvas'}?\n\n`
+                + `Unsaved layout edits to ${stagedUnit} will be lost.\nCancel, then Save, to keep them.`)) {
+    unitCtxEl.value = stagedUnit || '';
+    return;
+  }
+  const take = next && assignments[next];
+  const current = document.getElementById('presetName').value.trim();
+  if (take && presets[take] && take !== current) {
+    if (dirty && !confirm(`Load "${take}" — the take ${next} drives?\n\nUnsaved edits to the current take will be lost.`)) {
+      unitCtxEl.value = stagedUnit || '';
+      return;
+    }
+    loadPresetByName(take, presetStatusEl, { stage: false });
+    presetSelectEl.value = take;
+  } else if (next && !take) {
+    status(presetStatusEl, /· static$/.test(CTX_LABELS[next] || '')
+      ? `${next} is a static unit — layout only; the loaded take stays as it is`
+      : `${next} has no take assigned — the loaded take stays`, true);
+  }
+  await stageUnit(next);
+});
+
+/* ---------- Layout mode: nudge the ad's own art ----------
+   Passport sheets, copy and logo are LAYOUT, not motion — they belong to the
+   unit, not to a take (one take can drive several units). So this writes to
+   Ad Build/layout-overrides.json and regenerates, rather than touching a
+   recipe. Live edits are CSS transforms on the staged context nodes; Save
+   converts them to {dx, dy, scale, rot} and hands them to the server. */
+let stagedAd = null, stagedUnit = null;
+let locks = {};                    // {unit: {elementId: true}} — editing aid only
+try { locks = JSON.parse(localStorage.getItem('fallLayerLocks') || '{}'); } catch (e) {}
+// full-card overlays would otherwise swallow every click meant for the art
+// beneath them, so they start locked
+const DEFAULT_LOCKED = new Set(['scrim', 'card', 'f1canvas', 'leafcanvas',
+  // r2: every full-window overlay — they swallowed stage clicks meant for
+  // the art beneath them (unlock in the layer list to nudge one)
+  'topscrim', 'botscrim', 'cardblend', 'techblend', 'logoscrim', 'techfade', 'techscrim']);
+let layoutOv = {};                 // whole overrides file, as loaded
+let layoutSel = null;              // the selected context node
+// the mode toggle is gone — with the car in the list this panel IS the motion
+// editor, not a mode. A stand-in keeps the older call sites honest.
+const layoutModeEl = { checked: true, addEventListener() {} };
+const layoutRowEl = document.getElementById('layoutRow');
+const layoutInfoEl = document.getElementById('layoutInfo');
+const layoutStatusEl = document.getElementById('layoutStatus');
+const live = new Map();            // node -> {dx, dy, scale, rot}
+
+/* ---------- P0 (2026-09-03): the edit state stays bound to the stage ----------
+   live / liveEnd / liveEnd2 are keyed by DOM node and stageUnit() rebuilds every
+   node. Nothing re-bound them: after a Load, a take pick or an Ad-context change
+   the selection pointed at a DETACHED node — the row still highlighted (by id),
+   the sliders and readout answered, paint() wrote to a node no longer on stage,
+   whole-frame played the baked cues, and Save (which goes by id) wrote the edit
+   anyway: "the Deck has my move, the Builder doesn't" (Philip, HND_300x250_A
+   passport_m). Worse, a previous unit's entries were written into the next
+   unit's block. These keep the state and the stage in step. */
+let layoutTouched = false;   // any pose-panel control used since the last Save / stage
+let timingTouched = false;   // Starts moving / Move lasts / Soft start / Soft landing (leg 1)
+// Per-piece panel state. It used to live only in the controls, so it was lost
+// the moment another piece was selected (set the headline's exit, select the
+// CTA, Save: the headline's exit was gone). Keyed by element id, staged unit.
+const pending = new Map();
+function panelSnapshot() {
+  const v = id => parseFloat(document.getElementById(id).value);
+  // 'Make it static' / '− Third step' are INTENTS carried here until Save —
+  // they used to delete keys from the loaded override in memory, which Reset
+  // edits / a discard could not undo and the next Save then wrote for real
+  const prev = layoutSel && !isCar(layoutSel) ? pending.get(layoutSel.dataset.el) : null;
+  return {
+    static: !!(prev && prev.static), noStep2: !!(prev && prev.noStep2),
+    at: v('poseAt'), dur: v('poseDur'), easeIn: v('poseEaseIn'), easeOut: v('poseEaseOut'),
+    at2: v('poseAt2'), dur2: v('poseDur2'), easeIn2: v('poseEaseIn2'), easeOut2: v('poseEaseOut2'),
+    enterStyle: document.getElementById('poseEnterStyle').value, enterAt: v('poseEnter'), enterDur: v('poseEnterDur'),
+    exitAt: v('poseExit'), stays: document.getElementById('poseStays').checked,
+    timingTouched, exitTouched, enterTouched,
+  };
+}
+function panelRestore(p) {
+  const set = (id, val) => {
+    if (val == null || Number.isNaN(val)) return;
+    for (const el of [document.getElementById(id), document.getElementById(id + 'n')]) if (el) el.value = val;
+    const el = document.getElementById(id);
+    if (el.nextElementSibling && el.nextElementSibling.tagName === 'OUTPUT') el.nextElementSibling.textContent = val;
+  };
+  set('poseAt', p.at); set('poseDur', p.dur); set('poseEaseIn', p.easeIn); set('poseEaseOut', p.easeOut);
+  set('poseAt2', p.at2); set('poseDur2', p.dur2); set('poseEaseIn2', p.easeIn2); set('poseEaseOut2', p.easeOut2);
+  document.getElementById('poseEnterStyle').value = p.enterStyle;
+  set('poseEnter', p.enterAt); set('poseEnterDur', p.enterDur);
+  set('poseExit', p.exitAt);
+  document.getElementById('poseStays').checked = !!p.stays;
+  for (const id of ['poseExit', 'poseExitn']) document.getElementById(id).disabled = !!p.stays;
+  timingTouched = !!p.timingTouched; exitTouched = !!p.exitTouched; enterTouched = !!p.enterTouched;
+  syncEnterEnabled();
+}
+// Unsaved layout work a re-stage of a DIFFERENT unit would throw away. `live` is
+// inspected by delta (selecting alone creates an identity entry; liveEnd/liveEnd2
+// are primed from the saved override on select, so they are covered by the
+// touched flags, which also cover the timing / entrance / exit controls).
+function layoutDirty() {
+  if (layoutTouched || timingTouched || exitTouched || enterTouched) return true;
+  if (Object.keys(zEdits).length) return true;
+  for (const [node, t] of live) if (!isCar(node) && (t.dx || t.dy || t.rot || t.scale !== 1)) return true;
+  return false;
+}
+// A different unit is on the stage: nothing keyed by the old nodes means anything
+// now (headline / tech / cta / passport_* exist in every unit — a stale entry
+// would land in the NEW unit's block on Save). CAR is a sentinel, never
+// detached, and resyncCarPanel() re-selects it on the new unit: it stays.
+function dropLayoutEdits() {
+  live.clear(); liveEnd.clear(); liveEnd2.clear(); pending.clear();
+  zEdits = {};
+  layoutTouched = timingTouched = exitTouched = enterTouched = false;
+  if (layoutSel && !isCar(layoutSel)) {
+    layoutSel = null;
+    document.getElementById('poseRow').style.display = 'none';
+    layoutInfoEl.textContent = 'nothing selected';
+  }
+  poseMode = 'start';
+  document.querySelector('input[name="poseMode"][value="start"]').checked = true;
+}
+// The SAME unit was rebuilt (Load, a take pick, Save's own reload): re-key every
+// entry to the fresh node with that id; an id the unit no longer has is dropped.
+function rekeyLayoutEdits() {
+  for (const map of [live, liveEnd, liveEnd2]) {
+    const kept = [];
+    for (const [node, v] of map) {
+      const fresh = isCar(node) ? node : nodeFor(node.dataset.el);
+      if (fresh) kept.push([fresh, v]);
+    }
+    map.clear();
+    for (const [n, v] of kept) map.set(n, v);
+  }
+}
+// Re-point the panel at the rebuilt node WITHOUT selectNode(): that re-primes
+// the timing / entrance / exit fields from the saved override and resets the
+// touched flags — i.e. discards exactly what rekeyLayoutEdits() just kept.
+function reselectAfterRestage(id) {
+  const n = nodeFor(id);
+  layoutSel = n;
+  if (!n) {
+    document.getElementById('poseRow').style.display = 'none';
+    layoutInfoEl.textContent = 'nothing selected';
+    renderLayerList();
+    return;
+  }
+  applyRanges(n);
+  document.getElementById('poseRow').style.display = '';
+  syncStep2UI();
+  paint(n);
+  syncPoseInputs();
+  renderLayerList();
+}
+// One delegated listener covers every slider / box / select / checkbox in the
+// pose panel: the piece's panel state is snapshotted on every touch. The radios
+// only choose which end is SHOWN; the car's knobs are TAKE edits (`dirty`).
+function markLayoutTouched(ev) {
+  if (!layoutSel || isCar(layoutSel)) return;
+  const t = ev.target;
+  if (!t || t.name === 'poseMode' || t.tagName === 'BUTTON') return;
+  layoutTouched = true;
+  if (/^pose(At|Dur|EaseIn|EaseOut)n?$/.test(t.id)) timingTouched = true;
+  const snap = panelSnapshot();
+  // placing an end pose on a piece made static un-makes it: the move is back
+  if (snap.static && poseMode !== 'start' && /^pose(X|Y|Rot|Scale)n?$/.test(t.id)) snap.static = false;
+  pending.set(layoutSel.dataset.el, snap);
+  timelineBuilt = false;   // the next scrub / play rebuilds with this value (a changed exit used to scrub on the old one)
+}
+document.getElementById('poseRow').addEventListener('input', markLayoutTouched);
+document.getElementById('poseRow').addEventListener('change', markLayoutTouched);
+
+async function fetchOverrides() {
+  try { layoutOv = await (await fetch('/Ad%20Build/layout-overrides.json', { cache: 'no-store' })).json(); }
+  catch (e) { layoutOv = {}; }
+}
+/* ---------- the car scene is a layer too ----------
+   One panel drives everything, but the two destinations stay separate: the
+   car's endpoints are RECIPE data (they live in eng.P, save into the take and
+   bake into every unit the take drives), while an element's placement belongs
+   to this unit alone (layout-overrides.json). The selection decides which. */
+const CAR = { dataset: { el: '🚗 car scene' }, __car: true, style: {} };
+const CAR_KEYS = {
+  start: { dx: 'sceneStartX', dy: 'sceneStartY', rot: 'sceneStartRot', scale: 'sceneStartZoom' },
+  end:   { dx: 'sceneEndX',   dy: 'sceneEndY',   rot: 'sceneEndRot',   scale: 'sceneEndZoom' },
+};
+// the car measures in % of its window and the art in px, so the same sliders
+// retune themselves per selection
+const RANGES = {
+  car:  { poseX: [-300, 300, 1], poseY: [-100, 100, 1], poseRot: [-6, 6, 0.5], poseScale: [1, 4, 0.01] },
+  art:  { poseX: [-1600, 1600, 1], poseY: [-1200, 1200, 1], poseRot: [-180, 180, 0.5], poseScale: [0.1, 6, 0.01] },
+};
+const isCar = (sel) => !!(sel && sel.__car);
+// The drive was just reset under a selected car (a take loaded, the scene
+// still swapped): re-select it, so the knobs show the NEW take's numbers and
+// the canvas parks on the endpoint the radio names, not on the old panel state
+function resyncCarPanel() {
+  if (typeof layoutSel === 'undefined' || !isCar(layoutSel)) return;
+  if (stagedAd && !stagedAd.engine) return;   // a no-drive unit has no car row
+  selectNode(CAR);
+}
+function freezeCar(which) {
+  // the drive's version of "show me this pose"
+  eng.scenePlaying = false;
+  if (which === 'end') { eng.sceneDone = true; }
+  else { eng.sceneDone = false; eng.sceneT = 0; }
+}
+function carPose(which) {
+  const k = CAR_KEYS[which];
+  const o = {};
+  for (const key of ['dx', 'dy', 'rot', 'scale']) {
+    Object.defineProperty(o, key, {
+      get: () => +eng.P[k[key]],
+      set: (v) => { eng.set(k[key], v); syncControl(k[key], v); freezeCar(which); saveParams(); },
+      enumerable: true,
+    });
+  }
+  return o;
+}
+function applyRanges(sel) {
+  const r = RANGES[isCar(sel) ? 'car' : 'art'];
+  for (const [id, [lo, hi, step]] of Object.entries(r)) {
+    const el = document.getElementById(id);
+    el.min = lo; el.max = hi; el.step = 'any';   // the slider takes any value: a base of 70.26° must not snap to 70.5 on touch
+    const box = document.getElementById(id + 'n');
+    if (box) { box.step = step; }
+  }
+  document.querySelector('label[for="poseX"]').textContent = isCar(sel) ? 'Left / right %' : 'Left / right';
+  document.querySelector('label[for="poseY"]').textContent = isCar(sel) ? 'Up / down %' : 'Up / down';
+  document.querySelector('label[for="poseScale"]').textContent = 'Zoom';
+  // the engine has no drive delay: the car moves with frame 1
+  const atRow = document.getElementById('poseAt').closest('.row');
+  atRow.style.opacity = isCar(sel) ? 0.45 : '';
+  document.getElementById('poseAt').disabled = isCar(sel);
+  document.getElementById('poseAtn').disabled = isCar(sel);
+  document.getElementById('poseClearBtn').style.display = isCar(sel) ? 'none' : '';
+  // the cut hangs off the DRIVE, so it belongs to the car and nothing else
+  document.getElementById('cutLeadRow').style.display = isCar(sel) ? '' : 'none';
+  syncStep2UI();
+}
+// The third step's controls only exist once the step does, so the panel does not
+// grow a set of numbers that mean nothing for most pieces.
+function syncStep2UI() {
+  const on = hasStep2(layoutSel);
+  document.querySelector('.step2').style.display = on ? '' : 'none';
+  document.getElementById('poseMode2Label').style.display = on ? '' : 'none';
+  const btn = document.getElementById('poseStep2Btn');
+  btn.style.display = (layoutSel && !isCar(layoutSel)) ? '' : 'none';
+  btn.textContent = on ? '− Third step' : '＋ Third step';
+}
+
+function liveOf(node) {
+  if (isCar(node)) return carPose('start');
+  if (!live.has(node)) live.set(node, { dx: 0, dy: 0, scale: 1, rot: 0 });
+  return live.get(node);
+}
+function paint(node) {
+  // P0 belt and braces: a node the stage no longer holds cannot be painted and
+  // must not keep a Map entry Save would write under its id. Every edit path
+  // (sliders, boxes, keys, radios, step 2, clear) ends here with the node in hand.
+  if (!isCar(node) && !node.isConnected) {
+    live.delete(node); liveEnd.delete(node); liveEnd2.delete(node);
+    if (node === layoutSel) {
+      layoutSel = null;
+      document.getElementById('poseRow').style.display = 'none';
+      layoutInfoEl.textContent = 'nothing selected — the stage was rebuilt, pick the piece again';
+      renderLayerList();
+    }
+    return;
+  }
+  // a finished preview leaves the scene faded out (or slid away) — undo that
+  // so the piece can be edited in front of the car. NOT while the frame is
+  // parked on a scrub and the piece is not the car: there the faded / slid
+  // scene IS the scrubbed moment (the technician placed at 5 s lives under a
+  // canvas the cut has emptied), and now that a paused engine repaints every
+  // frame, resetting the fade here painted the car back over him the moment
+  // he was selected (adversarial review of the paused-redraw fix, 2026-09-02).
+  if (!scrubbing || isCar(node)) {
+    sceneFade.getAnimations().forEach(a => a.cancel());
+    sceneFade.style.opacity = '1';
+    eng.sceneAlpha = 1;
+    sceneSlide.getAnimations().forEach(a => a.cancel());
+    sceneSlide.style.transform = '';
+    eng.sceneOffX = eng.sceneOffY = 0;
+  }
+  timelineBuilt = false;   // the scrubber has to rebuild what this just undid
+  if (isCar(node)) {
+    const t = poseOf(node);
+    layoutInfoEl.innerHTML = `<b>🚗 car scene</b> &nbsp; <span style="color:var(--accent)">${poseMode}</span>`
+      + ` &nbsp; x ${t.dx}% · y ${t.dy}% · zoom ${(+t.scale).toFixed(2)}× · rot ${(+t.rot).toFixed(1)}°`;
+    return;                       // the engine redraws itself; there is no node
+  }
+  // a finished preview leaves filled animations on the node, which would
+  // outrank the inline transform — editing has to win over playback. On a
+  // masked photo the preview animates the picture, so clear that one too.
+  const target = poseTarget(node);
+  node.getAnimations().forEach(a => a.cancel());
+  if (target !== node) target.getAnimations().forEach(a => a.cancel());
+  node.style.opacity = '';
+  const t = poseOf(node);
+  target.style.transform = poseTransform(node, t);
+  if (node === layoutSel) {
+    // Absolute pose first (what the ad shows), then the unsaved delta. The
+    // readout used to print only the delta, which resets to 0 after a Save +
+    // reload — the saved rotation is baked into the resting pose by then — and
+    // read as "my rotation got lost" (Philip, HND_300x600_A passport_l).
+    const b = poseBaseOf(node);
+    const bRot = b.rot, sDx = b.dx, sDy = b.dy, sScale = b.scale;
+    // start mode: the delta is an unsaved nudge; end/end2: it is the leg's
+    // travel from the start pose (primed from the saved move after a reload)
+    const label = poseMode === 'start' ? 'unsaved Δ' : (poseMode === 'end' ? 'leg 1 travel' : 'leg 2 travel');
+    const delta = (t.dx || t.dy || t.rot || t.scale !== 1)
+      ? ` &nbsp;<span style="color:var(--ink-dim)">(${label}: dx ${t.dx} · dy ${t.dy} · scale ×${t.scale.toFixed(2)} · rot ${t.rot.toFixed(1)}°)</span>`
+      : (poseMode === 'start' ? ' &nbsp;<span style="color:var(--ink-dim)">(as saved)</span>'
+                               : ' &nbsp;<span style="color:var(--ink-dim)">(no travel yet)</span>');
+    layoutInfoEl.innerHTML = `<b>${node.dataset.el}</b> &nbsp; <span style="color:var(--accent)">${poseMode}</span>`
+      + ` &nbsp; dx ${(sDx + t.dx).toFixed(1)} · dy ${(sDy + t.dy).toFixed(1)} · scale ${(sScale * t.scale).toFixed(2)} · rot ${(bRot + t.rot).toFixed(1)}°`
+      + delta;
+  }
+}
+function lockedSet() {
+  if (!stagedUnit) return {};
+  if (!locks[stagedUnit]) {
+    locks[stagedUnit] = {};
+    for (const id of DEFAULT_LOCKED) locks[stagedUnit][id] = true;
+  }
+  return locks[stagedUnit];
+}
+function saveLocks() {
+  try { localStorage.setItem('fallLayerLocks', JSON.stringify(locks)); } catch (e) {}
+}
+// 👁 — purely an editing aid. Never saved, never reaches the ad.
+let hidden = {};
+try { hidden = JSON.parse(localStorage.getItem('fallLayerHidden') || '{}'); } catch (e) {}
+function hiddenSet() {
+  if (!stagedUnit) return {};
+  if (!hidden[stagedUnit]) {
+    hidden[stagedUnit] = {};
+    for (const id of f2OnlyFor(stagedUnit)) hidden[stagedUnit][id] = true;
+  }
+  return hidden[stagedUnit];
+}
+function saveHidden() {
+  try { localStorage.setItem('fallLayerHidden', JSON.stringify(hidden)); } catch (e) {}
+}
+// ⛶ — lift a piece out of the cropped layers so its whole extent is visible,
+// including everything the ad edge normally cuts off. Editing aid only.
+let freed = {};
+try { freed = JSON.parse(localStorage.getItem('fallLayerFree') || '{}'); } catch (e) {}
+function freeSet() {
+  if (!stagedUnit) return {};
+  if (!freed[stagedUnit]) freed[stagedUnit] = {};
+  return freed[stagedUnit];
+}
+function saveFree() {
+  try { localStorage.setItem('fallLayerFree', JSON.stringify(freed)); } catch (e) {}
+}
+function applyFree() {
+  const f = freeSet();
+  const free = document.getElementById('ctxFree');
+  const any = Object.values(f).some(Boolean);
+  document.getElementById('stageStack').classList.toggle('unmasked', any);
+  for (const n of document.querySelectorAll('.ctx-layer [data-el]')) {
+    const want = !!f[n.dataset.el];
+    const inFree = n.parentElement === free;
+    if (want && !inFree) { n.dataset.home = n.parentElement.id; free.appendChild(n); }
+    else if (!want && inFree) { document.getElementById(n.dataset.home || 'ctxOver').appendChild(n); }
+    n.style.boxShadow = want ? '0 0 0 1px rgba(224,122,47,.9)' : '';
+  }
+}
+document.addEventListener('click', (ev) => {
+  if (ev.target && ev.target.id === 'freeClose') {
+    const f = freeSet();
+    for (const k of Object.keys(f)) f[k] = false;
+    saveFree();
+    applyFree();
+    renderLayerList();
+    status(playStatusEl, 'back to the ad crop');
+  }
+});
+function applyHidden() {
+  const h = hiddenSet();
+  for (const n of document.querySelectorAll('.ctx-layer [data-el]')) {
+    // restore the element's OWN display, not the browser default: the dealer
+    // line is a flex box (that is what centres it in its box), and clearing the
+    // inline value turned it back into a plain block — so the copy sat high in
+    // the Builder while the Deck had it centred.
+    n.style.display = h[n.dataset.el] ? 'none' : (n.dataset.display || '');
+  }
+}
+function nodeFor(id) {
+  return document.querySelector(`.ctx-layer [data-el="${id}"]`);
+}
+// Mirror of autoFit() in ad-player.js — same loop, same floor, so the Builder
+// and the ad land on the same type size for the same name. Waits on the webfont
+// or the fit gets measured against the fallback face.
+function autoFitStaged(node, e) {
+  const fit = () => {
+    let size = parseFloat(getComputedStyle(node).fontSize) || 16;
+    const floor = +e.autoFit;
+    let guard = 24;
+    while (guard-- > 0 && size > floor &&
+           (node.scrollHeight > e.box[3] + 1 || node.scrollWidth > e.box[2] + 1)) {
+      size -= 0.5;
+      node.style.fontSize = size + 'px';
+    }
+  };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  else fit();
+}
+function renderLayerList() {
+  const host = document.getElementById('layerList');
+  if (!stagedAd) { host.innerHTML = ''; return; }
+  const lk = lockedSet();
+  const hid = hiddenSet();
+  const fr = freeSet();
+  const items = stagedAd.els.slice().sort((a, b) => (b.z || 0) - (a.z || 0));
+  const carRow = stagedAd.engine ? `
+    <div class="lrow${layoutSel === CAR ? ' sel' : ''}" data-el="__car" style="background:rgba(224,122,47,.07)">
+      <span style="width:52px">&nbsp;</span>
+      <span class="nm"><b>🚗 car scene</b></span>
+      <span class="zz">drive</span>
+    </div>` : '';
+  host.innerHTML = carRow + items.map((e, i) => `
+    <div class="lrow${lk[e.id] ? ' locked' : ''}${layoutSel && layoutSel.dataset.el === e.id ? ' sel' : ''}" data-el="${e.id}">
+      <button data-eye="${e.id}" title="hide / show this piece while you work" style="padding:0 4px">${hid[e.id] ? '🚫' : '👁'}</button>
+      <button data-free="${e.id}" title="${fr[e.id] ? 'showing the whole piece, past the ad edge' : 'show the whole piece, past the ad edge'}" style="padding:0 4px">${fr[e.id] ? '⤢' : '⛶'}</button>
+      <span class="nm">${e.id}</span>
+      <span class="zz">z${e.z || 0}</span>
+      <button data-up="${e.id}" ${i === 0 ? 'disabled' : ''}>▲</button>
+      <button data-down="${e.id}" ${i === items.length - 1 ? 'disabled' : ''}>▼</button>
+    </div>`).join('');
+  host.querySelectorAll('[data-free]').forEach(b => b.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    const f = freeSet();
+    f[b.dataset.free] = !f[b.dataset.free];
+    saveFree();
+    applyFree();
+    renderLayerList();
+  }));
+  host.querySelectorAll('[data-eye]').forEach(b => b.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    const h = hiddenSet();
+    h[b.dataset.eye] = !h[b.dataset.eye];
+    saveHidden();
+    applyHidden();
+    renderLayerList();
+  }));
+  host.querySelectorAll('.lrow').forEach(row => row.addEventListener('click', (ev) => {
+    if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'BUTTON') return;
+    if (row.dataset.el === '__car') { selectNode(CAR); return; }
+    const n = nodeFor(row.dataset.el);
+    if (n) selectNode(n);
+  }));
+  host.querySelectorAll('[data-up],[data-down]').forEach(b => b.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    const id = b.dataset.up || b.dataset.down;
+    const dir = b.dataset.up ? 1 : -1;      // ▲ = toward the front
+    const list = stagedAd.els.slice().sort((a, b2) => (b2.z || 0) - (a.z || 0));
+    const idx = list.findIndex(e => e.id === id);
+    const other = list[idx - dir];
+    if (!other) return;
+    const me = list[idx];
+    const za = me.z || 0, zb = other.z || 0;
+    me.z = zb === za ? za + dir : zb;       // equal z: step past it
+    other.z = za === zb ? za : za;
+    for (const e of [me, other]) {
+      const n = nodeFor(e.id);
+      if (n) setZ(n, e.z);
+      zEdits[e.id] = e.z;
+    }
+    renderLayerList();
+    status(layoutStatusEl, `${id} → z${me.z} · Save layout to keep it`);
+  }));
+}
+let zEdits = {};                   // element -> new z, pending save
+// P1 (S8): the stage stacks its layers in bands — under the car canvas, between
+// it and the leaf canvas, over both — and a node was banded ONCE at staging.
+// A ▲▼ edit or a zTo cue that crossed a canvas changed nothing on stage until a
+// Save + reload, then jumped. setZ() is the one way to change a node's z: it
+// re-parents into the band the ad's flat z order implies.
+let stageBands = null;
+function setZ(n, z) {
+  n.style.zIndex = z;
+  if (!stageBands || n.parentElement === document.getElementById('ctxFree')) return;   // freed: stays freed
+  const { sceneZ, leafZ } = stageBands;
+  const band = z < sceneZ ? ctxUnder : (z < leafZ ? ctxMid : ctxOver);
+  if (n.parentElement !== band) band.appendChild(n);
+}
+let poseMode = 'start';            // which end of the move the stage is showing
+const liveEnd = new Map();         // node -> end pose {dx,dy,scale,rot}
+function liveEndOf(node) {
+  if (isCar(node)) return carPose('end');
+  if (!liveEnd.has(node)) {
+    const intent = pending.get(node.dataset.el) || {};
+    const saved = intent.static ? null : ((layoutOv[stagedUnit] || {})[node.dataset.el] || {}).end;
+    const st = liveOf(node);
+    liveEnd.set(node, saved
+      ? { dx: saved.dx - (ovOf(node).dx || 0), dy: saved.dy - (ovOf(node).dy || 0),
+          scale: (saved.scale || 1) / (ovOf(node).scale || 1), rot: (saved.rot || 0) - (ovOf(node).rot || 0) }
+      : { dx: st.dx, dy: st.dy, scale: st.scale, rot: st.rot });
+  }
+  return liveEnd.get(node);
+}
+// A third pose: the piece arrives, holds, then moves on. Same shape as liveEnd,
+// primed from the saved end2 and otherwise starting where leg 1 finished — a new
+// third step should begin from the pose you can see, not jump to the origin.
+const liveEnd2 = new Map();
+function liveEnd2Of(node) {
+  if (!liveEnd2.has(node)) {
+    const ov = ovOf(node);
+    const intent = pending.get(node.dataset.el) || {};
+    const saved = (intent.static || intent.noStep2) ? null : ov.end2;
+    const en = liveEndOf(node);
+    liveEnd2.set(node, saved
+      ? { dx: saved.dx - (ov.dx || 0), dy: saved.dy - (ov.dy || 0),
+          scale: (saved.scale || 1) / (ov.scale || 1), rot: (saved.rot || 0) - (ov.rot || 0) }
+      : { dx: en.dx, dy: en.dy, scale: en.scale, rot: en.rot });
+  }
+  return liveEnd2.get(node);
+}
+function hasStep2(node) { return !!node && !isCar(node) && liveEnd2.has(node); }
+function ovOf(node) {
+  return ((layoutOv[stagedUnit] || {})[node.dataset.el]) || { dx: 0, dy: 0, scale: 1, rot: 0 };
+}
+function poseOf(node) {
+  if (isCar(node)) return carPose(poseMode);
+  if (poseMode === 'end2') return liveEnd2Of(node);
+  return poseMode === 'end' ? liveEndOf(node) : liveOf(node);
+}
+function selectNode(n) {
+  layoutSel = n;
+  // Selecting a piece always opens on "where it starts" (Philip, 2026-09-03):
+  // the leg being edited is an explicit choice per piece. A mode carried over
+  // from the previous piece put edits into "then moves to" that were meant for
+  // "where it ends up" — and on the car a leftover 'end2' looked up
+  // CAR_KEYS.end2 and threw.
+  poseMode = 'start';
+  document.querySelector('input[name="poseMode"][value="start"]').checked = true;
+  applyRanges(n);
+  document.getElementById('poseRow').style.display = '';
+  if (isCar(n)) {
+    freezeCar(poseMode === 'end' ? 'end' : 'start');
+    document.getElementById('poseAt').value = 0;
+    document.getElementById('poseAtn').value = 0;
+    for (const [id, v] of [['poseDur', eng.P.sceneDur], ['poseEaseIn', eng.P.sceneEaseIn],
+                           ['poseEaseOut', eng.P.sceneEaseOut],
+                           ['poseCutLead', +eng.P.cutLead || 0]]) {
+      const el = document.getElementById(id);
+      el.value = v;
+      const twin = document.getElementById(id + 'n');
+      if (twin) twin.value = v;
+      if (el.nextElementSibling && el.nextElementSibling.tagName === 'OUTPUT') el.nextElementSibling.textContent = v;
+    }
+    paint(n);
+    syncPoseInputs();
+    renderLayerList();
+    return;
+  }
+  const o = ovOf(n);
+  // prime the saved end pose, or the panel would report "doesn't move" for a
+  // piece that already has one authored
+  const intent = pending.get(n.dataset.el) || {};
+  if (o.end && !intent.static) liveEndOf(n);
+  // ...and the same for a saved third step, so its controls open showing it.
+  // The third-step TIMES are primed whenever the override carries them and
+  // reset to fresh defaults otherwise — they used to survive from the previous
+  // piece and Save wrote them the moment a third step was added.
+  if (o.end2 && o.at2 != null && !intent.static && !intent.noStep2) liveEnd2Of(n);
+  {
+    const at1 = o.at != null ? o.at : 3.5, dur1 = o.dur != null ? o.dur : 1;
+    for (const [id, v] of [['poseAt2', o.at2 != null ? o.at2 : +(at1 + dur1 + 1).toFixed(1)],
+                           ['poseDur2', o.dur2 != null ? o.dur2 : 1],
+                           ['poseEaseIn2', o.easeIn2 != null ? o.easeIn2 : 40],
+                           ['poseEaseOut2', o.easeOut2 != null ? o.easeOut2 : 80]]) {
+      const el = document.getElementById(id);
+      el.value = v;
+      const twin = document.getElementById(id + 'n');
+      if (twin) twin.value = v;
+      if (el.nextElementSibling && el.nextElementSibling.tagName === 'OUTPUT') el.nextElementSibling.textContent = v;
+    }
+  }
+  exitTouched = false;
+  enterTouched = false;
+  timingTouched = false;
+  (function primeEnter() {
+    // show the truth on open: the saved override if there is one, otherwise the
+    // entrance the generator baked — or, for a drive-relative one, its resolved time
+    const spec = stagedAd && stagedAd.els.find(e => e.id === n.dataset.el);
+    const baked = spec && bakedEntrance(spec.anim);
+    const style = ('enterAt' in o && o.enterAt === null) ? 'none'
+                : (o.enterStyle || (baked ? 'keep' : 'none'));
+    let val = ('enterAt' in o && o.enterAt !== null) ? o.enterAt : (baked ? baked.at : 0);
+    if (val == null && spec && spec.relTo === 'driveEnd') {
+      // a drive-relative entrance (the dealer) carries no literal time — show
+      // the RESOLVED one, the same number the player computes at load
+      const lead = spec.lead != null ? spec.lead : 1;
+      val = +Math.max(0, ((+eng.P.sceneDur || 0) - (+eng.P.cutLead || 0)) - lead).toFixed(2);
+    }
+    if (val == null) val = 0;
+    const dur = o.enterDur != null ? o.enterDur : (baked && baked.dur != null ? baked.dur : 0.7);
+    document.getElementById('poseEnterStyle').value = style;
+    for (const id of ['poseEnter', 'poseEntern']) document.getElementById(id).value = val;
+    for (const id of ['poseEnterDur', 'poseEnterDurn']) document.getElementById(id).value = dur;
+    syncEnterEnabled();
+  })();
+  (function primeExit() {
+    const spec = stagedAd && stagedAd.els.find(e => e.id === n.dataset.el);
+    const baked = spec && (spec.anim && (spec.anim.also || []).find(c => c.type === 'out'));
+    const stays = ('exitAt' in o) ? o.exitAt === null : false;
+    const val = ('exitAt' in o && o.exitAt !== null) ? o.exitAt : (baked ? baked.at : 4.6);
+    document.getElementById('poseStays').checked = stays;
+    for (const id of ['poseExit', 'poseExitn']) {
+      const el = document.getElementById(id);
+      el.value = val;
+      el.disabled = stays;
+    }
+  })();
+  for (const [id, v] of [['poseEaseIn', o.easeIn != null ? o.easeIn : 40],
+                         ['poseEaseOut', o.easeOut != null ? o.easeOut : 80]]) {
+    const el = document.getElementById(id);
+    el.value = v;
+    el.nextElementSibling.textContent = v;
+  }
+  for (const [id, v] of [['poseAt', o.at != null ? o.at : 3.5], ['poseDur', o.dur != null ? o.dur : 1]]) {
+    document.getElementById(id).value = v;
+    document.getElementById(id + 'n').value = v;
+  }
+  // P0: a piece left mid-edit comes back exactly as it was left — its panel
+  // state was snapshotted on every touch (see markLayoutTouched)
+  const pend = pending.get(n.dataset.el);
+  if (pend) panelRestore(pend);
+  // after priming, not before: applyRanges() ran syncStep2UI() at the top of
+  // this function, before the saved third step had been loaded into liveEnd2
+  syncStep2UI();
+  paint(n);
+  syncPoseInputs();
+  renderLayerList();
+}
+// The SAVED resting pose of a piece — what the ad already plays. A masked
+// photo keeps it in the picture transform (base*), an unmasked piece's dx/dy/
+// scale are baked into its box (so the override supplies them) and its
+// rotation is in dataset.baseRot. Live edits are deltas on top of this.
+function poseBaseOf(node) {
+  if (isCar(node)) return { dx: 0, dy: 0, scale: 1, rot: 0 };
+  const masked = !!node.dataset.masked, ov = ovOf(node);
+  return {
+    dx: masked ? +(node.dataset.baseDx || 0) : (ov.dx || 0),
+    dy: masked ? +(node.dataset.baseDy || 0) : (ov.dy || 0),
+    scale: masked ? +(node.dataset.baseScale != null ? node.dataset.baseScale : 1) : (ov.scale || 1),
+    rot: +(node.dataset.baseRot || 0),
+  };
+}
+function syncPoseInputs() {
+  if (!layoutSel) return;
+  const t = poseOf(layoutSel);
+  // slider and box mirror each other; never write to the one being used
+  const set = (id, v) => {
+    for (const el of [document.getElementById(id), document.getElementById(id + 'n')]) {
+      if (el && el !== document.activeElement) el.value = v;
+    }
+  };
+  // The boxes show the ABSOLUTE pose (saved + live delta) — what the ad plays.
+  // They used to show the delta alone, which reads 0 after a Save + reload
+  // while the piece is still where you put it; re-entering the angle you
+  // meant then stacked it on the saved one (Philip, HND_300x600_A passport_l:
+  // -38.5 saved, -38.5 typed again -> -76.5 in the ad). The car keeps its own
+  // take-space values (base 0).
+  const b = poseBaseOf(layoutSel);
+  set('poseX', +(b.dx + t.dx).toFixed(1));
+  set('poseY', +(b.dy + t.dy).toFixed(1));
+  set('poseRot', +(b.rot + t.rot).toFixed(2));
+  set('poseScale', +(b.scale * t.scale).toFixed(3));
+  // does this piece actually move?
+  if (isCar(layoutSel)) {
+    const dur = +eng.P.sceneDur || 0;
+    const cut = Math.max(0, dur - (+eng.P.cutLead || 0));
+    const n = (v) => v.toFixed(2).replace(/\.?0+$/, '');
+    document.getElementById('poseHint').innerHTML =
+      `The drive runs with frame 1 and lasts <b>${n(dur)}s</b>; frame 2 takes over at <b>${n(cut)}s</b>`
+      + (cut < dur ? `, so the car keeps driving for ${n(dur - cut)}s behind it.` : ' — as the car stops.')
+      + ' All of it saves into the take, so it follows the take to every unit it drives.';
+    return;
+  }
+  const st = liveOf(layoutSel), en = liveEnd.has(layoutSel) ? liveEndOf(layoutSel) : null;
+  const moves = (!!en && (en.dx !== st.dx || en.dy !== st.dy || en.rot !== st.rot || en.scale !== st.scale))
+    || hasStep2(layoutSel);   // a third step is a move even while leg 1 waits for its position
+  document.getElementById('poseHint').innerHTML = moves
+    ? `Appears and moves at <b>${document.getElementById('poseAt').value}s</b>, over <b>${document.getElementById('poseDur').value}s</b>.`
+      + ' A piece with no entrance of its own just stays put until then.' 
+    : 'This piece doesn\'t move — it just sits where you put it. To make it move, switch to <b>where it ends up</b> and place it there.';
+}
+for (const rb of document.querySelectorAll('input[name="poseMode"]')) {
+  rb.addEventListener('change', () => {
+    poseMode = document.querySelector('input[name="poseMode"]:checked').value;
+    if (layoutSel) {
+      if (poseMode === 'end') liveEndOf(layoutSel);
+      if (poseMode === 'end2') liveEnd2Of(layoutSel);
+      // the car has no node to paint: park the DRIVE on that endpoint, the way
+      // dragging one of its knobs does — the radio alone used to move the knobs
+      // and leave the car wherever the drive last stopped (Philip, 2026-09-02)
+      if (isCar(layoutSel)) freezeCar(poseMode === 'end' ? 'end' : 'start');
+      paint(layoutSel); syncPoseInputs();
+    }
+  });
+}
+for (const [id, key] of [['poseX', 'dx'], ['poseY', 'dy'], ['poseRot', 'rot'], ['poseScale', 'scale']]) {
+  for (const which of [id, id + 'n']) {
+    document.getElementById(which).addEventListener('input', () => {
+      if (!layoutSel) return;
+      const raw = parseFloat(document.getElementById(which).value);
+      const t = poseOf(layoutSel);
+      // the box holds the absolute pose; the live pose is the delta from the
+      // saved resting pose (see syncPoseInputs)
+      const b = poseBaseOf(layoutSel);
+      if (isNaN(raw)) t[key] = key === 'scale' ? 1 : 0;
+      else if (key === 'scale') t.scale = b.scale ? raw / b.scale : raw;
+      else t[key] = raw - b[key];
+      paint(layoutSel);
+      syncPoseInputs();
+    });
+  }
+}
+// the third step's own timing — plain override fields, no engine involvement
+for (const id of ['poseAt2', 'poseDur2']) {
+  for (const which of [id, id + 'n']) {
+    document.getElementById(which).addEventListener('input', () => {
+      const v = document.getElementById(which).value;
+      for (const twin of [id, id + 'n']) {
+        const el = document.getElementById(twin);
+        if (el !== document.activeElement) el.value = v;
+      }
+      syncPoseInputs();
+    });
+  }
+}
+for (const id of ['poseEaseIn2', 'poseEaseOut2']) {
+  document.getElementById(id).addEventListener('input', () => {
+    const el = document.getElementById(id);
+    el.nextElementSibling.textContent = el.value;
+  });
+}
+document.getElementById('poseStep2Btn').addEventListener('click', () => {
+  if (!layoutSel || isCar(layoutSel)) return;
+  const id = layoutSel.dataset.el;
+  if (id === 'tech' && !hasStep2(layoutSel)) {
+    // The technician is drive-relative: resolveDeferred() rewrites every cue's
+    // `at`, which would collapse BOTH legs of a third step onto the cut.
+    // Guard here rather than let the collapse read as a broken save.
+    status(playStatusEl, 'the technician cannot take a third step — both legs would land on the cut (drive-relative)', true);
+    return;
+  }
+  let removing = hasStep2(layoutSel);
+  if (removing) {
+    liveEnd2.delete(layoutSel);
+    if (poseMode === 'end2') {
+      poseMode = 'end';
+      document.querySelector('input[name="poseMode"][value="end"]').checked = true;
+    }
+    status(playStatusEl, `${id}: third step removed (Save to keep)`);
+  } else {
+    pending.set(id, Object.assign(panelSnapshot(), { noStep2: false, static: false }));   // a saved third step comes back
+    liveEnd2Of(layoutSel);              // starts where leg 1 finished
+    poseMode = 'end2';
+    document.querySelector('input[name="poseMode"][value="end2"]').checked = true;
+    status(playStatusEl, `${id}: third step added — place it, then set its timing`);
+  }
+  syncStep2UI();
+  paint(layoutSel);
+  syncPoseInputs();
+  layoutTouched = true;
+  pending.set(id, Object.assign(panelSnapshot(), { noStep2: removing }));
+  timelineBuilt = false;
+});
+for (const id of ['poseAt', 'poseDur']) {
+  for (const which of [id, id + 'n']) {
+    document.getElementById(which).addEventListener('input', () => {
+      const v = document.getElementById(which).value;
+      for (const twin of [id, id + 'n']) {
+        const el = document.getElementById(twin);
+        if (el !== document.activeElement) el.value = v;
+      }
+      // the drive's length is a take parameter, not an override — without this
+      // the slider moved and the engine never heard about it
+      if (isCar(layoutSel) && id === 'poseDur') {
+        const d = parseFloat(v) || 1;
+        eng.set('sceneDur', d);
+        syncControl('sceneDur', d);
+        timelineBuilt = false;   // the cut moved: every driveEnd-relative cue with it
+        saveParams();
+      }
+      syncPoseInputs();
+    });
+  }
+}
+// Mirror of entrance_of() in gen_units.py — the cue that brings a piece on is
+// either the animation itself or one of its `also` cues.
+const ENTRANCE_TYPES = ['fade', 'upFade', 'shootIn', 'slideBottom', 'slideRight', 'wordByWord'];
+function bakedEntrance(a) {
+  if (!a) return null;
+  if (ENTRANCE_TYPES.includes(a.type)) return a;
+  return (a.also || []).find(c => ENTRANCE_TYPES.includes(c.type)) || null;
+}
+let enterTouched = false;  // an untouched entrance control must not rewrite one
+for (const which of ['poseEnter', 'poseEntern', 'poseEnterDur', 'poseEnterDurn']) {
+  document.getElementById(which).addEventListener('input', () => {
+    enterTouched = true;
+    const v = document.getElementById(which).value;
+    const twins = which.startsWith('poseEnterDur') ? ['poseEnterDur', 'poseEnterDurn']
+                                                   : ['poseEnter', 'poseEntern'];
+    for (const t of twins) {
+      const el = document.getElementById(t);
+      if (el !== document.activeElement) el.value = v;
+    }
+  });
+}
+function enterStyle() { return document.getElementById('poseEnterStyle').value; }
+function syncEnterEnabled() {
+  const s = enterStyle();
+  // "nothing" has no time to set; a cut has a time but no length to speak of
+  for (const id of ['poseEnter', 'poseEntern']) {
+    document.getElementById(id).disabled = (s === 'none');
+  }
+  for (const id of ['poseEnterDur', 'poseEnterDurn']) {
+    document.getElementById(id).disabled = (s === 'none' || s === 'cut');
+  }
+}
+document.getElementById('poseEnterStyle').addEventListener('change', () => {
+  enterTouched = true;
+  syncEnterEnabled();
+});
+let exitTouched = false;   // an untouched exit control must not invent an exit
+for (const which of ['poseExit', 'poseExitn']) {
+  document.getElementById(which).addEventListener('input', () => {
+    exitTouched = true;
+    const v = document.getElementById(which).value;
+    for (const twin of ['poseExit', 'poseExitn']) {
+      const el = document.getElementById(twin);
+      if (el !== document.activeElement) el.value = v;
+    }
+  });
+}
+document.getElementById('poseStays').addEventListener('change', () => {
+  exitTouched = true;
+  const stays = document.getElementById('poseStays').checked;
+  document.getElementById('poseExit').disabled = stays;
+  document.getElementById('poseExitn').disabled = stays;
+});
+for (const [id, carKey] of [['poseEaseIn', 'sceneEaseIn'], ['poseEaseOut', 'sceneEaseOut']]) {
+  document.getElementById(id).addEventListener('input', () => {
+    const el = document.getElementById(id);
+    el.nextElementSibling.textContent = el.value;
+    // the drive's easing is a take parameter. Elements keep theirs on the
+    // override and it is read straight off these controls when saving.
+    if (isCar(layoutSel)) {
+      const v = parseFloat(el.value);
+      eng.set(carKey, v);
+      syncControl(carKey, v);
+      saveParams();
+    }
+  });
+}
+// Cut to frame 2 — a take parameter like the drive's own length, so it follows
+// the take to every unit it drives. Writes straight through to the engine the
+// way the easing pair above does; Save picks it up from eng.P with the rest.
+for (const which of ['poseCutLead', 'poseCutLeadn']) {
+  document.getElementById(which).addEventListener('input', () => {
+    const v = parseFloat(document.getElementById(which).value);
+    for (const twin of ['poseCutLead', 'poseCutLeadn']) {
+      const el = document.getElementById(twin);
+      if (el !== document.activeElement) el.value = v;
+    }
+    if (!isCar(layoutSel) || !Number.isFinite(v)) return;
+    eng.set('cutLead', v);
+    syncControl('cutLead', v);
+    timelineBuilt = false;     // the cut moved: every driveEnd-relative cue with it
+    saveParams();
+    syncPoseInputs();          // the hint reports the resolved cut time
+  });
+}
+function easeCssOf(easeIn, easeOut) {
+  const a = Number.isFinite(+easeIn) ? +easeIn : 40, b = Number.isFinite(+easeOut) ? +easeOut : 80;
+  const x1 = Math.max(0, Math.min(100, a)) / 100;
+  const x2 = 1 - Math.max(0, Math.min(100, b)) / 100;
+  return `cubic-bezier(${x1.toFixed(3)},0,${x2.toFixed(3)},1)`;
+}
+function poseEase2Css() {
+  return easeCssOf(document.getElementById('poseEaseIn2').value, document.getElementById('poseEaseOut2').value);
+}
+function poseEaseCss() {
+  return easeCssOf(document.getElementById('poseEaseIn').value, document.getElementById('poseEaseOut').value);
+}
+// the second copy of the drive button, so tweak -> preview -> play is one place
+document.getElementById('poseScenePlayBtn').addEventListener('click', () =>
+  document.getElementById('scenePlayBtn').click());
+document.getElementById('posePlayBtn').addEventListener('click', () => {
+  if (!layoutSel) return;
+  if (isCar(layoutSel)) {
+    // just the drive — "this move" means this one thing, not the whole frame.
+    // A parked frame (scrub / ⏸ / Pause) holds the engine still, so leave it
+    // first — otherwise playScene() only snapped the car to its start pose.
+    if (scrubbing) goLive();
+    eng.paused = false;
+    document.getElementById('pauseBtn').textContent = 'Pause';
+    playDriveOnly();
+    status(playStatusEl, `previewing the drive · ${(+eng.P.sceneDur).toFixed(2).replace(/\.?0+$/, '')}s`);
+    return;
+  }
+  const a = liveOf(layoutSel), b = liveEndOf(layoutSel);
+  const leg1Still = a.dx === b.dx && a.dy === b.dy && a.rot === b.rot && a.scale === b.scale;
+  if (leg1Still && !hasStep2(layoutSel)) {
+    status(playStatusEl, `${layoutSel.dataset.el} has no move yet — switch to "where it ends up" and place it there first`);
+    return;
+  }
+  const dur = (parseFloat(document.getElementById('poseDur').value) || 1) * 1000;
+  // Through poseTarget/poseTransform like the whole-frame timeline: a masked
+  // photo (the technician) moves its PICTURE, not its window. Animating the
+  // node directly scaled the ACR 160x600 mask — the same "…and still did, on
+  // a move" bug the timeline already had fixed. For unmasked pieces this is
+  // identical (base pose zero, no centring).
+  const pt = poseTarget(layoutSel);
+  if (!hasStep2(layoutSel)) {
+    pt.animate([
+      { transform: poseTransform(layoutSel, a) },
+      { transform: poseTransform(layoutSel, b) },
+    ], { duration: dur, easing: poseEaseCss() });
+    status(playStatusEl, `previewing ${layoutSel.dataset.el} · ${(dur / 1000).toFixed(2)}s`);
+    return;
+  }
+  // A third step: play BOTH legs with the hold between them, as the ad does —
+  // this button used to preview leg 1 alone, which read as a jump to the end.
+  const at1 = parseFloat(document.getElementById('poseAt').value) || 0;
+  const at2 = parseFloat(document.getElementById('poseAt2').value);
+  const dur2 = (parseFloat(document.getElementById('poseDur2').value) || 1) * 1000;
+  const c = liveEnd2Of(layoutSel);
+  const hold = Number.isFinite(at2) ? Math.max(0, at2 - (at1 + dur / 1000)) * 1000 : 0;
+  const leg1 = pt.animate([
+    { transform: poseTransform(layoutSel, a) },
+    { transform: poseTransform(layoutSel, b) },
+  ], { duration: dur, easing: poseEaseCss(), fill: 'forwards' });
+  const leg2 = pt.animate([
+    { transform: poseTransform(layoutSel, b) },
+    { transform: poseTransform(layoutSel, c) },
+  ], { delay: dur + hold, duration: dur2, easing: poseEase2Css(), fill: 'forwards' });
+  // back to the resting pose when the preview is over, like the single leg
+  leg2.finished.then(() => { leg1.cancel(); leg2.cancel(); }).catch(() => {});
+  status(playStatusEl, `previewing ${layoutSel.dataset.el} · leg 1 ${(dur / 1000).toFixed(2)}s, hold ${(hold / 1000).toFixed(2)}s, leg 2 ${(dur2 / 1000).toFixed(2)}s`);
+});
+document.getElementById('poseClearBtn').addEventListener('click', () => {
+  if (!layoutSel || isCar(layoutSel)) return;
+  const id = layoutSel.dataset.el;
+  liveEnd.delete(layoutSel);
+  liveEnd2.delete(layoutSel);        // static means static: the third step goes too
+  // the intent travels with the piece's pending state; Save drops the move and
+  // the third step from the file then — the loaded override is left alone so
+  // Reset edits / a discard bring the move straight back
+  pending.set(id, Object.assign(panelSnapshot(), { static: true, noStep2: true }));
+  layoutTouched = true;
+  timelineBuilt = false;
+  poseMode = 'start';
+  document.querySelector('input[name="poseMode"][value="start"]').checked = true;
+  paint(layoutSel);
+  syncPoseInputs();
+  syncStep2UI();
+  // "Static" has to mean static. Clearing only the authored move left whatever
+  // entrance the generator baked in still travelling — which is why this button
+  // looked like it did nothing on the dealer line, whose rise and fade are
+  // baked, not authored. Drop it to a cut: no movement, but it still arrives on
+  // its own cue rather than sitting over frame one. "Arrives by" changes that.
+  enterTouched = true;
+  document.getElementById('poseEnterStyle').value = 'cut';
+  syncEnterEnabled();
+  pending.set(id, Object.assign(panelSnapshot(), { static: true, noStep2: true }));   // with the cut in it
+  status(playStatusEl, `${id}: no movement — it just appears at ${(+document.getElementById('poseEnter').value).toFixed(1)}s (Save to keep)`);
+});
+function setLayoutMode(on) {
+  // The stage belongs to the leaves — emitter, bursts and wind-drag must reach
+  // the canvas everywhere — so staged art never takes a pointer. Art is picked
+  // from the layer list and positioned with the sliders.
+  layoutRowEl.style.display = on ? '' : 'none';
+  for (const n of document.querySelectorAll('.ctx-layer [data-el]')) {
+    n.style.pointerEvents = 'none';
+    n.style.outline = '';
+    n.style.cursor = '';
+  }
+  if (!on) { layoutSel = null; layoutInfoEl.textContent = 'nothing selected'; }
+}
+
+
+// art is never dragged on the stage — that surface is the leaves'
+
+// keyboard: nudge / rotate / scale
+window.addEventListener('keydown', (ev) => {
+  if (!layoutModeEl.checked || !layoutSel) return;
+  const tgt = ev.target;
+  if (tgt && (tgt.tagName === 'INPUT' || tgt.tagName === 'TEXTAREA' || tgt.tagName === 'SELECT')) return;
+  const t = poseOf(layoutSel);
+  const step = ev.shiftKey ? 10 : 1;
+  let hit = true;
+  switch (ev.key) {
+    case 'ArrowLeft':  t.dx -= step; break;
+    case 'ArrowRight': t.dx += step; break;
+    case 'ArrowUp':    t.dy -= step; break;
+    case 'ArrowDown':  t.dy += step; break;
+    case '[': t.rot -= 0.5; break;
+    case ']': t.rot += 0.5; break;
+    case '-': t.scale = Math.max(0.2, t.scale - 0.01); break;
+    case '=': case '+': t.scale = Math.min(5, t.scale + 0.01); break;
+    default: hit = false;
+  }
+  if (hit) {
+    ev.preventDefault();
+    if (!isCar(layoutSel)) { layoutTouched = true; pending.set(layoutSel.dataset.el, panelSnapshot()); }
+    paint(layoutSel); syncPoseInputs();
+  }
+});
+
+document.getElementById('layoutResetBtn').addEventListener('click', () => {
+  // everything unsaved goes — poses, legs, timings, entrances, exits, z — and the
+  // selected piece re-opens from the saved override (it used to reset only the
+  // start-pose nudges and leave both authored legs in place)
+  const keep = layoutSel && !isCar(layoutSel) ? layoutSel.dataset.el : null;
+  dropLayoutEdits();
+  for (const n of document.querySelectorAll('.ctx-layer [data-el]')) paint(n);
+  if (keep) { const n = nodeFor(keep); if (n) selectNode(n); }
+  status(layoutStatusEl, 'edits cleared — nothing saved');
+});
+document.getElementById('layoutSaveBtn').addEventListener('click', async () => {
+  const unit = unitCtxEl.value;
+  if (!unit) { status(layoutStatusEl, 'stage a unit first'); return; }
+  const btn = document.getElementById('layoutSaveBtn');
+  const keepId = layoutSel && (isCar(layoutSel) ? '__car' : layoutSel.dataset.el);
+  // A static unit (RT, stamp smalls) is layout only: no take drives it, so
+  // Save leaves the loaded take alone — a dozen RT saves must not re-write
+  // and re-bake whichever take happened to be loaded last.
+  const staticUnit = stagedUnit === unit && !!(stagedAd && !stagedAd.engine);
+  const takeName = staticUnit ? '' : document.getElementById('presetName').value.trim();
+
+  // ---- 1. the take: car / leaf / streak motion, shared by every unit it drives
+  if (takeName) {
+    presets[takeName] = Object.assign({ savedAt: new Date().toISOString(), seed }, takeParams());
+    deletedPresets.delete(takeName);     // an explicit re-save is an un-delete
+    if (savedRecording) presets[takeName].recording = savedRecording;
+    refreshPresetSelect();
+    presetSelectEl.value = takeName;
+    dirty = false;
+  }
+
+  // ---- 2. this unit's layout: where its own art sits
+  // The FILE is the base for every piece NOT touched in this session. This
+  // tab's page-load copy of the block used to be written back wholesale, so
+  // an edit made outside it (a fix applied to the file, another tab's Save)
+  // was silently reverted by the next Save here (the 300x250 dealer,
+  // 2026-09-03). Pieces touched here keep their in-memory version, which is
+  // what the deltas were measured against.
+  let diskBlock = null;
+  try {
+    const rr = await fetch('/Ad%20Build/layout-overrides.json', { cache: 'no-store' });
+    if (rr.ok) diskBlock = ((await rr.json())[unit]) || {};
+  } catch (e) {}
+  const mem = layoutOv[unit] || {};
+  const touched = new Set([...pending.keys(), ...Object.keys(zEdits)]);
+  for (const [node, t] of live) {
+    if (!isCar(node) && node.isConnected && (t.dx || t.dy || t.rot || t.scale !== 1)) touched.add(node.dataset.el);
+  }
+  const cur = Object.assign({}, diskBlock || mem);
+  for (const id of touched) if (mem[id]) cur[id] = mem[id];
+  for (const [node, t] of live) {
+    if (isCar(node) || !node.isConnected) continue;   // P0: never a detached node's delta
+    if (!t.dx && !t.dy && t.scale === 1 && !t.rot) continue;
+    const prev = cur[node.dataset.el] || { dx: 0, dy: 0, scale: 1, rot: 0 };
+    cur[node.dataset.el] = Object.assign({}, prev, {
+      dx: +(prev.dx + t.dx).toFixed(1),
+      dy: +(prev.dy + t.dy).toFixed(1),
+      scale: +((prev.scale || 1) * t.scale).toFixed(3),
+      rot: +((prev.rot || 0) + t.rot).toFixed(2),
+    });
+  }
+  // P0: every piece with panel edits pending — not only the selected one. The
+  // selected piece reads the live controls (snapshotted here); the others read
+  // the snapshot taken when they were last touched.
+  const selId = layoutSel && !isCar(layoutSel) ? layoutSel.dataset.el : null;
+  if (selId) pending.set(selId, panelSnapshot());
+  for (const [id, p] of pending) {
+    const node = nodeFor(id);
+    if (!node) continue;
+    // intents first: 'Make it static' drops the move and the third step,
+    // '− Third step' drops the third step — from the copy being written
+    if (p.static || p.noStep2) {
+      const c = Object.assign({ dx: 0, dy: 0, scale: 1, rot: 0 }, cur[id]);
+      for (const k of ['at2', 'dur2', 'easeIn2', 'easeOut2', 'end2']) delete c[k];
+      if (p.static) for (const k of ['at', 'dur', 'easeIn', 'easeOut', 'end']) delete c[k];
+      cur[id] = c;
+    }
+    const atV = p.at, durV = p.dur;
+    const s0 = liveOf(node);
+    const e0 = liveEnd.has(node) ? liveEndOf(node) : null;
+    const reallyMoves = !!e0 && (e0.dx !== s0.dx || e0.dy !== s0.dy || e0.rot !== s0.rot || e0.scale !== s0.scale);
+    // A third step is a move even when leg 1 has no travel yet (a sheet whose
+    // timings were cloned ahead of its positions): gating on leg 1 alone
+    // silently dropped a freshly plotted third step (Philip, HND_300x250_A).
+    if (!p.static && !isNaN(atV) && (reallyMoves || hasStep2(node))) {
+      const base = cur[id] || { dx: 0, dy: 0, scale: 1, rot: 0 };
+      cur[id] = Object.assign({}, base, {
+        at: atV,
+        dur: isNaN(durV) ? 1 : durV,
+        easeIn: p.easeIn,
+        easeOut: p.easeOut,
+        end: { dx: +(base.dx + e0.dx - s0.dx).toFixed(1),
+               dy: +(base.dy + e0.dy - s0.dy).toFixed(1),
+               scale: +((base.scale || 1) * e0.scale / s0.scale).toFixed(3),
+               rot: +((base.rot || 0) + e0.rot - s0.rot).toFixed(2) },
+      });
+      // the third step, only when one exists — the same discipline exitTouched
+      // and enterTouched enforce, since writing a field unconditionally is how
+      // the technician once acquired an exit it never had
+      if (hasStep2(node)) {
+        const e2 = liveEnd2Of(node);
+        const b2 = cur[id];
+        cur[id] = Object.assign({}, b2, {
+          at2: p.at2,
+          dur2: isNaN(p.dur2) ? 1 : p.dur2,
+          easeIn2: p.easeIn2,
+          easeOut2: p.easeOut2,
+          end2: { dx: +(base.dx + e2.dx - s0.dx).toFixed(1),
+                  dy: +(base.dy + e2.dy - s0.dy).toFixed(1),
+                  scale: +((base.scale || 1) * e2.scale / s0.scale).toFixed(3),
+                  rot: +((base.rot || 0) + e2.rot - s0.rot).toFixed(2) },
+        });
+      }
+    } else if (!p.static && !isNaN(atV) && p.timingTouched) {
+      // timing / easing dialled on a piece that does not travel yet: keep the
+      // numbers, so they are there when its end pose is placed (they were
+      // dropped, and the panel snapped back to the baked values)
+      cur[id] = Object.assign({ dx: 0, dy: 0, scale: 1, rot: 0 }, cur[id],
+                              { at: atV, dur: isNaN(durV) ? 1 : durV, easeIn: p.easeIn, easeOut: p.easeOut });
+    }
+    // Only when the exit control was actually used. Writing it on every save
+    // stamped an exit onto whatever happened to be selected — that is how the
+    // technician acquired one it never had.
+    if (p.exitTouched) {
+      cur[id] = Object.assign({ dx: 0, dy: 0, scale: 1, rot: 0 }, cur[id],
+                              { exitAt: p.stays ? null : (isNaN(p.exitAt) ? null : p.exitAt) });
+    }
+    // same guard as the exit: only when the control was actually used
+    if (p.enterTouched) {
+      const st = p.enterStyle;
+      cur[id] = Object.assign({ dx: 0, dy: 0, scale: 1, rot: 0 }, cur[id],
+                              { enterAt: st === 'none' ? null : (isNaN(p.enterAt) ? null : p.enterAt),
+                                enterStyle: st });
+      if (st === 'none' || st === 'cut' || isNaN(p.enterDur)) delete cur[id].enterDur;
+      else cur[id].enterDur = p.enterDur;
+    }
+  }
+  for (const [id, z] of Object.entries(zEdits)) {
+    cur[id] = Object.assign({ dx: 0, dy: 0, scale: 1, rot: 0 }, cur[id], { z });
+  }
+  const prevOv = layoutOv[unit], prevZ = zEdits;   // restored if nothing gets written
+  zEdits = {};
+  layoutOv[unit] = cur;
+
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  status(layoutStatusEl, 'saving motion + layout…');
+  // P0: the receipt tells the truth. The layout file is written by /api/layout
+  // BEFORE the regenerate runs, so from that point on "saved" is a fact and
+  // anything later is a warning — and the edit state must be cleared and the
+  // stage reloaded in every one of those cases, or the next Save applied the
+  // start-pose nudge a second time and the stage stayed a generation behind.
+  let written = false;
+  const warn = [];
+  const refresh = async () => {
+    live.clear(); liveEnd.clear(); liveEnd2.clear(); pending.clear();
+    layoutTouched = timingTouched = exitTouched = enterTouched = false;
+    layoutSel = null;
+    const ok = await stageUnit(unit);
+    setLayoutMode(true);
+    if (!ok) { warn.push('the stage could not reload the unit — reload the page before continuing'); return; }
+    if (keepId) {
+      const again = keepId === '__car' ? CAR : nodeFor(keepId);
+      if (again) selectNode(again);
+    }
+  };
+  try {
+    if (takeName) {
+      const merged = await mergedPresets(takeName);          // -> leaf-presets.json
+      presets = merged.presets;
+      assignments = merged.assignments;
+      await pushPresets();
+    }
+    const mergedOv = await mergedOverrides(unit);
+    layoutOv = mergedOv;
+    const r = await fetch('/api/layout', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                           body: JSON.stringify(mergedOv) });   // -> overrides + regenerate
+    if (!r.ok) throw new Error(`layout save answered ${r.status}`);
+    written = true;
+    const j = await r.json();
+    if (!j.ok) warn.push('regenerate reported: ' + (Array.isArray(j.out) ? j.out.join(' ') : j.out));
+    // -> and bake the take into every unit it drives, so the ads match the stage
+    let baked = [];
+    if (takeName && presets[takeName]) {
+      baked = unitsForTake(takeName);
+      for (const u of baked) {
+        const rb = await fetch('/api/bake', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                             body: JSON.stringify({ unit: u }) });
+        const jb = await rb.json().catch(() => ({ ok: false }));
+        if (!rb.ok || !jb.ok) warn.push(`bake of ${u} failed` + (jb.out ? ': ' + String(jb.out).split('\n').pop() : ''));
+      }
+    }
+    await refresh();
+    const stamp = new Date().toLocaleTimeString();
+    if (warn.length) {
+      status(layoutStatusEl, `saved — with warnings: ${warn.join(' · ')}  ·  ${stamp}`, true);
+    } else {
+      const loadedTake = document.getElementById('presetName').value.trim();
+      status(layoutStatusEl,
+        `saved ✓  ·  ${takeName ? 'take + ' : ''}layout${baked.length ? ' · baked ' + baked.join(', ') : ''}`
+        + (staticUnit ? ' · static unit, layout only'
+            + (dirty && loadedTake ? ` (take "${loadedTake}" has unsaved edits — stage a unit it drives to save them)` : '')
+          : '')
+        + `  ·  ${stamp}`, true);
+    }
+  } catch (e) {
+    if (written) {
+      // the layout is on disk; a later step (bake, reload) failed — never leave
+      // the edits armed, or the next Save would apply them twice
+      await refresh().catch(() => {});
+      status(layoutStatusEl, `saved — but a later step failed (${e.message}); reload the page before continuing`, true);
+    } else {
+      // nothing reached the file: put the pre-save override and the pending z
+      // edits back, or the retry would fold every start nudge in a second time
+      layoutOv[unit] = prevOv;
+      zEdits = prevZ;
+      status(layoutStatusEl, 'server offline — nothing saved', true);
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save';
+  }
+});
+
+/* ---------- play the whole frame, not just the drive ----------
+   The stage already knows every element's timing (it reads the generated
+   unit) and it also knows edits you have not saved yet. So 🚗 Play scene
+   runs the ad's choreography alongside the drive: no bake, no deck, and
+   unsaved poses preview too. Entrances/exits use the same cue times the
+   built ad does. */
+function poseTransform(node, p) {
+  // the saved pose is the BASE, the live pose a delta on top — the same way
+  // Save combines them into the override. ad-player.js poseCss() does this with
+  // imgPose folded into its keyframes; this is the Builder's half.
+  const bRot = +(node.dataset.baseRot || 0);
+  const bDx = +(node.dataset.baseDx || 0);
+  const bDy = +(node.dataset.baseDy || 0);
+  const bScale = +(node.dataset.baseScale != null ? node.dataset.baseScale : 1);
+  // an overflowing masked picture is anchored at the window's centre, so every
+  // pose has to carry that centring (ad-player.js poseCss)
+  return (node.dataset.centred ? 'translate(-50%, -50%) ' : '')
+    + `translate(${bDx + p.dx}px, ${bDy + p.dy}px) `
+    + `rotate(${bRot + p.rot}deg) scale(${bScale * p.scale})`;
+}
+// A masked photo poses the picture inside its window — the same split the ad
+// makes (ad-player.js poseTarget). Without this the timeline preview scaled the
+// technician's mask while the ad scaled his picture.
+function poseTarget(node) {
+  return node.dataset.masked ? node.firstElementChild : node;
+}
+const ZERO_POSE = { dx: 0, dy: 0, scale: 1, rot: 0 };
+// Is the preview timeline still intact? paint() tears parts of it down so that
+// editing beats playback; the scrubber needs to know to put it back.
+let timelineBuilt = false;
+let wholePlayT0 = null;    // document.timeline time a whole-frame play began; null when none runs
+// z changes are wall-clock, not animations, so a seek has to recompute them —
+// same reason ad-player's __adSeek recomputes zTo instead of trusting timers.
+const zTimers = [];
+function clearZTimers() { while (zTimers.length) clearTimeout(zTimers.pop()); }
+function playContextTimeline() {
+  if (!stagedAd) return 0;
+  let last = 0;
+  // The ad fades its own vehicle canvas away; here the car is drawn on the one
+  // shared stage canvas, so fade THAT over the same window — otherwise the
+  // technician stays buried under it and the transition is invisible.
+  // (Leaves share this canvas, so on leafy units they dim with it in preview.)
+  sceneFade.getAnimations().forEach(a => a.cancel());
+  sceneFade.style.opacity = '1';
+  eng.sceneAlpha = 1;
+  sceneSlide.getAnimations().forEach(a => a.cancel());
+  sceneSlide.style.transform = '';
+  eng.sceneOffX = eng.sceneOffY = 0;
+  eng.sceneSoft = 0; eng.sceneSlideAxis = null;
+  // Where the frame changes: the drive's end, pulled back by cutLead. One local
+  // for both the scene fade and the elements below, so the two cannot drift
+  // apart from each other or from ad-player's resolveDeferred().
+  const driveEnd = Math.max(0, (+eng.P.sceneDur || 0) - (+eng.P.cutLead || 0));
+  eng.taperAt = unitTaperAt();
+  const f1 = stagedAd.els.find(e => e.id === 'f1canvas');
+  const fa = f1 && f1.anim;
+  if (fa && ['out', 'slideOutLeft', 'slideUp'].includes(fa.type)) {
+    const lead1 = f1.lead != null ? f1.lead : 1;
+    const at1 = f1.relTo === 'driveEnd' ? Math.max(0, driveEnd - lead1) : fa.at;
+    let dur1 = fa.dur != null ? fa.dur : (f1.relTo === 'driveEnd' ? lead1 : 0.35);
+    // Choosing "a fade" on the technician dissolves the CANVAS (gen_units.py
+    // does the same at bake time) — honour it live, or picking the fade would
+    // look like it did nothing until after a Save and a regenerate.
+    if (layoutSel && layoutSel.dataset.el === 'tech' && enterStyle() === 'fade') {
+      const d = parseFloat(document.getElementById('poseEnterDur').value);
+      if (!isNaN(d) && d > 0) dur1 = d;
+    }
+    if (Number.isFinite(at1)) {
+      if (fa.type === 'slideOutLeft' || fa.type === 'slideUp') {
+        // the ad SLIDES the canvas content inside its window (ad-player
+        // slideOutLeft/slideUp) — mirror it: animate the slide proxy on the
+        // player's curve; the engine translates the scene within its clip and
+        // draws the trailing-edge ramp (a.soft; 0 = hard edge).
+        const horiz = fa.type === 'slideOutLeft';
+        const dist = fa.dist || (horiz ? (stagedAd.w || eng.W) : (stagedAd.h || eng.H));
+        eng.sceneSlideAxis = horiz ? 'x' : 'y';
+        eng.sceneSoft = fa.soft != null ? fa.soft : (horiz ? 18 : 14);
+        sceneSlide.animate([
+          { transform: 'translate(0px, 0px)' },
+          { transform: horiz ? `translate(${-dist}px, 0px)` : `translate(0px, ${-dist}px)` },
+        ], { delay: at1 * 1000, duration: dur1 * 1000, fill: 'forwards',
+             easing: 'cubic-bezier(.4,0,.6,1)' });
+      } else {
+        sceneFade.animate([{ opacity: 1 }, { opacity: 0 }],
+                          // the same default run() gives every cue in ad-player;
+                          // without it the Builder dissolved linearly while the ad
+                          // eased, so the two agreed on the window but not the curve
+                          { delay: at1 * 1000, duration: dur1 * 1000, fill: 'forwards',
+                            easing: 'cubic-bezier(.33,0,.2,1)' });
+      }
+      last = Math.max(last, at1 + dur1);
+    }
+  }
+  for (const spec of stagedAd.els) {
+    const n = nodeFor(spec.id);
+    if (!n) continue;
+    try {
+    const pt = poseTarget(n);
+    n.getAnimations().forEach(a => a.cancel());
+    if (pt !== n) pt.getAnimations().forEach(a => a.cancel());
+    const st = live.has(n) ? liveOf(n) : ZERO_POSE;
+    pt.style.transform = poseTransform(n, st);
+    n.style.opacity = '';
+
+    // Cues that hang off the drive carry no literal time — the player resolves
+    // them from recipe.json once it knows the drive's length (resolveDeferred
+    // rewrites `at` on the anim AND every cue in `also`). Do the same here from
+    // the live take, for the entrance below and for an authored MOVE on such a
+    // piece: the technician's push-in starts `lead` before the cut in the ad,
+    // not at the 3.5 stored in the override.
+    const lead = spec.lead != null ? spec.lead : 1;
+    const relAt = spec.relTo === 'driveEnd' ? Math.max(0, driveEnd - lead) : null;
+
+    // ---- movement: an unsaved start/end pair wins over the baked one ----
+    // P1: "unsaved" means the selected piece (its live controls) AND any piece
+    // edited earlier this session (its pending panel snapshot) — Save writes
+    // all of them, so the preview plays all of them. A third step counts as a
+    // move even while leg 1 has no travel yet (mirrors Save).
+    let at = null, dur = 1, to = null, liveTiming = false;
+    const ov = ovOf(n);
+    const p = layoutSel === n ? panelSnapshot() : pending.get(n.dataset.el);
+    const en = liveEnd.has(n) ? liveEndOf(n) : null;
+    const moved = en && (en.dx !== st.dx || en.dy !== st.dy || en.rot !== st.rot || en.scale !== st.scale);
+    const intentStatic = !!(p && p.static), intentNoStep2 = !!(p && (p.static || p.noStep2));
+    if (intentStatic) {
+      // 'Make it static' pending: no move at all — not the live one, not the
+      // baked one still in the staged config
+    } else if (p && (moved || hasStep2(n))) {
+      liveTiming = true;
+      const bakedAt = spec.anim && Number.isFinite(spec.anim.at) ? spec.anim.at : 0;
+      at = relAt != null ? relAt : (Number.isFinite(p.at) ? p.at : bakedAt);   // a blank box never drops the piece
+      dur = Number.isFinite(p.dur) && p.dur > 0 ? p.dur : 1;
+      to = en || st;
+    } else if (spec.anim && (spec.anim.type === 'move' || spec.anim.type === 'passportSlide')) {
+      const a = spec.anim;
+      at = relAt != null ? relAt : a.at; dur = a.dur || 1;
+      const d = a.to || [0, 0];
+      to = { dx: st.dx + d[0], dy: st.dy + d[1],
+             rot: st.rot + ((a.rot1 || 0) - (a.rot0 || 0)),
+             scale: st.scale * ((a.s1 || 1) / (a.s0 || 1)) };
+    }
+    if (at != null && to) {
+      const ease = liveTiming ? easeCssOf(p.easeIn, p.easeOut)
+        : ((spec.anim && spec.anim.ease) || 'cubic-bezier(.4,0,.2,1)');
+      pt.animate([{ transform: poseTransform(n, st) }, { transform: poseTransform(n, to) }],
+                { delay: at * 1000, duration: dur * 1000, fill: 'both', easing: ease });
+      last = Math.max(last, at + dur);
+
+      // ---- the third step: hold, then move on ----
+      // Live edits win for the selected piece, the baked second `move` cue
+      // otherwise. fill FORWARDS, never both: a backwards fill would paint this
+      // leg's start pose over leg 1 mid-travel and freeze it (ad-player move()).
+      let at2 = null, dur2 = 1, to2 = null, ease2 = ease;
+      if (liveTiming && hasStep2(n)) {
+        at2 = p.at2;
+        dur2 = Number.isFinite(p.dur2) && p.dur2 > 0 ? p.dur2 : 1;
+        to2 = liveEnd2Of(n);
+        ease2 = easeCssOf(p.easeIn2, p.easeOut2);
+      } else if (!liveTiming && !intentNoStep2) {
+        // baked second leg — never for a piece with a live move: the generator
+        // drops every non-exit `also` cue under an authored move (the 300x250
+        // wiper's sweep, a third step just removed), so the preview must too
+        const leg2 = ((spec.anim && spec.anim.also) || []).find(c => c.type === 'move');
+        if (leg2) {
+          at2 = leg2.at; dur2 = leg2.dur || 1;
+          const d2 = leg2.to || [0, 0];
+          to2 = { dx: st.dx + d2[0], dy: st.dy + d2[1],
+                  rot: st.rot + ((leg2.rot1 || 0) - (spec.anim.rot0 || 0)),
+                  scale: st.scale * ((leg2.s1 || 1) / (spec.anim.s0 || 1)) };
+          ease2 = leg2.ease || ease;
+        }
+      }
+      if (at2 != null && to2 && Number.isFinite(at2)) {
+        pt.animate([{ transform: poseTransform(n, to) }, { transform: poseTransform(n, to2) }],
+                  { delay: at2 * 1000, duration: dur2 * 1000, fill: 'forwards', easing: ease2 });
+        last = Math.max(last, at2 + dur2);
+      }
+    }
+
+    // A piece can change layer as it moves — the passport sheet drops behind
+    // the dealer line as it sweeps (ad-player.js zTo). The Builder never did
+    // this, so the sheet stayed ON TOP of the dealer here while the ad slid it
+    // underneath: the same choreography, read two different ways.
+    const zTo = spec.anim && spec.anim.zTo;
+    if (zTo != null) {
+      setZ(n, spec.z);
+      const zAt = at != null ? at : spec.anim.at;
+      if (Number.isFinite(zAt)) {
+        zTimers.push(setTimeout(() => { setZ(n, zTo); }, zAt * 1000));
+        last = Math.max(last, zAt);
+      }
+    }
+    // P1 (S3): the generator drops a baked exit that fires before an authored
+    // move ends — unless the exit was set by hand. Mirror it, or a sheet moved
+    // past the cut faded here and not in the ad.
+    let moveEnd = null;
+    if (liveTiming) {
+      moveEnd = at + dur;
+      if (hasStep2(n) && Number.isFinite(p.at2)) moveEnd = Math.max(moveEnd, p.at2 + (Number.isFinite(p.dur2) && p.dur2 > 0 ? p.dur2 : 1));
+    }
+    const explicitExit = (p && p.exitTouched) || ('exitAt' in ov);
+
+    // ---- opacity (+ entrance travel): same cues the ad uses ----
+    const a = spec.anim || {};
+    const cues = [a, ...(a.also || [])];
+    for (const c of cues) {
+      if (!c || !c.type) continue;
+      if (c.type === 'out') {
+        if (p && p.exitTouched && p.stays) continue;
+        // relAt is the ENTRANCE's window; an exit keeps its own time
+        let t0 = c.at;
+        if (p && p.exitTouched && Number.isFinite(p.exitAt)) t0 = p.exitAt;
+        const d0 = c.dur != null ? c.dur : (relAt != null ? lead : 0.4);
+        if (!Number.isFinite(t0)) continue;
+        if (moveEnd != null && !explicitExit && t0 < moveEnd) continue;   // yields to the move, like the ad
+        n.animate([{ opacity: 1 }, { opacity: 0 }],
+                  { delay: t0 * 1000, duration: d0 * 1000, fill: 'forwards',
+                    easing: 'cubic-bezier(.33,0,.2,1)' });   // ad-player run() default
+        last = Math.max(last, t0 + d0);
+      } else if (c.type === 'fade' || c.type === 'upFade' || c.type === 'shootIn'
+                 || c.type === 'slideBottom' || c.type === 'slideRight'
+                 // wordByWord previews as a plain fade on the same cue — the
+                 // per-word stomp is the ad's; here the TIMING is what's edited
+                 || c.type === 'wordByWord') {
+        // an entrance belongs to the object's start time, so an unsaved change
+        // to "starts moving" has to carry it — otherwise the piece travels on
+        // the new timing while still fading in on the last baked one, which
+        // reads as the whole thing happening late
+        // the entrance control wins for the selected piece, so a restyled or
+        // retimed arrival reads here before it is ever saved
+        const sel = !!(p && p.enterTouched);   // an arrival dialled by hand (selected or pending)
+        if (sel && p.enterStyle === 'none') continue;
+        // P1 (S4): the ad plays a saved "Arrives at" at that time even under an
+        // authored move (the enterAt block wins at bake); a drive-relative piece
+        // fades at the cut whatever it says (resolveDeferred). Mirror both.
+        let cueAt;
+        if (relAt != null) cueAt = relAt;
+        else if (sel && Number.isFinite(p.enterAt)) cueAt = p.enterAt;
+        else if ('enterAt' in ov && ov.enterAt != null) cueAt = ov.enterAt;
+        else cueAt = liveTiming ? at : c.at;
+        // the player's own per-type defaults (ad-player.js ENTER): upFade 0.7,
+        // fade 0.6, shootIn 0.35, slideBottom/slideRight 0.5; a drive-relative
+        // cue with no dur runs for its lead
+        const ENT_DUR = { upFade: 0.7, fade: 0.6, shootIn: 0.35, slideBottom: 0.5, slideRight: 0.5 };
+        let cueDur = c.dur != null ? c.dur : (relAt != null ? lead : (ENT_DUR[c.type] || 0.6));
+        if (c.type === 'wordByWord') {
+          // the per-word stomp, as one envelope: first word at `at`, last word
+          // lands gap*(n-1)+dur later
+          const words = n.querySelectorAll('.w').length || 1;
+          cueDur = (c.gap || 0.22) * (words - 1) + (c.dur || 0.28);
+        }
+        let style = c.type;
+        if (sel && p.enterStyle === 'cut') { cueDur = 1 / 30 / 8; style = 'fade'; }
+        else if (sel) {
+          if (p.enterStyle === 'fade') style = 'fade';
+          if (Number.isFinite(p.enterDur) && p.enterDur > 0) cueDur = p.enterDur;
+        }
+        if (!Number.isFinite(cueAt)) continue;
+        // Travel + curve like the player: upFade rises `dist` (14 default, 8 on
+        // the Honda copy now), shootIn/slideRight slide in on X, slideBottom on
+        // Y, all on the same cubic-bezier the ad uses. The Builder used to play
+        // every entrance as a linear opacity ramp with no travel. An authored
+        // move owns the transform (gen_units flattens the entrance to a fade
+        // then), so travel is added only when this piece has no move, and it
+        // is composed with the resting pose so a rotated sheet keeps its angle.
+        const EASE = { upFade: 'cubic-bezier(.33,0,.2,1)', fade: 'cubic-bezier(.33,0,.2,1)',
+                       shootIn: 'cubic-bezier(.17,.67,.24,1)', slideBottom: 'cubic-bezier(.33,0,.2,1)',
+                       slideRight: 'cubic-bezier(.33,0,.2,1)', wordByWord: 'cubic-bezier(.2,0,.3,1)' };
+        let travel = null;
+        // any piece without an authored move gets its entrance travel — the
+        // masked photos excepted (their picture is posed, not their window).
+        // `pt === n` used to stand in for that test and also skipped live-type
+        // copy whose pose target is its inner auto-fit span (the dealer line
+        // faded without its rise here while the ad rose; Philip, 2026-09-03)
+        if (at == null && !n.dataset.masked) {
+          if (style === 'upFade') travel = `translateY(${c.dist != null ? c.dist : 14}px)`;
+          else if (style === 'shootIn') travel = `translateX(${(c.dir === 'left' ? -1 : 1) * (c.dist != null ? c.dist : 90)}px)`;
+          else if (style === 'slideBottom') travel = `translateY(${c.dist != null ? c.dist : 40}px)`;
+          else if (style === 'slideRight') travel = `translateX(${c.dist != null ? c.dist : 60}px)`;
+        }
+        const rest = poseTransform(n, st);
+        const frames = travel
+          ? [{ opacity: 0, transform: `${rest} ${travel}` }, { opacity: 1, transform: rest }]
+          : [{ opacity: 0 }, { opacity: 1 }];
+        n.animate(frames, { delay: cueAt * 1000, duration: cueDur * 1000, fill: 'both',
+                            easing: EASE[style] || 'cubic-bezier(.33,0,.2,1)' });
+        last = Math.max(last, cueAt + cueDur);
+      } else if (c.type === 'move' && at == null && !intentStatic) {
+        // an `also` move on a piece whose PRIMARY cue is an entrance (the
+        // Breeze headline's fade-out drift) — the third-step path above only
+        // runs when the primary is a move, so play this one here. fill
+        // forwards, like the ad, so it cannot pin the entrance's transform.
+        const d = c.to || [0, 0];
+        const mto = { dx: st.dx + d[0], dy: st.dy + d[1],
+                      rot: st.rot + ((c.rot1 || 0) - (c.rot0 || 0)),
+                      scale: st.scale * ((c.s1 || 1) / (c.s0 || 1)) };
+        if (Number.isFinite(c.at)) {
+          pt.animate([{ transform: poseTransform(n, st) }, { transform: poseTransform(n, mto) }],
+                     { delay: c.at * 1000, duration: (c.dur || 1) * 1000, fill: 'forwards',
+                       easing: c.ease || 'cubic-bezier(.4,0,.2,1)' });
+          last = Math.max(last, c.at + (c.dur || 1));
+        }
+      } else if ((c.type === 'scaleSlow' || c.type === 'panSlow') && !liveTiming && !intentStatic) {
+        // a live authored move owns the transform (the generator replaces the
+        // whole anim with it) — the push-in must not play on top of it
+        // P1 (S7): the technician's push-in / pan (ad-player scaleSlow / panSlow):
+        // the PICTURE scales 1 -> a.to (1.07) or pans a.dist (-14) over a.dur
+        // (6 s, or its lead when drive-relative), linear, from `at` — never
+        // previewed before, so the Builder showed a frozen frame 2.
+        const t0 = relAt != null ? relAt : c.at;
+        const d0 = c.dur != null ? c.dur : (relAt != null ? lead : 6);
+        if (!Number.isFinite(t0)) continue;
+        const endPose = c.type === 'scaleSlow'
+          ? { dx: st.dx, dy: st.dy, rot: st.rot, scale: st.scale * (c.to || 1.07) }
+          : { dx: st.dx + (c.dist != null ? c.dist : -14), dy: st.dy, rot: st.rot, scale: st.scale };
+        pt.animate([{ transform: poseTransform(n, st) }, { transform: poseTransform(n, endPose) }],
+                   { delay: t0 * 1000, duration: d0 * 1000, fill: 'forwards', easing: 'linear' });
+        last = Math.max(last, t0 + d0);
+      } else if (c.type === 'stampSeq' && Array.isArray(c.srcs)) {
+        // mirror ad-player.js stampSeq: later states fade up as overlays
+        // pinned over the base img (the Builder previously never played the
+        // stamp states at all — the passport sat on frame 1 forever here)
+        n.querySelectorAll('[data-stamp-ov]').forEach(o => o.remove());
+        const simg = n.querySelector('img');
+        if (!simg) continue;
+        const fadeMs = Math.max((c.fade != null ? c.fade : 0) * 1000, 1);
+        c.srcs.forEach((src, i) => {
+          if (i === 0) return;
+          const ov = simg.cloneNode(false);
+          ov.src = `/Ad%20Build/units/${stagedUnit}/${src}`;
+          ov.dataset.stampOv = '1';
+          ov.style.opacity = '0';
+          if (!n.dataset.centred) {
+            ov.style.position = 'absolute';
+            ov.style.left = '0'; ov.style.top = '0';
+          }
+          simg.parentNode.appendChild(ov);
+          ov.animate([{ opacity: 0 }, { opacity: 1 }],
+                     { delay: (c.at + i * c.gap) * 1000, duration: fadeMs,
+                       fill: 'forwards', easing: 'cubic-bezier(.33,0,.2,1)' });
+          last = Math.max(last, c.at + i * c.gap + fadeMs / 1000);
+        });
+      }
+    }
+    } catch (err) {
+      // a malformed spec costs its own element, never the ones after it
+      console.warn('preview: skipped', spec.id, err);
+    }
+  }
+  timelineBuilt = true;
+  return last;
+}
+
+/* ---------- scrub the frame ----------
+   A viewing aid only: nothing here is recorded, saved or baked. It parks every
+   cue and the engine at one moment so copy that only exists later — the dealer
+   line, the technician — can be placed without waiting for playback to reach
+   it. Same approach as the ad's own __adSeek: pause the WAAPI cues at a time,
+   then re-run the engine from zero to that time so leaves and the drive land
+   exactly where they would. */
+const scrubEl = document.getElementById('timeScrub');
+const timeLabelEl = document.getElementById('timeLabel');
+let scrubbing = false;
+function builderSeek(ms) {
+  scrubbing = true;
+  wholePlayT0 = null;            // a parked frame is not a running play
+  syncPauseWF();
+  // Rebuild whenever the timeline is not intact — not just when NOTHING is
+  // animating. Selecting a piece tears the scene fade down (paint() has to:
+  // editing must win over playback), but other elements keep their cues, so the
+  // old "no animations at all" test never fired. The scene then stayed opaque
+  // at every scrub position and anything behind it — the technician sits at z8
+  // under the z10 car canvas — could not be seen while it was being edited.
+  if (!timelineBuilt || !document.getAnimations().length) playContextTimeline();
+  for (const a of document.getAnimations()) { a.pause(); a.currentTime = ms; }
+  // z changes ran on wall clock, so a pending one would fire after the freeze
+  // and overwrite the seeked state — recompute them from ms instead
+  clearZTimers();
+  for (const spec of (stagedAd ? stagedAd.els : [])) {
+    const zTo = spec.anim && spec.anim.zTo;
+    if (zTo == null) continue;
+    const n = nodeFor(spec.id);
+    if (n && Number.isFinite(spec.anim.at)) {
+      setZ(n, ms >= spec.anim.at * 1000 ? zTo : spec.z);
+    }
+  }
+  eng.sceneAlpha = +getComputedStyle(sceneFade).opacity;
+  sampleSceneSlide();
+  eng.taperAt = unitTaperAt();   // the frozen frame tapers exactly like the ad
+  eng.paused = true;
+  eng.setSeed(seed);
+  eng.rebuildPool(true);
+  eng.rebuildStreaks();
+  eng.resetScene();
+  eng.simT = 0;
+  if (eng.P.scene !== 'none') eng.playScene();
+  const step = 1 / 60;
+  for (let t = 0; t < ms / 1000; t += step) eng.step(step);
+  eng.draw();
+  drawOverlays();
+  timeLabelEl.textContent = (ms / 1000).toFixed(2) + 's';
+  document.getElementById('pauseBtn').textContent = 'Play';
+}
+function goLive() {
+  scrubbing = false;
+  wholePlayT0 = null;
+  syncPauseWF();
+  eng.taperAt = null;            // editing view: leaves keep coming while you tune
+  timelineBuilt = false;
+  clearZTimers();
+  for (const spec of (stagedAd ? stagedAd.els : [])) {
+    if (!spec.anim || spec.anim.zTo == null) continue;
+    const n = nodeFor(spec.id);
+    if (n) setZ(n, spec.z);
+  }
+  for (const a of document.getAnimations()) a.cancel();
+  sceneFade.style.opacity = '1';
+  eng.sceneAlpha = 1;
+  eng.paused = false;
+  scrubEl.value = 0;
+  timeLabelEl.textContent = 'live';
+  document.getElementById('pauseBtn').textContent = 'Pause';
+}
+scrubEl.addEventListener('input', () => builderSeek(+scrubEl.value));
+document.getElementById('scrubPlayBtn').addEventListener('click', () => {
+  goLive();
+  document.getElementById('scenePlayBtn').click();
+});
+document.getElementById('liveBtn').addEventListener('click', goLive);
+
+/* ---------- ⏸ pause a whole-frame play where it is ----------
+   Philip (2026-09-02): "when working with animation I need to stop it and
+   tweak, instead of waiting on it to play out after hitting whole frame."
+   A whole-frame play runs its cues on the document timeline and the engine on
+   the rAF clock; wholePlayT0 is the timeline time the play began, so the
+   elapsed time is exact for the cues. Pausing is a scrub to that moment:
+   builderSeek parks every cue and re-runs the engine from zero to it, so the
+   stage shows precisely what the scrubber says — and any knob can be tweaked
+   on the frozen frame. Pressing again continues from wherever the scrubber
+   sits: the parked cues just play on from their currentTime, the z cues
+   still to come are re-armed relative to that moment, and the engine steps
+   on from its seeked state. Nothing here is recorded, saved or baked. */
+const pauseWFBtn = document.getElementById('pauseWFBtn');
+function wholeFrameMs() {
+  return wholePlayT0 == null ? null : document.timeline.currentTime - wholePlayT0;
+}
+function trackWholeFrame() {
+  if (wholePlayT0 == null) return;
+  const ms = wholeFrameMs();
+  if (ms > +scrubEl.max) { wholePlayT0 = null; syncPauseWF(); return; }
+  scrubEl.value = ms;
+  timeLabelEl.textContent = (ms / 1000).toFixed(2) + 's';
+  syncPauseWF();
+}
+function syncPauseWF() {
+  const playing = wholePlayT0 != null;
+  const label = playing ? '⏸ pause' : '▶ from here';
+  if (pauseWFBtn.textContent !== label) pauseWFBtn.textContent = label;
+  if (!playing && !scrubbing && timeLabelEl.textContent !== 'live') timeLabelEl.textContent = 'live';
+}
+function pauseWholeFrame() {
+  const ms = Math.max(0, Math.min(+scrubEl.max, Math.round(wholeFrameMs() / +scrubEl.step) * +scrubEl.step));
+  scrubEl.value = ms;
+  builderSeek(ms);               // clears wholePlayT0 itself
+  syncPauseWF();
+}
+function continueFromScrub() {
+  const ms = +scrubEl.value;
+  builderSeek(ms);               // (re)builds and parks everything exactly here
+  for (const a of document.getAnimations()) a.play();
+  // z cues later than this moment ran on wall-clock timers that the seek
+  // cleared — re-arm the ones still to come, relative to here
+  for (const spec of (stagedAd ? stagedAd.els : [])) {
+    const zTo = spec.anim && spec.anim.zTo;
+    if (zTo == null || !Number.isFinite(spec.anim.at)) continue;
+    const zAt = spec.anim.at * 1000;
+    if (zAt <= ms) continue;
+    const n = nodeFor(spec.id);
+    if (n) zTimers.push(setTimeout(() => { setZ(n, zTo); }, zAt - ms));
+  }
+  scrubbing = false;
+  eng.paused = false;
+  document.getElementById('pauseBtn').textContent = 'Pause';
+  wholePlayT0 = document.timeline.currentTime - ms;
+  syncPauseWF();
+}
+pauseWFBtn.addEventListener('click', () => {
+  if (wholePlayT0 != null) pauseWholeFrame();
+  else continueFromScrub();
+});
+
+/* ---------- 🍁 Leaves panel: play + save without leaving the levers ----------
+   Same actions as the scrubbar's whole-frame play and 🎬 Motion's Save — one
+   code path each, so the receipts and guards stay identical. While a save is
+   in flight layoutSaveBtn is disabled and .click() on it is a no-op, so a
+   double-tap here cannot start a second save. */
+document.getElementById('leafPlayBtn').addEventListener('click', () => {
+  document.getElementById('scrubPlayBtn').click();
+});
+document.getElementById('leafSaveBtn').addEventListener('click', () => {
+  document.getElementById('layoutSaveBtn').click();
+});
+// the save receipt lands in 🎬 Motion's status line — mirror it next to the
+// leaf levers so a save started there reports back there too
+new MutationObserver(() => {
+  document.getElementById('leafStatus').textContent = layoutStatusEl.textContent;
+}).observe(layoutStatusEl, { childList: true, characterData: true, subtree: true });
+
+/* ---------- collapsible panel sections ---------- */
+(() => {
+  let openState = {};
+  try { openState = JSON.parse(localStorage.getItem('fallPanelOpen') || '{}'); } catch (e) {}
+  document.querySelectorAll('#panel .group').forEach((g, i) => {
+    const h2 = g.querySelector('h2');
+    if (!h2) return;
+    const key = (h2.textContent.trim().split(/\s{2,}|\(/)[0] || ('g' + i)).slice(0, 24);
+    const caret = document.createElement('span');
+    caret.className = 'caret';
+    caret.textContent = '▼';
+    h2.insertBefore(caret, h2.firstChild);
+    if (openState[key] === false) g.classList.add('collapsed');
+    h2.addEventListener('click', () => {
+      g.classList.toggle('collapsed');
+      openState[key] = !g.classList.contains('collapsed');
+      try { localStorage.setItem('fallPanelOpen', JSON.stringify(openState)); } catch (e) {}
+    });
+  });
+})();
+
+/* ---------- go ---------- */
+applyUI();
+eng.setStage(eng.P.stage);
+fetchPresets();
+fetchOverrides();
+recIdleStatus();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
