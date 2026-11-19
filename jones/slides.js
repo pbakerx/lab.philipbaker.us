@@ -88,11 +88,15 @@ window.SHOW = {
 
     { id: 'honda-acura', title: 'Honda Acura', noTitle: true, aliases: ['honda', 'acura'],
       steps: [
-        { type: 'media', label: 'Social', items: [
-          { kind: 'video', file: 'honda-social-a.mp4', label: 'Honda social' },
-          { kind: 'video', file: 'acura-social-a.mp4', label: 'Acura social' }
+        { type: 'media', label: 'Social · Spring', items: [
+          { kind: 'video', file: 'honda-spring-social.mp4', label: 'Honda Spring' },
+          { kind: 'video', file: 'acura-spring-social.mp4', label: 'Acura Spring' }
         ] },
-        { type: 'ads', label: 'Digital', items: [
+        { type: 'media', label: 'Social · Summer', items: [
+          { kind: 'video', file: 'honda-summer-social.mp4', label: 'Honda Summer' },
+          { kind: 'video', file: 'acura-summer-social.mp4', label: 'Acura Summer' }
+        ] },
+        { type: 'ads', label: 'Digital  ·  36 ads, 1,012 dealers, 18,216 packages', items: [
           { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/HND_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Honda 300 × 600' },
           { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/ACR_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Acura 300 × 600' },
           { stack: [
