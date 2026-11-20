@@ -19,6 +19,7 @@
 
    STEP TYPES
      tree      { type:'tree', items:[ 'Name', or { k:'1991', name, line, hot:true } ] }
+               title: '...'  on a step replaces the slide's headline for that step only.
                titleSize: 66  on the slide sets the headline size for a long one.
                bold:true  sets a name in black.  bigSubs:true  makes that item's small lines larger and bold.
                the title shrinks and the lines draw out of it, on one screen
@@ -68,7 +69,7 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'mazzios', title: 'Mazzio’s', noTitle: true,
+    { id: 'mazzios', title: 'New Ways to Produce', noTitle: true, aliases: ['mazzios', 'mazzio', 'new ways to produce', 'produce'],
       steps: [
         { type: 'media', label: 'Cheezzy Bread', grid: 3, items: [
           { kind: 'image', file: 'mazzios-cheezzy-1.jpg', label: 'Turn up the Cheezzy' },
@@ -97,7 +98,7 @@ window.SHOW = {
 
     { id: 'honda-acura', title: 'Honda Acura', noTitle: true, aliases: ['honda', 'acura'],
       steps: [
-        { type: 'media', label: 'Social', grid: 3, square: true, muted: true, autoplay: true,
+        { type: 'media', label: 'Social', title: 'Production Automation', grid: 3, square: true, muted: true, autoplay: true,
           facts: ['3,672 videos', '918 dealers', '722 Honda  ·  196 Acura', 'A/B  ·  1:1 & 9:16'],
           tech: 'AE + CSV automation', items: [
           { kind: 'video', file: 'honda-social-sq-a.mp4', label: 'Honda A' },

@@ -36,9 +36,9 @@
     m.appendChild(a); m.appendChild(el('span', null, SHOW.name + '  —  ' + SHOW.date));
     return m;
   }
-  function head(s, label) {
-    var h = el('div', 'head rise'); h.appendChild(el('h2', null, s.title));
-    if (label && label !== s.title) h.appendChild(el('div', 'k', label));
+  function head(s, label, title) {
+    var h = el('div', 'head rise'); h.appendChild(el('h2', null, title || s.title));
+    if (label && label !== (title || s.title)) h.appendChild(el('div', 'k', label));
     return h;
   }
   function facts(v) {
@@ -161,7 +161,7 @@
     },
 
     ads: function (root, s, v) {
-      root.appendChild(metaRow(s)); root.appendChild(head(s, v.label));
+      root.appendChild(metaRow(s)); root.appendChild(head(s, v.label, v.title));
       var f = facts(v); if (f) root.appendChild(f);
       var wrap = el('div', 'adrow');
       function unit(it, i) {
@@ -180,7 +180,7 @@
     },
 
     media: function (root, s, v) {
-      root.appendChild(metaRow(s)); root.appendChild(head(s, v.label));
+      root.appendChild(metaRow(s)); root.appendChild(head(s, v.label, v.title));
       var f = facts(v); if (f) root.appendChild(f);
       var g = el('div', 'slots');
       v.items.forEach(function (it, i) { var b = slot(it, v); b.classList.add('rise'); b.style.setProperty('--i', i + 2); g.appendChild(b); });
@@ -230,7 +230,7 @@
     },
 
     icons: function (root, s, v) {
-      root.appendChild(metaRow(s)); root.appendChild(head(s, v.label));
+      root.appendChild(metaRow(s)); root.appendChild(head(s, v.label, v.title));
       var g = el('div', 'tiles');
       v.items.forEach(function (it, i) {
         var t = el('div', 'tile rise'); t.style.setProperty('--i', i * .6 + 2);
@@ -244,7 +244,7 @@
 
     list: function (root, s, v) {
       root.appendChild(metaRow(s));
-      if (!v.big) root.appendChild(head(s, v.label));
+      if (!v.big) root.appendChild(head(s, v.label, v.title));
       var ol = el('ol', v.big ? 'big' : null);
       v.items.forEach(function (it, i) {
         var li = el('li', 'rise'); li.style.setProperty('--i', i * .7 + 2);
@@ -265,7 +265,7 @@
 
     chaos: function (root, s, v) {
       root.classList.add('v-diagram');
-      root.appendChild(metaRow(s)); root.appendChild(head(s, v.label));
+      root.appendChild(metaRow(s)); root.appendChild(head(s, v.label, v.title));
       var spots = [[430, 420], [1320, 360], [840, 520], [1560, 610], [300, 700], [1080, 760], [620, 860], [1480, 880], [1700, 400], [980, 330], [240, 900], [1240, 560]];
       v.items.forEach(function (name, i) {
         var p = spots[i % spots.length], c = el('div', 'chip fade', name);
