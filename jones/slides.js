@@ -133,8 +133,6 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'voice-agents', title: 'Voice Agents', aliases: ['voice'] },
-
     { id: 'research', title: 'Proactive Autonomy', noTitle: true,
       aliases: ['seo', 'search', 'adwords', 'media', 'research', 'proactive autonomy', 'proactive'],
       steps: [
