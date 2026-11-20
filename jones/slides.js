@@ -92,7 +92,7 @@ window.SHOW = {
           { kind: 'image', file: 'okeii-grid-2.jpg', label: 'The Strong Readers Act' },
           { kind: 'image', file: 'okeii-grid-3.jpg', label: 'More reading coaches' },
           { kind: 'image', file: 'okeii-grid-4.jpg', label: 'Help me' },
-          { kind: 'image', file: 'okeii-grid-5.jpg', label: '1-in-6 third graders' },
+          { kind: 'image', file: 'okeii-grid-5b.jpg', label: 'Better lives' },
           { kind: 'image', file: 'okeii-grid-6.jpg', label: 'Help us' },
           { kind: 'image', file: 'okeii-grid-7.jpg', label: '1-in-6, with speaker' },
           { kind: 'image', file: 'okeii-grid-8.jpg', label: 'Think critically and creatively' },
