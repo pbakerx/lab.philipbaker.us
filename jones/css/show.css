@@ -183,3 +183,8 @@ body:not(.awake){cursor:none}
 .v-media .slots.square{bottom:auto;display:flex;flex-wrap:wrap;justify-content:center;align-content:flex-start}
 .v-media .slots.square .slot{aspect-ratio:1/1}
 .v-media .slots.square .slot img,.v-media .slots.square .slot video{object-fit:cover}
+.v-facts{position:absolute;right:140px;top:150px;width:500px;margin:0;padding:0;list-style:none}
+.v-facts li{position:relative;margin:0 0 8px;padding:0 0 0 1.1em;font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1.2;color:var(--ink)}
+.v-facts li::before{content:"•";position:absolute;left:0;color:var(--soft)}
+.v-facts li.tech{margin-top:18px;font-size:20px;font-weight:600;letter-spacing:-.01em;color:var(--soft)}
+.v-facts li.tech::before{content:""}

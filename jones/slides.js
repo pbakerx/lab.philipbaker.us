@@ -99,14 +99,18 @@ window.SHOW = {
 
     { id: 'honda-acura', title: 'Honda Acura', noTitle: true, aliases: ['honda', 'acura'],
       steps: [
-        { type: 'media', label: 'Social', grid: 3, square: true, muted: true, autoplay: true, items: [
+        { type: 'media', label: 'Social', grid: 3, square: true, muted: true, autoplay: true,
+          facts: ['3,672 videos', '918 dealers', '722 Honda  ·  196 Acura', 'A/B  ·  1:1 & 9:16'],
+          tech: 'AE + CSV automation', items: [
           { kind: 'video', file: 'honda-social-sq-a.mp4', label: 'Honda A' },
           { kind: 'video', file: 'honda-social-sq-b.mp4', label: 'Honda B' },
           { kind: 'video', file: 'acura-social-sq-a.mp4', label: 'Acura A' },
           { kind: 'video', file: 'acura-social-sq-b.mp4', label: 'Acura B' },
           { kind: 'video', file: 'honda-summer-social-sq.mp4', label: 'Summer' }
         ] },
-        { type: 'ads', label: 'Digital  ·  36 ads, 1,012 dealers, 18,216 packages', items: [
+        { type: 'ads', label: 'Digital',
+          facts: ['36 ad units', '876 dealers', '687 Honda  ·  189 Acura', '6 sizes  ·  A, B, RT'],
+          tech: 'HTML5 + CSV', items: [
           { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/HND_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Honda 300 × 600' },
           { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/ACR_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Acura 300 × 600' },
           { stack: [

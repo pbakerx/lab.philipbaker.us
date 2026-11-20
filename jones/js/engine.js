@@ -41,6 +41,21 @@
     if (label && label !== s.title) h.appendChild(el('div', 'k', label));
     return h;
   }
+  function facts(v) {
+    if (!v || !v.facts || !v.facts.length) return null;
+    var u = el('ul', 'v-facts fade');
+    v.facts.forEach(function (line, i) {
+      var li = el('li', null, line);
+      li.style.setProperty('--i', i);
+      u.appendChild(li);
+    });
+    if (v.tech) {
+      var t = el('li', 'tech', v.tech);
+      t.style.setProperty('--i', v.facts.length);
+      u.appendChild(t);
+    }
+    return u;
+  }
 
   /* A media slot: shows the file if it is in media/, a quiet placeholder if not. */
   function slot(item, opt) {
@@ -130,6 +145,7 @@
 
     ads: function (root, s, v) {
       root.appendChild(metaRow(s)); root.appendChild(head(s, v.label));
+      var f = facts(v); if (f) root.appendChild(f);
       var wrap = el('div', 'adrow');
       function unit(it, i) {
         var z = it.z || 1, u = el('div', 'ad fade'); u.style.setProperty('--i', i * 2 + 2);
@@ -148,6 +164,7 @@
 
     media: function (root, s, v) {
       root.appendChild(metaRow(s)); root.appendChild(head(s, v.label));
+      var f = facts(v); if (f) root.appendChild(f);
       var g = el('div', 'slots');
       v.items.forEach(function (it, i) { var b = slot(it, v); b.classList.add('rise'); b.style.setProperty('--i', i + 2); g.appendChild(b); });
       if (v.items.length === 1) { g.style.left = '330px'; g.style.right = '330px'; }
