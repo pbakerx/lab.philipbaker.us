@@ -153,8 +153,6 @@ window.SHOW = {
 
     { id: 'recent-examples', title: 'Recent Examples', aliases: ['recent'] },
 
-    { id: 'voice-casting', title: 'Voice Casting', aliases: ['rib crib', 'ribcrib', 'casting'] },
-
     { id: 'press-videos', title: 'Press Videos', noTitle: true, aliases: ['press'],
       steps: [
         { type: 'media', label: 'OKEII', grid: 3, muted: true, autoplay: true,
