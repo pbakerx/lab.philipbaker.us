@@ -209,7 +209,7 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'org-chart', title: 'Org Chart', aliases: ['org'],
+    { id: 'org-chart', title: 'Building a Team', aliases: ['org', 'org chart', 'building a team'],
       steps: [
         { type: 'org',
           top: { name: 'Philip', line: 'Creative director. Final say.' },
@@ -222,7 +222,8 @@ window.SHOW = {
           models: [
             { name: 'Claude', line: 'Copy, design, code' }, { name: 'ChatGPT', line: 'Images, concepts' },
             { name: 'Grok', line: 'Admin' }, { name: 'Runway', line: 'Video' },
-            { name: 'Google AI Studio', line: 'Video' }, { name: 'ElevenLabs', line: 'Voice, music' }
+            { name: 'Google AI Studio', line: 'Video' }, { name: 'Kling', line: 'Video' },
+            { name: 'ElevenLabs', line: 'Voice, music' }
           ],
           foot: 'Agents propose. Philip decides.' }
       ] },
