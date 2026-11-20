@@ -110,7 +110,7 @@ window.SHOW = {
           { kind: 'video', file: 'honda-summer-social-sq.mp4', label: 'Summer' }
         ] },
         { type: 'ads', label: 'Digital', title: 'Custom HTML Animation', loop: 15,
-          facts: ['18,216 ads', '36 ad units', '876 dealers', '687 Honda  ·  189 Acura', '6 sizes  ·  A, B, RT'],
+          facts: ['18,216 ads', '876 dealers'],
           tech: 'HTML5 + CSV', items: [
           { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/HND_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Honda 300 × 600' },
           { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/ACR_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Acura 300 × 600' },
@@ -125,7 +125,7 @@ window.SHOW = {
       aliases: ['seo', 'search', 'adwords', 'media', 'research', 'proactive autonomy', 'proactive'],
       steps: [
         { type: 'list', big: true, items: [
-          { name: 'Proactive Autonomy', items: ['Research', 'SEO', 'AdWords', 'Media'] }
+          { name: 'Proactive Autonomy', items: ['SEO', 'AdWords', 'Research'] }
         ] }
       ] },
 
