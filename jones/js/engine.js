@@ -120,7 +120,7 @@
 
     tree: function (root, s, v) {
       root.appendChild(metaRow(s));
-      var tt = el('div', 'tt'); tt.appendChild(el('h2', null, s.title)); if (s.sub) tt.appendChild(el('p', 'tsub', s.sub)); root.appendChild(tt);
+      var tt = el('div', 'tt'); var th = el('h2', null, s.title); if (s.titleSize) th.style.fontSize = s.titleSize + 'px'; tt.appendChild(th); if (s.sub) tt.appendChild(el('p', 'tsub', s.sub)); root.appendChild(tt);
       var svg = svgEl('svg'); svg.setAttribute('viewBox', '0 0 1920 1080'); root.appendChild(svg);
       var items = v.items.map(function (it) { return typeof it === 'string' ? { name: it } : it; });
       var n = items.length, two = items.some(function (it) { return it.line || (it.items && it.items.length); });

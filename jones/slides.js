@@ -19,6 +19,7 @@
 
    STEP TYPES
      tree      { type:'tree', items:[ 'Name', or { k:'1991', name, line, hot:true } ] }
+               titleSize: 66  on the slide sets the headline size for a long one.
                bold:true  sets a name in black.  bigSubs:true  makes that item's small lines larger and bold.
                the title shrinks and the lines draw out of it, on one screen
      media     { type:'media', items:[ { kind:'video'|'image'|'audio', file, label } ] }
@@ -54,9 +55,9 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'last-6-years', title: 'The Last 6 Years', sub: 'Speed to market.' },
+    { id: 'last-6-years', title: 'The Last 6 Years', sub: 'Speed to market like never before.' },
 
-    { id: 'agency', title: 'Agency from my chair.', autoAdvance: 5000, aliases: ['clients', 'chair'],
+    { id: 'agency', title: 'The work of a full-service creative agency from my chair.', titleSize: 66, autoAdvance: 5000, aliases: ['clients', 'chair', 'agency', 'agency from my chair'],
       steps: [
         { type: 'tree', label: 'Clients', items: [
           'AcrobatAnt', 'Pokes with a Purpose', 'NIL-OSU Athletics', 'Perillo Tours', 'Ruby Tuesday', 'Mazzio’s', 'The Learning Center',
