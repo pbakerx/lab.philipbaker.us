@@ -178,7 +178,7 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'org-chart', title: 'Built a Team', aliases: ['org', 'org chart', 'building a team', 'built a team', 'team'],
+    { id: 'org-chart', title: 'Built a Team', sub: 'The Stack vs. The Slop', aliases: ['stack', 'slop', 'org', 'org chart', 'building a team', 'built a team', 'team'],
       steps: [
         { type: 'org',
           top: { name: 'Philip', line: 'Creative director. Final say.' },
@@ -197,9 +197,9 @@ window.SHOW = {
           foot: 'Agents propose. Philip decides.' }
       ] },
 
-    { id: 'stack-vs-slop', title: 'The Stack vs. The Slop', aliases: ['stack', 'slop'] },
+    { id: 'stack-vs-slop', title: 'The Stack vs. The Slop', skip: true },
 
-    { id: 'rate-of-change', title: 'Rate of Change' },
+    { id: 'rate-of-change', title: 'The only thing certain is the rate of change.', aliases: ['rate of change', 'rate', 'change'] },
 
     { id: 'open-for-business', title: 'Open for Business', aliases: ['open', 'close', 'end'] }
 
