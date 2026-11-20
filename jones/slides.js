@@ -82,9 +82,10 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'okeii', title: 'OKEII', noTitle: true, aliases: ['oklahoma education impact initiative'],
+    { id: 'okeii', title: 'Comprehensive Campaign Production', noTitle: true, aliases: ['okeii', 'oklahoma education impact initiative', 'campaign', 'campaign production'],
       steps: [
-        { type: 'media', label: 'Spots', grid: 3, items: [
+        { type: 'media', label: 'OKEII', grid: 3,
+          facts: ['Television', 'Social', 'Outdoor', 'Digital', 'Radio', 'Newspaper', 'Print Media', 'Website'], items: [
           { kind: 'image', file: 'okeii-grid-1.jpg', label: 'OK 50th in public education' },
           { kind: 'image', file: 'okeii-grid-2.jpg', label: 'The Strong Readers Act' },
           { kind: 'image', file: 'okeii-grid-3.jpg', label: 'More reading coaches' },
