@@ -59,7 +59,7 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'last-6-years', title: 'The Last 6 Years', sub: 'Speed to market like never before.' },
+    { id: 'last-6-years', title: 'The Last 6 Years', sub: 'Rate of Change. Speed to market.' },
 
     { id: 'agency', title: 'The work of a full-\u2060service creative agency from my chair.', titleSize: 66, autoAdvance: 5000, aliases: ['clients', 'chair', 'agency', 'agency from my chair'],
       steps: [
