@@ -169,6 +169,7 @@
         var b = el('div', 'adbox'); b.style.width = it.w * z + 'px'; b.style.height = it.h * z + 'px';
         var f = el('iframe'); f.width = it.w; f.height = it.h; f.scrolling = 'no'; f.style.transform = 'scale(' + z + ')'; f.src = it.src;
         b.appendChild(f); u.appendChild(b); if (it.label) u.appendChild(el('span', null, it.label));
+        if (v.loop) { var lt = setInterval(function () { if (!f.isConnected) { clearInterval(lt); return; } f.src = it.src; }, v.loop * 1000); }
         return u;
       }
       var i = 0;

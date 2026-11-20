@@ -24,6 +24,7 @@
                bold:true  sets a name in black.  bigSubs:true  makes that item's small lines larger and bold.
                the title shrinks and the lines draw out of it, on one screen
      media     { type:'media', items:[ { kind:'video'|'image'|'audio', file, label } ] }
+               loop: 15  on an ads step replays every ad each 15 seconds.
      ads       { type:'ads', items:[ { src, w, h, z (zoom), label }, { stack:[ ... ] } ] }
      showcase  { type:'showcase', items:[ { name, src (a live page) or file, kind, note } ] }
                each item is its own press of the arrow key
@@ -107,7 +108,7 @@ window.SHOW = {
           { kind: 'video', file: 'acura-social-sq-b.mp4', label: 'Acura B' },
           { kind: 'video', file: 'honda-summer-social-sq.mp4', label: 'Summer' }
         ] },
-        { type: 'ads', label: 'Digital',
+        { type: 'ads', label: 'Digital', title: 'Custom HTML Animation', loop: 15,
           facts: ['18,216 ads', '36 ad units', '876 dealers', '687 Honda  ·  189 Acura', '6 sizes  ·  A, B, RT'],
           tech: 'HTML5 + CSV', items: [
           { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/HND_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Honda 300 × 600' },
@@ -116,6 +117,14 @@ window.SHOW = {
             { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/HND_728x90_A/index.html', w: 728, h: 90, label: 'Honda 728 × 90' },
             { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/ACR_728x90_A/index.html', w: 728, h: 90, label: 'Acura 728 × 90' }
           ] }
+        ] }
+      ] },
+
+    { id: 'research', title: 'Proactive Autonomy', noTitle: true,
+      aliases: ['seo', 'search', 'adwords', 'media', 'research', 'proactive autonomy', 'proactive'],
+      steps: [
+        { type: 'list', big: true, items: [
+          { name: 'Proactive Autonomy', items: ['Research', 'SEO', 'AdWords', 'Media'] }
         ] }
       ] },
 
@@ -133,14 +142,6 @@ window.SHOW = {
           { name: 'Emergence', line: 'Web app', mark: 'Em' },
           { name: 'CheckMate', line: 'Chess analysis', mark: 'CM' },
           { name: 'What’s That Video', line: 'Video lookup', mark: 'WV' }
-        ] }
-      ] },
-
-    { id: 'research', title: 'Proactive Autonomy', noTitle: true,
-      aliases: ['seo', 'search', 'adwords', 'media', 'research', 'proactive autonomy', 'proactive'],
-      steps: [
-        { type: 'list', big: true, items: [
-          { name: 'Proactive Autonomy', items: ['Research', 'SEO', 'AdWords', 'Media'] }
         ] }
       ] },
 
