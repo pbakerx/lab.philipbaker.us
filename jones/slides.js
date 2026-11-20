@@ -168,10 +168,8 @@ window.SHOW = {
     { id: 'mounted-flapped', title: 'Mounted & Flapped', aliases: ['mounted and flapped', 'deployment'],
       steps: [
         { type: 'showcase', items: [
-          { name: 'OKEII', src: '/OKEII-SRA-Deployment/',
-            note: 'The deployment package. Every deliverable against the date it has to hit.' },
-          { name: 'Honda Acura', src: 'embeds/honda-fall-board.html',
-            note: 'The deployment package, as the client saw it.' }
+          { name: 'OKEII', src: 'https://lab.philipbaker.us/OKEII-SRA-Deployment/#scoreboard/digital',
+            note: 'The deployment package. Every deliverable against the date it has to hit.' }
         ] }
       ] },
 
