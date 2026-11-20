@@ -172,12 +172,12 @@ window.SHOW = {
     { id: 'mounted-flapped', title: 'Mounted & Flapped', aliases: ['mounted and flapped', 'deployment'],
       steps: [
         { type: 'showcase', items: [
-          { name: 'OKEII', src: 'https://lab.philipbaker.us/OKEII-SRA-Deployment/#scoreboard/digital',
+          { name: 'Custom Landing Page Presentations', src: 'https://lab.philipbaker.us/OKEII-SRA-Deployment/#scoreboard/digital',
             note: 'The deployment package. Every deliverable against the date it has to hit.' }
         ] }
       ] },
 
-    { id: 'org-chart', title: 'Building a Team', aliases: ['org', 'org chart', 'building a team'],
+    { id: 'org-chart', title: 'Built a Team', aliases: ['org', 'org chart', 'building a team', 'built a team', 'team'],
       steps: [
         { type: 'org',
           top: { name: 'Philip', line: 'Creative director. Final say.' },
