@@ -149,8 +149,6 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'accounting', title: 'Accounting' },
-
     { id: 'recent-examples', title: 'Recent Examples', aliases: ['recent'] },
 
     { id: 'press-videos', title: 'Press Videos', noTitle: true, aliases: ['press'],
@@ -195,9 +193,6 @@ window.SHOW = {
           ],
           foot: 'Agents propose. Philip decides.' }
       ] },
-
-    { id: 'source-of-truth', title: 'One Source of Truth',
-      sub: 'A bunch of agents are chaos. A team.', aliases: ['truth'] },
 
     { id: 'stack-vs-slop', title: 'The Stack vs. The Slop', aliases: ['stack', 'slop'] },
 
