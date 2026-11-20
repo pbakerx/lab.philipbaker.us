@@ -120,7 +120,7 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'app-development', title: 'App Development', noTitle: true, aliases: ['apps'],
+    { id: 'app-development', title: 'App and Web Development', noTitle: true, aliases: ['apps'],
       steps: [
         { type: 'icons', items: [
           { name: 'BibleDiscovery.app', line: 'Scripture study app', mark: 'BD' },
@@ -150,17 +150,8 @@ window.SHOW = {
     { id: 'custom-everything', title: 'Custom Everything', aliases: ['custom'],
       steps: [
         { type: 'showcase', items: [
-          { name: 'Social Admin', file: 'brock-social-admin.png', kind: 'image',
-            note: 'Brock Institute. One desk that proposes, drafts, reviews and schedules.' },
           { name: 'Honda Acura Ad Builder', src: 'embeds/leaf-lab/leaves-lab.html',
             note: 'Built for the Honda and Acura fall work.' }
-        ] }
-      ] },
-
-    { id: 'second-brain', title: 'Second Brain', noTitle: true, aliases: ['brain'],
-      steps: [
-        { type: 'media', label: 'A page in the brain', items: [
-          { kind: 'image', file: 'second-brain.png', label: 'Second Brain page' }
         ] }
       ] },
 
@@ -168,23 +159,19 @@ window.SHOW = {
 
     { id: 'recent-examples', title: 'Recent Examples', aliases: ['recent'] },
 
-    { id: 'voice-casting', title: 'Voice Casting', sub: 'Sound 1, 2, 3. RibCrib.', aliases: ['rib crib', 'ribcrib', 'casting'],
-      steps: [
-        { type: 'media', label: 'RibCrib', items: [
-          { kind: 'audio', file: 'voice-1.mp3', label: 'Sound 1' },
-          { kind: 'audio', file: 'voice-2.mp3', label: 'Sound 2' },
-          { kind: 'audio', file: 'voice-3.mp3', label: 'Sound 3' }
-        ] }
-      ] },
+    { id: 'voice-casting', title: 'Voice Casting', aliases: ['rib crib', 'ribcrib', 'casting'] },
 
-    { id: 'press-videos', title: 'Press Videos', aliases: ['press'],
+    { id: 'press-videos', title: 'Press Videos', noTitle: true, aliases: ['press'],
       steps: [
-        { type: 'media', label: 'OKEII press', items: [
-          { kind: 'video', file: 'press-1.mp4', label: 'Press video' }
-        ] },
-        { type: 'showcase', items: [
-          { name: 'Deployment package', src: '/OKEII-SRA-Deployment/',
-            note: 'OKEII. Every deliverable against the date it has to hit.' }
+        { type: 'media', label: 'OKEII', grid: 3, muted: true, autoplay: true,
+          facts: ['17 press videos', '16 soundbites  ·  1 story', '16:9 and 9:16'],
+          tech: 'OKEII  ·  Oct 29, 2026', items: [
+          { kind: 'video', file: 'press-ashdyn-story.mp4', label: "Ashdyn's Story" },
+          { kind: 'video', file: 'press-literacy-needle.mp4', label: 'Literacy Moves the Needle' },
+          { kind: 'video', file: 'press-superhighway.mp4', label: 'Superhighway vs Back Roads' },
+          { kind: 'video', file: 'press-26-to-95.mp4', label: '26% to 95%' },
+          { kind: 'video', file: 'press-stay-the-course.mp4', label: 'Stay the Course' },
+          { kind: 'video', file: 'press-marathon.mp4', label: 'A Marathon, Not a Miracle' }
         ] }
       ] },
 
