@@ -148,12 +148,12 @@ window.SHOW = {
     { id: 'custom-everything', title: 'Custom Everything', aliases: ['custom'],
       steps: [
         { type: 'showcase', items: [
-          { name: 'Honda Acura Ad Builder', src: 'embeds/leaf-lab/leaves-lab.html',
+          { name: 'Ad Builder for Honda Acura', src: 'embeds/leaf-lab/leaves-lab.html',
             note: 'Built for the Honda and Acura fall work.' }
         ] }
       ] },
 
-    { id: 'recent-examples', title: 'Recent Examples', aliases: ['recent'] },
+    { id: 'recent-examples', title: 'Phone It In', aliases: ['recent', 'recent examples', 'phone', 'phone it in'] },
 
     { id: 'press-videos', title: 'Press Videos', noTitle: true, aliases: ['press'],
       steps: [
