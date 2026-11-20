@@ -152,7 +152,7 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'recent-examples', title: 'Call the Office', aliases: ['recent', 'recent examples', 'phone', 'phone it in', 'call', 'call the office', 'office'] },
+    { id: 'recent-examples', title: 'Working from the Phone', aliases: ['working from the phone', 'working', 'recent', 'recent examples', 'phone', 'phone it in', 'call', 'call the office', 'office'] },
 
     { id: 'press-videos', title: 'Press Videos', noTitle: true, aliases: ['press'],
       steps: [
