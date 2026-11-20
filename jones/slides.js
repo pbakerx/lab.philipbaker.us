@@ -23,6 +23,7 @@
                titleSize: 66  on the slide sets the headline size for a long one.
                bold:true  sets a name in black.  bigSubs:true  makes that item's small lines larger and bold.
                the title shrinks and the lines draw out of it, on one screen
+               factsSide: true  puts the facts list beside the grid instead of top right (for a long headline).
                link: 'https://...'  on a media step makes the whole grid open that address in a new tab.
      media     { type:'media', items:[ { kind:'video'|'image'|'audio', file, label } ] }
                loop: 15  on an ads step replays every ad each 15 seconds.
@@ -85,7 +86,7 @@ window.SHOW = {
 
     { id: 'okeii', title: 'Comprehensive Campaign Production', noTitle: true, aliases: ['okeii', 'oklahoma education impact initiative', 'campaign', 'campaign production'],
       steps: [
-        { type: 'media', label: 'OKEII', grid: 3, link: 'https://youtu.be/AcRRiqcDmBk?si=0UYyF2UDx6M2mj9j',
+        { type: 'media', label: 'OKEII', grid: 3, link: 'https://youtu.be/AcRRiqcDmBk?si=0UYyF2UDx6M2mj9j', factsSide: true,
           facts: ['Television', 'Social', 'Outdoor', 'Digital', 'Radio', 'Newspaper', 'Print Media', 'Website'], items: [
           { kind: 'image', file: 'okeii-grid-1.jpg', label: 'OK 50th in public education' },
           { kind: 'image', file: 'okeii-grid-2.jpg', label: 'The Strong Readers Act' },

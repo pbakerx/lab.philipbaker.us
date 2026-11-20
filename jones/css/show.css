@@ -208,3 +208,4 @@ body:not(.awake){cursor:none}
 .v-facts li.tech::before{content:""}
 
 a.slots.linked{color:inherit;text-decoration:none;cursor:pointer}
+.v-facts.side li{font-size:30px;margin-bottom:14px}

@@ -201,6 +201,7 @@
           var rh = Math.min(1640 / cols * 9 / 16, 690 / rows);
           g.style.width = Math.round(rh * 16 / 9 * cols) + 'px';
         }
+        if (f && v.factsSide) { f.style.top = '336px'; f.style.right = 'auto'; f.style.left = (140 + parseInt(g.style.width, 10) + 70) + 'px'; f.style.width = '360px'; f.classList.add('side'); }
       }
       root.appendChild(g);
     },
