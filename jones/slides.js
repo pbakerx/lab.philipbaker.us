@@ -23,6 +23,7 @@
                titleSize: 66  on the slide sets the headline size for a long one.
                bold:true  sets a name in black.  bigSubs:true  makes that item's small lines larger and bold.
                the title shrinks and the lines draw out of it, on one screen
+               link: 'https://...'  on a media step makes the whole grid open that address in a new tab.
      media     { type:'media', items:[ { kind:'video'|'image'|'audio', file, label } ] }
                loop: 15  on an ads step replays every ad each 15 seconds.
      ads       { type:'ads', items:[ { src, w, h, z (zoom), label }, { stack:[ ... ] } ] }
@@ -84,7 +85,7 @@ window.SHOW = {
 
     { id: 'okeii', title: 'Comprehensive Campaign Production', noTitle: true, aliases: ['okeii', 'oklahoma education impact initiative', 'campaign', 'campaign production'],
       steps: [
-        { type: 'media', label: 'OKEII', grid: 3,
+        { type: 'media', label: 'OKEII', grid: 3, link: 'https://youtu.be/AcRRiqcDmBk?si=0UYyF2UDx6M2mj9j',
           facts: ['Television', 'Social', 'Outdoor', 'Digital', 'Radio', 'Newspaper', 'Print Media', 'Website'], items: [
           { kind: 'image', file: 'okeii-grid-1.jpg', label: 'OK 50th in public education' },
           { kind: 'image', file: 'okeii-grid-2.jpg', label: 'The Strong Readers Act' },
@@ -101,8 +102,7 @@ window.SHOW = {
     { id: 'honda-acura', title: 'Honda Acura', noTitle: true, aliases: ['honda', 'acura'],
       steps: [
         { type: 'media', label: 'Social', title: 'Production Automation', grid: 3, square: true, muted: true, autoplay: true,
-          facts: ['3,672 videos', '918 dealers', '722 Honda  ·  196 Acura', 'A/B  ·  1:1 & 9:16'],
-          tech: 'AE + CSV automation', items: [
+          facts: ['918 dealers', '3,672 videos', '1 Human'], items: [
           { kind: 'video', file: 'honda-social-sq-a.mp4', label: 'Honda A' },
           { kind: 'video', file: 'honda-social-sq-b.mp4', label: 'Honda B' },
           { kind: 'video', file: 'acura-social-sq-a.mp4', label: 'Acura A' },

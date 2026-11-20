@@ -183,7 +183,8 @@
     media: function (root, s, v) {
       root.appendChild(metaRow(s)); root.appendChild(head(s, v.label, v.title));
       var f = facts(v); if (f) root.appendChild(f);
-      var g = el('div', 'slots');
+      var g = el(v.link ? 'a' : 'div', 'slots');
+      if (v.link) { g.href = v.link; g.target = '_blank'; g.rel = 'noopener'; g.classList.add('linked'); }
       v.items.forEach(function (it, i) { var b = slot(it, v); b.classList.add('rise'); b.style.setProperty('--i', i + 2); g.appendChild(b); });
       if (v.items.length === 1) { g.style.left = '330px'; g.style.right = '330px'; }
       if (v.grid) {

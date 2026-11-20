@@ -206,3 +206,5 @@ body:not(.awake){cursor:none}
 .v-facts li::before{content:"•";position:absolute;left:0;color:var(--soft)}
 .v-facts li.tech{margin-top:18px;font-size:20px;font-weight:600;letter-spacing:-.01em;color:var(--soft)}
 .v-facts li.tech::before{content:""}
+
+a.slots.linked{color:inherit;text-decoration:none;cursor:pointer}
