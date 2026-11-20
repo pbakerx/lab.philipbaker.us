@@ -62,11 +62,11 @@ window.SHOW = {
     { id: 'agency', title: 'The work of a full-\u2060service creative agency from my chair.', titleSize: 66, autoAdvance: 5000, aliases: ['clients', 'chair', 'agency', 'agency from my chair'],
       steps: [
         { type: 'tree', label: 'Clients', items: [
-          'AcrobatAnt', 'Pokes with a Purpose', 'NIL-OSU Athletics', 'Perillo Tours', 'Ruby Tuesday', 'Mazzio’s', 'The Learning Center',
-          'Oklahoma Education Impact Initiative', 'Cause for Effect', 'VIP Luxury Seating',
+          'AcrobatAnt', 'Pokes with a Purpose', 'NIL-OSU Athletics', 'Perillo Tours', 'Ruby Tuesday', 'Mazzio’s',
+          'Oklahoma Education Impact Initiative', 'VIP Luxury Seating',
           'BibleDiscovery.app', 'Assist AI',
           /* added from the project folders. Delete any that do not belong: */
-          'Honda · Acura', 'Brock Institute', 'Tulsa Sound Originals'
+          'Honda · Acura', 'Brock Institute'
         ] }
       ] },
 
