@@ -43,13 +43,13 @@ window.SHOW = {
     { id: 'intelligence-age', title: 'The Intelligence Age',
       sub: 'Change. Change. Change. Overwhelming.' },
 
-    { id: 'years', title: '1987 to 2020', sub: 'Marketer and technologist.', autoAdvance: 5000, aliases: ['1987', 'timeline', 'career', 'growth'],
+    { id: 'years', title: '1987 to 2020', sub: 'First in on every new technology.', autoAdvance: 5000, aliases: ['1987', 'timeline', 'career', 'growth'],
       steps: [
         { type: 'tree', label: 'Growth', grow: true, x0: 660, x1: 930, items: [
           { k: 'Pre-87', name: 'Computer programming' },
           { k: '1987–1988', name: 'Freelance', items: ['Art direction', 'Yellow Pages design', 'Desktop publishing'] },
-          { k: '1991–1999', name: 'Ackerman McQueen', items: ['Art director', 'Broadcast producer', 'Internet producer', 'New media'] },
-          { k: '2000–2020', name: 'StapleGun', items: ['Clients', 'Process', 'New business', 'Creative direction'] }
+          { k: '1991–1999', name: 'Ackerman McQueen', items: ['Print: brought in the Mac and desktop publishing', 'Video: one of the first in the country on an Avid', 'New media: one of the first national brand websites'] },
+          { k: '2000–2020', name: 'StapleGun', items: ['All of it, at scale, with people'] }
         ] }
       ] },
 
