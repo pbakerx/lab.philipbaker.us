@@ -124,6 +124,15 @@ h2{font-weight:900;letter-spacing:-.05em;line-height:.94;font-size:92px}
 .v-list li i{font-style:normal;font-size:17px;font-weight:600;color:var(--soft);letter-spacing:0;width:34px;padding-top:9px;flex:none}
 .v-list li span{display:block;font-size:19px;font-weight:500;color:var(--soft);letter-spacing:-.005em;margin-top:6px;line-height:1.3}
 
+.v-list ol.big{columns:1;top:200px;bottom:120px;display:flex;flex-direction:column;justify-content:center;column-gap:0}
+.v-list ol.big li{font-size:100px;font-weight:900;letter-spacing:-.055em;line-height:.95;padding:16px 0;gap:0}
+.v-list ol.big li:last-child{border-bottom:1.5px solid var(--hair)}
+.v-list ol.big .kids{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:14px;list-style:none}
+.v-list ol.big .kids li{border:0;padding:0;font-size:28px;font-weight:600;letter-spacing:-.03em;line-height:1.2;color:var(--soft)}
+.v-list ol.big > li:only-child{border:0;padding:0;font-size:132px;letter-spacing:-.058em;line-height:.9}
+.v-list ol.big > li:only-child .kids{margin-top:36px;padding-top:32px;border-top:1.5px solid var(--hair);gap:0 72px}
+.v-list ol.big > li:only-child .kids li{font-size:44px;font-weight:700;letter-spacing:-.04em;line-height:1.1;color:var(--ink)}
+
 /* ---- diagrams (team, org) ---- */
 .v-diagram svg{position:absolute;inset:0}
 .v-diagram svg path{fill:none;stroke:var(--ink);stroke-width:1.6;opacity:.34;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s var(--ease) forwards;animation-delay:calc(var(--i,0)*60ms + .3s)}

@@ -226,12 +226,21 @@
     },
 
     list: function (root, s, v) {
-      root.appendChild(metaRow(s)); root.appendChild(head(s, v.label));
-      var ol = el('ol');
+      root.appendChild(metaRow(s));
+      if (!v.big) root.appendChild(head(s, v.label));
+      var ol = el('ol', v.big ? 'big' : null);
       v.items.forEach(function (it, i) {
         var li = el('li', 'rise'); li.style.setProperty('--i', i * .7 + 2);
-        li.appendChild(el('i', null, pad(i + 1)));
-        var d = el('div', null, it.name); if (it.line) d.appendChild(el('span', null, it.line));
+        if (!v.big) li.appendChild(el('i', null, pad(i + 1)));
+        var d = el('div', null, it.name);
+        if (it.line) d.appendChild(el('span', null, it.line));
+        if (it.items && it.items.length) {
+          var kids = el('ul', 'kids');
+          it.items.forEach(function (k) {
+            kids.appendChild(el('li', null, typeof k === 'string' ? k : k.name));
+          });
+          d.appendChild(kids);
+        }
         li.appendChild(d); ol.appendChild(li);
       });
       root.appendChild(ol);

@@ -25,7 +25,7 @@
      showcase  { type:'showcase', items:[ { name, src (a live page) or file, kind, note } ] }
                each item is its own press of the arrow key
      icons     { type:'icons', items:[ { name, line, mark, icon (optional file) } ] }
-     list      { type:'list', items:[ { name, line } ] }
+     list      { type:'list', items:[ { name, line } ], big:true for a large typographic list }
      teams / org    the two diagrams near the end; their words are below.
                A tool's logo is used if  DropFolder/icons/<name>.svg  exists
                (claude.svg, chatgpt.svg, grok.svg, runway.svg, elevenlabs.svg ...).
@@ -139,22 +139,11 @@ window.SHOW = {
 
     { id: 'voice-agents', title: 'Voice Agents', aliases: ['voice'] },
 
-    { id: 'research', title: 'Research', noTitle: true,
+    { id: 'research', title: 'Proactive Autonomy', noTitle: true,
+      aliases: ['seo', 'search', 'adwords', 'media', 'research', 'proactive autonomy', 'proactive'],
       steps: [
-        { type: 'list', items: [
-          { name: 'Market study', line: 'Who is in the category, what they say, where the gap is.' },
-          { name: 'Client deep dive', line: 'Site, social, press and reviews read before the first meeting.' },
-          { name: 'Audience and message', line: 'Who we are talking to, in their own words.' },
-          { name: 'Competitive creative review', line: 'What the other guys are running, side by side.' },
-          { name: 'Search and AI-answer audit', line: 'How a brand shows up in Google and in the AI answers.' },
-          { name: 'Media and spec research', line: 'Every vendor size and deadline, captured before production.' }
-        ] }
-      ] },
-
-    { id: 'seo', title: 'SEO', noTitle: true, aliases: ['search'],
-      steps: [
-        { type: 'media', label: 'Search Console', items: [
-          { kind: 'image', file: 'search-console.png', label: 'Search Console screenshot' }
+        { type: 'list', big: true, items: [
+          { name: 'Proactive Autonomy', items: ['Research', 'SEO', 'AdWords', 'Media'] }
         ] }
       ] },
 
