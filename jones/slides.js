@@ -197,7 +197,7 @@ window.SHOW = {
 
     { id: 'stack-vs-slop', title: 'The Stack vs. The Slop', skip: true },
 
-    { id: 'rate-of-change', title: 'The only thing certain is the rate of change.', aliases: ['rate of change', 'rate', 'change'] },
+    { id: 'rate-of-change', title: 'The only thing certain is the rate of change.', skip: true },
 
     { id: 'open-for-business', title: 'Open for Business', aliases: ['open', 'close', 'end'] }
 
