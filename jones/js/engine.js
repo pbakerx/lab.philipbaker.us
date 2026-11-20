@@ -122,22 +122,39 @@
       root.appendChild(metaRow(s));
       var tt = el('div', 'tt'); tt.appendChild(el('h2', null, s.title)); if (s.sub) tt.appendChild(el('p', 'tsub', s.sub)); root.appendChild(tt);
       var svg = svgEl('svg'); svg.setAttribute('viewBox', '0 0 1920 1080'); root.appendChild(svg);
-      var items = v.items, n = items.length, two = items.some(function (it) { return it.line; });
-      var gap = Math.min(two ? 96 : 58, 800 / Math.max(n - 1, 1)), y0 = 540 - gap * (n - 1) / 2;
+      var items = v.items.map(function (it) { return typeof it === 'string' ? { name: it } : it; });
+      var n = items.length, two = items.some(function (it) { return it.line || (it.items && it.items.length); });
+      var nameH = 44;
+      var heights = items.map(function (it) {
+        var kids = (it.items && it.items.length) || 0;
+        return kids ? nameH + 8 + kids * 26 : (it.line ? 68 : 48);
+      });
+      var pad = 22, span = heights.reduce(function (a, h) { return a + h; }, 0) + pad * Math.max(n - 1, 0);
+      var yCursor = 540 - span / 2, ys = [];
+      items.forEach(function (it, i) {
+        var kids = (it.items && it.items.length) || 0;
+        ys.push(yCursor + (kids ? nameH / 2 : heights[i] / 2));
+        yCursor += heights[i] + pad;
+      });
       var x0 = v.x0 || 800, x1 = v.x1 || 1130;
       var trunk = svgEl('path'); trunk.setAttribute('d', 'M' + (x0 - 40) + ' 540 H' + x0); trunk.setAttribute('pathLength', 1); svg.appendChild(trunk);
       items.forEach(function (it, i) {
-        if (typeof it === 'string') it = { name: it };
-        var y = y0 + gap * i, p = svgEl('path');
+        var y = ys[i], p = svgEl('path');
         p.setAttribute('d', 'M' + x0 + ' 540 C' + (x0 + (x1 - x0) * .46) + ' 540 ' + (x1 - (x1 - x0) * .56) + ' ' + y + ' ' + x1 + ' ' + y);
         p.setAttribute('pathLength', 1); p.style.setProperty('--i', i);
         if (v.grow) p.style.strokeWidth = (1.2 + 2.6 * i / Math.max(n - 1, 1)).toFixed(2);
         svg.appendChild(p);
         var d = el('div', 'dot' + (it.hot ? ' hot' : '')); d.style.left = x1 + 'px'; d.style.top = y + 'px'; d.style.setProperty('--i', i); root.appendChild(d);
-        var l = el('div', 'leaf' + (two ? ' two' : '') + (it.hot ? ' hot' : '')); l.style.left = (x1 + 26) + 'px'; l.style.top = y + 'px'; l.style.setProperty('--i', i);
+        var l = el('div', 'leaf' + (two ? ' two' : '') + (it.hot ? ' hot' : '') + (it.items && it.items.length ? ' kids' : ''));
+        l.style.left = (x1 + 26) + 'px'; l.style.top = y + 'px'; l.style.setProperty('--i', i);
         if (it.k) l.appendChild(el('b', null, it.k));
         l.appendChild(el('span', null, it.name));
         if (it.line) l.appendChild(el('small', null, it.line));
+        if (it.items && it.items.length) {
+          var ul = el('ul', 'subs');
+          it.items.forEach(function (k) { ul.appendChild(el('li', null, typeof k === 'string' ? k : k.name)); });
+          l.appendChild(ul);
+        }
         root.appendChild(l);
       });
       if (v.key) { var k = el('div', 'tkey', v.key); root.appendChild(k); }

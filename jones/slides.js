@@ -43,17 +43,13 @@ window.SHOW = {
     { id: 'intelligence-age', title: 'The Intelligence Age',
       sub: 'Change. Change. Change. Overwhelming.' },
 
-    { id: 'years', title: '1987 to 2000', sub: 'Marketer and technologist.', autoAdvance: 5000, aliases: ['1987', 'timeline', 'career', 'growth'],
+    { id: 'years', title: '1987 to 2020', sub: 'Marketer and technologist.', autoAdvance: 5000, aliases: ['1987', 'timeline', 'career', 'growth'],
       steps: [
         { type: 'tree', label: 'Growth', grow: true, x0: 660, x1: 930, items: [
           { k: 'Pre-87', name: 'Computer programming' },
-          { k: '1987', name: 'Art direction', line: 'Yellow Pages design' },
-          { k: '1988', name: 'Freelance business' },
-          { k: '1991', name: 'Ackerman McQueen', line: 'Art director' },
-          { k: '1993', name: 'Ackerman McQueen', line: 'Broadcast producer' },
-          { k: '1995', name: 'Ackerman McQueen', line: 'Internet producer, new media' },
-          { k: '2000', name: 'Founded StapleGun' },
-          { k: '2000+', name: 'Running an agency', line: 'Clients, process, new business, creative direction' }
+          { k: '1987–1988', name: 'Freelance', items: ['Art direction', 'Yellow Pages design', 'Desktop publishing'] },
+          { k: '1991–1999', name: 'Ackerman McQueen', items: ['Art director', 'Broadcast producer', 'Internet producer', 'New media'] },
+          { k: '2000–2020', name: 'StapleGun', items: ['Clients', 'Process', 'New business', 'Creative direction'] }
         ] }
       ] },
 
