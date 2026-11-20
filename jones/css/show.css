@@ -147,6 +147,8 @@ h2{font-weight:900;letter-spacing:-.05em;line-height:.94;font-size:92px}
   transform:translate(-50%,-50%) rotate(var(--r));animation:drift 7s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.9s)}
 @keyframes drift{from{margin:-9px 0 0 -12px}to{margin:10px 0 0 13px}}
 .rowlabel{position:absolute;left:140px;font-size:16px;font-weight:700;color:var(--soft);letter-spacing:.02em;transform:translateY(-50%)}
+.v-org .org-cats{position:absolute;left:140px;right:140px;bottom:56px;display:flex;justify-content:center;flex-wrap:wrap;gap:12px 16px}
+.v-org .org-cats span{border:1.5px solid var(--hair);border-radius:999px;padding:10px 22px;font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--soft)}
 
 /* ---- chrome ---- */
 #chrome{position:fixed;left:0;right:0;bottom:0;z-index:5;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;

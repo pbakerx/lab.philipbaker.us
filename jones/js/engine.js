@@ -295,7 +295,14 @@
       line('M960 664 V780'); row(v.models, 850, 'plain', null, 8);
       var a = el('div', 'rowlabel fade', 'Agents'); a.style.top = '620px'; root.appendChild(a);
       var b = el('div', 'rowlabel fade', 'Models'); b.style.top = '850px'; root.appendChild(b);
-      if (v.foot) { var f = el('div', 'node plain fade', v.foot); f.style.left = '960px'; f.style.top = '975px'; f.style.fontSize = '30px'; f.style.setProperty('--i', 14); root.appendChild(f); }
+      if (v.foot) { var f = el('div', 'node plain fade', v.foot); f.style.left = '960px'; f.style.top = '930px'; f.style.fontSize = '30px'; f.style.setProperty('--i', 14); root.appendChild(f); }
+      if (v.categories && v.categories.length) {
+        var cats = el('div', 'org-cats fade');
+        v.categories.forEach(function (name, i) {
+          var c = el('span', null, name); c.style.setProperty('--i', i); cats.appendChild(c);
+        });
+        root.appendChild(cats);
+      }
     }
   };
 

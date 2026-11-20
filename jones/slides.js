@@ -209,55 +209,12 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'building-a-team', title: 'Building a Team', sub: 'Talk Scale', aliases: ['team'],
-      steps: [
-        { type: 'teams', label: 'The team', lead: { name: 'Grokbot', line: 'Coordinates the work' }, teams: [
-          { name: 'Video Production', rows: [
-            ['Copy', ['Claude']],
-            ['Concept', ['ChatGPT']],
-            ['Storyboards', ['XYZ']],
-            ['Video scenes', ['Runway', 'Google AI Studio']],
-            ['Audio', ['ElevenLabs']]
-          ] },
-          { name: 'Print Production', rows: [
-            ['Design', ['Claude']],
-            ['Images', ['ChatGPT']],
-            ['Resizes', ['Illustrator']],
-            ['Proofing', ['Claude']]
-          ] },
-          { name: 'Digital', rows: [
-            ['Websites', ['Claude Code']],
-            ['Display ads', ['Claude Code']],
-            ['Apps', ['Claude Code']],
-            ['Search', ['Claude']],
-            ['Voice agents', ['ElevenLabs']]
-          ] },
-          { name: 'Social', rows: [
-            ['Ideas', ['Claude', 'ChatGPT', 'Grok']],
-            ['Posts', ['Claude']],
-            ['Animated ads', ['After Effects']],
-            ['Schedule', ['Claude']]
-          ] },
-          { name: 'Administration', rows: [
-            ['Email', ['Grok']],
-            ['Billing', ['Claude']],
-            ['Calendar', ['Grok']],
-            ['Second Brain', ['Claude']]
-          ] },
-          { name: 'Account Service', rows: [
-            ['Research', ['Claude']],
-            ['Proposals', ['Claude']],
-            ['Status reports', ['Grok']],
-            ['Presentations', ['Claude Code']]
-          ] }
-        ] }
-      ] },
-
     { id: 'org-chart', title: 'Org Chart', aliases: ['org'],
       steps: [
         { type: 'org',
           top: { name: 'Philip', line: 'Creative director. Final say.' },
           chief: { name: 'Bill', line: 'Chief of staff · Grokbot' },
+          categories: ['Video production', 'Print production', 'Digital', 'Social', 'Administration', 'Account service'],
           staff: [
             { name: 'Koty', line: 'Build' }, { name: 'Corey' }, { name: 'Creative', line: 'Production' },
             { name: 'EmailBuddy', line: 'Inbox' }, { name: 'Accounting', line: 'Billing' }, { name: 'Admin' }
