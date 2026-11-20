@@ -87,7 +87,7 @@ window.SHOW = {
     { id: 'okeii', title: 'Comprehensive Campaign Production', noTitle: true, aliases: ['okeii', 'oklahoma education impact initiative', 'campaign', 'campaign production'],
       steps: [
         { type: 'media', label: 'OKEII', grid: 3, link: 'https://youtu.be/AcRRiqcDmBk?si=0UYyF2UDx6M2mj9j', factsSide: true,
-          facts: ['Television', 'Social', 'Outdoor', 'Digital', 'Radio', 'Newspaper', 'Print Media', 'Website'], items: [
+          facts: ['Mixed media.', 'Video production.', 'Audio production.', 'Voice talent.', 'On-camera talent.'], items: [
           { kind: 'image', file: 'okeii-grid-1.jpg', label: 'OK 50th in public education' },
           { kind: 'image', file: 'okeii-grid-2.jpg', label: 'The Strong Readers Act' },
           { kind: 'image', file: 'okeii-grid-3.jpg', label: 'More reading coaches' },
