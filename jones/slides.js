@@ -19,6 +19,7 @@
 
    STEP TYPES
      tree      { type:'tree', items:[ 'Name', or { k:'1991', name, line, hot:true } ] }
+               bold:true  sets a name in black.  bigSubs:true  makes that item's small lines larger and bold.
                the title shrinks and the lines draw out of it, on one screen
      media     { type:'media', items:[ { kind:'video'|'image'|'audio', file, label } ] }
      ads       { type:'ads', items:[ { src, w, h, z (zoom), label }, { stack:[ ... ] } ] }
@@ -46,9 +47,9 @@ window.SHOW = {
     { id: 'years', title: '1987 to 2020', sub: 'First in on every new technology.', autoAdvance: 5000, aliases: ['1987', 'timeline', 'career', 'growth'],
       steps: [
         { type: 'tree', label: 'Growth', grow: true, x0: 660, x1: 930, items: [
-          { k: 'Pre-87', name: 'Computer programming' },
+          { k: 'Pre-87', name: 'Computer programming', bold: true },
           { k: '1987–1988', name: 'Freelance', items: ['Art direction', 'Yellow Pages design', 'Desktop publishing'] },
-          { k: '1991–1999', name: 'Ackerman McQueen', items: ['Print: brought in the Mac and desktop publishing', 'Video: one of the first in the country on an Avid', 'New media: one of the first national brand websites'] },
+          { k: '1991–1999', name: 'Ackerman McQueen', bigSubs: true, items: ['Created Mac Network', 'Created Digital Video Department', 'Created Internet Department'] },
           { k: '2000–2020', name: 'StapleGun', items: ['All of it, at scale, with people'] }
         ] }
       ] },

@@ -127,7 +127,7 @@
       var nameH = 44;
       var heights = items.map(function (it) {
         var kids = (it.items && it.items.length) || 0;
-        return kids ? nameH + 8 + kids * 26 : (it.line ? 68 : 48);
+        return kids ? nameH + 8 + kids * (it.bigSubs ? 34 : 26) : (it.line ? 68 : 48);
       });
       var pad = 22, span = heights.reduce(function (a, h) { return a + h; }, 0) + pad * Math.max(n - 1, 0);
       var yCursor = 540 - span / 2, ys = [];
@@ -145,13 +145,13 @@
         if (v.grow) p.style.strokeWidth = (1.2 + 2.6 * i / Math.max(n - 1, 1)).toFixed(2);
         svg.appendChild(p);
         var d = el('div', 'dot' + (it.hot ? ' hot' : '')); d.style.left = x1 + 'px'; d.style.top = y + 'px'; d.style.setProperty('--i', i); root.appendChild(d);
-        var l = el('div', 'leaf' + (two ? ' two' : '') + (it.hot ? ' hot' : '') + (it.items && it.items.length ? ' kids' : ''));
+        var l = el('div', 'leaf' + (two ? ' two' : '') + (it.hot ? ' hot' : '') + (it.items && it.items.length ? ' kids' : '') + (it.bold ? ' bold' : ''));
         l.style.left = (x1 + 26) + 'px'; l.style.top = y + 'px'; l.style.setProperty('--i', i);
         if (it.k) l.appendChild(el('b', null, it.k));
         l.appendChild(el('span', null, it.name));
         if (it.line) l.appendChild(el('small', null, it.line));
         if (it.items && it.items.length) {
-          var ul = el('ul', 'subs');
+          var ul = el('ul', 'subs' + (it.bigSubs ? ' big' : ''));
           it.items.forEach(function (k) { ul.appendChild(el('li', null, typeof k === 'string' ? k : k.name)); });
           l.appendChild(ul);
         }

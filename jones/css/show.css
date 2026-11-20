@@ -68,6 +68,8 @@ h2{font-weight:900;letter-spacing:-.05em;line-height:.94;font-size:92px}
 .v-tree .leaf .subs{display:block;list-style:none;margin:8px 0 0;padding:0;white-space:normal;max-width:520px}
 .v-tree .leaf .subs li{font-size:20px;font-weight:500;letter-spacing:-.005em;color:var(--soft);line-height:1.3}
 .v-tree .leaf.hot b{color:var(--hot)}
+.v-tree .leaf.bold span{color:var(--ink);font-weight:900}
+.v-tree .leaf .subs.big li{font-size:26px;font-weight:800;letter-spacing:-.025em;color:var(--ink);line-height:1.3}
 .v-tree .dot{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--ink);transform:translate(-50%,-50%);opacity:0}
 .v-tree .dot.hot{background:var(--hot)}
 .v-tree.open .dot{animation:fade .5s ease forwards;animation-delay:calc(var(--i)*60ms + .7s)}
