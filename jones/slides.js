@@ -114,19 +114,8 @@ window.SHOW = {
           facts: ['18,216 ads', '876 dealers'],
           tech: 'HTML5 + CSV', items: [
           { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/HND_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Honda 300 × 600' },
-          { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/ACR_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Acura 300 × 600' },
-          { stack: [
-            { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/HND_728x90_A/index.html', w: 728, h: 90, label: 'Honda 728 × 90' },
-            { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/ACR_728x90_A/index.html', w: 728, h: 90, label: 'Acura 728 × 90' }
-          ] }
-        ] }
-      ] },
-
-    { id: 'research', title: 'Proactive Autonomy', noTitle: true,
-      aliases: ['seo', 'search', 'adwords', 'media', 'research', 'proactive autonomy', 'proactive'],
-      steps: [
-        { type: 'list', big: true, items: [
-          { name: 'Proactive Autonomy', items: ['SEO', 'AdWords', 'Research'] }
+          { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/ACR_300x600_A/index.html', w: 300, h: 600, z: 1.1, label: 'Acura 300 × 600 A' },
+          { src: '/AcrobatAnt-HNDACR-Fall-Digital/rounds/rv2/ads/ACR_300x600_B/index.html', w: 300, h: 600, z: 1.1, label: 'Acura 300 × 600 B' }
         ] }
       ] },
 
@@ -147,7 +136,15 @@ window.SHOW = {
         ] }
       ] },
 
-    { id: 'custom-everything', title: 'Custom Everything', aliases: ['custom'],
+    { id: 'research', title: 'Proactive Autonomy', noTitle: true,
+      aliases: ['seo', 'search', 'adwords', 'media', 'research', 'proactive autonomy', 'proactive'],
+      steps: [
+        { type: 'list', big: true, items: [
+          { name: 'Proactive Autonomy', items: ['SEO', 'AdWords', 'Research'] }
+        ] }
+      ] },
+
+    { id: 'custom-everything', title: 'Now we make custom everything.', aliases: ['custom', 'custom everything'],
       steps: [
         { type: 'showcase', items: [
           { name: 'Ad Builder for Honda Acura', src: 'embeds/leaf-lab/leaves-lab.html',
